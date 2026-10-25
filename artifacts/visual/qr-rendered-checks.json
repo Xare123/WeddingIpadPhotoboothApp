@@ -1,0 +1,1018 @@
+{
+  "scope": "Actual App.tsx release JSX through RN-web with synthetic camera/storage/sync. Full-frame screenshot decoder tests; no iOS or physical-phone verification.",
+  "generatedAt": "2026-10-25T22:13:22.830Z",
+  "timezoneId": "America/Los_Angeles",
+  "sourceSHA256": "d3a11865e84111dfca253e2f54c900cfc1cfeb0f3a3ae95f0de3e13be62cc266",
+  "versions": {
+    "qrcode": "1.5.4",
+    "reactNativeQRCodeSVG": "6.3.27",
+    "jsQR": "1.4.0",
+    "zxingCppWasm": "3.1.6",
+    "zxingJS": "0.23.0",
+    "pngjs": "7.0.0"
+  },
+  "originalEvidence": [
+    {
+      "file": "artifacts/visual/qr-before-portrait.png",
+      "width": 820,
+      "height": 1180,
+      "jsQR": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "error": "ChecksumException"
+      },
+      "zxingJSPure": {
+        "error": "NotFoundException"
+      }
+    },
+    {
+      "file": "artifacts/visual/qr-before-svg.png",
+      "width": 224,
+      "height": 225,
+      "jsQR": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "error": "NotFoundException"
+      },
+      "zxingJSPure": {
+        "error": "FormatException"
+      }
+    }
+  ],
+  "controls": [
+    {
+      "file": "artifacts/visual/qr-reference-4px-module.png",
+      "width": 196,
+      "height": 196,
+      "explicitQuietModules": 4,
+      "pixelsPerModule": 4,
+      "jsQR": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "error": "NotFoundException"
+      },
+      "zxingJSPure": {
+        "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7"
+      }
+    },
+    {
+      "file": "artifacts/visual/qr-reference-5px-module.png",
+      "width": 245,
+      "height": 245,
+      "explicitQuietModules": 4,
+      "pixelsPerModule": 5,
+      "jsQR": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "error": "NotFoundException"
+      },
+      "zxingJSPure": {
+        "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7"
+      }
+    }
+  ],
+  "rendered": [
+    {
+      "file": "artifacts/visual/qr-ready-reserved-portrait-1x.png",
+      "orientation": "portrait",
+      "viewport": {
+        "width": 820,
+        "height": 1180
+      },
+      "dpr": 1,
+      "expectedURL": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "payloadLength": 93,
+      "moduleCount": 41,
+      "quietModules": 5.857142857142857,
+      "svg": {
+        "viewBox": "-32 -32 288 288",
+        "width": 224,
+        "height": 224,
+        "box": {
+          "x": 298,
+          "y": 651.796875,
+          "width": 224,
+          "height": 224,
+          "top": 651.796875,
+          "right": 522,
+          "bottom": 875.796875,
+          "left": 298
+        },
+        "strokeWidth": 5.463414634146342
+      },
+      "nextGuest": {
+        "x": 160,
+        "y": 1040.796875,
+        "width": 500,
+        "height": 68
+      },
+      "nextGuestInitiallyVisible": true,
+      "jsQR": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7"
+      }
+    },
+    {
+      "file": "artifacts/visual/qr-ready-realistic-portrait-1x.png",
+      "orientation": "portrait",
+      "viewport": {
+        "width": 820,
+        "height": 1180
+      },
+      "dpr": 1,
+      "expectedURL": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+      "payloadLength": 100,
+      "moduleCount": 41,
+      "quietModules": 5.857142857142857,
+      "svg": {
+        "viewBox": "-32 -32 288 288",
+        "width": 224,
+        "height": 224,
+        "box": {
+          "x": 298,
+          "y": 651.796875,
+          "width": 224,
+          "height": 224,
+          "top": 651.796875,
+          "right": 522,
+          "bottom": 875.796875,
+          "left": 298
+        },
+        "strokeWidth": 5.463414634146342
+      },
+      "nextGuest": {
+        "x": 160,
+        "y": 1040.796875,
+        "width": 500,
+        "height": 68
+      },
+      "nextGuestInitiallyVisible": true,
+      "jsQR": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+      "zxingCpp": [
+        {
+          "text": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "text": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52"
+      }
+    },
+    {
+      "file": "artifacts/visual/qr-ready-reserved-numeric-portrait-1x.png",
+      "orientation": "portrait",
+      "viewport": {
+        "width": 820,
+        "height": 1180
+      },
+      "dpr": 1,
+      "expectedURL": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "payloadLength": 93,
+      "moduleCount": 33,
+      "quietModules": 4.714285714285714,
+      "svg": {
+        "viewBox": "-32 -32 288 288",
+        "width": 224,
+        "height": 224,
+        "box": {
+          "x": 298,
+          "y": 651.796875,
+          "width": 224,
+          "height": 224,
+          "top": 651.796875,
+          "right": 522,
+          "bottom": 875.796875,
+          "left": 298
+        },
+        "strokeWidth": 6.787878787878788
+      },
+      "nextGuest": {
+        "x": 160,
+        "y": 1040.796875,
+        "width": 500,
+        "height": 68
+      },
+      "nextGuestInitiallyVisible": true,
+      "jsQR": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "text": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    },
+    {
+      "file": "artifacts/visual/qr-ready-realistic-numeric-portrait-1x.png",
+      "orientation": "portrait",
+      "viewport": {
+        "width": 820,
+        "height": 1180
+      },
+      "dpr": 1,
+      "expectedURL": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "payloadLength": 100,
+      "moduleCount": 37,
+      "quietModules": 5.285714285714286,
+      "svg": {
+        "viewBox": "-32 -32 288 288",
+        "width": 224,
+        "height": 224,
+        "box": {
+          "x": 298,
+          "y": 651.796875,
+          "width": 224,
+          "height": 224,
+          "top": 651.796875,
+          "right": 522,
+          "bottom": 875.796875,
+          "left": 298
+        },
+        "strokeWidth": 6.054054054054054
+      },
+      "nextGuest": {
+        "x": 160,
+        "y": 1040.796875,
+        "width": 500,
+        "height": 68
+      },
+      "nextGuestInitiallyVisible": true,
+      "jsQR": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "text": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    },
+    {
+      "file": "artifacts/visual/qr-ready-short-numeric-portrait-1x.png",
+      "orientation": "portrait",
+      "viewport": {
+        "width": 820,
+        "height": 1180
+      },
+      "dpr": 1,
+      "expectedURL": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "payloadLength": 84,
+      "moduleCount": 33,
+      "quietModules": 4.714285714285714,
+      "svg": {
+        "viewBox": "-32 -32 288 288",
+        "width": 224,
+        "height": 224,
+        "box": {
+          "x": 298,
+          "y": 651.796875,
+          "width": 224,
+          "height": 224,
+          "top": 651.796875,
+          "right": 522,
+          "bottom": 875.796875,
+          "left": 298
+        },
+        "strokeWidth": 6.787878787878788
+      },
+      "nextGuest": {
+        "x": 160,
+        "y": 1040.796875,
+        "width": 500,
+        "height": 68
+      },
+      "nextGuestInitiallyVisible": true,
+      "jsQR": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "text": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    },
+    {
+      "file": "artifacts/visual/qr-ready-reserved-landscape-1x.png",
+      "orientation": "landscape",
+      "viewport": {
+        "width": 1180,
+        "height": 820
+      },
+      "dpr": 1,
+      "expectedURL": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "payloadLength": 93,
+      "moduleCount": 41,
+      "quietModules": 5.857142857142857,
+      "svg": {
+        "viewBox": "-32 -32 288 288",
+        "width": 224,
+        "height": 224,
+        "box": {
+          "x": 881,
+          "y": 250,
+          "width": 224,
+          "height": 224,
+          "top": 250,
+          "right": 1105,
+          "bottom": 474,
+          "left": 881
+        },
+        "strokeWidth": 5.463414634146342
+      },
+      "nextGuest": {
+        "x": 840,
+        "y": 639,
+        "width": 306,
+        "height": 68
+      },
+      "nextGuestInitiallyVisible": true,
+      "jsQR": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7"
+      }
+    },
+    {
+      "file": "artifacts/visual/qr-ready-realistic-landscape-1x.png",
+      "orientation": "landscape",
+      "viewport": {
+        "width": 1180,
+        "height": 820
+      },
+      "dpr": 1,
+      "expectedURL": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+      "payloadLength": 100,
+      "moduleCount": 41,
+      "quietModules": 5.857142857142857,
+      "svg": {
+        "viewBox": "-32 -32 288 288",
+        "width": 224,
+        "height": 224,
+        "box": {
+          "x": 881,
+          "y": 250,
+          "width": 224,
+          "height": 224,
+          "top": 250,
+          "right": 1105,
+          "bottom": 474,
+          "left": 881
+        },
+        "strokeWidth": 5.463414634146342
+      },
+      "nextGuest": {
+        "x": 840,
+        "y": 639,
+        "width": 306,
+        "height": 68
+      },
+      "nextGuestInitiallyVisible": true,
+      "jsQR": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+      "zxingCpp": [
+        {
+          "text": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "text": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52"
+      }
+    },
+    {
+      "file": "artifacts/visual/qr-ready-reserved-numeric-landscape-1x.png",
+      "orientation": "landscape",
+      "viewport": {
+        "width": 1180,
+        "height": 820
+      },
+      "dpr": 1,
+      "expectedURL": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "payloadLength": 93,
+      "moduleCount": 33,
+      "quietModules": 4.714285714285714,
+      "svg": {
+        "viewBox": "-32 -32 288 288",
+        "width": 224,
+        "height": 224,
+        "box": {
+          "x": 881,
+          "y": 250,
+          "width": 224,
+          "height": 224,
+          "top": 250,
+          "right": 1105,
+          "bottom": 474,
+          "left": 881
+        },
+        "strokeWidth": 6.787878787878788
+      },
+      "nextGuest": {
+        "x": 840,
+        "y": 639,
+        "width": 306,
+        "height": 68
+      },
+      "nextGuestInitiallyVisible": true,
+      "jsQR": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "text": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    },
+    {
+      "file": "artifacts/visual/qr-ready-realistic-numeric-landscape-1x.png",
+      "orientation": "landscape",
+      "viewport": {
+        "width": 1180,
+        "height": 820
+      },
+      "dpr": 1,
+      "expectedURL": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "payloadLength": 100,
+      "moduleCount": 37,
+      "quietModules": 5.285714285714286,
+      "svg": {
+        "viewBox": "-32 -32 288 288",
+        "width": 224,
+        "height": 224,
+        "box": {
+          "x": 881,
+          "y": 250,
+          "width": 224,
+          "height": 224,
+          "top": 250,
+          "right": 1105,
+          "bottom": 474,
+          "left": 881
+        },
+        "strokeWidth": 6.054054054054054
+      },
+      "nextGuest": {
+        "x": 840,
+        "y": 639,
+        "width": 306,
+        "height": 68
+      },
+      "nextGuestInitiallyVisible": true,
+      "jsQR": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "text": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    },
+    {
+      "file": "artifacts/visual/qr-ready-short-numeric-landscape-1x.png",
+      "orientation": "landscape",
+      "viewport": {
+        "width": 1180,
+        "height": 820
+      },
+      "dpr": 1,
+      "expectedURL": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "payloadLength": 84,
+      "moduleCount": 33,
+      "quietModules": 4.714285714285714,
+      "svg": {
+        "viewBox": "-32 -32 288 288",
+        "width": 224,
+        "height": 224,
+        "box": {
+          "x": 881,
+          "y": 250,
+          "width": 224,
+          "height": 224,
+          "top": 250,
+          "right": 1105,
+          "bottom": 474,
+          "left": 881
+        },
+        "strokeWidth": 6.787878787878788
+      },
+      "nextGuest": {
+        "x": 840,
+        "y": 639,
+        "width": 306,
+        "height": 68
+      },
+      "nextGuestInitiallyVisible": true,
+      "jsQR": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "text": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    },
+    {
+      "file": "artifacts/visual/qr-ready-reserved-portrait-2x.png",
+      "orientation": "portrait",
+      "viewport": {
+        "width": 820,
+        "height": 1180
+      },
+      "dpr": 2,
+      "expectedURL": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "payloadLength": 93,
+      "moduleCount": 41,
+      "quietModules": 5.857142857142857,
+      "svg": {
+        "viewBox": "-32 -32 288 288",
+        "width": 224,
+        "height": 224,
+        "box": {
+          "x": 298,
+          "y": 651.796875,
+          "width": 224,
+          "height": 224,
+          "top": 651.796875,
+          "right": 522,
+          "bottom": 875.796875,
+          "left": 298
+        },
+        "strokeWidth": 5.463414634146342
+      },
+      "nextGuest": {
+        "x": 160,
+        "y": 1040.796875,
+        "width": 500,
+        "height": 68
+      },
+      "nextGuestInitiallyVisible": true,
+      "jsQR": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7"
+      }
+    },
+    {
+      "file": "artifacts/visual/qr-ready-realistic-portrait-2x.png",
+      "orientation": "portrait",
+      "viewport": {
+        "width": 820,
+        "height": 1180
+      },
+      "dpr": 2,
+      "expectedURL": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+      "payloadLength": 100,
+      "moduleCount": 41,
+      "quietModules": 5.857142857142857,
+      "svg": {
+        "viewBox": "-32 -32 288 288",
+        "width": 224,
+        "height": 224,
+        "box": {
+          "x": 298,
+          "y": 651.796875,
+          "width": 224,
+          "height": 224,
+          "top": 651.796875,
+          "right": 522,
+          "bottom": 875.796875,
+          "left": 298
+        },
+        "strokeWidth": 5.463414634146342
+      },
+      "nextGuest": {
+        "x": 160,
+        "y": 1040.796875,
+        "width": 500,
+        "height": 68
+      },
+      "nextGuestInitiallyVisible": true,
+      "jsQR": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+      "zxingCpp": [
+        {
+          "text": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "error": "ChecksumException"
+      }
+    },
+    {
+      "file": "artifacts/visual/qr-ready-reserved-numeric-portrait-2x.png",
+      "orientation": "portrait",
+      "viewport": {
+        "width": 820,
+        "height": 1180
+      },
+      "dpr": 2,
+      "expectedURL": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "payloadLength": 93,
+      "moduleCount": 33,
+      "quietModules": 4.714285714285714,
+      "svg": {
+        "viewBox": "-32 -32 288 288",
+        "width": 224,
+        "height": 224,
+        "box": {
+          "x": 298,
+          "y": 651.796875,
+          "width": 224,
+          "height": 224,
+          "top": 651.796875,
+          "right": 522,
+          "bottom": 875.796875,
+          "left": 298
+        },
+        "strokeWidth": 6.787878787878788
+      },
+      "nextGuest": {
+        "x": 160,
+        "y": 1040.796875,
+        "width": 500,
+        "height": 68
+      },
+      "nextGuestInitiallyVisible": true,
+      "jsQR": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "text": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    },
+    {
+      "file": "artifacts/visual/qr-ready-realistic-numeric-portrait-2x.png",
+      "orientation": "portrait",
+      "viewport": {
+        "width": 820,
+        "height": 1180
+      },
+      "dpr": 2,
+      "expectedURL": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "payloadLength": 100,
+      "moduleCount": 37,
+      "quietModules": 5.285714285714286,
+      "svg": {
+        "viewBox": "-32 -32 288 288",
+        "width": 224,
+        "height": 224,
+        "box": {
+          "x": 298,
+          "y": 651.796875,
+          "width": 224,
+          "height": 224,
+          "top": 651.796875,
+          "right": 522,
+          "bottom": 875.796875,
+          "left": 298
+        },
+        "strokeWidth": 6.054054054054054
+      },
+      "nextGuest": {
+        "x": 160,
+        "y": 1040.796875,
+        "width": 500,
+        "height": 68
+      },
+      "nextGuestInitiallyVisible": true,
+      "jsQR": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "text": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    },
+    {
+      "file": "artifacts/visual/qr-ready-short-numeric-portrait-2x.png",
+      "orientation": "portrait",
+      "viewport": {
+        "width": 820,
+        "height": 1180
+      },
+      "dpr": 2,
+      "expectedURL": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "payloadLength": 84,
+      "moduleCount": 33,
+      "quietModules": 4.714285714285714,
+      "svg": {
+        "viewBox": "-32 -32 288 288",
+        "width": 224,
+        "height": 224,
+        "box": {
+          "x": 298,
+          "y": 651.796875,
+          "width": 224,
+          "height": 224,
+          "top": 651.796875,
+          "right": 522,
+          "bottom": 875.796875,
+          "left": 298
+        },
+        "strokeWidth": 6.787878787878788
+      },
+      "nextGuest": {
+        "x": 160,
+        "y": 1040.796875,
+        "width": 500,
+        "height": 68
+      },
+      "nextGuestInitiallyVisible": true,
+      "jsQR": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "text": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    },
+    {
+      "file": "artifacts/visual/qr-ready-reserved-landscape-2x.png",
+      "orientation": "landscape",
+      "viewport": {
+        "width": 1180,
+        "height": 820
+      },
+      "dpr": 2,
+      "expectedURL": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "payloadLength": 93,
+      "moduleCount": 41,
+      "quietModules": 5.857142857142857,
+      "svg": {
+        "viewBox": "-32 -32 288 288",
+        "width": 224,
+        "height": 224,
+        "box": {
+          "x": 881,
+          "y": 250,
+          "width": 224,
+          "height": 224,
+          "top": 250,
+          "right": 1105,
+          "bottom": 474,
+          "left": 881
+        },
+        "strokeWidth": 5.463414634146342
+      },
+      "nextGuest": {
+        "x": 840,
+        "y": 639,
+        "width": 306,
+        "height": 68
+      },
+      "nextGuestInitiallyVisible": true,
+      "jsQR": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7"
+      }
+    },
+    {
+      "file": "artifacts/visual/qr-ready-realistic-landscape-2x.png",
+      "orientation": "landscape",
+      "viewport": {
+        "width": 1180,
+        "height": 820
+      },
+      "dpr": 2,
+      "expectedURL": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+      "payloadLength": 100,
+      "moduleCount": 41,
+      "quietModules": 5.857142857142857,
+      "svg": {
+        "viewBox": "-32 -32 288 288",
+        "width": 224,
+        "height": 224,
+        "box": {
+          "x": 881,
+          "y": 250,
+          "width": 224,
+          "height": 224,
+          "top": 250,
+          "right": 1105,
+          "bottom": 474,
+          "left": 881
+        },
+        "strokeWidth": 5.463414634146342
+      },
+      "nextGuest": {
+        "x": 840,
+        "y": 639,
+        "width": 306,
+        "height": 68
+      },
+      "nextGuestInitiallyVisible": true,
+      "jsQR": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+      "zxingCpp": [
+        {
+          "text": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "error": "ChecksumException"
+      }
+    },
+    {
+      "file": "artifacts/visual/qr-ready-reserved-numeric-landscape-2x.png",
+      "orientation": "landscape",
+      "viewport": {
+        "width": 1180,
+        "height": 820
+      },
+      "dpr": 2,
+      "expectedURL": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "payloadLength": 93,
+      "moduleCount": 33,
+      "quietModules": 4.714285714285714,
+      "svg": {
+        "viewBox": "-32 -32 288 288",
+        "width": 224,
+        "height": 224,
+        "box": {
+          "x": 881,
+          "y": 250,
+          "width": 224,
+          "height": 224,
+          "top": 250,
+          "right": 1105,
+          "bottom": 474,
+          "left": 881
+        },
+        "strokeWidth": 6.787878787878788
+      },
+      "nextGuest": {
+        "x": 840,
+        "y": 639,
+        "width": 306,
+        "height": 68
+      },
+      "nextGuestInitiallyVisible": true,
+      "jsQR": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "text": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    },
+    {
+      "file": "artifacts/visual/qr-ready-realistic-numeric-landscape-2x.png",
+      "orientation": "landscape",
+      "viewport": {
+        "width": 1180,
+        "height": 820
+      },
+      "dpr": 2,
+      "expectedURL": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "payloadLength": 100,
+      "moduleCount": 37,
+      "quietModules": 5.285714285714286,
+      "svg": {
+        "viewBox": "-32 -32 288 288",
+        "width": 224,
+        "height": 224,
+        "box": {
+          "x": 881,
+          "y": 250,
+          "width": 224,
+          "height": 224,
+          "top": 250,
+          "right": 1105,
+          "bottom": 474,
+          "left": 881
+        },
+        "strokeWidth": 6.054054054054054
+      },
+      "nextGuest": {
+        "x": 840,
+        "y": 639,
+        "width": 306,
+        "height": 68
+      },
+      "nextGuestInitiallyVisible": true,
+      "jsQR": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "text": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    },
+    {
+      "file": "artifacts/visual/qr-ready-short-numeric-landscape-2x.png",
+      "orientation": "landscape",
+      "viewport": {
+        "width": 1180,
+        "height": 820
+      },
+      "dpr": 2,
+      "expectedURL": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "payloadLength": 84,
+      "moduleCount": 33,
+      "quietModules": 4.714285714285714,
+      "svg": {
+        "viewBox": "-32 -32 288 288",
+        "width": 224,
+        "height": 224,
+        "box": {
+          "x": 881,
+          "y": 250,
+          "width": 224,
+          "height": 224,
+          "top": 250,
+          "right": 1105,
+          "bottom": 474,
+          "left": 881
+        },
+        "strokeWidth": 6.787878787878788
+      },
+      "nextGuest": {
+        "x": 840,
+        "y": 639,
+        "width": 306,
+        "height": 68
+      },
+      "nextGuestInitiallyVisible": true,
+      "jsQR": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "zxingJS": {
+        "text": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    }
+  ],
+  "externalRequests": [],
+  "errors": []
+}

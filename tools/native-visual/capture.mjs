@@ -1,13 +1,14 @@
 /** DEV ONLY. Verifies browser-fixture JSX interactions, never native device behavior. */
 import { createRequire } from 'node:module';
-import { writeFile, mkdir } from 'node:fs/promises';
+import { writeFile, mkdir, readFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
 const { chromium } = createRequire(import.meta.url)('playwright');
 const browser = await chromium.launch({ executablePath: '/usr/bin/chromium', headless: true, args: ['--no-sandbox'] });
-const checks = { scope: 'Browser fixture of actual App.tsx native JSX; synthetic in-memory camera/storage/auth/sync. Not iOS or physical-device verification.', states: [], interactions: [], errors: [], externalRequests: [] };
+const checks = { scope: 'Browser fixture of actual App.tsx native JSX; synthetic in-memory camera/storage/auth/sync/permission/AppState/Linking. Not iOS or physical-device verification.', sourceSHA256: createHash('sha256').update(await readFile('apps/ipad/App.tsx')).digest('hex'), timezoneId: 'America/Los_Angeles', states: [], interactions: [], boundedFixtureChecks: [], errors: [], externalRequests: [] };
 await mkdir('artifacts/visual', { recursive: true });
 try {
-  const page = await browser.newPage({ reducedMotion: 'reduce' });
+  const page = await browser.newPage({ reducedMotion: 'reduce', timezoneId: checks.timezoneId });
   await page.route('**/*', route => {
     const url = new URL(route.request().url());
     if (url.origin === 'http://127.0.0.1:8791') return route.continue();
@@ -75,6 +76,10 @@ try {
   assert.equal(await page.getByText('YOUR PRIVATE PHOTO PAGE', { exact: true }).count(), 0);
   await page.getByText('Saved on this iPad', { exact: true }).waitFor();
   checks.interactions.push('Synthetic offline retry keeps original displayed and does not reveal a QR.');
+  await page.evaluate(() => window.__NATIVE_VISUAL_FIXTURE__.setOnline(true));
+  await page.getByRole('button', { name: 'Retry sharing', exact: true }).click();
+  await page.getByText('YOUR PRIVATE PHOTO PAGE', { exact: true }).waitFor();
+  checks.boundedFixtureChecks.push('Offline-to-online synthetic retry reveals QR only after the in-memory ready acknowledgment; no real network or durability verified.');
   await load('ready');
   await page.getByRole('button', { name: 'Test phone sharing · no SMS', exact: true }).click();
   await page.getByRole('textbox', { name: 'International phone number for simulation' }).fill('+1 202 555 0100');
@@ -88,6 +93,32 @@ try {
   await page.screenshot({ path: 'artifacts/visual/ipad-host-settings-portrait.png' });
   await page.getByRole('button', { name: 'Back to booth', exact: true }).click();
   checks.interactions.push('Host settings opens and returns with fixture-only local authentication/config.');
+  await load('camera&permission=denied');
+  await page.getByRole('button', { name: 'Allow camera', exact: true }).waitFor();
+  await page.screenshot({ path: 'artifacts/visual/ipad-permission-denied-portrait.png' });
+  await page.getByRole('button', { name: 'Allow camera', exact: true }).click();
+  await page.waitForFunction(() => document.querySelector('[role="button"]') && window.__NATIVE_VISUAL_FIXTURE__.permissionRequests === 1);
+  await page.getByRole('button', { name: 'Take our photo', exact: true }).waitFor();
+  assert.equal(await page.getByRole('button', { name: 'Take our photo', exact: true }).getAttribute('aria-disabled'), null);
+  await page.getByRole('img', { name: 'Synthetic illustration standing in for camera; no live camera' }).waitFor();
+  checks.boundedFixtureChecks.push('Denied-but-requestable permission shows actual Allow camera UI; synthetic permission grant mounts the fixture preview and enables capture.');
+  await load('camera&permission=blocked');
+  await page.getByRole('button', { name: 'Open iPad settings', exact: true }).click();
+  assert.equal(await page.evaluate(() => window.__NATIVE_VISUAL_FIXTURE__.openSettingsCalls), 1);
+  assert.equal(await page.evaluate(() => window.__NATIVE_VISUAL_FIXTURE__.permissionRequests), 0);
+  await page.screenshot({ path: 'artifacts/visual/ipad-permission-blocked-portrait.png' });
+  checks.boundedFixtureChecks.push('Blocked permission invokes the explicit mocked Linking.openSettings marker; no OS settings launched and no real permission verified.');
+  await load('camera');
+  await page.getByRole('button', { name: 'Take our photo', exact: true }).click();
+  await page.getByText('Make it a memory', { exact: true }).waitFor();
+  await page.evaluate(() => window.__NATIVE_VISUAL_FIXTURE__.setAppState('background'));
+  await page.waitForTimeout(3300);
+  assert.equal(await page.evaluate(() => window.__NATIVE_VISUAL_FIXTURE__.cameraCalls), 0);
+  assert.equal(await page.getByRole('button', { name: 'Use this photo', exact: true }).count(), 0);
+  await page.evaluate(() => window.__NATIVE_VISUAL_FIXTURE__.setAppState('active'));
+  await page.getByRole('button', { name: 'Take our photo', exact: true }).waitFor();
+  await page.screenshot({ path: 'artifacts/visual/ipad-interrupted-camera-portrait.png' });
+  checks.boundedFixtureChecks.push('Synthetic AppState background interrupt cancels countdown with zero camera-adapter calls after 3.3 seconds; active event returns to camera. Native lifecycle remains unrun.');
   assert.deepEqual(checks.errors, []);
   assert.deepEqual(checks.externalRequests, []);
 } finally {

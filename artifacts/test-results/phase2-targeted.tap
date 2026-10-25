@@ -1,0 +1,23 @@
+✔ production API settings require an origin over HTTPS; development permits only HTTP loopback (1.852435ms)
+✔ native transport accepts a guest page only after explicit server readiness and future expiry (2.00826ms)
+✔ QR helper never exposes an upload URL before completion, after expiry or from a share outcome (0.435096ms)
+✔ phone opt-in normalizes formatting while requiring explicit international E.164 boundaries (0.290318ms)
+✔ guest QR requires a public HTTPS gallery and never offers an emulator or local-network address (0.349026ms)
+✔ visible expiry formats the acknowledged instant in local time across midnight and daylight-saving changes (12.867645ms)
+✔ invalid server expiry or formatting options cannot produce a misleading availability label (0.302847ms)
+✔ production requires every limiter binding before lookup, including health configuration checks (25.962002ms)
+✔ throwing or malformed limiter responses fail closed before R2 at every protection stage (16.450121ms)
+✔ denied global, IP or gallery budgets stop immediately with retry guidance and zero storage operations (2.600083ms)
+✔ gallery, photo, API and share routes consume their own policy before auth, body parsing or lookup (2.826885ms)
+✔ untrusted IP headers cannot rotate anonymous budgets; only platform CF identity selects a client bucket (3.853705ms)
+✔ rotating gallery tokens preserves route/IP budgets while gallery keys remain opaque (2.594615ms)
+✔ loopback-only tests can omit all limiters, while a partially configured local policy fails closed (0.578583ms)
+✔ bearer verification passes fixed-width digests to native equality for missing, malformed and valid headers (3.622316ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 155.062163

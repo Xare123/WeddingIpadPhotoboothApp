@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizePhone, qrForJob, readyGuestPage, validateOrigin } from '../../../apps/ipad/src/sharing';
+import { formatGuestExpiry, normalizePhone, qrForJob, readyGuestPage, validateOrigin } from '../../../apps/ipad/src/sharing';
 
 const origin = 'https://gallery.example';
 const guestUrl = `${origin}/g/${'a'.repeat(64)}`;
@@ -20,7 +20,7 @@ test('production API settings require an origin over HTTPS; development permits 
 test('native transport accepts a guest page only after explicit server readiness and future expiry', () => {
   assert.deepEqual(readyGuestPage(ready, origin, 1000), { guestUrl, guestExpiresAt: 2000 });
   for (const value of [undefined, {}, { ...ready, status: 'stored' }, { ...ready, status: 'pending' },
-    { ...ready, expiresAt: 1000 }, { ...ready, expiresAt: NaN }, { ...ready, expiresAt: '2000' },
+    { ...ready, expiresAt: 1000 }, { ...ready, expiresAt: 1e99 }, { ...ready, expiresAt: NaN }, { ...ready, expiresAt: '2000' },
     { ...ready, url: 'https://another.example/g/token' }, { ...ready, url: `${origin}/v1/photos/id` },
     { ...ready, url: `${guestUrl}?extra=secret` }, { ...ready, url: `${guestUrl}#fragment` },
     { ...ready, url: 'https://user:password@gallery.example/g/token' }]) {
@@ -33,7 +33,7 @@ test('QR helper never exposes an upload URL before completion, after expiry or f
   assert.equal(qrForJob(complete, 1000), guestUrl);
   for (const value of [undefined, { ...complete, state: 'pending' }, { ...complete, state: 'mocked' },
     { ...complete, kind: 'share' }, { ...complete, guestUrl: undefined }, { ...complete, guestExpiresAt: undefined },
-    { ...complete, guestExpiresAt: 1000 }, { ...complete, guestExpiresAt: NaN },
+    { ...complete, guestExpiresAt: 1000 }, { ...complete, guestExpiresAt: 1e99 }, { ...complete, guestExpiresAt: NaN },
     { ...complete, guestUrl: 'javascript:alert(1)' }, { ...complete, guestUrl: `${origin}/photos/id` },
     { ...complete, guestUrl: 'http://gallery.example/g/token' },
     { ...complete, guestUrl: 'https://user:password@gallery.example/g/token' },
@@ -67,4 +67,26 @@ test('guest QR requires a public HTTPS gallery and never offers an emulator or l
   // an unusable localhost address as a guest-facing QR.
   const local = readyGuestPage({ status: 'ready', url: 'http://localhost:8787/g/opaque', expiresAt: 2000 }, 'http://localhost:8787', 1000);
   assert.equal(qrForJob({ ...complete, ...local }, 1000), undefined);
+});
+
+
+test('visible expiry formats the acknowledged instant in local time across midnight and daylight-saving changes', () => {
+  const expiry = Date.parse('2026-11-01T00:30:00Z');
+  assert.match(formatGuestExpiry(expiry, 'en-US', 'UTC')!, /Nov 1, 2026.*12:30.*AM.*UTC/);
+  assert.match(formatGuestExpiry(expiry, 'en-US', 'America/New_York')!, /Oct 31, 2026.*8:30.*PM.*EDT/);
+  const before = Date.parse('2026-11-01T05:30:00Z');
+  const after = Date.parse('2026-11-01T06:30:00Z');
+  assert.match(formatGuestExpiry(before, 'en-US', 'America/New_York')!, /Nov 1, 2026.*1:30.*AM.*EDT/);
+  assert.match(formatGuestExpiry(after, 'en-US', 'America/New_York')!, /Nov 1, 2026.*1:30.*AM.*EST/);
+  // The display follows the server timestamp; it never invents a one-day or
+  // seven-day retention period from the time this component renders.
+  assert.notEqual(formatGuestExpiry(expiry, 'en-US', 'UTC'), formatGuestExpiry(expiry + 7 * 86_400_000, 'en-US', 'UTC'));
+});
+
+test('invalid server expiry or formatting options cannot produce a misleading availability label', () => {
+  for (const expiry of [undefined, NaN, Infinity, -Infinity, 1e99]) {
+    assert.equal(formatGuestExpiry(expiry, 'en-US', 'UTC'), undefined);
+  }
+  assert.equal(formatGuestExpiry(2000, 'not_a_locale', 'UTC'), undefined);
+  assert.equal(formatGuestExpiry(2000, 'en-US', 'Not/A_Timezone'), undefined);
 });

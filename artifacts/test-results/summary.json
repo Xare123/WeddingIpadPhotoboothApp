@@ -1,0 +1,46 @@
+{
+  "scope": "Current cloud-instance verification, not deployment or iOS device verification",
+  "frozen_install": {
+    "command": "bash scripts/setup-cloud.sh",
+    "passed": true,
+    "packages": 587
+  },
+  "tests": {
+    "command": "npm test",
+    "passed": 54,
+    "failed": 0,
+    "skipped": 0
+  },
+  "typecheck": {
+    "command": "npm run typecheck",
+    "passed": true
+  },
+  "ios_javascript_export": {
+    "passed": true,
+    "metro_modules": 1002,
+    "native_compilation": false
+  },
+  "local_http_smoke": {
+    "passed": true,
+    "native_rate_bindings": 8,
+    "live_cloudflare": false,
+    "real_sms": false
+  },
+  "browser_native_jsx": {
+    "development_interactions": 8,
+    "bounded_permission_lifecycle_retry": 4,
+    "release_checks": 2
+  },
+  "qr_fullframe_cases": 20,
+  "qr_independent_decoders": [
+    "jsQR 1.4.0",
+    "ZXing-C++ zxing-wasm 3.1.6"
+  ],
+  "app_source_sha256": "d3a11865e84111dfca253e2f54c900cfc1cfeb0f3a3ae95f0de3e13be62cc266",
+  "worker_sha256": "fa45361fd720d716df92efcc8f4917d53fbba3b55c3d1c00c463604dce8ca870",
+  "hosted_ci_executed": false,
+  "physical_device_tested": false,
+  "secrets_generated": false,
+  "gallery_browser_groups": 6,
+  "gallery_worker_source_sha256": "4801a7cfcc475da2fa2d180b1a01dc5d98b996cf1dd830cf31f66f7dfb9f42b9"
+}

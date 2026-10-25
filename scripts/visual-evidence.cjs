@@ -22,6 +22,8 @@ async function api(route, options = {}) {
 
 (async () => {
   await fs.mkdir(output, { recursive: true });
+  const sourcePath = path.resolve(__dirname, '../services/api/src/index.ts');
+  const sourceSha256 = hash(await fs.readFile(sourcePath));
   const browser = await chromium.launch({ executablePath: '/usr/bin/chromium', headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
   let session;
   let revoked = false;
@@ -80,7 +82,7 @@ async function api(route, options = {}) {
     passed('Uploaded three original labeled synthetic 1200 × 1500 JPEGs to the local R2 emulator and finalized a real gallery.');
     const screenshots = [];
     for (const size of [{ name: 'phone', width: 390, height: 844 }, { name: 'tablet', width: 820, height: 1180 }, { name: 'desktop', width: 1440, height: 1000 }]) {
-      const context = await browser.newContext({ viewport: { width: size.width, height: size.height }, deviceScaleFactor: 1, acceptDownloads: true });
+      const context = await browser.newContext({ viewport: { width: size.width, height: size.height }, deviceScaleFactor: 1, acceptDownloads: true, timezoneId: 'America/Los_Angeles' });
       const page = await context.newPage();
       const errors = [];
       let externalRequests = 0;
@@ -92,6 +94,11 @@ async function api(route, options = {}) {
       assert.equal(response.headers()['referrer-policy'], 'no-referrer');
       assert.equal(await page.locator('main').count(), 1);
       assert.equal(await page.locator('h1').count(), 1);
+      assert.equal(await page.evaluate(() => Intl.DateTimeFormat().resolvedOptions().timeZone), 'America/Los_Angeles');
+      const expiry = page.locator('.expiry time');
+      assert.equal(await expiry.getAttribute('datetime'), new Date(ready.expiresAt).toISOString());
+      assert.equal(await expiry.textContent(), new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeStyle: 'medium', timeZone: 'UTC' }).format(new Date(ready.expiresAt)) + ' UTC');
+      await page.getByText('Link expiry closes access; it does not delete the original photos.', { exact: false }).waitFor();
       for (let i = 0; i < samples.length; i++) {
         const img = page.locator('.photo img').nth(i);
         await img.scrollIntoViewIfNeeded();
@@ -125,7 +132,7 @@ async function api(route, options = {}) {
       assert(await page.evaluate(() => [...document.querySelectorAll('.reveal')].every(e => getComputedStyle(e).animationName === 'none')));
       assert.equal(await page.locator('.download').first().evaluate(e => getComputedStyle(e).transitionDuration), '0s');
       assert.equal(errors.length, 0); assert.equal(externalRequests, 0);
-      passed(`${size.width} × ${size.height}: three images decoded at original dimensions; no horizontal overflow; named download controls ≥44 px; full-resolution labels; keyboard focus visible; entrance animations complete; reduced motion removes animation/transitions; zero page errors or external requests.`);
+      passed(`${size.width} × ${size.height}: three images decoded at original dimensions; no horizontal overflow; named download controls ≥44 px; full-resolution labels; keyboard focus visible; entrance animations complete; reduced motion removes animation/transitions; exact UTC expiry with semantic time element remains consistent in America/Los_Angeles browser timezone; photo-retention copy visible; zero page errors or external requests.`);
       await context.close();
     }
     for (const sample of samples) {
@@ -135,7 +142,7 @@ async function api(route, options = {}) {
     }
     passed('All three served downloads were byte-identical to their uploaded JPEGs. Actual browser download of the first JPEG also matched and used wedding-photo-1.jpg.');
     await api(`/v1/sessions/${session}/gallery`, { method: 'DELETE' }); revoked = true;
-    const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, timezoneId: 'America/Los_Angeles' });
     const closed = await page.goto(galleryUrl, { waitUntil: 'networkidle' });
     assert.equal(closed.status(), 410);
     await page.getByRole('heading', { name: 'This gallery is closed.' }).waitFor();
@@ -148,14 +155,16 @@ async function api(route, options = {}) {
     await page.getByRole('heading', { name: 'A moment, out of reach.' }).waitFor();
     await page.screenshot({ path: path.join(output, 'gallery-missing-phone.png'), fullPage: true, animations: 'disabled' });
     passed('Revoked gallery returned a real HTTP 410 page, hid all photos/download controls, and blocked its photo download. Missing link returned a real HTTP 404 page.');
+    assert.equal(hash(await fs.readFile(sourcePath)), sourceSha256, 'Worker source changed during browser evidence capture');
     const manifest = {
       generatedAt: new Date().toISOString(), engine: `Chromium ${browser.version()}`, command: 'node scripts/visual-evidence.cjs (local Worker required)',
+      source: { path: 'services/api/src/index.ts', sha256: sourceSha256, stableDuringCapture: true }, browserTimezone: 'America/Los_Angeles',
       scope: 'Actual local Worker guest gallery rendered in desktop Chromium at responsive viewport sizes. Native iPad / iOS Safari / physical camera / native animations were not executed.',
       samples: 'Original synthetic illustrations created with browser canvas; labeled SAMPLE SCENE in every image. No private photos, phone numbers, or messaging used.',
       capabilityHandling: 'Capability URLs and session identifiers omitted from artifacts and stdout. Gallery revoked after captures. Emulator photo bytes remain local.', screenshots, checks,
     };
     await fs.writeFile(path.join(output, 'checks.json'), JSON.stringify(manifest, null, 2) + '\n');
-    await fs.writeFile(path.join(output, 'evidence.md'), `# Guest gallery: actual browser evidence\n\nCaptured ${manifest.generatedAt}. ${manifest.engine}.\n\n${manifest.scope}\n\n${manifest.samples}\n\nRun with a local Worker on the script’s default test port: \`node scripts/visual-evidence.cjs\`. Uses the installed Chromium executable and Playwright; does not install dependencies or browsers. The API origin can be overridden with \`VISUAL_API_ORIGIN\`, restricted to loopback for internal testing.\n\n## Actual screenshots\n\n${screenshots.map(s => `- [${s.viewport}: full gallery](${s.name}) · [viewport crop](${s.name.replace('.png', '-viewport.png')})`).join('\n')}\n- [Revoked gallery: phone](gallery-revoked-phone.png)\n- [Missing link: phone](gallery-missing-phone.png)\n\n## Automated checks\n\n${checks.map(s => `- PASS: ${s}`).join('\n')}\n\n${manifest.capabilityHandling}\n\nVisual inspection notes are recorded separately in [visual-review.md](visual-review.md). Responsive Chromium captures do not establish native iPad or Safari behavior.\n`);
+    await fs.writeFile(path.join(output, 'evidence.md'), `# Guest gallery: actual browser evidence\n\nCaptured ${manifest.generatedAt}. ${manifest.engine}. Browser timezone: ${manifest.browserTimezone}; gallery expiry explicitly uses UTC.\n\nWorker source: \`${manifest.source.path}\`, SHA-256 \`${manifest.source.sha256}\`; unchanged during capture.\n\n${manifest.scope}\n\n${manifest.samples}\n\nRun with a local Worker on the script’s default test port: \`node scripts/visual-evidence.cjs\`. Uses the installed Chromium executable and Playwright; does not install dependencies or browsers. The API origin can be overridden with \`VISUAL_API_ORIGIN\`, restricted to loopback for internal testing.\n\n## Actual screenshots\n\n${screenshots.map(s => `- [${s.viewport}: full gallery](${s.name}) · [viewport crop](${s.name.replace('.png', '-viewport.png')})`).join('\n')}\n- [Revoked gallery: phone](gallery-revoked-phone.png)\n- [Missing link: phone](gallery-missing-phone.png)\n\n## Automated checks\n\n${checks.map(s => `- PASS: ${s}`).join('\n')}\n\n${manifest.capabilityHandling}\n\nVisual inspection notes are recorded separately in [visual-review.md](visual-review.md). Responsive Chromium captures do not establish native iPad or Safari behavior. Rate-limit 429 rendering is covered by the existing unit suite; this browser run stays below request quotas and does not claim a captured 429 state.\n`);
     console.log(`PASS: ${checks.length} check groups; eight actual browser PNGs; Chromium ${browser.version()}. Artifacts: artifacts/visual. Gallery revoked. No capability URLs recorded.`);
   } finally {
     if (session && !revoked) await api(`/v1/sessions/${session}/gallery`, { method: 'DELETE' }).catch(() => {});

@@ -23,6 +23,64 @@ async function signed(value, key) {
 }
 var tokenFor = (sessionId, key) => signed(`gallery:v1:${sessionId}`, key);
 var strongSecret = (value) => !!value && encoder.encode(value).length >= 32 && new Set(value).size >= 12 && value !== "local-development-only" && value !== "local-link-key-not-for-production";
+async function deviceAuthorized(request, expected) {
+  const [providedHash, expectedHash] = await Promise.all([
+    crypto.subtle.digest("SHA-256", encoder.encode(request.headers.get("Authorization") ?? "")),
+    crypto.subtle.digest("SHA-256", encoder.encode(`Bearer ${expected}`))
+  ]);
+  return crypto.subtle.timingSafeEqual(providedHash, expectedHash);
+}
+var rateBindings = [
+  "RATE_GALLERY_GLOBAL",
+  "RATE_GALLERY_CLIENT",
+  "RATE_PHOTO_GLOBAL",
+  "RATE_PHOTO_CLIENT",
+  "RATE_API_GLOBAL",
+  "RATE_API_CLIENT",
+  "RATE_SHARE_GLOBAL",
+  "RATE_SHARE_CLIENT"
+];
+function rateBand(url) {
+  if (url.pathname.startsWith("/g/")) return /^\/g\/[^/]+\/photos\//.test(url.pathname) ? "PHOTO" : "GALLERY";
+  if (url.pathname === "/v1/shares") return "SHARE";
+  if (url.pathname.startsWith("/v1/")) return "API";
+}
+function limitResponse(url, status) {
+  const page = url.pathname.startsWith("/g/") && !/^\/g\/[^/]+\/photos\//.test(url.pathname);
+  const response = page ? unavailableGallery(status) : json({
+    error: status === 429 ? "Request limit reached; please retry shortly" : "Request protection unavailable",
+    retryable: true
+  }, status);
+  if (status === 429) response.headers.set("Retry-After", "60");
+  return response;
+}
+async function protectStorage(request, url, env) {
+  const present = rateBindings.filter((name) => env[name] !== void 0);
+  if (env.MODE === "local" && present.length === 0) return;
+  if (!rateBindings.every((name) => typeof env[name]?.limit === "function")) return limitResponse(url, 503);
+  const band = rateBand(url);
+  if (!band) return;
+  const global = env[`RATE_${band}_GLOBAL`];
+  const client = env[`RATE_${band}_CLIENT`];
+  const edgeIp = request.cf ? request.headers.get("CF-Connecting-IP")?.trim().toLowerCase() : void 0;
+  const trustedIp = edgeIp && edgeIp.length <= 45 && /^[0-9a-f:.]+$/.test(edgeIp) ? edgeIp : "anonymous";
+  const prefix = `limit:v1:${band.toLowerCase()}`;
+  const scopes = [
+    [global, `${prefix}:global`],
+    [client, `${prefix}:client:${await digest(encoder.encode(trustedIp))}`]
+  ];
+  const token = /^\/g\/([a-f0-9]{64})(?:\/|$)/.exec(url.pathname)?.[1];
+  if (token) scopes.push([client, `${prefix}:gallery:${await digest(encoder.encode(token))}`]);
+  try {
+    for (const [limiter, key] of scopes) {
+      const outcome = await limiter.limit({ key });
+      if (!outcome || typeof outcome.success !== "boolean") return limitResponse(url, 503);
+      if (!outcome.success) return limitResponse(url, 429);
+    }
+  } catch {
+    return limitResponse(url, 503);
+  }
+}
 function configFor(url, env) {
   const ttl = env.LINK_TTL_SECONDS === void 0 ? 86400 : Number(env.LINK_TTL_SECONDS);
   if (!Number.isInteger(ttl) || ttl < 60 || ttl > 30 * 86400) return;
@@ -119,19 +177,21 @@ function guestPage(html, status = 200) {
 }
 function unavailableGallery(status, reason) {
   const expired = reason === "Link expired";
-  const title = expired ? "This link has expired." : status === 410 ? "This gallery is closed." : "A moment, out of reach.";
-  const message = expired ? "For your privacy, photo links are available for a limited time. Ask your hosts about another way to save your memories." : status === 410 ? "This private gallery is no longer available. Please ask your hosts if you need help with your photos." : status === 503 ? "Your photos are taking a little longer to load. Please try this link again in a moment." : "We couldn\u2019t find a gallery at this address. Check that you opened the complete link, or ask your hosts for help.";
+  const title = expired ? "This link has expired." : status === 410 ? "This gallery is closed." : status === 429 ? "A little pause." : "A moment, out of reach.";
+  const message = expired ? "For your privacy, photo links are available for a limited time. Ask your hosts about another way to save your memories." : status === 410 ? "This private gallery is no longer available. Please ask your hosts if you need help with your photos." : status === 429 ? "This gallery has received too many requests. Please wait a minute, then open your link again." : status === 503 ? "Your photos are taking a little longer to load. Please try this link again in a moment." : "We couldn\u2019t find a gallery at this address. Check that you opened the complete link, or ask your hosts for help.";
   return guestPage(guestDocument("Your wedding photos", `<main class="error-page reveal"><div class="error-mark" aria-hidden="true">\u2727</div><p class="eyebrow">Your private gallery</p><h1>${title}</h1><p class="intro">${message}</p></main>`), status);
 }
 function galleryHtml(token, gallery) {
   const items = gallery.photoIds.map((id, i) => `<figure class="photo reveal"><img src="/g/${token}/photos/${id}" alt="Wedding photo ${i + 1}" loading="${i === 0 ? "eager" : "lazy"}" decoding="async"><figcaption><div class="photo-label"><span>A moment to keep</span><span>${String(i + 1).padStart(2, "0")}</span></div><a class="download" href="/g/${token}/photos/${id}?download=1" download aria-label="Download photo ${i + 1} in full resolution"><span class="arrow" aria-hidden="true">\u2193</span>Save original photo</a><p class="quality">Full resolution \xB7 JPEG</p></figcaption></figure>`).join("");
-  const expires = new Intl.DateTimeFormat("en-US", { dateStyle: "long", timeStyle: "short", timeZone: "UTC" }).format(new Date(gallery.expiresAt));
-  return guestDocument("Your wedding photos", `<main><section class="hero reveal" aria-labelledby="gallery-title"><p class="eyebrow">A keepsake from the celebration</p><h1 id="gallery-title">Your night,<span>beautifully captured.</span></h1><p class="intro">The laughter, the joy, the happy tears.<br>These little moments are yours to keep.</p></section><section aria-label="Your photos"><div class="collection-heading"><h2>Your wedding photos</h2><p>${gallery.photoIds.length} ${gallery.photoIds.length === 1 ? "memory" : "memories"} \xB7 original quality</p></div><div class="photos">${items}</div></section><aside class="privacy"><h2>A private keepsake.</h2><p>Anyone with this link can view these photos.<br>Save your favorites, and share this link with care.</p><p class="expiry">Available until ${expires} UTC.</p></aside></main>`);
+  const expires = new Intl.DateTimeFormat("en-US", { dateStyle: "long", timeStyle: "medium", timeZone: "UTC" }).format(new Date(gallery.expiresAt));
+  return guestDocument("Your wedding photos", `<main><section class="hero reveal" aria-labelledby="gallery-title"><p class="eyebrow">A keepsake from the celebration</p><h1 id="gallery-title">Your night,<span>beautifully captured.</span></h1><p class="intro">The laughter, the joy, the happy tears.<br>These little moments are yours to keep.</p></section><section aria-label="Your photos"><div class="collection-heading"><h2>Your wedding photos</h2><p>${gallery.photoIds.length} ${gallery.photoIds.length === 1 ? "memory" : "memories"} \xB7 original quality</p></div><div class="photos">${items}</div></section><aside class="privacy"><h2>A private keepsake.</h2><p>Anyone with this link can view and download these photos.<br>Save your favorites, and forward this link only with care.</p><p class="expiry">Available until <time datetime="${new Date(gallery.expiresAt).toISOString()}">${expires} UTC</time>.<br>Link expiry closes access; it does not delete the original photos.</p></aside></main>`);
 }
 async function handle(request, env) {
   const url = new URL(request.url);
   const config = configFor(url, env);
   if (!config) return json({ error: "Service configuration unavailable" }, 503);
+  const protection = await protectStorage(request, url, env);
+  if (protection) return protection;
   if (url.pathname === "/health" && request.method === "GET")
     return json({ status: "ok", storage: env.MODE === "local" ? "local-r2" : "private-r2", sms: env.SMS_MODE });
   const guest = /^\/g\/([a-f0-9]{64})(?:\/photos\/([0-9a-f-]+))?$/.exec(url.pathname);
@@ -159,7 +219,7 @@ async function handle(request, env) {
     } });
   }
   if (!url.pathname.startsWith("/v1/")) return request.method === "GET" && url.pathname.startsWith("/g/") ? unavailableGallery(404) : json({ error: "Not found" }, 404);
-  if (request.headers.get("Authorization") !== `Bearer ${config.deviceToken}`) return json({ error: "Unauthorized" }, 401);
+  if (!await deviceAuthorized(request, config.deviceToken)) return json({ error: "Unauthorized" }, 401);
   const upload = /^\/v1\/sessions\/([0-9a-f-]+)\/photos\/([0-9a-f-]+)$/i.exec(url.pathname);
   if (upload && request.method === "PUT") {
     const sessionId = upload[1].toLowerCase(), photoId = upload[2].toLowerCase();

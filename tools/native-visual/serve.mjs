@@ -11,7 +11,7 @@ const result = await build({
   absWorkingDir: root, entryPoints: ['tools/native-visual/entry.tsx'], bundle: true, write: false,
   format: 'iife', platform: 'browser', jsx: 'automatic', loader: { '.js': 'jsx' }, define: { __DEV__: String(!releaseUI), __VISUAL_RELEASE_FIXTURE__: String(releaseUI), 'process.env.NODE_ENV': '"development"' },
   resolveExtensions: ['.web.tsx', '.web.ts', '.web.jsx', '.web.js', '.tsx', '.ts', '.jsx', '.js', '.json'],
-  alias: { 'react-native': 'react-native-web', 'react-native-svg': path.join(root, 'node_modules/react-native-svg/lib/module/ReactNativeSVG.web.js'), '@react-native/assets-registry/registry': path.join(root, 'node_modules/react-native-web/dist/modules/AssetRegistry/index.js') },
+  alias: { 'react-native': path.join(root, 'tools/native-visual/native-runtime.ts'), 'react-native-svg': path.join(root, 'node_modules/react-native-svg/lib/module/ReactNativeSVG.web.js'), '@react-native/assets-registry/registry': path.join(root, 'node_modules/react-native-web/dist/modules/AssetRegistry/index.js') },
   plugins: [{ name: 'synthetic-device-adapters', setup(api) {
     api.onResolve({ filter: /^(expo-camera|expo-crypto|expo-secure-store|\.\/src\/(config|host-auth|storage|sync)|\.\/storage)$/ }, args => ({ path: stubs }));
     api.onResolve({ filter: /NativeSvgSoundModule$/ }, () => ({ path: 'fixture-sound', namespace: 'fixture' }));

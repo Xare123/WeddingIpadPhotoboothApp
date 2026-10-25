@@ -9,6 +9,14 @@ export interface Env {
   LINK_SIGNING_KEY?: string;
   PUBLIC_ORIGIN?: string;
   LINK_TTL_SECONDS?: string;
+  RATE_GALLERY_GLOBAL?: RateLimit;
+  RATE_GALLERY_CLIENT?: RateLimit;
+  RATE_PHOTO_GLOBAL?: RateLimit;
+  RATE_PHOTO_CLIENT?: RateLimit;
+  RATE_API_GLOBAL?: RateLimit;
+  RATE_API_CLIENT?: RateLimit;
+  RATE_SHARE_GLOBAL?: RateLimit;
+  RATE_SHARE_CLIENT?: RateLimit;
 }
 
 type Config = { deviceToken: string; signingKey: string; origin: string; ttlMs: number };
@@ -49,6 +57,67 @@ const tokenFor = (sessionId: string, key: string) => signed(`gallery:v1:${sessio
 const strongSecret = (value: string | undefined): value is string =>
   !!value && encoder.encode(value).length >= 32 && new Set(value).size >= 12 &&
   value !== 'local-development-only' && value !== 'local-link-key-not-for-production';
+async function deviceAuthorized(request: Request, expected: string): Promise<boolean> {
+  // Both comparisons always receive fixed-size digests, including missing,
+  // malformed, and differently sized Authorization header values.
+  const [providedHash, expectedHash] = await Promise.all([
+    crypto.subtle.digest('SHA-256', encoder.encode(request.headers.get('Authorization') ?? '')),
+    crypto.subtle.digest('SHA-256', encoder.encode(`Bearer ${expected}`)),
+  ]);
+  return crypto.subtle.timingSafeEqual(providedHash, expectedHash);
+}
+const rateBindings = [
+  'RATE_GALLERY_GLOBAL', 'RATE_GALLERY_CLIENT', 'RATE_PHOTO_GLOBAL', 'RATE_PHOTO_CLIENT',
+  'RATE_API_GLOBAL', 'RATE_API_CLIENT', 'RATE_SHARE_GLOBAL', 'RATE_SHARE_CLIENT',
+] as const;
+type RateBand = 'GALLERY' | 'PHOTO' | 'API' | 'SHARE';
+function rateBand(url: URL): RateBand | undefined {
+  if (url.pathname.startsWith('/g/')) return /^\/g\/[^/]+\/photos\//.test(url.pathname) ? 'PHOTO' : 'GALLERY';
+  if (url.pathname === '/v1/shares') return 'SHARE';
+  if (url.pathname.startsWith('/v1/')) return 'API';
+}
+function limitResponse(url: URL, status: 429 | 503): Response {
+  const page = url.pathname.startsWith('/g/') && !/^\/g\/[^/]+\/photos\//.test(url.pathname);
+  const response = page ? unavailableGallery(status) : json({
+    error: status === 429 ? 'Request limit reached; please retry shortly' : 'Request protection unavailable', retryable: true,
+  }, status);
+  if (status === 429) response.headers.set('Retry-After', '60');
+  return response;
+}
+async function protectStorage(request: Request, url: URL, env: Env): Promise<Response | undefined> {
+  const present = rateBindings.filter(name => env[name] !== undefined);
+  // Tests may omit the complete policy in loopback-only mode. Wrangler local
+  // development supplies the same native bindings through Miniflare. Never use
+  // isolate memory, an optional flag, or this local bypass in production.
+  if (env.MODE === 'local' && present.length === 0) return;
+  if (!rateBindings.every(name => typeof env[name]?.limit === 'function')) return limitResponse(url, 503);
+  const band = rateBand(url);
+  if (!band) return; // Health/unknown routes perform no storage operations.
+  const global = env[`RATE_${band}_GLOBAL`]!;
+  const client = env[`RATE_${band}_CLIENT`]!;
+  // Only the edge-generated CF-Connecting-IP is considered, and only on a
+  // Cloudflare request. Ignore X-Forwarded-For/X-Real-IP and untrusted direct
+  // headers; an unavailable client identity uses a shared anonymous bucket.
+  const edgeIp = request.cf ? request.headers.get('CF-Connecting-IP')?.trim().toLowerCase() : undefined;
+  const trustedIp = edgeIp && edgeIp.length <= 45 && /^[0-9a-f:.]+$/.test(edgeIp) ? edgeIp : 'anonymous';
+  const prefix = `limit:v1:${band.toLowerCase()}`;
+  const scopes: [RateLimit, string][] = [
+    [global, `${prefix}:global`],
+    [client, `${prefix}:client:${await digest(encoder.encode(trustedIp))}`],
+  ];
+  const token = /^\/g\/([a-f0-9]{64})(?:\/|$)/.exec(url.pathname)?.[1];
+  if (token) scopes.push([client, `${prefix}:gallery:${await digest(encoder.encode(token))}`]);
+  try {
+    // Global route keys bound storage amplification even when attackers rotate
+    // tokens or addresses. Native limits are approximate and POP-scoped, never
+    // a strict globally coordinated request budget or financial spend cap.
+    for (const [limiter, key] of scopes) {
+      const outcome = await limiter.limit({ key });
+      if (!outcome || typeof outcome.success !== 'boolean') return limitResponse(url, 503);
+      if (!outcome.success) return limitResponse(url, 429);
+    }
+  } catch { return limitResponse(url, 503); }
+}
 function configFor(url: URL, env: Env): Config | undefined {
   const ttl = env.LINK_TTL_SECONDS === undefined ? 86_400 : Number(env.LINK_TTL_SECONDS);
   if (!Number.isInteger(ttl) || ttl < 60 || ttl > 30 * 86_400) return;
@@ -138,22 +207,25 @@ function guestPage(html: string, status = 200): Response {
 }
 function unavailableGallery(status: number, reason?: string): Response {
   const expired = reason === 'Link expired';
-  const title = expired ? 'This link has expired.' : status === 410 ? 'This gallery is closed.' : 'A moment, out of reach.';
+  const title = expired ? 'This link has expired.' : status === 410 ? 'This gallery is closed.' : status === 429 ? 'A little pause.' : 'A moment, out of reach.';
   const message = expired ? 'For your privacy, photo links are available for a limited time. Ask your hosts about another way to save your memories.' :
     status === 410 ? 'This private gallery is no longer available. Please ask your hosts if you need help with your photos.' :
+    status === 429 ? 'This gallery has received too many requests. Please wait a minute, then open your link again.' :
     status === 503 ? 'Your photos are taking a little longer to load. Please try this link again in a moment.' :
     'We couldn’t find a gallery at this address. Check that you opened the complete link, or ask your hosts for help.';
   return guestPage(guestDocument('Your wedding photos', `<main class="error-page reveal"><div class="error-mark" aria-hidden="true">✧</div><p class="eyebrow">Your private gallery</p><h1>${title}</h1><p class="intro">${message}</p></main>`), status);
 }
 function galleryHtml(token: string, gallery: Gallery): string {
   const items = gallery.photoIds.map((id, i) => `<figure class="photo reveal"><img src="/g/${token}/photos/${id}" alt="Wedding photo ${i + 1}" loading="${i === 0 ? 'eager' : 'lazy'}" decoding="async"><figcaption><div class="photo-label"><span>A moment to keep</span><span>${String(i + 1).padStart(2, '0')}</span></div><a class="download" href="/g/${token}/photos/${id}?download=1" download aria-label="Download photo ${i + 1} in full resolution"><span class="arrow" aria-hidden="true">↓</span>Save original photo</a><p class="quality">Full resolution · JPEG</p></figcaption></figure>`).join('');
-  const expires = new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeStyle: 'short', timeZone: 'UTC' }).format(new Date(gallery.expiresAt));
-  return guestDocument('Your wedding photos', `<main><section class="hero reveal" aria-labelledby="gallery-title"><p class="eyebrow">A keepsake from the celebration</p><h1 id="gallery-title">Your night,<span>beautifully captured.</span></h1><p class="intro">The laughter, the joy, the happy tears.<br>These little moments are yours to keep.</p></section><section aria-label="Your photos"><div class="collection-heading"><h2>Your wedding photos</h2><p>${gallery.photoIds.length} ${gallery.photoIds.length === 1 ? 'memory' : 'memories'} · original quality</p></div><div class="photos">${items}</div></section><aside class="privacy"><h2>A private keepsake.</h2><p>Anyone with this link can view these photos.<br>Save your favorites, and share this link with care.</p><p class="expiry">Available until ${expires} UTC.</p></aside></main>`);
+  const expires = new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeStyle: 'medium', timeZone: 'UTC' }).format(new Date(gallery.expiresAt));
+  return guestDocument('Your wedding photos', `<main><section class="hero reveal" aria-labelledby="gallery-title"><p class="eyebrow">A keepsake from the celebration</p><h1 id="gallery-title">Your night,<span>beautifully captured.</span></h1><p class="intro">The laughter, the joy, the happy tears.<br>These little moments are yours to keep.</p></section><section aria-label="Your photos"><div class="collection-heading"><h2>Your wedding photos</h2><p>${gallery.photoIds.length} ${gallery.photoIds.length === 1 ? 'memory' : 'memories'} · original quality</p></div><div class="photos">${items}</div></section><aside class="privacy"><h2>A private keepsake.</h2><p>Anyone with this link can view and download these photos.<br>Save your favorites, and forward this link only with care.</p><p class="expiry">Available until <time datetime="${new Date(gallery.expiresAt).toISOString()}">${expires} UTC</time>.<br>Link expiry closes access; it does not delete the original photos.</p></aside></main>`);
 }
 async function handle(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
   const config = configFor(url, env);
   if (!config) return json({ error: 'Service configuration unavailable' }, 503);
+  const protection = await protectStorage(request, url, env);
+  if (protection) return protection;
   if (url.pathname === '/health' && request.method === 'GET')
     return json({ status: 'ok', storage: env.MODE === 'local' ? 'local-r2' : 'private-r2', sms: env.SMS_MODE });
 
@@ -182,7 +254,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
     } });
   }
   if (!url.pathname.startsWith('/v1/')) return request.method === 'GET' && url.pathname.startsWith('/g/') ? unavailableGallery(404) : json({ error: 'Not found' }, 404);
-  if (request.headers.get('Authorization') !== `Bearer ${config.deviceToken}`) return json({ error: 'Unauthorized' }, 401);
+  if (!await deviceAuthorized(request, config.deviceToken)) return json({ error: 'Unauthorized' }, 401);
   const upload = /^\/v1\/sessions\/([0-9a-f-]+)\/photos\/([0-9a-f-]+)$/i.exec(url.pathname);
   if (upload && request.method === 'PUT') {
     const sessionId = upload[1]!.toLowerCase(), photoId = upload[2]!.toLowerCase();

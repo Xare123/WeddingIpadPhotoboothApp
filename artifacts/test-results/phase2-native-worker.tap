@@ -1,0 +1,14 @@
+(node:13339) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ opaque gallery renders only its own photos and offers private downloads (355.763151ms)
+✔ production configuration uses an HTTPS canonical origin and a distinct device bearer (3158.28032ms)
+✔ actual Worker bearer comparison rejects malformed and varied-length credentials and preserves valid upload/readiness (276.856692ms)
+✔ native Worker rate-limit binding enforces its budget before repeated gallery lookup (3117.916141ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9531.265254

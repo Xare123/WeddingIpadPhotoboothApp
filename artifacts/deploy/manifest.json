@@ -1,27 +1,260 @@
 {
   "artifact": "worker.mjs",
   "format": "esm",
-  "generatedAt": "2026-10-25T21:23:44.406Z",
-  "sha256": "dbe24b994801c61fbf97bbfe0409af3dd4f537d7b9f6103c4410058089de5d3c",
-  "sourceSha256": "8edae2a061ccb13007a4ecfc682662830c29e9841fe6a79d7cf1ef66b1213f50",
-  "bytes": 21512,
+  "generatedAt": "2026-10-25T22:06:26.577Z",
+  "sha256": "fa45361fd720d716df92efcc8f4917d53fbba3b55c3d1c00c463604dce8ca870",
+  "sourceSha256": "4801a7cfcc475da2fa2d180b1a01dc5d98b996cf1dd830cf31f66f7dfb9f42b9",
+  "bytes": 24446,
   "compatibilityDate": "2026-10-25",
+  "proposedWorker": "wedding-photobooth-proposed",
   "existingPrivateBucket": "gizelleandrami-photoboothphotos",
   "proposedOrigin": "https://photos.gizelleandrami.com",
   "variables": {
     "MODE": "production",
     "SMS_MODE": "mock",
     "PUBLIC_ORIGIN": "https://photos.gizelleandrami.com",
-    "LINK_TTL_SECONDS": "86400"
+    "LINK_TTL_SECONDS": "604800"
   },
   "secretNames": [
     "DEVICE_TOKEN",
     "LINK_SIGNING_KEY"
   ],
   "binding": {
-    "type": "r2_bucket",
     "name": "PHOTOS",
+    "type": "r2_bucket",
     "bucket_name": "gizelleandrami-photoboothphotos"
+  },
+  "bindings": [
+    {
+      "name": "PHOTOS",
+      "type": "r2_bucket",
+      "bucket_name": "gizelleandrami-photoboothphotos"
+    },
+    {
+      "type": "ratelimit",
+      "name": "RATE_GALLERY_GLOBAL",
+      "namespace_id": "1001",
+      "simple": {
+        "limit": 1200,
+        "period": 60
+      }
+    },
+    {
+      "type": "ratelimit",
+      "name": "RATE_GALLERY_CLIENT",
+      "namespace_id": "1002",
+      "simple": {
+        "limit": 60,
+        "period": 60
+      }
+    },
+    {
+      "type": "ratelimit",
+      "name": "RATE_PHOTO_GLOBAL",
+      "namespace_id": "1003",
+      "simple": {
+        "limit": 2400,
+        "period": 60
+      }
+    },
+    {
+      "type": "ratelimit",
+      "name": "RATE_PHOTO_CLIENT",
+      "namespace_id": "1004",
+      "simple": {
+        "limit": 180,
+        "period": 60
+      }
+    },
+    {
+      "type": "ratelimit",
+      "name": "RATE_API_GLOBAL",
+      "namespace_id": "1005",
+      "simple": {
+        "limit": 240,
+        "period": 60
+      }
+    },
+    {
+      "type": "ratelimit",
+      "name": "RATE_API_CLIENT",
+      "namespace_id": "1006",
+      "simple": {
+        "limit": 120,
+        "period": 60
+      }
+    },
+    {
+      "type": "ratelimit",
+      "name": "RATE_SHARE_GLOBAL",
+      "namespace_id": "1007",
+      "simple": {
+        "limit": 60,
+        "period": 60
+      }
+    },
+    {
+      "type": "ratelimit",
+      "name": "RATE_SHARE_CLIENT",
+      "namespace_id": "1008",
+      "simple": {
+        "limit": 20,
+        "period": 60
+      }
+    },
+    {
+      "name": "MODE",
+      "type": "plain_text",
+      "text": "production"
+    },
+    {
+      "name": "SMS_MODE",
+      "type": "plain_text",
+      "text": "mock"
+    },
+    {
+      "name": "PUBLIC_ORIGIN",
+      "type": "plain_text",
+      "text": "https://photos.gizelleandrami.com"
+    },
+    {
+      "name": "LINK_TTL_SECONDS",
+      "type": "plain_text",
+      "text": "604800"
+    }
+  ],
+  "rateLimitNamespaceIdsRequireReview": true,
+  "rateLimitScope": "Approximate per Cloudflare POP; not a strict global request budget or financial cap",
+  "staticAssetsBindingRequired": false,
+  "deploymentMetadata": {
+    "main_module": "worker.mjs",
+    "compatibility_date": "2026-10-25",
+    "bindings": [
+      {
+        "name": "PHOTOS",
+        "type": "r2_bucket",
+        "bucket_name": "gizelleandrami-photoboothphotos"
+      },
+      {
+        "type": "ratelimit",
+        "name": "RATE_GALLERY_GLOBAL",
+        "namespace_id": "1001",
+        "simple": {
+          "limit": 1200,
+          "period": 60
+        }
+      },
+      {
+        "type": "ratelimit",
+        "name": "RATE_GALLERY_CLIENT",
+        "namespace_id": "1002",
+        "simple": {
+          "limit": 60,
+          "period": 60
+        }
+      },
+      {
+        "type": "ratelimit",
+        "name": "RATE_PHOTO_GLOBAL",
+        "namespace_id": "1003",
+        "simple": {
+          "limit": 2400,
+          "period": 60
+        }
+      },
+      {
+        "type": "ratelimit",
+        "name": "RATE_PHOTO_CLIENT",
+        "namespace_id": "1004",
+        "simple": {
+          "limit": 180,
+          "period": 60
+        }
+      },
+      {
+        "type": "ratelimit",
+        "name": "RATE_API_GLOBAL",
+        "namespace_id": "1005",
+        "simple": {
+          "limit": 240,
+          "period": 60
+        }
+      },
+      {
+        "type": "ratelimit",
+        "name": "RATE_API_CLIENT",
+        "namespace_id": "1006",
+        "simple": {
+          "limit": 120,
+          "period": 60
+        }
+      },
+      {
+        "type": "ratelimit",
+        "name": "RATE_SHARE_GLOBAL",
+        "namespace_id": "1007",
+        "simple": {
+          "limit": 60,
+          "period": 60
+        }
+      },
+      {
+        "type": "ratelimit",
+        "name": "RATE_SHARE_CLIENT",
+        "namespace_id": "1008",
+        "simple": {
+          "limit": 20,
+          "period": 60
+        }
+      },
+      {
+        "name": "MODE",
+        "type": "plain_text",
+        "text": "production"
+      },
+      {
+        "name": "SMS_MODE",
+        "type": "plain_text",
+        "text": "mock"
+      },
+      {
+        "name": "PUBLIC_ORIGIN",
+        "type": "plain_text",
+        "text": "https://photos.gizelleandrami.com"
+      },
+      {
+        "name": "LINK_TTL_SECONDS",
+        "type": "plain_text",
+        "text": "604800"
+      }
+    ],
+    "observability": {
+      "enabled": false,
+      "head_sampling_rate": 0,
+      "redact_query_string": true,
+      "issues": {
+        "enabled": false
+      },
+      "logs": {
+        "enabled": false,
+        "invocation_logs": false,
+        "head_sampling_rate": 0,
+        "persist": false,
+        "destinations": []
+      },
+      "traces": {
+        "enabled": false,
+        "head_sampling_rate": 0,
+        "persist": false,
+        "destinations": []
+      }
+    },
+    "logpush": false,
+    "tail_consumers": []
+  },
+  "exposure": {
+    "workers_dev": false,
+    "preview_urls": false
   },
   "deployed": false
 }

@@ -3,22 +3,43 @@
   // This deliberately contains no account ID, zone ID, secret, or active route.
   // Do not change the existing gizelleandrami Worker, apex or www routes.
   "$schema": "../../node_modules/wrangler/config-schema.json",
-  "name": "wedding-photobooth-PROPOSED",
+  "name": "wedding-photobooth-proposed",
   "main": "src/index.ts",
   "compatibility_date": "2026-10-25",
   "workers_dev": false,
   "preview_urls": false,
   "r2_buckets": [{ "binding": "PHOTOS", "bucket_name": "gizelleandrami-photoboothphotos" }],
+  // Native limits are approximate and per Cloudflare POP, not a global spend cap.
+  // Namespace IDs below are selectable examples, not provisioned resources or grants.
+  // Before deployment, review budgets and select IDs not shared by other Workers.
+  "ratelimits": [
+    { "name": "RATE_GALLERY_GLOBAL", "namespace_id": "1001", "simple": { "limit": 1200, "period": 60 } },
+    { "name": "RATE_GALLERY_CLIENT", "namespace_id": "1002", "simple": { "limit": 60, "period": 60 } },
+    { "name": "RATE_PHOTO_GLOBAL", "namespace_id": "1003", "simple": { "limit": 2400, "period": 60 } },
+    { "name": "RATE_PHOTO_CLIENT", "namespace_id": "1004", "simple": { "limit": 180, "period": 60 } },
+    { "name": "RATE_API_GLOBAL", "namespace_id": "1005", "simple": { "limit": 240, "period": 60 } },
+    { "name": "RATE_API_CLIENT", "namespace_id": "1006", "simple": { "limit": 120, "period": 60 } },
+    { "name": "RATE_SHARE_GLOBAL", "namespace_id": "1007", "simple": { "limit": 60, "period": 60 } },
+    { "name": "RATE_SHARE_CLIENT", "namespace_id": "1008", "simple": { "limit": 20, "period": 60 } }
+  ],
   "vars": {
     "MODE": "production",
     "SMS_MODE": "mock",
     "PUBLIC_ORIGIN": "https://photos.gizelleandrami.com",
-    "LINK_TTL_SECONDS": "86400"
+    "LINK_TTL_SECONDS": "604800"
   },
   // Inject distinct, random secrets DEVICE_TOKEN and LINK_SIGNING_KEY securely.
   // Each must have at least 32 bytes and at least 12 distinct characters.
   // Keep LINK_SIGNING_KEY stable while links are valid. Rotation revokes old links.
   // Guest access is checked in the Worker; never expose the R2 bucket publicly.
-  "observability": { "enabled": false },
+  // Gallery tokens occur in URL paths: query redaction alone is insufficient.
+  "observability": {
+    "enabled": false,
+    "head_sampling_rate": 0,
+    "redact_query_string": true,
+    "issues": { "enabled": false },
+    "logs": { "enabled": false, "invocation_logs": false, "head_sampling_rate": 0, "persist": false, "destinations": [] },
+    "traces": { "enabled": false, "head_sampling_rate": 0, "persist": false, "destinations": [] }
+  },
   "send_metrics": false
 }

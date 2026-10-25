@@ -1,5 +1,6 @@
 {
-  "scope": "Current release-mode iOS Hermes JavaScript source map; native release binary has not been built",
+  "scope": "Current release-mode iOS Hermes JavaScript source map; native signed binary unbuilt/unreviewed",
+  "app_source_sha256": "d3a11865e84111dfca253e2f54c900cfc1cfeb0f3a3ae95f0de3e13be62cc266",
   "source_module_count": 990,
   "findings": {
     "node-forge": [],
@@ -12,9 +13,9 @@
     "react-dom": []
   },
   "source_map_sha256": [
-    "4a6807aaae112a9b85b4550b4ba930690de6166baa2321678c59a525085ff9d4"
+    "1e149ddea1f1b6a82866084ceaf6de973085a2481aff2fce74e42afb3b523f83"
   ],
-  "worker_bundle_sha256": "dbe24b994801c61fbf97bbfe0409af3dd4f537d7b9f6103c4410058089de5d3c",
+  "worker_bundle_sha256": "fa45361fd720d716df92efcc8f4917d53fbba3b55c3d1c00c463604dce8ca870",
   "remaining_cli_advisories": 2,
   "audit_dependency_entries_high": 5
 }

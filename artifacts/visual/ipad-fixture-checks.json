@@ -1,5 +1,7 @@
 {
-  "scope": "Browser fixture of actual App.tsx native JSX; synthetic in-memory camera/storage/auth/sync. Not iOS or physical-device verification.",
+  "scope": "Browser fixture of actual App.tsx native JSX; synthetic in-memory camera/storage/auth/sync/permission/AppState/Linking. Not iOS or physical-device verification.",
+  "sourceSHA256": "d3a11865e84111dfca253e2f54c900cfc1cfeb0f3a3ae95f0de3e13be62cc266",
+  "timezoneId": "America/Los_Angeles",
   "states": [
     {
       "state": "camera",
@@ -49,7 +51,7 @@
       "verticalScroll": [
         {
           "viewport": 1148,
-          "content": 1161
+          "content": 1231
         }
       ],
       "outOfBounds": []
@@ -63,7 +65,12 @@
       },
       "screenshot": "artifacts/visual/ipad-mock-share-portrait.png",
       "horizontalOverflow": false,
-      "verticalScroll": [],
+      "verticalScroll": [
+        {
+          "viewport": 1148,
+          "content": 1208
+        }
+      ],
       "outOfBounds": []
     },
     {
@@ -111,7 +118,12 @@
       },
       "screenshot": "artifacts/visual/ipad-ready-landscape.png",
       "horizontalOverflow": false,
-      "verticalScroll": [],
+      "verticalScroll": [
+        {
+          "viewport": 788,
+          "content": 823
+        }
+      ],
       "outOfBounds": []
     },
     {
@@ -123,7 +135,12 @@
       },
       "screenshot": "artifacts/visual/ipad-mock-share-landscape.png",
       "horizontalOverflow": false,
-      "verticalScroll": [],
+      "verticalScroll": [
+        {
+          "viewport": 788,
+          "content": 821
+        }
+      ],
       "outOfBounds": []
     }
   ],
@@ -136,6 +153,12 @@
     "Synthetic offline retry keeps original displayed and does not reveal a QR.",
     "Fictional number + consent passes actual recipient validation to in-memory SecureStore and simulated sync; UI explicitly reports no SMS.",
     "Host settings opens and returns with fixture-only local authentication/config."
+  ],
+  "boundedFixtureChecks": [
+    "Offline-to-online synthetic retry reveals QR only after the in-memory ready acknowledgment; no real network or durability verified.",
+    "Denied-but-requestable permission shows actual Allow camera UI; synthetic permission grant mounts the fixture preview and enables capture.",
+    "Blocked permission invokes the explicit mocked Linking.openSettings marker; no OS settings launched and no real permission verified.",
+    "Synthetic AppState background interrupt cancels countdown with zero camera-adapter calls after 3.3 seconds; active event returns to camera. Native lifecycle remains unrun."
   ],
   "errors": [],
   "externalRequests": []

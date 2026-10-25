@@ -1,12 +1,22 @@
 /** DEV ONLY. No persistence, real device API, real guest URL, upload, or SMS. */
-import React, { forwardRef, useEffect, useImperativeHandle } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { uploadJob, type QueueJob } from '@wedding-booth/core';
+import { fixtureControls } from './fixture-controls';
 
 export const fixtureMode = new URLSearchParams(location.search).get('state') ?? 'camera';
 if (!['camera', 'review', 'offline-pending', 'ready', 'mock-share'].includes(fixtureMode)) throw new Error('Unknown visual fixture state');
 const image = '/synthetic-scene.jpg';
-export const fakeGuestURL = 'https://photobooth.example/g/' + 'a7'.repeat(32);
+// Payload-only realistic hostname: never requested. All fixture traffic stays on loopback.
+const qrPayload = new URLSearchParams(location.search).get('qrPayload') ?? 'reserved';
+const fixtureURLs: Record<string, string> = {
+  reserved: 'https://photobooth.example/g/' + 'a7'.repeat(32),
+  realistic: 'https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52',
+  'reserved-numeric': 'https://photobooth.example/g/' + '1'.repeat(64),
+  'realistic-numeric': 'https://photos.gizelleandrami.com/g/' + '1'.repeat(64),
+  'short-numeric': 'https://a.example/g/' + '1'.repeat(64),
+};
+export const fakeGuestURL = fixtureURLs[qrPayload] ?? fixtureURLs.reserved;
 type ActiveCapture = { id: string; fileUri: string; confirmed: boolean; createdAt: number };
 let active: ActiveCapture | null = fixtureMode === 'camera' ? null : {
   id: 'synthetic-fixture-photo', fileUri: image, confirmed: fixtureMode !== 'review', createdAt: Date.now(),
@@ -47,7 +57,7 @@ export const confirmCapture = async (capture: ActiveCapture) => {
   return active;
 };
 export const syncPending = async () => {
-  if (fixtureMode === 'offline-pending') return;
+  if (!fixtureControls.online) return;
   for (const job of jobs) {
     if (job.state !== 'pending') continue;
     if (job.kind === 'upload') Object.assign(job, { state: 'complete', guestUrl: fakeGuestURL, guestExpiresAt: Date.now() + 86_400_000 });
@@ -55,9 +65,17 @@ export const syncPending = async () => {
   }
 };
 export const retryPendingNow = syncPending;
-export const useCameraPermissions = () => [{ granted: true, canAskAgain: true }, async () => ({ granted: true })] as const;
+export const useCameraPermissions = () => {
+  const mode = new URLSearchParams(location.search).get('permission');
+  const [granted, setGranted] = useState(mode !== 'denied' && mode !== 'blocked');
+  return [{ granted, canAskAgain: mode !== 'blocked' }, async () => {
+    fixtureControls.permissionRequests++;
+    if (mode !== 'blocked') setGranted(true);
+    return { granted: mode !== 'blocked' };
+  }] as const;
+};
 export const CameraView = forwardRef(function FixtureCamera({ onCameraReady, style }: { onCameraReady?: () => void; style?: object }, ref) {
-  useImperativeHandle(ref, () => ({ takePictureAsync: async () => ({ uri: image }) }), []);
+  useImperativeHandle(ref, () => ({ takePictureAsync: async () => { fixtureControls.cameraCalls++; return { uri: image }; } }), []);
   useEffect(() => { onCameraReady?.(); }, []);
   return <View style={style}><Image source={{ uri: image }} style={StyleSheet.absoluteFill} resizeMode="cover" accessibilityLabel="Synthetic illustration standing in for camera; no live camera" /></View>;
 });

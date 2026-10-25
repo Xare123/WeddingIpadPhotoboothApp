@@ -21,6 +21,8 @@ The Worker has explicit `mock` and failure-test modes. It rejects missing consen
 
 Do not add a live adapter, buy credits/numbers, accept agreements, create credentials, send test texts or enroll a sender until the owner approves the provider, terms and budget. A tiny approved live test on the intended destination network is a later launch check, not something local mocks establish.
 
+Before enabling real recipient capture, add a bounded pending/orphan cleanup policy. A process termination between the current development-only Keychain write and SQLite queue save can leave an orphan test recipient that completion-based cleanup cannot enumerate. Ordinary save failures already delete the value, and production hides this test UI; this is a future live-SMS prerequisite rather than an enabled guest-data collection path.
+
 ## Official references
 
 - [Twilio A2P onboarding timeline](https://www.twilio.com/docs/messaging/compliance/a2p-10dlc/quickstart)

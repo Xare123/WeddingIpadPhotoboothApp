@@ -14,16 +14,21 @@ const auth = { Authorization: 'Bearer local-development-only' };
 const instances: Miniflare[] = [];
 let runtime: Miniflare;
 const persistencePaths: string[] = [];
-function runtimeOptions(bindings: Record<string, string> = {}, r2Persist?: string): MiniflareOptions {
+const limiterNames = ['RATE_GALLERY_GLOBAL', 'RATE_GALLERY_CLIENT', 'RATE_PHOTO_GLOBAL', 'RATE_PHOTO_CLIENT',
+  'RATE_API_GLOBAL', 'RATE_API_CLIENT', 'RATE_SHARE_GLOBAL', 'RATE_SHARE_CLIENT'];
+type NativeLimits = Record<string, { namespace_id: string; simple: { limit: number; period: 60 } }>;
+const nativeLimits = (): NativeLimits => Object.fromEntries(limiterNames.map((name, index) =>
+  [name, { namespace_id: String(index + 1), simple: { limit: 1000, period: 60 as const } }]));
+function runtimeOptions(bindings: Record<string, string> = {}, r2Persist?: string, limits?: NativeLimits): MiniflareOptions {
   const source = readFileSync(new URL('../src/index.ts', import.meta.url), 'utf8');
   return {
     modules: true, script: stripTypeScriptTypes(source), compatibilityDate: '2026-07-30',
-    r2Buckets: ['PHOTOS'], r2Persist, bindings: { MODE: 'local', SMS_MODE: 'mock',
+    r2Buckets: ['PHOTOS'], r2Persist, ratelimits: limits ?? (bindings.MODE === 'production' ? nativeLimits() : undefined), bindings: { MODE: 'local', SMS_MODE: 'mock',
       LOCAL_DEVICE_TOKEN: 'local-development-only', LOCAL_LINK_KEY: 'test-local-key', ...bindings },
   };
 }
-async function createRuntime(bindings: Record<string, string> = {}, r2Persist?: string) {
-  const instance = new Miniflare(runtimeOptions(bindings, r2Persist));
+async function createRuntime(bindings: Record<string, string> = {}, r2Persist?: string, limits?: NativeLimits) {
+  const instance = new Miniflare(runtimeOptions(bindings, r2Persist, limits));
   instances.push(instance);
   await instance.ready;
   return instance;
@@ -170,6 +175,9 @@ test('opaque gallery renders only its own photos and offers private downloads', 
   for (const photoId of first.photoIds) assert.ok(html.includes(`/photos/${photoId}`));
   assert.ok(!html.includes(other.photoIds[0]!));
   assert.ok(!html.includes('+12025550123'));
+  assert.ok(html.includes(`<time datetime="${new Date(first.expiresAt).toISOString()}">`));
+  assert.match(html, /Link expiry closes access; it does not delete the original photos/);
+  assert.match(html, /Anyone with this link can view and download/);
   assert.ok(!html.includes('https://'));
   const photo = await runtime.dispatchFetch(`${first.url}/photos/${first.photoIds[0]}?download=1`);
   assert.equal(photo.status, 200);
@@ -268,7 +276,7 @@ test('production configuration uses an HTTPS canonical origin and a distinct dev
   const device = 'device-test-0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const signing = 'signing-test-9876543210-zyxwvutsrqponmlkjihgfedcba';
   const instance = await createRuntime({ MODE: 'production', DEVICE_TOKEN: device,
-    LINK_SIGNING_KEY: signing, PUBLIC_ORIGIN: 'https://gallery.example' });
+    LINK_SIGNING_KEY: signing, PUBLIC_ORIGIN: 'https://gallery.example', LINK_TTL_SECONDS: '604800' });
   const health = await instance.dispatchFetch('https://gallery.example/health');
   assert.equal(health.status, 200);
   assert.equal((await health.json() as { storage: string }).storage, 'private-r2');
@@ -280,12 +288,15 @@ test('production configuration uses an HTTPS canonical origin and a distinct dev
   assert.equal((await instance.dispatchFetch(path, { method: 'PUT', headers: { ...auth, 'Content-Type': 'image/jpeg' }, body: jpeg })).status, 401);
   const productionAuth = { Authorization: `Bearer ${device}`, 'Content-Type': 'image/jpeg' };
   assert.equal((await instance.dispatchFetch(path, { method: 'PUT', headers: productionAuth, body: jpeg })).status, 201);
+  const readyStartedAt = Date.now();
   const response = await instance.dispatchFetch(`https://gallery.example/v1/sessions/${sessionId}/ready`, {
     method: 'POST', headers: { ...productionAuth, 'Content-Type': 'application/json' }, body: JSON.stringify({ photoIds: [photoId] }),
   });
   assert.equal(response.status, 200);
   const result = await response.json() as Gallery;
   assert.equal(new URL(result.url).origin, 'https://gallery.example');
+  assert.ok(result.expiresAt >= readyStartedAt + 7 * 86_400_000);
+  assert.ok(result.expiresAt <= Date.now() + 7 * 86_400_000);
   assert.equal((await instance.dispatchFetch(result.url)).status, 200);
 });
 
@@ -342,4 +353,37 @@ test('session revocation under a rotated key survives further rotations and rest
     assert.equal((await shareRequest(sessionId, {}, instance)).status, 410);
     assert.ok(await (await instance.getR2Bucket('PHOTOS')).head(`sessions/${sessionId}/photos/${photoId}.jpg`));
   }
+});
+
+
+test('actual Worker bearer comparison rejects malformed and varied-length credentials and preserves valid upload/readiness', async () => {
+  const device = 'device-test-0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const instance = await createRuntime({ MODE: 'production', DEVICE_TOKEN: device,
+    LINK_SIGNING_KEY: 'signing-test-9876543210-zyxwvutsrqponmlkjihgfedcba', PUBLIC_ORIGIN: 'https://gallery.example' });
+  const sessionId = randomUUID(), photoId = randomUUID();
+  const path = `https://gallery.example/v1/sessions/${sessionId}/photos/${photoId}`;
+  for (const authorization of ['', 'Bearer', 'Basic ' + device, 'Bearer x', 'Bearer ' + 'x'.repeat(2048),
+    `Bearer ${device.slice(0, -1)}x`, `Bearer x${device.slice(1)}`, `Bearer ${device}suffix`]) {
+    assert.equal((await instance.dispatchFetch(path, { method: 'PUT', headers: { Authorization: authorization, 'Content-Type': 'image/jpeg' }, body: jpeg })).status, 401);
+  }
+  assert.equal((await (await instance.getR2Bucket('PHOTOS')).list()).objects.length, 0);
+  const headers = { Authorization: `Bearer ${device}`, 'Content-Type': 'image/jpeg' };
+  assert.equal((await instance.dispatchFetch(path, { method: 'PUT', headers, body: jpeg })).status, 201);
+  const response = await instance.dispatchFetch(`https://gallery.example/v1/sessions/${sessionId}/ready`, {
+    method: 'POST', headers, body: JSON.stringify({ photoIds: [photoId] }),
+  });
+  assert.equal(response.status, 200);
+  assert.equal((await response.json() as Gallery).status, 'ready');
+});
+
+test('native Worker rate-limit binding enforces its budget before repeated gallery lookup', async () => {
+  const limits = nativeLimits();
+  limits.RATE_GALLERY_GLOBAL!.simple.limit = 1;
+  const instance = await createRuntime({}, undefined, limits);
+  const url = `${origin}/g/${'a'.repeat(64)}`;
+  assert.equal((await instance.dispatchFetch(url)).status, 404);
+  const blocked = await instance.dispatchFetch(url);
+  assert.equal(blocked.status, 429);
+  assert.equal(blocked.headers.get('Retry-After'), '60');
+  assert.equal(blocked.headers.get('Cache-Control'), 'private, no-store');
 });

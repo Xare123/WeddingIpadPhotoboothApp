@@ -8,7 +8,7 @@ import { randomUUID } from 'expo-crypto';
 import QRCode from 'react-native-qrcode-svg';
 import type { QueueJob } from '@wedding-booth/core';
 import { clearConnection, loadConnection, saveConnection } from './src/config';
-import { qrForJob } from './src/sharing';
+import { formatGuestExpiry, qrForJob } from './src/sharing';
 import { queueMockShare } from './src/recipients';
 import { authenticateHost } from './src/host-auth';
 import { captureTransition, createCaptureState } from './src/capture-state';
@@ -117,6 +117,7 @@ export default function App() {
 
   const currentJob = capture?.confirmed ? jobs.find(job => job.kind === 'upload' && job.photoId === capture.id) : undefined;
   const qr = qrForJob(currentJob, now);
+  const expiryLabel = formatGuestExpiry(currentJob?.guestExpiresAt);
   const currentShare = capture?.confirmed ? jobs.find(job => job.kind === 'share' && job.sessionId === capture.id) : undefined;
   const pendingCount = jobs.filter(job => job.kind === 'upload' && job.state === 'pending').length;
 
@@ -323,9 +324,10 @@ export default function App() {
           </> : <>
             <Text style={styles.step}>03 / KEEP THE GOOD TIMES</Text>
             {qr ? <View style={styles.qrCard}>
-              <QRCode value={qr} size={landscape ? 208 : 224} backgroundColor="#ffffff" color="#1e2723" quietZone={12} />
+              <QRCode value={qr} size={224} backgroundColor="#ffffff" color="#1e2723" quietZone={32} ecl="M" />
               <Text style={styles.qrCaption}>YOUR PRIVATE PHOTO PAGE</Text>
-              <Text style={styles.smallNote}>Anyone with this link can open the photo until it expires.</Text>
+              <Text style={styles.expiryLabel} accessibilityLabel={`Photo link expires ${expiryLabel}`}>Available until {expiryLabel}</Text>
+              <Text style={styles.smallNote}>Anyone with this link can open your photo until then. Your original stays private with the host afterward.</Text>
             </View> : <View style={styles.savedCard}>
               <Text style={styles.savedIcon}>✓</Text>
               <Text style={styles.savedTitle}>Saved on this iPad</Text>
@@ -421,6 +423,7 @@ const styles = StyleSheet.create({
   savedIcon: { fontSize: 34, color: '#9A4F32' },
   savedTitle: { fontSize: 23, color: '#9A4F32', fontFamily: 'Georgia', textAlign: 'center' },
   qrCard: { backgroundColor: '#fff', padding: 14, borderRadius: 16, gap: 10, alignItems: 'center', maxWidth: 300 },
+  expiryLabel: { fontSize: 14, lineHeight: 21, fontWeight: '600', textAlign: 'center', color: '#3B342B' },
   qrCaption: { fontSize: 10, letterSpacing: 1.5, color: '#9A4F32', fontWeight: '600' },
   footer: { gap: 6, alignItems: 'center', marginTop: 'auto', paddingTop: 10 },
   footerText: { fontSize: 12, color: '#8A7F6D', textAlign: 'center' },

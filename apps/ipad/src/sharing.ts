@@ -26,7 +26,7 @@ export function readyGuestPage(value: unknown, origin: string, now = Date.now())
   if (url.origin !== origin || !/^\/g\/[^/]+$/.test(url.pathname) || url.username || url.password || url.search || url.hash) {
     throw new Error('Guest page address is invalid');
   }
-  if (!Number.isFinite(result.expiresAt) || result.expiresAt <= now) {
+  if (!Number.isFinite(result.expiresAt) || !Number.isFinite(new Date(result.expiresAt).getTime()) || result.expiresAt <= now) {
     throw new Error('Guest page has expired');
   }
   return { guestUrl: url.href, guestExpiresAt: result.expiresAt };
@@ -36,7 +36,7 @@ export function qrForJob(job: {
   kind: string; state: string; guestUrl?: string; guestExpiresAt?: number;
 } | undefined, now = Date.now()): string | undefined {
   if (!job || job.kind !== 'upload' || job.state !== 'complete' || !job.guestUrl || !job.guestExpiresAt) return;
-  if (!Number.isFinite(job.guestExpiresAt) || job.guestExpiresAt <= now) return;
+  if (!Number.isFinite(job.guestExpiresAt) || !Number.isFinite(new Date(job.guestExpiresAt).getTime()) || job.guestExpiresAt <= now) return;
   // Completed records are created only from readyGuestPage; defend against legacy
   // records with malformed URLs before handing them to a QR encoder.
   try {
@@ -58,4 +58,19 @@ export function normalizePhone(input: string): string {
     throw new Error('Use an international phone number, including + and country code.');
   }
   return phone;
+}
+
+// Uses the iPad's locale/time zone in production; explicit options make the
+// acknowledged server expiry inspectable in deterministic tests.
+export function formatGuestExpiry(
+  expiresAt: number | undefined, locale?: string, timeZone?: string,
+): string | undefined {
+  if (expiresAt === undefined || !Number.isFinite(expiresAt)) return;
+  try {
+    return new Intl.DateTimeFormat(locale, {
+      year: 'numeric', month: 'short', day: 'numeric',
+      hour: 'numeric', minute: '2-digit', timeZoneName: 'short',
+      ...(timeZone ? { timeZone } : {}),
+    }).format(new Date(expiresAt));
+  } catch { return; }
 }

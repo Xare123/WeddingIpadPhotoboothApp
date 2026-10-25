@@ -1,12 +1,13 @@
 /** DEV-ONLY harness checking actual App guest JSX with __DEV__ false. Not an iOS release build. */
 import { createRequire } from 'node:module';
-import { writeFile } from 'node:fs/promises';
+import { writeFile, readFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
 const { chromium } = createRequire(import.meta.url)('playwright');
 const browser = await chromium.launch({ executablePath: '/usr/bin/chromium', headless: true, args: ['--no-sandbox'] });
-const checks = { scope: 'Actual App.tsx release UI (__DEV__=false) in development-only browser fixture with synthetic device adapters. Not an iOS release build.', screenshot: 'artifacts/visual/ipad-ready-release-portrait.png', interactions: [], errors: [], externalRequests: [] };
+const checks = { scope: 'Actual App.tsx release UI (__DEV__=false) in development-only browser fixture with synthetic device adapters. Not an iOS release build.', sourceSHA256: createHash('sha256').update(await readFile('apps/ipad/App.tsx')).digest('hex'), timezoneId: 'America/Los_Angeles', screenshot: 'artifacts/visual/ipad-ready-release-portrait.png', interactions: [], errors: [], externalRequests: [] };
 try {
-  const page = await browser.newPage({ viewport: { width: 820, height: 1180 }, reducedMotion: 'reduce' });
+  const page = await browser.newPage({ viewport: { width: 820, height: 1180 }, reducedMotion: 'reduce', timezoneId: checks.timezoneId });
   page.on('pageerror', e => checks.errors.push(e.message));
   page.on('console', m => { if (m.type() === 'error') checks.errors.push(m.text()); });
   await page.route('**/*', route => {
