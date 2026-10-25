@@ -1,5 +1,5 @@
 {
-  "scope": "Exported iOS Hermes JavaScript source map; native release binary has not been built",
+  "scope": "Current release-mode iOS Hermes JavaScript source map; native release binary has not been built",
   "source_module_count": 990,
   "findings": {
     "node-forge": [],
@@ -7,10 +7,12 @@
       "/node_modules/@expo/cli/build/metro-require/require.js"
     ],
     "@expo/code-signing-certificates": [],
-    "node_modules/zod/": []
+    "node_modules/zod/": [],
+    "react-native-web": [],
+    "react-dom": []
   },
   "source_map_sha256": [
-    "f0efbfeee1f5185ae0b5c787f47d4e13bd7410399409f23c79c9da15e354801e"
+    "4a6807aaae112a9b85b4550b4ba930690de6166baa2321678c59a525085ff9d4"
   ],
   "worker_bundle_sha256": "dbe24b994801c61fbf97bbfe0409af3dd4f537d7b9f6103c4410058089de5d3c",
   "remaining_cli_advisories": 2,

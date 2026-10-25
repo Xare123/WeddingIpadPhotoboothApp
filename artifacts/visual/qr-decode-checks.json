@@ -1,0 +1,31 @@
+{
+  "scope": "Independent ZXing decoding of browser-native-JSX QR screenshots. Full-frame detector can be confused by page artwork; QR-region result is separate. Not a physical-phone scan.",
+  "decoder": "@zxing/library@0.23.0",
+  "png": "pngjs@7.0.0",
+  "checks": [
+    {
+      "screenshot": "ipad-ready-landscape.png",
+      "fullFrameDecode": "ChecksumException",
+      "cropBounds": {
+        "left": 888,
+        "top": 250,
+        "right": 1097,
+        "bottom": 459
+      },
+      "croppedMatchesReservedFixtureURL": false,
+      "error": "NotFoundException"
+    },
+    {
+      "screenshot": "ipad-ready-release-portrait.png",
+      "fullFrameDecode": "ChecksumException",
+      "cropBounds": {
+        "left": 297,
+        "top": 651,
+        "right": 522,
+        "bottom": 876
+      },
+      "croppedMatchesReservedFixtureURL": false,
+      "error": "NotFoundException"
+    }
+  ]
+}

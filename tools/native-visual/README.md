@@ -16,6 +16,8 @@ node tools/native-visual/capture.mjs
 
 Stop the server you started when finished. The screenshot script closes its own Chromium instance. The server bundles the current App once at startup; restart it after source changes.
 
+To inspect the actual guest JSX with release-only gating, stop the default server, run `node tools/native-visual/serve.mjs --release-fixture`, then `node tools/native-visual/capture-release.mjs`. This compiles the actual global `__DEV__` to `false`, while retaining the development-only synthetic browser harness and its permanent banner. It is not an iOS release build. The default server still uses `__DEV__=true` and preserves the eight development-fixture interaction checks.
+
 Fixture query modes: `camera`, `review`, `offline-pending`, `ready`, `mock-share`. Every page has an external, permanent banner identifying it as a browser rendering with synthetic data. The synthetic JPEG is `artifacts/visual/sample-scene-1.jpg`; it is a drawn illustration, not a guest photo. The QR uses a reserved `https://photobooth.example/g/<64 hex characters>` URL and cannot reach a real guest page.
 
 The actual App JSX, capture-state transitions, QR readiness validation, QR encoder/SVG, and recipient validation execute. Camera/permission, local files/SQLite, config/Keychain/SecureStore, host authentication, crypto UUID generation, and sync are adapted to an in-memory fixture. The camera returns the synthetic illustration; sync never calls a server; simulated sharing never sends SMS. The SVG native sound dependency is a no-op; its asset registry uses RN-web's web registry. Nothing is persisted across reloads.

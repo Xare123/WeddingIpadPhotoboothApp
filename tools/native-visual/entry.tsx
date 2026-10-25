@@ -3,9 +3,10 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from '../../apps/ipad/App';
 import { fixtureMode } from './stubs';
+declare const __VISUAL_RELEASE_FIXTURE__: boolean;
 
 const banner = document.createElement('aside');
 banner.id = 'fixture-banner';
-banner.textContent = `Visual review fixture — browser rendering, not iOS; no real guest URL or SMS · ${fixtureMode}`;
+banner.textContent = `Visual review fixture — browser rendering, not iOS; no real guest URL or SMS · ${fixtureMode}${__VISUAL_RELEASE_FIXTURE__ ? ' · release UI (__DEV__=false)' : ''}`;
 document.body.prepend(banner);
 createRoot(document.getElementById('root')!).render(<App />);

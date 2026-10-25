@@ -1,0 +1,10 @@
+{
+  "scope": "Actual App.tsx release UI (__DEV__=false) in development-only browser fixture with synthetic device adapters. Not an iOS release build.",
+  "screenshot": "artifacts/visual/ipad-ready-release-portrait.png",
+  "interactions": [
+    "Actual release guest JSX renders ready QR and Next guest with no phone simulation controls, inputs, or status.",
+    "Release UI Next guest clears prior fixture QR and returns to camera."
+  ],
+  "errors": [],
+  "externalRequests": []
+}

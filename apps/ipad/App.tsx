@@ -257,7 +257,7 @@ export default function App() {
   }
 
   async function submitMockShare() {
-    if (!capture?.confirmed || shareBusy || currentShare) return;
+    if (!__DEV__ || !capture?.confirmed || shareBusy || currentShare) return;
     setShareBusy(true);
     setShareMessage('');
     try {
@@ -332,6 +332,7 @@ export default function App() {
               <Text style={styles.note}>{currentJob?.state === 'complete' ? (currentJob.guestExpiresAt && currentJob.guestExpiresAt <= now ? 'This sharing link has expired. Ask the host about your saved original.' : 'Local emulator test complete. Configure a public HTTPS API to show a guest QR.') : configured ? 'Preparing your photo page. The QR appears only after the server confirms it is ready.' : 'Sharing is offline. Ask the host to connect the booth to enable a photo link.'}</Text>
             </View>}
             {!qr && currentJob?.state !== 'complete' && <Pressable accessibilityRole="button" style={styles.secondaryButton} onPress={() => void retry(true).catch(() => setMessage('Saved on this iPad. Sharing will retry.'))}><Text style={styles.secondaryText}>Retry sharing</Text></Pressable>}
+            {__DEV__ && <>
             {currentShare ? <Text accessibilityLiveRegion="polite" style={styles.note}>{currentShare.state === 'mocked' ? 'Phone-sharing simulation complete. No text was sent.' : 'Phone-sharing test queued. No text was sent.'}</Text> : <>
               <Pressable accessibilityRole="button" onPress={() => { setPhoneVisible(!phoneVisible); setPhone(''); setConsent(false); setShareMessage(''); }} style={styles.phoneToggle}><Text style={styles.hostLink}>{phoneVisible ? 'Close sharing test' : 'Test phone sharing · no SMS'}</Text></Pressable>
               {phoneVisible && <View style={styles.phoneForm}>
@@ -344,6 +345,7 @@ export default function App() {
               </View>}
             </>}
             {!!shareMessage && <Text accessibilityLiveRegion="polite" style={styles.message}>{shareMessage}</Text>}
+            </>}
             <Pressable accessibilityRole="button" disabled={busy || shareBusy} style={[styles.button, (busy || shareBusy) && styles.disabled]} onPress={() => void startAgain()}><Text style={styles.buttonText}>Next guest</Text></Pressable>
             {!qr && <Text style={styles.note}>The host can recover your original. Starting the next guest clears this screen.</Text>}
           </>}
