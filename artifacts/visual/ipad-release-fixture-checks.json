@@ -1,6 +1,6 @@
 {
   "scope": "Actual App.tsx release UI (__DEV__=false) in development-only browser fixture with synthetic device adapters. Not an iOS release build.",
-  "sourceSHA256": "d3a11865e84111dfca253e2f54c900cfc1cfeb0f3a3ae95f0de3e13be62cc266",
+  "sourceSHA256": "8f0963fdd4530b9ad60a220bf55b4197c698a4dafb55ce66d39a1af76a74a259",
   "timezoneId": "America/Los_Angeles",
   "screenshot": "artifacts/visual/ipad-ready-release-portrait.png",
   "interactions": [

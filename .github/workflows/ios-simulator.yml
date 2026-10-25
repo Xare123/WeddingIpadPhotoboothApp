@@ -1,79 +1,84 @@
-name: Manual unsigned iPad simulator build
+name: Native iPad simulator verification
 
-# Explicit opt-in: macOS runner minutes are never consumed by push or PR events.
+# Review-branch opt-in: this does not require default-branch registration or a merge.
 on:
-  workflow_dispatch:
-    inputs:
-      tested_sha:
-        description: 'Exact 40-character trusted commit SHA on the default branch'
-        required: true
-        type: string
+  push:
+    branches:
+      - codex/wedding-photobooth-mvp
 
 permissions:
   contents: read
 
+concurrency:
+  group: wedding-native-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   simulator:
+    if: >-
+      github.repository == 'Xare123/WeddingIpadPhotoboothApp' &&
+      github.event.repository.private == false &&
+      contains(github.event.head_commit.message, '[native-ci]')
     runs-on: macos-15
     timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
     env:
       CI: '1'
       EXPO_NO_TELEMETRY: '1'
+      EXPO_OFFLINE: '1'
+      EXPO_PUBLIC_E2E_FIXTURE: '1'
+      COCOAPODS_DISABLE_STATS: 'true'
     steps:
-      - name: Validate exact commit input
-        env:
-          TESTED_SHA: ${{ inputs.tested_sha }}
-        shell: bash
-        run: '[[ "$TESTED_SHA" =~ ^[0-9a-f]{40}$ ]]'
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
-          ref: ${{ inputs.tested_sha }}
-          fetch-depth: 0
-      - name: Require selected SHA to be on the trusted default branch
-        env:
-          TESTED_SHA: ${{ inputs.tested_sha }}
-          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-        run: git merge-base --is-ancestor "$TESTED_SHA" "origin/$DEFAULT_BRANCH"
+          ref: ${{ github.sha }}
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: .nvmrc
           cache: npm
-      - run: npm ci --no-audit --no-fund
-      - run: npm run typecheck
-      - name: Install pinned CocoaPods
-        run: sudo gem install cocoapods -v 1.16.2 --no-document
-      - name: Generate native iOS project and install pods
-        working-directory: apps/ipad
-        env:
-          COCOAPODS_DISABLE_STATS: 'true'
-        run: npx --no-install expo prebuild --platform ios --no-install && pod _1.16.2_ install --project-directory=ios
-      - name: Compile unsigned simulator app without cloud services or credentials
-        working-directory: apps/ipad
-        shell: bash
+      - name: Initialize bounded diagnostic files
         run: |
-          workspace=$(find ios -maxdepth 1 -name '*.xcworkspace' -print -quit)
-          test -n "$workspace"
-          project=$(find ios -maxdepth 1 -name '*.xcodeproj' -print -quit)
-          test -n "$project"
-          scheme=$(basename "$project" .xcodeproj)
-          xcodebuild -workspace "$workspace" -scheme "$scheme" -configuration Debug \
-            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
-            -derivedDataPath /tmp/wedding-derived CODE_SIGNING_ALLOWED=NO build
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        if: success()
-        with:
-          name: unsigned-ipad-simulator-app
-          path: /tmp/wedding-derived/Build/Products/Debug-iphonesimulator/*.app
-          retention-days: 7
-      - name: Save native build diagnostics
+          mkdir -p "$RUNNER_TEMP/wedding-native-diagnostics"
+          {
+            node --version
+            ruby --version
+            xcodebuild -version
+          } 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/runner-tools.log"
+      - name: Verify native CI parsing and diagnostic contracts
+        run: node --test scripts/ci-native.test.mjs 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/ci-contracts.log"
+      - name: Frozen dependency installation
+        timeout-minutes: 10
+        run: npm ci --no-audit --no-fund 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/npm-ci.log"
+      - name: Typecheck application and tests
+        timeout-minutes: 3
+        run: npm run typecheck 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/typecheck.log"
+      - name: Install pinned CocoaPods
+        timeout-minutes: 5
+        run: |
+          {
+            if ! pod _1.16.2_ --version; then
+              sudo gem install cocoapods -v 1.16.2 --no-document
+              pod _1.16.2_ --version
+            fi
+          } 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/cocoapods-install.log"
+      - name: Build and run actual simulator XCTest suite
+        timeout-minutes: 35
+        run: node scripts/ci-native.mjs
+      - name: Publish bounded redacted diagnostics in the public job summary
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        env:
+          WEDDING_JOB_STATUS: ${{ job.status }}
+        run: node scripts/ci-summary.mjs native
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
         with:
-          name: native-build-diagnostics
-          path: /tmp/wedding-derived/Logs
+          name: native-simulator-evidence-${{ github.sha }}
+          path: ${{ runner.temp }}/wedding-native-diagnostics
           if-no-files-found: ignore
-          retention-days: 7
+          retention-days: 3
       - name: Remove generated native build files
         if: always()
-        run: rm -rf /tmp/wedding-derived apps/ipad/ios
+        run: rm -rf "$RUNNER_TEMP/wedding-native-derived" apps/ipad/ios

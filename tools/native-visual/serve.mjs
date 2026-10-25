@@ -1,6 +1,7 @@
 /** Local DEV-ONLY review harness. No production build or deployment target. */
 import { build } from 'esbuild';
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { createServer } from 'node:http';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -8,16 +9,28 @@ const root = fileURLToPath(new URL('../../', import.meta.url));
 const stubs = path.join(root, 'tools/native-visual/stubs.tsx');
 const releaseUI = process.argv.includes('--release-fixture');
 const result = await build({
-  absWorkingDir: root, entryPoints: ['tools/native-visual/entry.tsx'], bundle: true, write: false,
-  format: 'iife', platform: 'browser', jsx: 'automatic', loader: { '.js': 'jsx' }, define: { __DEV__: String(!releaseUI), __VISUAL_RELEASE_FIXTURE__: String(releaseUI), 'process.env.NODE_ENV': '"development"' },
+  absWorkingDir: root, entryPoints: ['tools/native-visual/entry.tsx'], bundle: true, write: false, metafile: true,
+  format: 'iife', platform: 'browser', jsx: 'automatic', loader: { '.js': 'jsx' }, define: { __DEV__: String(!releaseUI), __VISUAL_RELEASE_FIXTURE__: String(releaseUI), 'process.env.NODE_ENV': '"development"', 'process.env.EXPO_PUBLIC_E2E_FIXTURE': '"0"' },
   resolveExtensions: ['.web.tsx', '.web.ts', '.web.jsx', '.web.js', '.tsx', '.ts', '.jsx', '.js', '.json'],
   alias: { 'react-native': path.join(root, 'tools/native-visual/native-runtime.ts'), 'react-native-svg': path.join(root, 'node_modules/react-native-svg/lib/module/ReactNativeSVG.web.js'), '@react-native/assets-registry/registry': path.join(root, 'node_modules/react-native-web/dist/modules/AssetRegistry/index.js') },
   plugins: [{ name: 'synthetic-device-adapters', setup(api) {
     api.onResolve({ filter: /^(expo-camera|expo-crypto|expo-secure-store|\.\/src\/(config|host-auth|storage|sync)|\.\/storage)$/ }, args => ({ path: stubs }));
+    api.onResolve({ filter: /^\.\/src\/native-fixture$/ }, () => ({ path: path.join(root, 'tools/native-visual/native-fixture-disabled.ts') }));
     api.onResolve({ filter: /NativeSvgSoundModule$/ }, () => ({ path: 'fixture-sound', namespace: 'fixture' }));
     api.onLoad({ filter: /.*/, namespace: 'fixture' }, () => ({ contents: 'export default { playSound: () => {} };' }));
   } }],
 });
+const inputs = Object.keys(result.metafile.inputs);
+const forbiddenInputs = inputs.filter(input => /(^|\/)apps\/ipad\/src\/native-fixture\.(ts|tsx)$|(^|\/)expo-file-system\/|(^|\/)native-tests\/fixtures\/.*\.(jpg|jpeg)$/i.test(input));
+if (forbiddenInputs.length) throw new Error('Native-only imports leaked into browser fixture: ' + forbiddenInputs.join(', '));
+const disabledStubIncluded = inputs.some(input => input.endsWith('tools/native-visual/native-fixture-disabled.ts'));
+if (!disabledStubIncluded) throw new Error('Browser-native fixture disabled boundary is missing');
+await writeFile(path.join(root, `artifacts/visual/ipad-browser-boundary-${releaseUI ? 'release' : 'dev'}.json`), JSON.stringify({
+  scope: 'Browser-only bundle boundary check; not native execution.',
+  sourceSHA256: createHash('sha256').update(await readFile(path.join(root, 'apps/ipad/App.tsx'))).digest('hex'),
+  releaseUI, nativeFixtureEnabled: false, disabledStubIncluded, forbiddenInputs,
+  nativeFixtureSourceExcluded: true, expoFileSystemExcluded: true, staticNativeJPEGExcluded: true,
+}, null, 2) + '\n');
 const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>DEV ONLY · Native JSX browser visual fixture</title><style>
 html,body,#root{margin:0;width:100%;height:100%;overflow:hidden}body{display:flex;flex-direction:column;background:#f6efe4}#root{flex:1;min-height:0}#root>div{height:100%}#fixture-banner{box-sizing:border-box;padding:8px 12px;flex:none;font:11px/16px system-ui,sans-serif;text-align:center;background:#19372b;color:#fff;z-index:2147483647;position:relative}
 </style></head><body><div id="root"></div><script src="/fixture.js"></script></body></html>`;

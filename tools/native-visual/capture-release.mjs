@@ -18,6 +18,7 @@ try {
   });
   await page.goto('http://127.0.0.1:8791/?state=ready');
   await page.getByText('YOUR PRIVATE PHOTO PAGE', { exact: true }).waitFor();
+  assert.equal(await page.getByTestId('native-fixture-enabled').count(), 0);
   await page.getByRole('button', { name: 'Next guest', exact: true }).waitFor();
   assert.match(await page.locator('#fixture-banner').innerText(), /release UI \(__DEV__=false\)/);
   assert.equal(await page.getByRole('button', { name: /phone sharing|sharing test|simulated share/i }).count(), 0);

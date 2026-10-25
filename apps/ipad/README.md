@@ -36,6 +36,10 @@ The current active guest is restored after restart. Pending jobs retry when the 
 
 Originals and drafts live under the app's document directory, `photobooth/`. Queue/active records use SQLite WAL. Uninstalling the app, erasing the device or losing the device removes access to local originals; this is not a backup or retention/export system. This MVP does not write to the system Photos library and has no host export/gallery UI. The owner must plan original recovery and retention before production use. An optional, clearly labeled phone-sharing simulation requires a fictional international-format test number and explicit consent. The phone number is kept only in Keychain; SQLite holds an opaque recipient reference. The mock request waits for the upload to complete and retries failures. Only a backend `mocked` acknowledgement completes it; the UI says no text was sent. Recipient Keychain entries are removed only after the terminal queue state is saved. No real messaging provider is connected. A process termination between Keychain creation and queue persistence can leave an unreferenced Keychain entry; a retention sweep/enrollment reset is required before production use.
 
+## Hosted native simulator checks
+
+The opt-in Debug-only synthetic camera suite exercises real native document files, SQLite and restart recovery on an iPad simulator. See [native-tests/README.md](native-tests/README.md) for its exact scope, guard, prerequisites and owner Mac commands. It requires no Apple signing account and does not substitute for physical camera/device validation.
+
 ## Checks and device validation
 
 TypeScript and an iOS Metro export can be checked on Linux. Native installation, the physical front camera, permissions, Keychain, SQLite/file durability under iOS termination, iPad layout, rotation, scanning from a second phone, and camera quality cannot be established by a Linux export.

@@ -1,13 +1,14 @@
 import { File } from 'expo-file-system';
-import { drainQueue, type QueueTransport } from '@wedding-booth/core';
+import { createQueueConsumer, type QueueTransport } from '@wedding-booth/core';
 import { loadConnection } from './config';
 import { readyGuestPage } from './sharing';
 import { removeCompletedRecipients, resolveRecipient } from './recipients';
 import { store } from './storage';
+import { nativeFixtureEnabled } from './native-fixture';
 
-let running: Promise<void> | undefined;
 const transport: QueueTransport = {
   async upload(job) {
+    if (nativeFixtureEnabled) throw new Error('Synthetic native fixture remains offline');
     const config = await loadConnection();
     if (!config?.token) throw new Error('Offline: API is not configured');
     const sessionId = encodeURIComponent(job.sessionId);
@@ -30,6 +31,7 @@ const transport: QueueTransport = {
     return readyGuestPage(await ready.json(), config.origin);
   },
   async share(job) {
+    if (nativeFixtureEnabled) throw new Error('Synthetic native fixture remains offline');
     const config = await loadConnection();
     if (!config?.token) throw new Error('Offline: API is not configured');
     const phone = await resolveRecipient(job.recipientRef);
@@ -46,18 +48,8 @@ const transport: QueueTransport = {
   },
 };
 
-export function syncPending(): Promise<void> {
-  if (!running) running = drainQueue(store, transport)
-    .then(() => removeCompletedRecipients())
-    .finally(() => { running = undefined; });
-  return running;
-}
+const consumer = createQueueConsumer(store, transport, removeCompletedRecipients);
 
-export async function retryPendingNow(): Promise<void> {
-  // Finish the current consumer before resetting backoff; preserve completed jobs.
-  if (running) await running;
-  for (const job of await store.list()) {
-    if (job.state === 'pending') await store.save({ ...job, nextAttemptAt: 0 });
-  }
-  await syncPending();
-}
+export const syncPending = () => consumer.sync();
+
+export const retryPendingNow = () => consumer.retry();

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  AccessibilityInfo, Animated, AppState, Easing, Image, Linking, Modal, Pressable, SafeAreaView, ScrollView,
+  AccessibilityInfo, Animated, AppState, Easing, Image, Linking, Modal, Platform, Pressable, SafeAreaView, ScrollView,
   StyleSheet, Text, TextInput, useWindowDimensions, View,
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
@@ -17,6 +17,7 @@ import {
   setActiveCapture, store, type ActiveCapture,
 } from './src/storage';
 import { retryPendingNow, syncPending } from './src/sync';
+import { interruptNativeFixtureConfirmation, nativeFixtureEnabled, nativeFixtureImage, nativeFixturePhotoId, nativeFixtureStorageStatus, takeNativeFixturePhoto } from './src/native-fixture';
 
 const pause = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
 
@@ -49,6 +50,8 @@ export default function App() {
   const [consent, setConsent] = useState(false);
   const [shareBusy, setShareBusy] = useState(false);
   const [shareMessage, setShareMessage] = useState('');
+  const [fixtureStatus, setFixtureStatus] = useState('');
+  const [fixtureCheckpoint, setFixtureCheckpoint] = useState('');
 
   useEffect(() => {
     let alive = true;
@@ -66,7 +69,10 @@ export default function App() {
 
   async function refresh() {
     const list = await store.list();
-    if (mounted.current) { setJobs(list); setNow(Date.now()); }
+    if (mounted.current) {
+      setJobs(list); setNow(Date.now());
+      if (nativeFixtureEnabled) setFixtureStatus(nativeFixtureStorageStatus(await getActiveCapture(), list));
+    }
   }
   async function retry(immediate = false) {
     await (immediate ? retryPendingNow() : syncPending());
@@ -146,6 +152,23 @@ export default function App() {
     return () => animation.stop();
   }, [countdown, reduceMotion, countdownScale]);
 
+  useEffect(() => {
+    if (Platform.OS === 'ios' && countdown !== undefined) AccessibilityInfo.announceForAccessibility(`Photo in ${countdown}`);
+  }, [countdown]);
+
+  useEffect(() => {
+    if (Platform.OS === 'ios' && message) AccessibilityInfo.announceForAccessibility(message);
+  }, [message]);
+
+  useEffect(() => {
+    if (Platform.OS === 'ios' && settingsVisible && settingsMessage) AccessibilityInfo.announceForAccessibility(settingsMessage);
+  }, [settingsVisible, settingsMessage]);
+
+  useEffect(() => {
+    if (Platform.OS !== 'ios' || !capture?.confirmed) return;
+    AccessibilityInfo.announceForAccessibility(qr ? 'Your private photo page is ready. Scan the QR code with your phone.' : 'Your photo is saved on this iPad.');
+  }, [capture?.id, capture?.confirmed, !!qr]);
+
   async function takePhoto() {
     if (busy || !cameraReady || !initialized || capture) return;
     const started = captureTransition(flow.current, { type: 'start' });
@@ -164,11 +187,14 @@ export default function App() {
       }
       if (flow.current.phase !== 'saving' || flow.current.attempt !== attempt) return;
       setCountdown(undefined);
-      const photo = await camera.current?.takePictureAsync({ quality: 1, skipProcessing: false });
+      const photo = nativeFixtureEnabled ? await takeNativeFixturePhoto()
+        : await camera.current?.takePictureAsync({ quality: 1, skipProcessing: false });
       if (!photo?.uri) throw new Error('No photo');
-      const saved = await preserveCapture(randomUUID(), photo.uri);
+      const id = randomUUID();
+      const saved = await preserveCapture(nativeFixtureEnabled ? nativeFixturePhotoId(id) : id, photo.uri);
       flow.current = captureTransition(flow.current, { type: 'saved', attempt, photoId: saved.id });
       if (mounted.current) { setCapture(saved); setCameraReady(false); }
+      if (nativeFixtureEnabled) await refresh();
     } catch {
       flow.current = captureTransition(flow.current, { type: 'failed', attempt });
       if (mounted.current) {
@@ -220,6 +246,7 @@ export default function App() {
       setConsent(false);
       setPhoneVisible(false);
       setShareMessage('');
+      if (nativeFixtureEnabled) { setFixtureCheckpoint(''); await refresh(); }
     } catch { setMessage('Could not reset this session. Ask the booth host for help.'); }
     finally { setBusy(false); }
   }
@@ -293,15 +320,15 @@ export default function App() {
       </View>
       <Animated.View style={[styles.booth, landscape && styles.boothWide, { opacity: reveal, transform: [{ translateY: reveal.interpolate({ inputRange: [0, 1], outputRange: [5, 0] }) }] }]}>
         <View style={[styles.preview, landscape && { flex: 1, aspectRatio: undefined, height: Math.max(300, height - 350) }, !landscape && capture?.confirmed && { aspectRatio: undefined, height: Math.min(390, height * 0.31) }]}>
-          {capture ? <Image source={{ uri: capture.fileUri }} style={StyleSheet.absoluteFill} resizeMode="contain" accessibilityLabel="Your captured wedding photo" />
-            : permission?.granted ? <CameraView ref={camera} facing="front" mirror={false}
+          {capture ? <Image source={{ uri: capture.fileUri }} style={StyleSheet.absoluteFill} resizeMode="contain" testID="photo-preview" accessibilityLabel="Your captured wedding photo" />
+            : permission?.granted ? nativeFixtureEnabled ? <Image source={nativeFixtureImage()} style={StyleSheet.absoluteFill} resizeMode="cover" onLoad={() => setCameraReady(true)} accessibilityLabel="Synthetic native test scene" /> : <CameraView ref={camera} facing="front" mirror={false}
                 onCameraReady={() => setCameraReady(true)}
                 onMountError={() => { setCameraReady(false); setMessage('Front camera unavailable. Ask the booth host to check this iPad.'); }}
                 style={StyleSheet.absoluteFill} />
             : <View style={styles.permissionBox}>
                 <Text style={styles.permissionTitle}>A little camera magic</Text>
                 <Text style={styles.permissionText}>Allow the front camera to take your photo.</Text>
-                <Pressable accessibilityRole="button" style={styles.lightButton} onPress={() => void (permission?.canAskAgain === false ? Linking.openSettings() : requestPermission())}>
+                <Pressable accessibilityRole="button" testID="allow-camera" style={styles.lightButton} onPress={() => void (permission?.canAskAgain === false ? Linking.openSettings() : requestPermission())}>
                   <Text style={styles.darkButtonText}>{permission?.canAskAgain === false ? 'Open iPad settings' : 'Allow camera'}</Text>
                 </Pressable>
               </View>}
@@ -311,19 +338,19 @@ export default function App() {
         <View style={[styles.actions, landscape && styles.sideActions]}>
           {!capture ? <>
             <Text style={styles.step}>01 / MAKE A MEMORY</Text>
-            <Pressable accessibilityRole="button" disabled={!cameraReady || busy || !initialized} style={[styles.button, (!cameraReady || busy || !initialized) && styles.disabled]} onPress={() => void takePhoto()}>
+            <Pressable accessibilityRole="button" disabled={!cameraReady || busy || !initialized} testID="take-photo" style={[styles.button, (!cameraReady || busy || !initialized) && styles.disabled]} onPress={() => void takePhoto()}>
               <Text style={styles.buttonText}>{countdown ? 'Get ready…' : busy ? 'Saving your photo…' : 'Take our photo'}</Text>
             </Pressable>
-            {countdown !== undefined && <Pressable accessibilityRole="button" accessibilityLabel="Cancel countdown" style={styles.secondaryButton} onPress={cancelCountdown}><Text style={styles.secondaryText}>Cancel countdown</Text></Pressable>}
+            {countdown !== undefined && <Pressable accessibilityRole="button" accessibilityLabel="Cancel countdown" testID="cancel-countdown" style={styles.secondaryButton} onPress={cancelCountdown}><Text style={styles.secondaryText}>Cancel countdown</Text></Pressable>}
             <Text style={styles.note}>A 3-second countdown. A memory for a lifetime.</Text>
           </> : !capture.confirmed ? <>
             <Text style={styles.step}>02 / PICK YOUR FAVORITE</Text>
-            <Pressable accessibilityRole="button" disabled={busy} style={[styles.button, busy && styles.disabled]} onPress={() => void usePhoto()}><Text style={styles.buttonText}>{busy ? 'Keeping your photo…' : 'Use this photo'}</Text></Pressable>
-            <Pressable accessibilityRole="button" disabled={busy} style={styles.secondaryButton} onPress={() => void startAgain()}><Text style={styles.secondaryText}>Retake photo</Text></Pressable>
+            <Pressable accessibilityRole="button" disabled={busy} testID="use-photo" style={[styles.button, busy && styles.disabled]} onPress={() => void usePhoto()}><Text style={styles.buttonText}>{busy ? 'Keeping your photo…' : 'Use this photo'}</Text></Pressable>
+            <Pressable accessibilityRole="button" disabled={busy} testID="retake-photo" style={styles.secondaryButton} onPress={() => void startAgain()}><Text style={styles.secondaryText}>Retake photo</Text></Pressable>
             <Text style={styles.note}>Sharing starts only when you choose “Use this photo”.</Text>
           </> : <>
             <Text style={styles.step}>03 / KEEP THE GOOD TIMES</Text>
-            {qr ? <View style={styles.qrCard}>
+            {qr ? <View testID="guest-qr" style={styles.qrCard}>
               <QRCode value={qr} size={224} backgroundColor="#ffffff" color="#1e2723" quietZone={32} ecl="M" />
               <Text style={styles.qrCaption}>YOUR PRIVATE PHOTO PAGE</Text>
               <Text style={styles.expiryLabel} accessibilityLabel={`Photo link expires ${expiryLabel}`}>Available until {expiryLabel}</Text>
@@ -333,7 +360,7 @@ export default function App() {
               <Text style={styles.savedTitle}>Saved on this iPad</Text>
               <Text style={styles.note}>{currentJob?.state === 'complete' ? (currentJob.guestExpiresAt && currentJob.guestExpiresAt <= now ? 'This sharing link has expired. Ask the host about your saved original.' : 'Local emulator test complete. Configure a public HTTPS API to show a guest QR.') : configured ? 'Preparing your photo page. The QR appears only after the server confirms it is ready.' : 'Sharing is offline. Ask the host to connect the booth to enable a photo link.'}</Text>
             </View>}
-            {!qr && currentJob?.state !== 'complete' && <Pressable accessibilityRole="button" style={styles.secondaryButton} onPress={() => void retry(true).catch(() => setMessage('Saved on this iPad. Sharing will retry.'))}><Text style={styles.secondaryText}>Retry sharing</Text></Pressable>}
+            {!qr && currentJob?.state !== 'complete' && <Pressable accessibilityRole="button" testID="retry-sharing" style={styles.secondaryButton} onPress={() => void retry(true).catch(() => setMessage('Saved on this iPad. Sharing will retry.'))}><Text style={styles.secondaryText}>Retry sharing</Text></Pressable>}
             {__DEV__ && <>
             {currentShare ? <Text accessibilityLiveRegion="polite" style={styles.note}>{currentShare.state === 'mocked' ? 'Phone-sharing simulation complete. No text was sent.' : 'Phone-sharing test queued. No text was sent.'}</Text> : <>
               <Pressable accessibilityRole="button" onPress={() => { setPhoneVisible(!phoneVisible); setPhone(''); setConsent(false); setShareMessage(''); }} style={styles.phoneToggle}><Text style={styles.hostLink}>{phoneVisible ? 'Close sharing test' : 'Test phone sharing · no SMS'}</Text></Pressable>
@@ -348,12 +375,21 @@ export default function App() {
             </>}
             {!!shareMessage && <Text accessibilityLiveRegion="polite" style={styles.message}>{shareMessage}</Text>}
             </>}
-            <Pressable accessibilityRole="button" disabled={busy || shareBusy} style={[styles.button, (busy || shareBusy) && styles.disabled]} onPress={() => void startAgain()}><Text style={styles.buttonText}>Next guest</Text></Pressable>
+            <Pressable accessibilityRole="button" disabled={busy || shareBusy} testID="next-guest" style={[styles.button, (busy || shareBusy) && styles.disabled]} onPress={() => void startAgain()}><Text style={styles.buttonText}>Next guest</Text></Pressable>
             {!qr && <Text style={styles.note}>The host can recover your original. Starting the next guest clears this screen.</Text>}
           </>}
           {!!message && <Text accessibilityLiveRegion="polite" style={styles.message}>{message}</Text>}
         </View>
       </Animated.View>
+      {nativeFixtureEnabled && <View style={styles.fixturePanel}>
+        <Text testID="native-fixture-enabled" style={styles.smallNote}>SYNTHETIC NATIVE TEST · camera fixture · real local storage · sharing offline</Text>
+        <Text testID="native-fixture-storage" style={styles.smallNote}>{fixtureStatus}</Text>
+        {capture && !capture.confirmed && <Pressable accessibilityRole="button" testID="native-fixture-checkpoint" style={styles.secondaryButton} onPress={() => {
+          try { interruptNativeFixtureConfirmation(capture); setFixtureCheckpoint('Confirmed-file checkpoint saved'); }
+          catch { setFixtureCheckpoint('Checkpoint failed'); }
+        }}><Text style={styles.secondaryText}>Test interrupted confirmation</Text></Pressable>}
+        <Text testID="native-fixture-checkpoint-status" style={styles.smallNote}>{fixtureCheckpoint}</Text>
+      </View>}
       <View style={styles.footer}>
         <Text style={styles.footerText}>{pendingCount ? `${pendingCount} confirmed ${pendingCount === 1 ? 'photo' : 'photos'} waiting to share · originals stay on this iPad` : 'Made with love · originals stay on this iPad'}</Text>
         <Text style={styles.footerText}>No text messages are sent.</Text>
@@ -425,6 +461,7 @@ const styles = StyleSheet.create({
   qrCard: { backgroundColor: '#fff', padding: 14, borderRadius: 16, gap: 10, alignItems: 'center', maxWidth: 300 },
   expiryLabel: { fontSize: 14, lineHeight: 21, fontWeight: '600', textAlign: 'center', color: '#3B342B' },
   qrCaption: { fontSize: 10, letterSpacing: 1.5, color: '#9A4F32', fontWeight: '600' },
+  fixturePanel: { borderWidth: 1, borderColor: '#CEBFA6', borderRadius: 12, padding: 14, gap: 10, alignItems: 'center' },
   footer: { gap: 6, alignItems: 'center', marginTop: 'auto', paddingTop: 10 },
   footerText: { fontSize: 12, color: '#8A7F6D', textAlign: 'center' },
   phoneToggle: { paddingVertical: 2, minHeight: 44, justifyContent: 'center' },

@@ -74,6 +74,7 @@ try {
         await page.setViewportSize(viewport);
         await page.goto(`http://127.0.0.1:8791/?state=ready&qrPayload=${payload}`);
         await page.locator('svg').waitFor();
+        assert.equal(await page.getByTestId('native-fixture-enabled').count(), 0);
         await page.waitForTimeout(200);
         assert.match(await page.locator('#fixture-banner').innerText(), /release UI \(__DEV__=false\)/);
         const svg = await page.locator('svg').evaluate(element => ({ viewBox: element.getAttribute('viewBox'), width: Number(element.getAttribute('width')), height: Number(element.getAttribute('height')), box: element.getBoundingClientRect().toJSON(), strokeWidth: Number(element.querySelector('path').getAttribute('stroke-width')) }));

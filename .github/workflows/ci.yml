@@ -8,8 +8,13 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: wedding-linux-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check:
+    if: github.repository == 'Xare123/WeddingIpadPhotoboothApp' && github.event.repository.private == false
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
@@ -22,10 +27,13 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
+          ref: ${{ github.sha }}
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: .nvmrc
           cache: npm
+      - name: Verify native CI parsing and diagnostic contracts
+        run: node --test scripts/ci-native.test.mjs
       - run: npm ci --no-audit --no-fund
       - name: Typecheck, test and bundle iOS JavaScript
         shell: bash
@@ -63,6 +71,12 @@ jobs:
             fi
           done
           rm -f /tmp/wedding-check.log /tmp/wedding-api.log /tmp/wedding-ci-wrangler.log
+      - name: Publish useful diagnostics in the public job summary
+        if: always()
+        env:
+          WEDDING_DIAGNOSTICS_DIR: ${{ runner.temp }}/wedding-diagnostics
+          WEDDING_JOB_STATUS: ${{ job.status }}
+        run: node scripts/ci-summary.mjs linux
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:

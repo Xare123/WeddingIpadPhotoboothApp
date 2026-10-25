@@ -24,6 +24,8 @@ Second, the original explicit SVG quiet zone was too small: `quietZone=12` with 
 
 The final screenshots import the actual App component and render its actual QR JSX. They were captured without DOM, SVG, or screenshot modifications. All 20 full frames pass both independent decoders. ZXing JS passes 18 final cases but retains checksum failures on the nonnumeric realistic-host portrait and landscape DPR-2 cases; those failures are recorded rather than hidden. The independent full-frame results do not use crops, enlargement, thresholding, `PURE_BARCODE`, or expected-payload hints.
 
+The separate native XCTest fixture module is explicitly disabled and excluded from the browser bundle, together with its Expo FileSystem import and static JPEG. The browser tests assert its panel is absent; the browser's synthetic camera and in-memory adapters remain independent. Bundle boundary reports are linked in [native-preview.md](native-preview.md). Hosted macOS/iOS native testing is a separate workflow and is not executed or claimed by these browser checks.
+
 The realistic-host portrait and numeric-short-host landscape were visually inspected after the final 32-unit change. The QR, date/time/timezone expiry, and Next guest action fit in the initial viewport. Bounds assertions confirm the QR and Next guest are fully visible in all 20 cases, with no horizontal overflow. Remeasure module count and border coverage if the payload contract, QR component, or its parameters change.
 
 ## Evidence and reproduction

@@ -21,6 +21,7 @@ try {
     await page.setViewportSize(size);
     await page.goto(`http://127.0.0.1:8791/?state=${state}`);
     await page.getByText('THE WEDDING PHOTOBOOTH', { exact: true }).waitFor();
+    assert.equal(await page.getByTestId('native-fixture-enabled').count(), 0);
     await page.waitForTimeout(300);
   };
   for (const [orientation, size] of Object.entries({ portrait: { width: 820, height: 1180 }, landscape: { width: 1180, height: 820 } })) {

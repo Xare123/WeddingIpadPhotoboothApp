@@ -4,6 +4,8 @@ These screenshots were captured from the actual `apps/ipad/App.tsx` through Reac
 
 The original native JSX is imported directly. Camera/permission, filesystem/SQLite, config/Keychain, host authentication, and sync use synthetic in-memory adapters. The actual capture state reducer, readiness validation, QR encoder/SVG rendering, and recipient input validation execute. No guest photos, credentials, real guest pages, uploads, or SMS are used. The image is the synthetic sample scene illustration. The QR encodes only the reserved `https://photobooth.example/g/` origin and a 64-character synthetic hex token, with a fixture future expiry.
 
+The native XCTest fixture hook is always disabled in this browser harness through an explicit alias: its flag is false and its helpers throw if called. Build-input checks exclude the real native fixture module, Expo FileSystem, and the native static JPEG; the native fixture panel is asserted absent. Boundary evidence: [development bundle](ipad-browser-boundary-dev.json), [release UI bundle](ipad-browser-boundary-release.json). These browser runners do not execute the separate hosted macOS/iOS XCTest workflow. RN-web's platform is `web`, so native iOS accessibility announcements are not covered here.
+
 | State | Portrait 820 × 1180 | Landscape 1180 × 820 |
 | --- | --- | --- |
 | Camera | [Portrait](ipad-camera-portrait.png) | [Landscape](ipad-camera-landscape.png) |

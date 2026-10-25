@@ -61,3 +61,47 @@ export async function drainQueue(
     }
   }
 }
+
+export function createQueueConsumer(
+  store: QueueStore,
+  transport: QueueTransport,
+  afterDrain: () => Promise<void> = async () => {},
+  clock: () => number = Date.now,
+): { sync(): Promise<void>; retry(): Promise<void> } {
+  let running: Promise<void> | undefined;
+  let retrying: Promise<void> | undefined;
+
+  async function consume(resetBackoff: boolean) {
+    // Reset and drain share the same reservation. A timer/foreground sync must
+    // never complete a job while an older retry snapshot can still overwrite it.
+    if (resetBackoff) {
+      for (const job of await store.list()) {
+        if (job.state === 'pending') await store.save({ ...job, nextAttemptAt: 0 });
+      }
+    }
+    await drainQueue(store, transport, clock());
+    await afterDrain();
+  }
+
+  function reserve(operation: Promise<void>): Promise<void> {
+    running = operation;
+    const release = () => { if (running === operation) running = undefined; };
+    void operation.then(release, release);
+    return operation;
+  }
+
+  return {
+    sync() {
+      return running ?? reserve(Promise.resolve().then(() => consume(false)));
+    },
+    retry() {
+      if (retrying) return retrying;
+      const previous = running ?? Promise.resolve();
+      const operation = previous.catch(() => {}).then(() => consume(true));
+      retrying = reserve(operation);
+      const release = () => { if (retrying === operation) retrying = undefined; };
+      void operation.then(release, release);
+      return operation;
+    },
+  };
+}
