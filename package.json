@@ -1,0 +1,26 @@
+{
+  "name": "wedding-ipad-photobooth",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": ["apps/*", "packages/*", "services/*"],
+  "engines": { "node": ">=24.3.0 <25", "npm": ">=11 <12" },
+  "scripts": {
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "node --import tsx --test packages/core/test/*.test.ts services/api/test/*.test.ts",
+    "dev:api": "bash scripts/dev-api.sh",
+    "dev:ipad": "bash scripts/dev-ipad.sh",
+    "bundle:ios": "npm run bundle:ios --workspace @wedding-booth/ipad",
+    "build:api": "node scripts/build-worker.mjs",
+    "check": "npm run typecheck && npm test && npm run bundle:ios",
+    "smoke": "node scripts/smoke.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.0",
+    "esbuild": "0.28.2",
+    "react-dom": "19.3.0",
+    "react-native-web": "0.21.4",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3"
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "scope": "Browser fixture of actual App.tsx native JSX; synthetic in-memory camera/storage/auth/sync. Not iOS or physical-device verification.",
+  "states": [
+    {
+      "state": "camera",
+      "orientation": "portrait",
+      "size": {
+        "width": 820,
+        "height": 1180
+      },
+      "screenshot": "artifacts/visual/ipad-camera-portrait.png",
+      "horizontalOverflow": false,
+      "verticalScroll": [],
+      "outOfBounds": []
+    },
+    {
+      "state": "review",
+      "orientation": "portrait",
+      "size": {
+        "width": 820,
+        "height": 1180
+      },
+      "screenshot": "artifacts/visual/ipad-review-portrait.png",
+      "horizontalOverflow": false,
+      "verticalScroll": [],
+      "outOfBounds": []
+    },
+    {
+      "state": "offline-pending",
+      "orientation": "portrait",
+      "size": {
+        "width": 820,
+        "height": 1180
+      },
+      "screenshot": "artifacts/visual/ipad-offline-pending-portrait.png",
+      "horizontalOverflow": false,
+      "verticalScroll": [],
+      "outOfBounds": []
+    },
+    {
+      "state": "ready",
+      "orientation": "portrait",
+      "size": {
+        "width": 820,
+        "height": 1180
+      },
+      "screenshot": "artifacts/visual/ipad-ready-portrait.png",
+      "horizontalOverflow": false,
+      "verticalScroll": [
+        {
+          "viewport": 1148,
+          "content": 1161
+        }
+      ],
+      "outOfBounds": []
+    },
+    {
+      "state": "mock-share",
+      "orientation": "portrait",
+      "size": {
+        "width": 820,
+        "height": 1180
+      },
+      "screenshot": "artifacts/visual/ipad-mock-share-portrait.png",
+      "horizontalOverflow": false,
+      "verticalScroll": [],
+      "outOfBounds": []
+    },
+    {
+      "state": "camera",
+      "orientation": "landscape",
+      "size": {
+        "width": 1180,
+        "height": 820
+      },
+      "screenshot": "artifacts/visual/ipad-camera-landscape.png",
+      "horizontalOverflow": false,
+      "verticalScroll": [],
+      "outOfBounds": []
+    },
+    {
+      "state": "review",
+      "orientation": "landscape",
+      "size": {
+        "width": 1180,
+        "height": 820
+      },
+      "screenshot": "artifacts/visual/ipad-review-landscape.png",
+      "horizontalOverflow": false,
+      "verticalScroll": [],
+      "outOfBounds": []
+    },
+    {
+      "state": "offline-pending",
+      "orientation": "landscape",
+      "size": {
+        "width": 1180,
+        "height": 820
+      },
+      "screenshot": "artifacts/visual/ipad-offline-pending-landscape.png",
+      "horizontalOverflow": false,
+      "verticalScroll": [],
+      "outOfBounds": []
+    },
+    {
+      "state": "ready",
+      "orientation": "landscape",
+      "size": {
+        "width": 1180,
+        "height": 820
+      },
+      "screenshot": "artifacts/visual/ipad-ready-landscape.png",
+      "horizontalOverflow": false,
+      "verticalScroll": [],
+      "outOfBounds": []
+    },
+    {
+      "state": "mock-share",
+      "orientation": "landscape",
+      "size": {
+        "width": 1180,
+        "height": 820
+      },
+      "screenshot": "artifacts/visual/ipad-mock-share-landscape.png",
+      "horizontalOverflow": false,
+      "verticalScroll": [],
+      "outOfBounds": []
+    }
+  ],
+  "interactions": [
+    "Countdown cancel returns to camera and does not capture after original timer elapses.",
+    "Cancel followed by immediate restart preserves the new countdown after the canceled timer finishes.",
+    "Synthetic capture reaches review; Retake photo returns to camera.",
+    "Confirming synthetic capture invokes synthetic ready sync and renders actual QR component.",
+    "Next guest clears prior QR/photo selection and returns to camera.",
+    "Synthetic offline retry keeps original displayed and does not reveal a QR.",
+    "Fictional number + consent passes actual recipient validation to in-memory SecureStore and simulated sync; UI explicitly reports no SMS.",
+    "Host settings opens and returns with fixture-only local authentication/config."
+  ],
+  "errors": [],
+  "externalRequests": []
+}

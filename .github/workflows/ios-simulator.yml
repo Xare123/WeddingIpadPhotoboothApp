@@ -1,0 +1,79 @@
+name: Manual unsigned iPad simulator build
+
+# Explicit opt-in: macOS runner minutes are never consumed by push or PR events.
+on:
+  workflow_dispatch:
+    inputs:
+      tested_sha:
+        description: 'Exact 40-character trusted commit SHA on the default branch'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  simulator:
+    runs-on: macos-15
+    timeout-minutes: 45
+    env:
+      CI: '1'
+      EXPO_NO_TELEMETRY: '1'
+    steps:
+      - name: Validate exact commit input
+        env:
+          TESTED_SHA: ${{ inputs.tested_sha }}
+        shell: bash
+        run: '[[ "$TESTED_SHA" =~ ^[0-9a-f]{40}$ ]]'
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+          ref: ${{ inputs.tested_sha }}
+          fetch-depth: 0
+      - name: Require selected SHA to be on the trusted default branch
+        env:
+          TESTED_SHA: ${{ inputs.tested_sha }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: git merge-base --is-ancestor "$TESTED_SHA" "origin/$DEFAULT_BRANCH"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck
+      - name: Install pinned CocoaPods
+        run: sudo gem install cocoapods -v 1.16.2 --no-document
+      - name: Generate native iOS project and install pods
+        working-directory: apps/ipad
+        env:
+          COCOAPODS_DISABLE_STATS: 'true'
+        run: npx --no-install expo prebuild --platform ios --no-install && pod _1.16.2_ install --project-directory=ios
+      - name: Compile unsigned simulator app without cloud services or credentials
+        working-directory: apps/ipad
+        shell: bash
+        run: |
+          workspace=$(find ios -maxdepth 1 -name '*.xcworkspace' -print -quit)
+          test -n "$workspace"
+          project=$(find ios -maxdepth 1 -name '*.xcodeproj' -print -quit)
+          test -n "$project"
+          scheme=$(basename "$project" .xcodeproj)
+          xcodebuild -workspace "$workspace" -scheme "$scheme" -configuration Debug \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath /tmp/wedding-derived CODE_SIGNING_ALLOWED=NO build
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: success()
+        with:
+          name: unsigned-ipad-simulator-app
+          path: /tmp/wedding-derived/Build/Products/Debug-iphonesimulator/*.app
+          retention-days: 7
+      - name: Save native build diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: native-build-diagnostics
+          path: /tmp/wedding-derived/Logs
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Remove generated native build files
+        if: always()
+        run: rm -rf /tmp/wedding-derived apps/ipad/ios

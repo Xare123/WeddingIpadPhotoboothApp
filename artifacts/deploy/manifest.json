@@ -1,0 +1,27 @@
+{
+  "artifact": "worker.mjs",
+  "format": "esm",
+  "generatedAt": "2026-10-25T21:23:44.406Z",
+  "sha256": "dbe24b994801c61fbf97bbfe0409af3dd4f537d7b9f6103c4410058089de5d3c",
+  "sourceSha256": "8edae2a061ccb13007a4ecfc682662830c29e9841fe6a79d7cf1ef66b1213f50",
+  "bytes": 21512,
+  "compatibilityDate": "2026-10-25",
+  "existingPrivateBucket": "gizelleandrami-photoboothphotos",
+  "proposedOrigin": "https://photos.gizelleandrami.com",
+  "variables": {
+    "MODE": "production",
+    "SMS_MODE": "mock",
+    "PUBLIC_ORIGIN": "https://photos.gizelleandrami.com",
+    "LINK_TTL_SECONDS": "86400"
+  },
+  "secretNames": [
+    "DEVICE_TOKEN",
+    "LINK_SIGNING_KEY"
+  ],
+  "binding": {
+    "type": "r2_bucket",
+    "name": "PHOTOS",
+    "bucket_name": "gizelleandrami-photoboothphotos"
+  },
+  "deployed": false
+}

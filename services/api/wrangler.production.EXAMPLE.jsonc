@@ -1,0 +1,24 @@
+{
+  // REVIEW ONLY: deployment and domain routing require approval; do not provision here.
+  // This deliberately contains no account ID, zone ID, secret, or active route.
+  // Do not change the existing gizelleandrami Worker, apex or www routes.
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "wedding-photobooth-PROPOSED",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-25",
+  "workers_dev": false,
+  "preview_urls": false,
+  "r2_buckets": [{ "binding": "PHOTOS", "bucket_name": "gizelleandrami-photoboothphotos" }],
+  "vars": {
+    "MODE": "production",
+    "SMS_MODE": "mock",
+    "PUBLIC_ORIGIN": "https://photos.gizelleandrami.com",
+    "LINK_TTL_SECONDS": "86400"
+  },
+  // Inject distinct, random secrets DEVICE_TOKEN and LINK_SIGNING_KEY securely.
+  // Each must have at least 32 bytes and at least 12 distinct characters.
+  // Keep LINK_SIGNING_KEY stable while links are valid. Rotation revokes old links.
+  // Guest access is checked in the Worker; never expose the R2 bucket publicly.
+  "observability": { "enabled": false },
+  "send_metrics": false
+}

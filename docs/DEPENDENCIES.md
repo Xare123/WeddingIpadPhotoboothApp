@@ -1,0 +1,18 @@
+# Dependency review
+
+The existing, validated Expo/React Native foundation was retained rather than replacing it with an unrelated open-source booth application. Official Expo modules provide camera, files, SQLite, Keychain and device authentication; focused native SVG/QR modules provide the guest code. The app has no proprietary booth assets. Package versions and registry integrity hashes are recorded in `package-lock.json`.
+
+Installed license metadata reviewed: Expo, React Native, react-native-svg, react-native-qrcode-svg and Miniflare are MIT; Wrangler is MIT OR Apache-2.0. The original project MIT license is unchanged. Browser-only visual tooling is isolated from the native product: react-native-web and React DOM render the actual native JSX with explicit device stubs solely for visual review.
+
+## Audit outcome — October 25, 2026
+
+`npm audit --omit=dev --audit-level=high` reported two underlying high-severity advisories in Expo's CLI dependency path, represented as five affected dependency entries:
+
+- `node-forge@1.4.0`: [GHSA-86w9-cpqp-85rv](https://github.com/advisories/GHSA-86w9-cpqp-85rv), RSA signature-verification issue. The registry's latest node-forge was 1.4.0 at the time of this check; no patched registry release was available.
+- `zod@3.25.76`: [GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5), oversized constrained collections can exhaust memory. The advisory recommends a fixed v4, but the installed Expo CLI declares a v3 dependency.
+
+These advisories remain unresolved. Do not use `npm audit fix --force`: its suggested downgrade to Expo 44 is incompatible with this SDK58 application. An unverified Zod-major override was removed before continuing, and the declared compatible dependency was restored. No signature, checksum or TLS verification was disabled.
+
+The affected path is Expo CLI tooling. The current exported iOS Hermes source map was inspected: 990 sources include neither `node-forge`, `zod`, nor `@expo/code-signing-certificates`. One Expo CLI Metro `require.js` runtime bootstrap is present; it is distinct from the affected certificate/schema tooling. The bundled Worker has no package imports. This evidence narrows the known exposure to build/development tooling; it is not a native-release-binary audit. The machine-readable result is `artifacts/security/bundle-review.json`.
+
+Keep Metro loopback-only/offline, avoid untrusted development manifests and do not enable OTA/code-signing workflows on the strength of these local tests. The standalone app still needs its native/release dependency review and Apple signing on the Mac. A successful bundle or test suite is not a clean security-audit result. Recheck upstream Expo/forge/Zod fixes before releasing or exposing development tooling.

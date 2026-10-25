@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "Wedding Photobooth",
+    "slug": "wedding-ipad-photobooth",
+    "version": "0.1.0",
+    "platforms": [
+      "ios"
+    ],
+    "orientation": "default",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "requireFullScreen": true,
+      "bundleIdentifier": "com.example.weddingphotobooth",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Use the front camera to take your wedding photobooth photo.",
+          "recordAudioAndroid": false,
+          "microphonePermission": false
+        }
+      ],
+      "expo-sqlite",
+      "expo-secure-store",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Authenticate the booth host before changing photo sharing settings."
+        }
+      ]
+    ]
+  }
+}

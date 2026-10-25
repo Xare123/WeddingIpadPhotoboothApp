@@ -1,0 +1,14 @@
+node_modules/
+.cache/
+.expo/
+.wrangler/
+dist/
+coverage/
+apps/ipad/ios/
+apps/ipad/android/
+.env
+.env.*
+!.env.example
+.dev.vars
+*.log
+.DS_Store
