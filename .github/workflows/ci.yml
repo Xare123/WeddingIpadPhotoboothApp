@@ -32,8 +32,8 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-      - name: Verify native CI parsing and diagnostic contracts
-        run: node --test scripts/ci-native.test.mjs scripts/native-camera-capability.test.mjs scripts/ci-native-pixels.test.mjs scripts/ci-native-pixels-results.test.mjs
+      - name: Verify native CI and physical preparation guards
+        run: node --test scripts/ci-native.test.mjs scripts/native-camera-capability.test.mjs scripts/ci-native-pixels.test.mjs scripts/ci-native-pixels-results.test.mjs scripts/prepare-ios-physical-tests.test.mjs
       - run: npm ci --no-audit --no-fund
       - name: Typecheck, test and bundle iOS JavaScript
         shell: bash
