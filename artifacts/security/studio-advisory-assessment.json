@@ -1,14 +1,14 @@
 {
-  "timestampUTC": "2026-10-26T18:06:18.115486+00:00",
-  "scope": "Read-only installed dependency/range/registry assessment; no dependency or lockfile changes, no npm audit fix, no package install or runtime validation of replacement versions",
-  "auditSource": "artifacts/security/fullbleed-audit.json",
+  "timestampUTC": "2026-10-26T18:19:33.095007+00:00",
+  "scope": "Current V2 tooling assessment after isolated-tested then root frozen-tested upstream Wrangler4.153.0 update; no forced Expo/Zod/forge or directMiniflare major changes",
+  "auditSource": "artifacts/security/keepsake-v2-audit.json",
   "auditCounts": {
     "info": 0,
     "low": 0,
-    "moderate": 1,
+    "moderate": 0,
     "high": 8,
     "critical": 0,
-    "total": 9
+    "total": 8
   },
   "installedAndRanges": [
     {
@@ -59,21 +59,21 @@
     },
     {
       "path": "node_modules/wrangler",
-      "installed": "4.152.0",
-      "locked": "4.152.0",
+      "installed": "4.153.0",
+      "locked": "4.153.0",
       "declaredDependencies": {
-        "workerd": "1.20261019.1",
-        "miniflare": "5.20261019.2-beta"
+        "workerd": "1.20261023.1",
+        "miniflare": "5.20261023.0-beta"
       }
     },
     {
       "path": "node_modules/wrangler/node_modules/miniflare",
-      "installed": "5.20261019.2-beta",
-      "locked": "5.20261019.2-beta",
+      "installed": "5.20261023.0-beta",
+      "locked": "5.20261023.0-beta",
       "declaredDependencies": {
         "sharp": "0.35.5",
-        "undici": "7.29.1",
-        "workerd": "1.20261019.1"
+        "undici": "7.30.1",
+        "workerd": "1.20261023.1"
       }
     },
     {
@@ -84,8 +84,8 @@
     },
     {
       "path": "node_modules/wrangler/node_modules/undici",
-      "installed": "7.29.1",
-      "locked": "7.29.1",
+      "installed": "7.30.1",
+      "locked": "7.30.1",
       "declaredDependencies": {}
     },
     {
@@ -367,21 +367,21 @@
     },
     {
       "component": "Wrangler transitive Miniflare / sharp / undici",
-      "status": "Available upstream-supported same-major Wrangler upgrade fixes listed transitives",
-      "exactVersionsAndRanges": "Installed wrangler4.152.0 exact-pins miniflare5.20261019.2-beta -> sharp0.35.5 (already fixed) and undici7.29.1 (still affected by newer advisories). Published wrangler4.153.0 -> miniflare5.20261023.0-beta -> sharp0.35.5 and undici7.30.1; Node>=22 remains satisfied by project Node24.",
-      "recommendation": "Use Wrangler4.153.0 as the concrete next tooling-only dependency update, preserving Wrangler major4 and using the maintainer-selected Miniflare dependency. This is the preferred compatible upstream remedy; refresh the frozen lock and run API/CLI checks in that update. No update was applied during this frozen assessment.",
+      "status": "Applied maintainer-supported Wrangler4.153.0 fix; isolated and root frozen checks pass",
+      "exactVersionsAndRanges": "Wrangler4.153.0 exact-pins Miniflare5.20261023.0-beta; its sharp0.35.5 and Undici7.30.1 are outside listed affected ranges. Node24 satisfies Node>=22.",
+      "recommendation": "Retain this exact tested update. Isolated54APItests and real updated-Wrangler loopback V2/legacy sharing-download checks passed; root frozen installation, workspace typechecks,293tests,50CIcontracts,4historical faults and iOSexport pass. Native current-V2 execution remains separate.",
       "exposure": "Local dev/emulator image and HTTP processing, plus Wrangler Node tooling; not uploaded Worker application dependencies or current inspected iOS JS graph."
     },
     {
       "component": "Direct Miniflare4 / sharp / undici",
       "status": "No upstream v4 dependency-supported patched release; exact child pins prevent ordinary lock refresh",
       "exactVersionsAndRanges": "Direct installed/latest stable miniflare4.20260730.0 pins sharp0.35.2 and undici7.28.0. sharp0.35.5 fixes both listed native image advisories; undici7.30.1 fixes every Undici advisory listed by this audit. Miniflare5 beta is a major change and is not a drop-in safe direct dependency update.",
-      "recommendation": "For the direct v4 test emulator, prefer a narrowly scoped Miniflare4 override to sharp0.35.5 and undici7.30.1 in the next tooling-only update rather than a Miniflare downgrade or forced major5 migration. These child upgrades stay within sharp0.35 patch / Undici7 minor API series and meet Node24 requirements, but override exact parent pins; require existing real Miniflare/API/image/network tests before treating the override as validated. If avoiding all overrides is a requirement, retain v4 only as a localhost test tool with a documented unresolved risk; there is no upstream-supported fixed v4 release today.",
-      "compatibilityBoundary": "Patched artifacts are available; semver/API-series compatibility is established, full parent runtime compatibility has not been executed or guaranteed. Do not label an untested override proven safe.",
+      "recommendation": "Retain only as a loopback test emulator with explicit unresolved risks. A bounded scoped child-override attempt did not alter resolved sharp0.35.2/Undici7.28 and was removed, not represented as a fix. No parent-supported patched Miniflare4 release exists in the checked registry snapshot. A future parent migration/validated override requires separate verification.",
+      "compatibilityBoundary": "No effective directMiniflare override was applied; unpatched children remain visible in current audit. See keepsake-tooling-candidate.json for the bounded attempt.",
       "exposure": "Tests instantiate Miniflare locally; dev script binds 127.0.0.1. sharp vulnerability requires processing hostile image input; Undici advisories depend on affected network/cache/retry/WebSocket/EventSource features. Local binding lowers inbound exposure, but outbound hostile input or a malicious local project is still relevant."
     }
   ],
-  "overallDisposition": "Keep frozen candidate unchanged and retain the nine-entry audit failure transparently. The inspected shipped app JS graph is not blocked by these Node-tooling advisories. Apply the available Wrangler4.153.0 upstream remedy as a separate tooling update; direct Miniflare4 requires a scoped, test-validated child override or documented localhost-only retention. Expo forge has no fixed published release, and Zod fix requires unsupported major substitution, so neither has a safe range-compatible remediation today. Do not run npm audit fix --force or downgrade Expo/Miniflare to audit suggestions.",
+  "overallDisposition": "Applied the tested upstream-supported Wrangler4.153.0 update as a separate tooling checkpoint. Current audit remains failing with eight high affected entries from Expo CLI and directMiniflare; no suppressions or forced incompatible upgrades. Forge has no published fix in checked snapshot; fixedZod crossesCLIdeclaredmajor; directMiniflare unresolved. None of the affected libraries appears in inspected currentV2iOSJSgraph, which is not a binary/infrastructure audit.",
   "shippedGraphEvidence": {
     "artifact": "artifacts/security/bundle-review.json",
     "sourceModuleCount": 1030,
@@ -397,19 +397,21 @@
       "undici": [],
       "wrangler": []
     },
-    "scope": "Absence in the inspected current V2 source-map graph only. Metro require-loader is not all Expo CLI code. No native binary/CocoaPods/OS/production audit."
+    "scope": "Current exact-source Release-modeJSexport graph only; no nativebinary/OS/CocoaPods/production audit."
   },
   "nativeBinaryAudit": "Unknown/not performed; npm audit and JS source-map absence are not a native-binary security audit",
   "verificationLimits": [
-    "Registry metadata and installed manifests/ranges read; no dependencies/lockfile changed.",
-    "No candidate dependency runtime tests run, no real private input, credentials, uploads, or deployments.",
-    "Advisory applicability uses exact snapshot ranges; unrelated/new advisories outside this snapshot not claimed cleared."
+    "Registry remedy snapshot read; exact10-entry lock update is Wrangler-supported only.",
+    "Isolated candidate54APItests/HTTPmockproof and root frozen590package setup/typechecks293tests/50contracts/4faults/iOSexport passed. These counts overlap.",
+    "No live provider, credentials, production uploads or deployment; native20-test and physicaliPad results remain separate.",
+    "Advisory applicability uses checked audit snapshot; no claim that unrelated/future advisories are cleared."
   ],
   "sourceSHA256": {
-    "package-lock.json": "1cdd546c539c694b6612b748cb27627aeea87e951a859f162b087dd7becdc2b6",
+    "package-lock.json": "3e641bdf69fb8255425da63d4d1b827c0cf811c431ea64ab12a4c8fcfad55bf3",
     "apps/ipad/package.json": "c38c54aa8cedec22eb0e18e7abc1930f22fa59134ebd841b7346613757cb5cbe",
-    "services/api/package.json": "097cf47a38d098d89f247d0c8b62d8a43c189e87cfcc7700cd463ac57e4d477e",
+    "services/api/package.json": "ba85df5197217c1e7efb56046f8e1c152ffe5b5ee8cfa086fe30f9db80b162aa",
     "artifacts/security/fullbleed-audit.json": "f99b6e2f01df8ae502f5d3cd2651165a95f47e7269f679f0851f537a6ff1d38b",
-    "artifacts/security/bundle-review.json": "229c8bea3389edb560fa82add7c55ab329fdd647f3b62c9fa907750b17276d0d"
+    "artifacts/security/bundle-review.json": "402e9d2950db8de1b02d9c1113e804e41c0a6c96f5296612302d394e240d5cb1",
+    "artifacts/security/keepsake-v2-audit.json": "ac40b33ef7613698af065d9c053731a85023af94154863ebcc68c2cae083b672"
   }
 }

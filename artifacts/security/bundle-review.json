@@ -19,10 +19,10 @@
   "auditCounts": {
     "info": 0,
     "low": 0,
-    "moderate": 1,
+    "moderate": 0,
     "high": 8,
     "critical": 0,
-    "total": 9
+    "total": 8
   },
   "auditPassed": false,
   "auditedPackageEntries": [
@@ -33,16 +33,15 @@
     "node-forge",
     "sharp",
     "undici",
-    "wrangler",
     "zod"
   ],
   "exposure": "Expo certificate/validation CLI plus local Wrangler/Miniflare image/network tooling. Expo Metro require loader is present; do not equate all @expo/cli modules with affected code. None of the affected libraries above appears in this inspected app graph. The newly rebuilt Worker bundle is separately hashed and locally tested; this is not a native-binary or production audit.",
-  "safeFixStatus": "Bounded exact-version/range/registry assessment complete: see studio-advisory-assessment.json. Wrangler4.153.0 is an upstream-supported tooling follow-up; directMiniflare4 has no patched release and child overrides require testing. Forge has no published fixed version; fixed Zod requires incompatible major substitution. Frozen candidate retains explicit findings; no audit suppression/forced downgrade.",
+  "safeFixStatus": "Applied tested Wrangler4.153.0; Expo/directMiniflare findings remain. See studio-advisory-assessment.json and keepsake-tooling-candidate.json; no forced major/ineffective override.",
   "native_release_build": {
     "current_source_passed": false,
     "status": "V2 uncommitted; pending fresh exact-commit hosted verification"
   },
-  "generatedAt": "2026-10-26T18:06:18.115486+00:00",
+  "generatedAt": "2026-10-26T18:19:33.095007+00:00",
   "sourceContents": {
     "apps/ipad/App.tsx": {
       "sha256": "151488bb3fdbf6435a16855ba70bfbc2f7408cbef8cb30de040121ce81dc30e7",

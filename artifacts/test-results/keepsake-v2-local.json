@@ -1,6 +1,6 @@
 {
   "scope": "Four-photo V2 composition refinement, current local source candidate; current native execution still pending",
-  "generatedAt": "2026-10-26T18:12:12.585182+00:00",
+  "generatedAt": "2026-10-26T18:21:19.189838+00:00",
   "publicationApproved": true,
   "appVersion": "0.3.1",
   "iosBuild": "4",
@@ -78,7 +78,7 @@
     "apps/ipad/test/review-selection.test.ts": "9baff3e1079486e8491c4132e9dffa50ae69d59986b411e1800772ae649548ae",
     "apps/ipad/test/session-capture.test.ts": "562745015ba45cf4d8939ff761c63db01d04596632fa4ac77d7cea85e8056903",
     "apps/ipad/test/template-editor.test.ts": "95e8b2b5bd71bd4bf367757b1e76913d07279aee234a324fc640910ced8d8ffe",
-    "package-lock.json": "1cdd546c539c694b6612b748cb27627aeea87e951a859f162b087dd7becdc2b6",
+    "package-lock.json": "3e641bdf69fb8255425da63d4d1b827c0cf811c431ea64ab12a4c8fcfad55bf3",
     "package.json": "21ab07c98e468f97bf05dc8789ab508bb3ee18ae9fbdd724f2cfadb42bf90a30",
     "packages/core/package.json": "b7f38e962b36d12b967ac99584b9e50957ab51d9be7f52620f61e706bf042aa2",
     "packages/core/src/index.ts": "945d97743a621558369c7029acbc5b61daae85d2c08156368c188aedbbb9a991",
@@ -114,7 +114,7 @@
     "scripts/setup-cloud.sh": "f928e961231e3129434b07b034b913b4bc69538a3d579a91840069b2c886b027",
     "scripts/smoke.mjs": "b84b0e1d881c3df4d469ceff64acf22b2d6afbe64498ff1eaa3e5e34119679f6",
     "scripts/visual-evidence.cjs": "8594faf8e187cf5d6925a51fd9d777d7e1496c6d72590a92569f6851fbb2437e",
-    "services/api/package.json": "097cf47a38d098d89f247d0c8b62d8a43c189e87cfcc7700cd463ac57e4d477e",
+    "services/api/package.json": "ba85df5197217c1e7efb56046f8e1c152ffe5b5ee8cfa086fe30f9db80b162aa",
     "services/api/src/index.ts": "82a548e2f5e640ce6f57f360b7636959e8c6877c3ec3b6c58570a80fb103bd63",
     "services/api/test/api.test.ts": "b55c4ca8ebc6997da9103d0f587767a1592754c189e1469c9f17aada458b6e80",
     "services/api/test/pairing.test.ts": "a361a7a3c69beb10bd891e66daa24d9ccbccc0e88267ec82b6f82776016df33d",
@@ -161,9 +161,9 @@
     "tools/native-visual/serve.mjs": "48a020fa0ffceb7a7d2586b3b9e1faf5fb3b295c8601c93578981fd87a89d020",
     "tools/native-visual/stubs.tsx": "1d7b06a44f721a65633cf270128dd546d1655f40dd8a27d5930a140cca0499cd"
   },
-  "sourceManifestSha256": "3b57417b5b409fd5244a25be7d23328c6cb8847fefb727d50f10264b10d2e07b",
+  "sourceManifestSha256": "700eb82f97b691339c5a93df418bcc43b0674ff1a76a6b0303474ebc1d4ff67f",
   "local": {
-    "frozenSetup": "Same unchanged lock previously frozen installed; final repeat pending after separate tooling integration",
+    "frozenSetup": "passed after separately tested Wrangler4.153.0 integration;590packages",
     "packages": 590,
     "workspaceTypecheck": "passed on exact final App/Studio",
     "suite": {
@@ -274,7 +274,8 @@
       "fullSizeJPEGs": 13,
       "recordings": 4,
       "markerEdgeAssertions": 192,
-      "scope": "ActualJSX/controllers plus explicitCanvas/nativeSDKsubstitutes; source and exactDOM-to-receipt/JPEGbytes matched; no Apple/iPad proof"
+      "scope": "ActualJSX/controllers plus explicitCanvas/nativeSDKsubstitutes; source and exactDOM-to-receipt/JPEGbytes matched; no Apple/iPad proof",
+      "independentVisualStatus": "passed"
     },
     "scope": "Actual native JSX/controllers with Canvas/nativeSDKsubstitutes; noCoreImage/camera/Photos/nativeglass/device claim",
     "gallery": "artifacts/visual/gallery-v2-checks.json;12actualWorkerHTTP/Chromiumgroups,15PNGs,12exactclickeddownloads,private/revoke/naturalexpiry"
@@ -292,7 +293,19 @@
     },
     "blockingFindings": [],
     "limits": "Linux/synthetic boundaries only; native inventory not execution",
-    "visual": "Fresh independent pixel review in progress; implementation-side review and all evidence suites passed"
+    "visual": {
+      "status": "passed within browser/Canvas boundary",
+      "report": "artifacts/visual/keepsake-independent-visual-review.md",
+      "detail": "artifacts/visual/keepsake-independent-visual-review.json",
+      "detailSHA256": "a02145a115cb92f6cf816ff94e46665b00296a51e5224e347031325cdc95f528",
+      "personallyViewed": {
+        "fullSizeExports": 8,
+        "keyScreens": 31,
+        "sampledVideoFrames": 126
+      },
+      "evidenceEntriesVerified": 140,
+      "qr": "Two orientations x two independentdecoders exactfabricatedpayload; no liveURL or phonescan"
+    }
   },
   "workerArtifact": {
     "sha256": "43dabd6c9dcda6aa44f23ca11ac544f2588f9efd5428f0837dc839f4f98c9ded",
@@ -305,7 +318,7 @@
   "production": "Coordinator owns deployment/provisioning/provider eligibility and approved capped recipient tests; this executor sent zero real messages and made no Cloudflare writes",
   "firebase": "Owner deferred; no project/catalog/quota/signedpackage/run verified, no productionFirebaseSDK",
   "references": "Luna reviewed2publicGitHubimages recordedinluna-keepsake-references.md; ownerLibraryscreenshots unavailablehere, no private referenceassets published",
-  "securityAssessment": "artifacts/security/studio-advisory-assessment.json; current source-map matches source; eight high/one moderate affected tool package entries remain before separate Wrangler update; not a clean audit/nativebinaryaudit",
+  "securityAssessment": "artifacts/security/studio-advisory-assessment.json; tested Wrangler4.153.0 applied, audit still8high/0moderate affected Expo/directMiniflare entries. Exact-source graph exclusion is not binary/infrastructure audit.",
   "remainingGates": [
     "Fresh exactcommit currentV2 Linux/physicalSDK/20-testnative suite",
     "Coordinator matchingV2deploy preservingprivateR2/secrets/logging/rates; privatepairing andlivesyntheticstorageproof",
@@ -333,5 +346,7 @@
       "duration": "29m56s",
       "scope": "One actual launch/relaunch/orientation smoke XCTest; no Core Image/camera/Photos claim"
     }
-  }
+  },
+  "featureCommit": "cfec4ff2091f8f59dbbe83788e75e851b4bc63f1",
+  "toolingRemediation": "artifacts/security/keepsake-tooling-applied.json"
 }

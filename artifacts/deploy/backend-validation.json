@@ -33,7 +33,8 @@
     ],
     "logsAndTracesDisabled": true,
     "logpush": false,
-    "tailConsumers": []
+    "tailConsumers": [],
+    "manifestSHA256": "b7e5b11ee89e803ca950fbacb1feaa8181fe939fb11dad7fa3abdd45a879a39d"
   },
   "actualSmsRequests": 0,
   "deployedByThisExecutor": false,
@@ -52,5 +53,6 @@
     "Private pairing when owneriPadready",
     "Live synthetic upload/download/expiry/revoke proof",
     "Approved providereligibility and coordinator-owned cappedSMS test only"
-  ]
+  ],
+  "rootRepeatedSetup": "After separate Wrangler4.153.0 integration: frozen590packages/workspacetypecheck/293tests/50contracts/4faults/iOSexport passed; Worker output remainsbyteidentical"
 }

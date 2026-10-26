@@ -1,0 +1,39 @@
+{
+  "timestampUTC": "2026-10-26T18:19:33.095007+00:00",
+  "featureCommit": "cfec4ff2091f8f59dbbe83788e75e851b4bc63f1",
+  "change": "Only Wrangler4.152.0 to4.153.0 plus10lockentries; no app/native product source changes",
+  "rootApplied": true,
+  "wranglerVersion": "4.153.0",
+  "packageLockSHA256": "3e641bdf69fb8255425da63d4d1b827c0cf811c431ea64ab12a4c8fcfad55bf3",
+  "checks": {
+    "frozenSetup": "passed",
+    "packages": 590,
+    "workspaceTypecheck": "passed",
+    "tests": 293,
+    "pass": 293,
+    "fail": 0,
+    "skip": 0,
+    "ciContracts": 50,
+    "historicalFaults": 4,
+    "iosExportModules": 1045,
+    "iosExportSourceMapEntries": 1030
+  },
+  "logHashes": {
+    "keepsake-v2-tooling-setup.txt": "8c66f90b25141b5b4c833d8557a6342ec7cc55f7729fd10d13db509d20c7256f",
+    "keepsake-v2-tooling-contracts.txt": "b240584e90c7be76f0c04cf44b38cc491e55a62adec1026b1f454bffdf192ff9",
+    "keepsake-v2-tooling-faults.txt": "1984f4241ff0d2aa65de1441372fa6f2244a628c4ed32b0003fcc077e82044d9",
+    "keepsake-v2-tooling-maps.txt": "a4e0248ac6d3d15df9ca3e3571bf54e8fdca95b2dfd3629dc169f91d67abd394"
+  },
+  "isolatedCandidate": "artifacts/security/keepsake-tooling-candidate.json",
+  "auditCounts": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 8,
+    "critical": 0,
+    "total": 8
+  },
+  "nativeCurrentV2": "pending",
+  "deployed": false,
+  "realSmsRequests": 0
+}
