@@ -2,12 +2,29 @@
 
 Use a Mac with Xcode providing **Swift 6.2+**, the wedding iPad, Node 24 and CocoaPods 1.16.2. CI selects Xcode 26.3; Xcode 16.4 / Swift 6.1 cannot build the installed ExpoModulesJSI package. Check `xcodebuild -version` and `xcrun swift --version` first, and select the intended installation in Xcode's Locations settings if several are installed. Keep the iPad connected and unlocked. Apple signing/account access is separate from unsigned compilation; do not create certificates, buy membership or accept terms automatically.
 
-The tested native source is [`82703b6`](https://github.com/Xare123/WeddingIpadPhotoboothApp/commit/82703b627aa3df7d0a7e5e6a930c2612fda43891). Its [unsigned device-SDK Release build](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40258141808) and matching Linux checks passed. Build and sign from the review branch source on the Mac; CI does not supply an installable signed app. Actual iPad launch, camera, offline recovery, QR scans and signing expiry are still owner checks.
+Use reviewed handoff commit **`8e473ddd0faefe8d7dc6c097f0af707b992cb19e`**. Its app, backend and build code match native-tested source [`82703b6`](https://github.com/Xare123/WeddingIpadPhotoboothApp/commit/82703b627aa3df7d0a7e5e6a930c2612fda43891). The [unsigned device-SDK Release build](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40258141808) and matching Linux checks passed. CI does not supply an installable signed app. Actual iPad launch, camera, offline recovery, QR scans and signing expiry are still owner checks.
 
 ## Install a standalone release
 
-1. Clone the repository's `codex/wedding-photobooth-mvp` review branch and run `npm ci` from its root.
-2. Follow [iOS setup](IOS.md) to generate/open the native project. Confirm the final bundle identifier and an existing signing team in Xcode before capturing any event photos. The example identifier is not an established distribution identity. Keep the identifier in Expo's `apps/ipad/app.json` consistent with Xcode so a later prebuild does not replace it. Review any Apple account/profile/terms prompts yourself.
+1. On the Mac, check the selected tools, then make a fresh checkout at the reviewed commit:
+
+   ```sh
+   xcodebuild -version
+   xcrun swift --version
+   node --version
+   pod _1.16.2_ --version
+   git clone --branch codex/wedding-photobooth-mvp https://github.com/Xare123/WeddingIpadPhotoboothApp.git
+   cd WeddingIpadPhotoboothApp
+   git checkout --detach 8e473ddd0faefe8d7dc6c097f0af707b992cb19e
+   npm ci
+   cd apps/ipad
+   EXPO_PUBLIC_E2E_FIXTURE=0 EXPO_OFFLINE=1 EXPO_NO_TELEMETRY=1 node ../../node_modules/expo/bin/cli prebuild --platform ios --no-install
+   pod _1.16.2_ install --project-directory=ios
+   open ios/WeddingPhotobooth.xcworkspace
+   ```
+
+   Proceed with Swift **6.2 or newer**, Node **24**, and CocoaPods **1.16.2**. These are owner Mac instructions; the cloud agent has not executed the installation or signing steps on that Mac.
+2. Connect and unlock the iPad. Review the **Trust This Computer** pairing prompt for the owner's Mac. Enable **Developer Mode** when Xcode/iPadOS requires it (Settings → Privacy & Security → Developer Mode, followed by its reboot/confirmation). In Xcode, confirm the final bundle identifier and an existing signing team before capturing event photos. The example identifier is not an established distribution identity. Keep the identifier in Expo's `apps/ipad/app.json` consistent with Xcode so a later prebuild does not replace it. Review account/profile/terms prompts yourself.
 3. In the generated `WeddingPhotobooth.xcworkspace`, select the **WeddingPhotobooth** application scheme and the connected iPad. In **Product → Scheme → Edit Scheme → Run → Info**, choose **Release**, then use **Product → Run**. Keep the native test scheme for the separate synthetic simulator checks. This Xcode path requires owner signing and has not been executed by the Linux agent.
 
    The equivalent Expo CLI route, after signing is configured, is:

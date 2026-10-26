@@ -198,7 +198,7 @@
     "ready_seconds": 2,
     "http_status": 200,
     "owned_process_group_stopped": true,
-    "macos_result": "pending_hosted_run"
+    "macos_result": "UI mode reached project initialization then stalled before listening; unresolved. Release mode does not start Metro."
   },
   "native_release_build": {
     "result": "passed",
@@ -212,7 +212,17 @@
     "exit_code": 0,
     "native_app_verified": true,
     "specific_build_diagnostic": "Prior Swift6.1/6.2 mismatch resolved with installedXcode26.3; successful Releaseevidence verified.",
-    "commit": "82703b627aa3df7d0a7e5e6a930c2612fda43891"
+    "commit": "82703b627aa3df7d0a7e5e6a930c2612fda43891",
+    "coverage": [
+      "physical iOS SDK Release build",
+      "nonempty executable",
+      "nonempty embedded main.jsbundle",
+      "matching bundle identifier",
+      "iPad UIDeviceFamily",
+      "iPhoneOS supported platform",
+      "embedded bundle SHA-256 recorded by CI"
+    ],
+    "inspection_boundary": "Successful public exact-SHA annotation and its validation code inspected; raw hosted status.json/release-evidence.json not downloaded in this executor because api.github.com remains outside the runtime allowlist."
   },
   "native_compilation_attempted": true,
   "native_compilation_passed": true,
