@@ -18,6 +18,131 @@ export function nativeModeSettings(mode) {
   });
 }
 
+// The observed cold Intel preparation consumed about eleven minutes before
+// compilation. Keep separate finite preparation/build/cleanup allowances; the
+// workflow backstop must exceed their sum, rather than interrupting Xcode first.
+export const NATIVE_RUNTIME_LIMITS = Object.freeze({
+  preparationMs: 18 * 60_000,
+  xcodeMs: 25 * 60_000,
+  cleanupMs: 2 * 60_000,
+  processStopMs: 12_000,
+  nativeStepMinutes: 48,
+  jobMinutes: 75,
+});
+
+export function simulatorBuildArchitecture(nodeArchitecture, machine) {
+  const expected = { x64: 'x86_64', arm64: 'arm64' }[nodeArchitecture];
+  if (!expected || String(machine).trim() !== expected) {
+    throw new Error('Simulator build requires matching supported Node and host architectures');
+  }
+  return expected;
+}
+
+export function simulatorArchitectureSettings(mode, architecture) {
+  if (mode !== 'release-runtime') return [];
+  if (!['x86_64', 'arm64'].includes(architecture)) throw new Error('Unsupported simulator build architecture');
+  return ['ONLY_ACTIVE_ARCH=YES', 'ARCHS=' + architecture];
+}
+
+// Inspect only membership/state in the process group created by detached spawn.
+// No arguments, environments or unrelated process records are persisted.
+export function ownedProcessGroupState(pid, { signal = process.kill, run = spawnSync } = {}) {
+  if (!Number.isSafeInteger(pid) || pid <= 1 || pid === process.pid) throw new Error('Invalid owned process group');
+  try { signal(-pid, 0); }
+  catch (error) {
+    if (error?.code === 'ESRCH') return { quiescent: true, live: 0, zombies: 0 };
+    return { quiescent: false, live: null, zombies: null, observation: 'group-check-unavailable' };
+  }
+  // A Linux container can retain reparented zombies. They cannot write outputs,
+  // but kill(group,0) alone would wait forever for their init to reap them.
+  const members = run('pgrep', ['-g', String(pid)], { encoding: 'utf8', timeout: 500, maxBuffer: 32_768 });
+  if (members.error || members.signal || ![0, 1].includes(members.status)) {
+    return { quiescent: false, live: null, zombies: null, observation: 'membership-unavailable' };
+  }
+  const ids = (members.stdout ?? '').trim().split(/\s+/).filter(Boolean);
+  if (!ids.length) {
+    try { signal(-pid, 0); }
+    catch (error) { if (error?.code === 'ESRCH') return { quiescent: true, live: 0, zombies: 0 }; }
+    return { quiescent: false, live: null, zombies: null, observation: 'membership-race' };
+  }
+  if (ids.length > 512 || ids.some(value => !/^[1-9]\d*$/.test(value))) {
+    return { quiescent: false, live: null, zombies: null, observation: 'membership-bound' };
+  }
+  const states = run('ps', ['-o', 'pid=,pgid=,stat=', '-p', ids.join(',')], { encoding: 'utf8', timeout: 500, maxBuffer: 65_536 });
+  if (states.error || states.signal || states.status !== 0) {
+    return { quiescent: false, live: null, zombies: null, observation: 'state-unavailable' };
+  }
+  const rows = (states.stdout ?? '').trim().split('\n').filter(Boolean).map(line => line.trim().match(/^(\d+)\s+(\d+)\s+(\S+)$/));
+  if (!rows.length || rows.some(row => !row || Number(row[2]) !== pid || !ids.includes(row[1]))) {
+    return { quiescent: false, live: null, zombies: null, observation: 'state-invalid' };
+  }
+  const live = rows.filter(row => !row[3].startsWith('Z')).length;
+  if (live === 0) {
+    // A previously live member can fork and exit between pgrep and ps. Require
+    // a second membership snapshot containing only the observed zombies before
+    // treating an otherwise existing group as unable to write.
+    const again = run('pgrep', ['-g', String(pid)], { encoding: 'utf8', timeout: 500, maxBuffer: 32_768 });
+    const current = (again.stdout ?? '').trim().split(/\s+/).filter(Boolean);
+    const zombieIds = new Set(rows.map(row => row[1]));
+    if (again.error || again.signal || ![0, 1].includes(again.status) || current.some(id => !zombieIds.has(id))) {
+      return { quiescent: false, live: null, zombies: rows.length, observation: 'membership-changed' };
+    }
+  }
+  return { quiescent: live === 0, live, zombies: rows.length - live };
+}
+
+export async function stopOwnedProcessGroup(child, {
+  graceMs = 5_000, killWaitMs = 5_000, pollMs = 50,
+  signal = process.kill, state = pid => ownedProcessGroupState(pid),
+  now = () => performance.now(), wait = ms => new Promise(resolve => setTimeout(resolve, ms)),
+} = {}) {
+  const pid = child?.pid;
+  if (!Number.isSafeInteger(pid) || pid <= 1 || pid === process.pid || !Array.isArray(child?.spawnargs)) {
+    throw new Error('Only a spawned owned process group can be stopped');
+  }
+  for (const value of [graceMs, killWaitMs, pollMs]) {
+    if (!Number.isFinite(value) || value <= 0 || value > NATIVE_RUNTIME_LIMITS.processStopMs) throw new Error('Invalid owned process stop budget');
+  }
+  if (graceMs + killWaitMs > NATIVE_RUNTIME_LIMITS.processStopMs) throw new Error('Invalid owned process stop budget');
+  const started = now(), signals = [];
+  const send = name => {
+    try { signal(-pid, name); signals.push(name); }
+    catch (error) { if (error?.code !== 'ESRCH') throw new Error('Owned process group signal failed'); }
+  };
+  const until = async deadline => {
+    let result;
+    do {
+      result = state(pid);
+      if (result.quiescent) return result;
+      const remaining = deadline - now();
+      if (remaining <= 0) return result;
+      await wait(Math.min(pollMs, remaining));
+    } while (true);
+  };
+  let result = state(pid);
+  if (!result.quiescent) { send('SIGTERM'); result = await until(now() + graceMs); }
+  if (!result.quiescent) { send('SIGKILL'); result = await until(now() + killWaitMs); }
+  const evidence = { pid, signals, ...result, seconds: Math.round((now() - started) / 1000) };
+  if (!result.quiescent) {
+    const error = new Error('Owned process group did not become quiescent before its cleanup deadline');
+    error.processGroup = evidence;
+    throw error;
+  }
+  return evidence;
+}
+
+export function runtimeOutputRemovalAllowed(evidence) {
+  return evidence?.mode === 'release-runtime' && evidence?.runnerResult === 'passed' &&
+    evidence?.allOwnedGroupsQuiescent === true && evidence?.safeToRemoveBuildOutputs === true;
+}
+
+export function runtimeResultInspectionAllowed(evidence) {
+  // A cleanly exited XCTest failure is still valuable evidence. Its completed
+  // result may be inspected/uploaded even though output removal stays blocked.
+  return evidence?.mode === 'release-runtime' && evidence?.allOwnedGroupsQuiescent === true &&
+    evidence?.safeToInspectResultBundle === true;
+}
+
 const runtimeSourceSpecs = [
   ['apps/ipad/native-tests/WeddingPhotoboothReleaseSmokeTests.swift', 1],
   ['apps/ipad/modules/wedding-photo-effects/ios/PhotoEffectsEngine.swift', 0],

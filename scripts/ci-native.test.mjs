@@ -5,7 +5,7 @@ import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createServer } from 'node:http';
-import { nativeModeSettings, requireNativeTestPlan, nativeRuntimeResources, nativeRuntimeSources, verifyNativeRuntimeSources, passingExpectedXCTestCounts, commandStreams, MAX_MACHINE_STDOUT, metroErrorCodes, metroHTTPStatus, ownedProcessTree, parseNamedJSON, passingXCTestCounts, requireSwiftTools62, resolveExpoEntry, selectIpadSimulator, verifyReleaseApp, waitForMetro } from './ci-native-contract.mjs';
+import { NATIVE_RUNTIME_LIMITS, simulatorBuildArchitecture, simulatorArchitectureSettings, ownedProcessGroupState, stopOwnedProcessGroup, runtimeOutputRemovalAllowed, runtimeResultInspectionAllowed, nativeModeSettings, requireNativeTestPlan, nativeRuntimeResources, nativeRuntimeSources, verifyNativeRuntimeSources, passingExpectedXCTestCounts, commandStreams, MAX_MACHINE_STDOUT, metroErrorCodes, metroHTTPStatus, ownedProcessTree, parseNamedJSON, passingXCTestCounts, requireSwiftTools62, resolveExpoEntry, selectIpadSimulator, verifyReleaseApp, waitForMetro } from './ci-native-contract.mjs';
 import { annotationText, bounded, diagnosticLines, publicAnnotations, redact, workflowData } from './ci-summary.mjs';
 
 const ipad = { udid: '11111111-1111-4111-8111-111111111111', name: 'iPad Pro 13-inch (M4)',
@@ -618,4 +618,137 @@ test('clean native JPEG resources have bounded bytes and exact copied hash manif
   writeFileSync(first, Buffer.alloc(2 * 1024 * 1024 + 1));
   assert.throws(() => nativeRuntimeResources(root), /unbounded clean JPEG/);
   assert.throws(() => verifyNativeRuntimeSources(plan, root));
+});
+
+test('Release simulator builds exactly the verified host architecture without altering device or Debug settings', () => {
+  assert.equal(simulatorBuildArchitecture('x64', 'x86_64\n'), 'x86_64');
+  assert.equal(simulatorBuildArchitecture('arm64', 'arm64\n'), 'arm64');
+  for (const [node, host] of [['x64', 'arm64'], ['arm64', 'x86_64'], ['ia32', 'i386'], ['x64', 'x86_64 EXTRA']]) {
+    assert.throws(() => simulatorBuildArchitecture(node, host), /matching supported/);
+  }
+  assert.deepEqual(simulatorArchitectureSettings('release-runtime', 'x86_64'), ['ONLY_ACTIVE_ARCH=YES', 'ARCHS=x86_64']);
+  assert.deepEqual(simulatorArchitectureSettings('release-runtime', 'arm64'), ['ONLY_ACTIVE_ARCH=YES', 'ARCHS=arm64']);
+  assert.throws(() => simulatorArchitectureSettings('release-runtime', 'both'));
+  assert.deepEqual(simulatorArchitectureSettings('release-build', 'x86_64'), []);
+  assert.deepEqual(simulatorArchitectureSettings('ui-tests', 'arm64'), []);
+  const runner = readFileSync(new URL('./ci-native.mjs', import.meta.url), 'utf8');
+  const device = runner.split("if (mode === 'release-build') {")[1].split('const app =')[0];
+  assert.ok(device.includes("'-sdk', 'iphoneos', '-destination', 'generic/platform=iOS'"));
+  assert.ok(!/ONLY_ACTIVE_ARCH|ARCHS=|simulatorArchitectureSettings/.test(device));
+});
+
+test('runtime preparation, Xcode, stop and cleanup budgets fit the workflow backstop without another boot extension', () => {
+  const workflow = readFileSync(new URL('../.github/workflows/ios-release-runtime.yml', import.meta.url), 'utf8');
+  const runner = readFileSync(new URL('./ci-native.mjs', import.meta.url), 'utf8');
+  const nativeMinutes = Number(workflow.match(/id: native\s+#[^\n]*\n\s*#[^\n]*\n\s*timeout-minutes:\s*(\d+)/)?.[1]);
+  const jobMinutes = Number(workflow.match(/\n    timeout-minutes:\s*(\d+)/)?.[1]);
+  assert.equal(nativeMinutes, NATIVE_RUNTIME_LIMITS.nativeStepMinutes);
+  assert.equal(jobMinutes, NATIVE_RUNTIME_LIMITS.jobMinutes);
+  assert.equal(NATIVE_RUNTIME_LIMITS.preparationMs, 18 * 60_000);
+  assert.equal(NATIVE_RUNTIME_LIMITS.xcodeMs, 25 * 60_000);
+  assert.ok(NATIVE_RUNTIME_LIMITS.preparationMs + NATIVE_RUNTIME_LIMITS.xcodeMs +
+    NATIVE_RUNTIME_LIMITS.cleanupMs + NATIVE_RUNTIME_LIMITS.processStopMs < nativeMinutes * 60_000);
+  assert.ok(jobMinutes >= nativeMinutes + 10 + 3 + 5 + 5);
+  assert.match(runner, /command\('simulator-ready'[^\n]+timeout: 600_000/);
+  assert.match(runner, /timeout = Math\.min\(timeout, phaseDeadline - Date\.now\(\)\)/);
+  assert.match(runner, /await stop\(record\)/);
+  assert.ok(!runner.includes('process.exit(code)'));
+});
+
+async function waitUntil(check, milliseconds = 3000) {
+  const deadline = performance.now() + milliseconds;
+  while (!check()) {
+    if (performance.now() >= deadline) throw new Error('Process fixture readiness deadline');
+    await new Promise(resolve => setTimeout(resolve, 10));
+  }
+}
+
+function ownedWriterFixture(t, { exitParent = false } = {}) {
+  const directory = mkdtempSync(join(tmpdir(), 'wedding-owned-writers-'));
+  const file = join(directory, 'writes.txt');
+  const writer = `const fs=require('node:fs');process.on('SIGTERM',()=>{});setInterval(()=>fs.appendFileSync(${JSON.stringify(file)},'x'),10);`;
+  const parent = `const{spawn}=require('node:child_process');process.on('SIGTERM',()=>{});` +
+    `spawn(process.execPath,['-e',${JSON.stringify(writer)}],{stdio:'ignore'});` +
+    (exitParent ? 'setTimeout(()=>process.exit(0),150);' : 'setInterval(()=>{},1000);');
+  const child = spawn(process.execPath, ['-e', parent], { detached: true, stdio: 'ignore' });
+  const closed = new Promise(resolveClose => child.once('close', resolveClose));
+  t.after(async () => {
+    try { process.kill(-child.pid, 'SIGKILL'); } catch {}
+    await Promise.race([closed, new Promise(resolve => setTimeout(resolve, 500))]);
+    rmSync(directory, { recursive: true, force: true });
+  });
+  return { child, closed, file };
+}
+
+test('owned group shutdown waits through SIGKILL for a real stubborn grandchild and leaves unrelated processes alive', { timeout: 8000 }, async t => {
+  const fixture = ownedWriterFixture(t);
+  const unrelated = spawn(process.execPath, ['-e', 'setInterval(()=>{},1000)'], { detached: true, stdio: 'ignore' });
+  const unrelatedClosed = new Promise(resolveClose => unrelated.once('close', resolveClose));
+  t.after(async () => { try { process.kill(-unrelated.pid, 'SIGKILL'); } catch {} await unrelatedClosed; });
+  await waitUntil(() => { try { return readFileSync(fixture.file).length > 2; } catch { return false; } });
+  const result = await stopOwnedProcessGroup(fixture.child, { graceMs: 75, killWaitMs: 1500, pollMs: 20 });
+  assert.equal(result.quiescent, true);
+  assert.deepEqual(result.signals, ['SIGTERM', 'SIGKILL']);
+  await fixture.closed;
+  const count = readFileSync(fixture.file).length;
+  await new Promise(resolve => setTimeout(resolve, 100));
+  assert.equal(readFileSync(fixture.file).length, count, 'No grandchild may continue writing after cleanup returns');
+  assert.equal(unrelated.exitCode, null);
+  assert.equal(unrelated.signalCode, null);
+});
+
+test('a parent exit does not prove quiescence while its reparented process-group writer still runs', { timeout: 8000 }, async t => {
+  const fixture = ownedWriterFixture(t, { exitParent: true });
+  await waitUntil(() => fixture.child.exitCode === 0);
+  assert.equal(ownedProcessGroupState(fixture.child.pid).quiescent, false);
+  const result = await stopOwnedProcessGroup(fixture.child, { graceMs: 75, killWaitMs: 1500, pollMs: 20 });
+  assert.equal(result.quiescent, true);
+  const count = readFileSync(fixture.file).length;
+  await new Promise(resolve => setTimeout(resolve, 100));
+  assert.equal(readFileSync(fixture.file).length, count);
+});
+
+test('unknown group state fails closed within its stop budget instead of granting cleanup permission', async () => {
+  let clock = 0;
+  const signals = [];
+  await assert.rejects(stopOwnedProcessGroup({ pid: 123456, spawnargs: ['fixture'] }, {
+    graceMs: 5, killWaitMs: 5, pollMs: 1, now: () => clock,
+    wait: async ms => { clock += ms; }, signal: (pid, signal) => signals.push({ pid, signal }),
+    state: () => ({ quiescent: false, live: null, observation: 'unavailable' }),
+  }), error => error.processGroup?.quiescent === false && error.message.includes('cleanup deadline'));
+  assert.equal(clock, 10);
+  assert.deepEqual(signals, [{ pid: -123456, signal: 'SIGTERM' }, { pid: -123456, signal: 'SIGKILL' }]);
+  for (const child of [{ pid: 1, spawnargs: [] }, { pid: process.pid, spawnargs: [] }, { pid: -1 }, {}]) {
+    await assert.rejects(stopOwnedProcessGroup(child), /owned process group/);
+  }
+});
+
+test('zombie-only process snapshots cannot hide a newly forked live group member', () => {
+  let reads = 0;
+  const run = program => {
+    if (program === 'ps') return { status: 0, stdout: '123456 123456 Z\n' };
+    return { status: 0, stdout: ++reads === 1 ? '123456\n' : '123456\n123457\n' };
+  };
+  assert.deepEqual(ownedProcessGroupState(123456, { signal: () => {}, run }),
+    { quiescent: false, live: null, zombies: 1, observation: 'membership-changed' });
+});
+
+test('failed valid XCTest results remain inspectable while interrupted or unknown writers block output removal', () => {
+  const passed = { mode: 'release-runtime', runnerResult: 'passed', allOwnedGroupsQuiescent: true,
+    safeToRemoveBuildOutputs: true, safeToInspectResultBundle: true };
+  assert.equal(runtimeOutputRemovalAllowed(passed), true);
+  assert.equal(runtimeResultInspectionAllowed(passed), true);
+  const failedTests = { ...passed, runnerResult: 'failed', safeToRemoveBuildOutputs: false };
+  assert.equal(runtimeOutputRemovalAllowed(failedTests), false);
+  assert.equal(runtimeResultInspectionAllowed(failedTests), true, 'Clean failed assertions retain valid xcresults');
+  for (const invalid of [undefined, {}, { ...passed, allOwnedGroupsQuiescent: false },
+    { ...passed, safeToRemoveBuildOutputs: false, safeToInspectResultBundle: false }, { ...passed, mode: 'release-build' }]) {
+    assert.equal(runtimeOutputRemovalAllowed(invalid), false);
+    assert.equal(runtimeResultInspectionAllowed(invalid), false);
+  }
+  const workflow = readFileSync(new URL('../.github/workflows/ios-release-runtime.yml', import.meta.url), 'utf8');
+  assert.ok(workflow.includes('!${{ runner.temp }}/wedding-native-diagnostics/native-tests.xcresult/**'));
+  assert.ok(workflow.includes("steps.bound_result.outputs.include_result == 'true'"));
+  assert.ok(workflow.includes('runtimeResultInspectionAllowed(evidence)'));
+  assert.ok(workflow.includes('runtimeOutputRemovalAllowed(evidence)'));
 });

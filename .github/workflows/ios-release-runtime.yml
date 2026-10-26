@@ -22,7 +22,8 @@ jobs:
     # Standard Intel label avoids the ARM capacity failure observed on macos-15.
     # GitHub runner-images lists Xcode26.3 on this image; no larger runner is used.
     runs-on: macos-15-intel
-    timeout-minutes: 45
+    # Bounded install/bootstrap steps plus the phase-budgeted native invocation.
+    timeout-minutes: 75
     defaults:
       run:
         shell: bash
@@ -88,7 +89,9 @@ jobs:
           } 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/cocoapods-install.log"
       - name: Verify selected unsigned native target
         id: native
-        timeout-minutes: 35
+        # 18m cumulative preparation + 25m Xcode + 2m cleanup + stop grace <48m.
+        # Architecture restriction addresses the observed duplicate cold build.
+        timeout-minutes: 48
         run: node scripts/ci-native.mjs "$WEDDING_NATIVE_MODE" 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/native-invocation.log"
       - name: Publish bounded redacted diagnostics in the public job summary
         if: always()
@@ -105,23 +108,67 @@ jobs:
                 steps.native.outcome == 'failure' && 'native-invocation' || '' }}
         run: node scripts/ci-summary.mjs native
       - name: Bound fresh simulator result bundle (no app binaries)
+        id: bound_result
         if: always()
         run: |
-          result="$RUNNER_TEMP/wedding-native-diagnostics/native-tests.xcresult"
-          if test -d "$result"; then
-            xcrun xcresulttool get test-results summary --path "$result" > "$RUNNER_TEMP/wedding-native-diagnostics/xctest-summary.json" || true
-            if test "$(du -sk "$result" | cut -f1)" -gt 65536; then
-              rm -rf "$result"
-              echo 'xcresult exceeded 64 MiB; bounded logs and test summary retained.' > "$RUNNER_TEMP/wedding-native-diagnostics/xcresult-size.log"
-            fi
-          fi
+          node --input-type=module - <<'JS'
+          import {appendFileSync, existsSync, readFileSync, writeFileSync} from 'node:fs';
+          import {join} from 'node:path';
+          import {spawnSync} from 'node:child_process';
+          import {runtimeResultInspectionAllowed} from './scripts/ci-native-contract.mjs';
+          import {bounded} from './scripts/ci-summary.mjs';
+          const directory = join(process.env.RUNNER_TEMP, 'wedding-native-diagnostics');
+          const result = join(directory, 'native-tests.xcresult');
+          let evidence, include = false;
+          try { evidence = JSON.parse(readFileSync(join(directory, 'process-cleanup.json'), 'utf8')); } catch {}
+          if (existsSync(result) && runtimeResultInspectionAllowed(evidence)) {
+            // Clean assertion failures also produce valuable valid xcresults.
+            const summary = spawnSync('xcrun', ['xcresulttool', 'get', 'test-results', 'summary', '--path', result],
+              {encoding: 'utf8', timeout: 30_000, maxBuffer: 1_048_576});
+            if (summary.status === 0) {
+              try {
+                const safeSummary = bounded(JSON.stringify(JSON.parse(summary.stdout)), 1, 1_048_576);
+                JSON.parse(safeSummary);
+                writeFileSync(join(directory, 'xctest-summary.json'), safeSummary + '\n');
+                const size = spawnSync('du', ['-sk', result], {encoding: 'utf8', timeout: 10_000, maxBuffer: 8192});
+                const kib = Number.parseInt(size.stdout, 10);
+                include = size.status === 0 && Number.isSafeInteger(kib) && kib > 0 && kib <= 65_536;
+              } catch {}
+            }
+          }
+          if (!include) writeFileSync(join(directory, 'xcresult-hold.log'),
+            'Raw result retained on ephemeral runner and excluded from upload: incomplete, unverified quiescence, invalid or over 64 MiB. Bounded logs/status retained.\n');
+          appendFileSync(process.env.GITHUB_OUTPUT, 'include_result=' + include + '\n');
+          JS
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:
           name: release-runtime-evidence-${{ github.sha }}
-          path: ${{ runner.temp }}/wedding-native-diagnostics
+          path: |
+            ${{ runner.temp }}/wedding-native-diagnostics
+            !${{ runner.temp }}/wedding-native-diagnostics/native-tests.xcresult/**
           if-no-files-found: ignore
+          retention-days: 3
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always() && steps.bound_result.outputs.include_result == 'true'
+        with:
+          name: release-runtime-xcresult-${{ github.sha }}
+          path: ${{ runner.temp }}/wedding-native-diagnostics/native-tests.xcresult
+          if-no-files-found: error
           retention-days: 3
       - name: Remove generated native build files
         if: always()
-        run: rm -rf "$RUNNER_TEMP/wedding-native-derived" apps/ipad/ios
+        run: |
+          node --input-type=module - <<'JS'
+          import {readFileSync, rmSync} from 'node:fs';
+          import {join} from 'node:path';
+          import {runtimeOutputRemovalAllowed} from './scripts/ci-native-contract.mjs';
+          let evidence;
+          try { evidence = JSON.parse(readFileSync(join(process.env.RUNNER_TEMP, 'wedding-native-diagnostics/process-cleanup.json'), 'utf8')); } catch {}
+          if (runtimeOutputRemovalAllowed(evidence)) {
+            rmSync(join(process.env.RUNNER_TEMP, 'wedding-native-derived'), {recursive: true, force: true});
+            rmSync('apps/ipad/ios', {recursive: true, force: true});
+          } else {
+            console.log('Build output removal skipped: interrupted or unknown Xcode writer state. Ephemeral runner teardown owns final disposal.');
+          }
+          JS

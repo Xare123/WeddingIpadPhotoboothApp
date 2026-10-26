@@ -1,9 +1,9 @@
-import { spawn, spawnSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { bounded, redact } from './ci-summary.mjs';
-import { nativeModeSettings, requireNativeTestPlan, verifyNativeRuntimeSources, passingExpectedXCTestCounts, commandStreams, parseNamedJSON, passingXCTestCounts, selectIpadSimulator, waitForMetro, metroErrorCodes, resolveExpoEntry, ownedProcessTree, verifyReleaseApp, requireSwiftTools62 } from './ci-native-contract.mjs';
+import { NATIVE_RUNTIME_LIMITS, simulatorBuildArchitecture, simulatorArchitectureSettings, stopOwnedProcessGroup, nativeModeSettings, requireNativeTestPlan, verifyNativeRuntimeSources, passingExpectedXCTestCounts, commandStreams, parseNamedJSON, passingXCTestCounts, selectIpadSimulator, waitForMetro, metroErrorCodes, resolveExpoEntry, ownedProcessTree, verifyReleaseApp, requireSwiftTools62 } from './ci-native-contract.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const diagnostics = process.env.WEDDING_DIAGNOSTICS_DIR ?? join(process.env.RUNNER_TEMP ?? '/tmp', 'wedding-native-diagnostics');
@@ -15,18 +15,38 @@ const status = { mode, nativeBuild: 'unrun', result: 'running', stages: [], fixt
 mkdirSync(diagnostics, { recursive: true });
 const saveStatus = () => writeFileSync(join(diagnostics, 'status.json'), JSON.stringify(status, null, 2));
 let metro, simulator, createdHere = false, bootedHere = false;
-const children = new Set();
+const ownedGroups = new Set();
+let cancellation, cleanupPromise, runtimePhase = 'preparation';
+let phaseDeadline = mode === 'release-runtime' ? Date.now() + NATIVE_RUNTIME_LIMITS.preparationMs : Infinity;
+
+function own(child) {
+  const record = { child, spawned: Number.isSafeInteger(child.pid), forced: false };
+  ownedGroups.add(record);
+  return record;
+}
+function stop(record, interrupted = false) {
+  record.forced ||= interrupted;
+  if (!record.stopPromise) {
+    record.stopPromise = (!record.spawned
+      ? Promise.resolve({ pid: null, quiescent: true, observation: 'spawn-failed-no-group' })
+      : stopOwnedProcessGroup(record.child, cancellation ? { graceMs: 1_000, killWaitMs: 2_000 } : {}))
+      .then(evidence => { record.evidence = evidence; return evidence; })
+      .catch(error => {
+        record.evidence = error.processGroup ?? { pid: record.child.pid, quiescent: false, observation: 'stop-unavailable' };
+        throw error;
+      });
+  }
+  return record.stopPromise;
+}
 for (const [signal, code] of [['SIGINT', 130], ['SIGTERM', 143]]) {
   process.once(signal, () => {
+    if (cancellation) return;
+    cancellation = { signal, code };
     status.result = 'cancelled'; status.error = `Runner received ${signal}`; saveStatus();
-    for (const child of [...children, ...(metro ? [metro] : [])]) {
-      try { process.kill(-child.pid, 'SIGTERM'); } catch {}
-    }
-    if (simulator && createdHere) {
-      spawnSync('xcrun', ['simctl', 'shutdown', simulator.udid], { timeout: 3000, stdio: 'ignore' });
-      spawnSync('xcrun', ['simctl', 'delete', simulator.udid], { timeout: 3000, stdio: 'ignore' });
-    }
-    process.exit(code);
+    // Let the pending command unwind into awaited cleanup. Exiting immediately
+    // after SIGTERM left compiler grandchildren writing ModuleCache during rm.
+    for (const record of ownedGroups) if (!record.evidence?.quiescent) void stop(record, true).catch(() => {});
+    process.exitCode = code;
   });
 }
 // No credentials are required by the public native test. Avoid propagating
@@ -39,10 +59,20 @@ function command(name, binary, args, { cwd = root, timeout = 180_000, allowFailu
     const started = Date.now();
     const entry = { name, result: 'running' };
     status.stages.push(entry); saveStatus();
+    if (cancellation && runtimePhase !== 'cleanup') {
+      entry.result = 'failed'; saveStatus(); reject(new Error(name + ': runner cancelled')); return;
+    }
+    if (mode === 'release-runtime' && runtimePhase !== 'xcode') {
+      timeout = Math.min(timeout, phaseDeadline - Date.now());
+      if (timeout <= 0) {
+        entry.result = 'failed'; entry.seconds = 0; saveStatus();
+        reject(new Error(name + ': runtime ' + runtimePhase + ' budget exhausted')); return;
+      }
+    }
     const lines = [], pending = { stdout: '', stderr: '' };
     let timedOut = false, captureError;
     const child = spawn(binary, args, { cwd, env, detached: true, stdio: ['ignore', 'pipe', 'pipe'] });
-    children.add(child);
+    const record = own(child);
     const collect = (chunk, stream) => {
       // Complete machine output stays in capped memory, never in console/file
       // diagnostics. Stderr still receives the normal bounded redacted log.
@@ -56,20 +86,18 @@ function command(name, binary, args, { cwd = root, timeout = 180_000, allowFailu
         process.stdout.write(safe + '\n');
       }
     };
-    const stop = () => {
-      try { process.kill(-child.pid, 'SIGTERM'); } catch {}
-      setTimeout(() => { try { process.kill(-child.pid, 'SIGKILL'); } catch {} }, 5000).unref();
-    };
     const streams = commandStreams(name, { captureStdout: !!structured, stdoutLimit, onLog: collect });
     child.stdout.on('data', chunk => {
       try { streams.stdout(chunk); }
-      catch (error) { if (!captureError) { captureError = error; stop(); } }
+      catch (error) { if (!captureError) { captureError = error; void stop(record, true).catch(() => {}); } }
     });
     child.stderr.on('data', chunk => streams.stderr(chunk));
-    const timer = setTimeout(() => { timedOut = true; stop(); }, timeout);
+    const timer = setTimeout(() => { timedOut = true; void stop(record, true).catch(() => {}); }, timeout);
     child.on('error', error => { pending.stderr += error.message; });
-    child.on('close', (code, signal) => {
-      clearTimeout(timer); children.delete(child);
+    child.on('close', async (code, signal) => {
+      clearTimeout(timer);
+      let groupError;
+      try { await stop(record); } catch (error) { groupError = error; }
       for (const tail of Object.values(pending)) if (tail) lines.push(redact(tail));
       const output = bounded(lines.join('\n'), 1200, 200_000);
       writeFileSync(join(diagnostics, name + '.log'), output);
@@ -80,11 +108,16 @@ function command(name, binary, args, { cwd = root, timeout = 180_000, allowFailu
           if (structured === 'json') json = parseNamedJSON(name, stdout);
         } catch (error) { captureError = error; }
       }
-      entry.result = code === 0 && !timedOut && !captureError ? 'passed' : allowFailure ? 'unavailable' : 'failed';
+      const cancelled = !!cancellation && runtimePhase !== 'cleanup';
+      entry.result = code === 0 && !timedOut && !captureError && !groupError && !cancelled ? 'passed' : allowFailure ? 'unavailable' : 'failed';
       entry.seconds = Math.round((Date.now() - started) / 1000);
-      entry.exitCode = code; entry.signal = signal; saveStatus();
-      if ((code !== 0 || timedOut || captureError) && !allowFailure) {
-        reject(captureError ?? new Error(name + (timedOut ? ' timed out' : ' failed (exit ' + (code ?? signal) + ')')));
+      entry.exitCode = code; entry.signal = signal;
+      entry.processGroup = record.evidence;
+      entry.timedOut = timedOut;
+      if (name === 'xcode-test') status.xcodeFinishedNormally = !timedOut && !captureError && !groupError && !cancelled && !signal;
+      saveStatus();
+      if ((code !== 0 || timedOut || captureError || groupError || cancelled) && !allowFailure) {
+        reject(captureError ?? groupError ?? new Error(name + (timedOut ? ' timed out' : cancelled ? ' cancelled' : ' failed (exit ' + (code ?? signal) + ')')));
       } else resolveCommand({ output, stdout, json, code });
     });
   });
@@ -104,16 +137,31 @@ async function asyncValidationStage(name, validate) {
   finally { entry.seconds = Math.round((Date.now() - started) / 1000); saveStatus(); }
 }
 async function cleanup() {
-  for (const child of children) { try { process.kill(-child.pid, 'SIGTERM'); } catch {} }
-  if (metro) {
-    try { process.kill(-metro.pid, 'SIGTERM'); } catch {}
-    await new Promise(resolveWait => setTimeout(resolveWait, 500));
-    try { process.kill(-metro.pid, 'SIGKILL'); } catch {}
-  }
-  if (simulator && createdHere) {
-    if (bootedHere) await command('simulator-shutdown', 'xcrun', ['simctl', 'shutdown', simulator.udid], { timeout: 30_000, allowFailure: true });
-    await command('simulator-delete', 'xcrun', ['simctl', 'delete', simulator.udid], { timeout: 30_000, allowFailure: true });
-  }
+  if (cleanupPromise) return cleanupPromise;
+  cleanupPromise = (async () => {
+    runtimePhase = 'cleanup'; phaseDeadline = Date.now() + NATIVE_RUNTIME_LIMITS.cleanupMs;
+    await Promise.allSettled([...ownedGroups].map(record => stop(record, !record.evidence?.quiescent)));
+    const saveCleanupEvidence = () => {
+      const allOwnedGroupsQuiescent = [...ownedGroups].every(record => record.evidence?.quiescent === true);
+      status.processCleanup = {
+        mode, runnerResult: status.result, allOwnedGroupsQuiescent,
+        // Do not infer that an interrupted global Xcode build service is idle
+        // from only its original parent's exit. Preserve outputs on failure.
+        safeToRemoveBuildOutputs: status.result === 'passed' && allOwnedGroupsQuiescent && ![...ownedGroups].some(record => record.forced),
+        safeToInspectResultBundle: status.xcodeFinishedNormally === true && allOwnedGroupsQuiescent,
+        groups: [...ownedGroups].map(record => record.evidence),
+      };
+      writeFileSync(join(diagnostics, 'process-cleanup.json'), JSON.stringify(status.processCleanup, null, 2) + '\n'); saveStatus();
+    };
+    saveCleanupEvidence();
+    if (simulator && createdHere && !cancellation) {
+      if (bootedHere) await command('simulator-shutdown', 'xcrun', ['simctl', 'shutdown', simulator.udid], { timeout: 30_000, allowFailure: true });
+      if (!cancellation) await command('simulator-delete', 'xcrun', ['simctl', 'delete', simulator.udid], { timeout: 30_000, allowFailure: true });
+    }
+    if (cancellation && simulator && createdHere) status.simulatorCleanup = 'Deferred to ephemeral runner teardown after cancellation; no new cleanup subprocess spawned';
+    saveCleanupEvidence();
+  })();
+  return cleanupPromise;
 }
 async function main() {
   if (!['release-build', 'ui-tests', 'release-runtime'].includes(mode)) throw new Error('Native mode must be release-build, release-runtime or ui-tests');
@@ -122,6 +170,11 @@ async function main() {
   const tools = await command('toolchain', 'xcodebuild', ['-version']);
   const swift = await command('swift-toolchain', 'xcrun', ['swift', '--version']);
   status.swiftVersion = validationStage('swift-compatibility', () => requireSwiftTools62(swift.output));
+  if (mode === 'release-runtime') {
+    const host = await command('host-architecture', 'uname', ['-m'], { structured: 'text', timeout: 30_000 });
+    status.simulatorArchitecture = validationStage('simulator-build-architecture', () => simulatorBuildArchitecture(process.arch, host.stdout));
+    status.runtimeLimits = NATIVE_RUNTIME_LIMITS; saveStatus();
+  }
   writeFileSync(join(diagnostics, 'toolchain.txt'), `Node ${process.version}\n${tools.output}\n${swift.output}\n`);
   await command('prebuild', process.execPath, [expoEntry.cli, 'prebuild', '--platform', 'ios', '--no-install'], { cwd: join(root, 'apps/ipad') });
   if (!existsSync(join(root, 'scripts/prepare-ios-tests.mjs'))) throw new Error('Native UI test preparation script is missing; tests were not run');
@@ -196,6 +249,7 @@ async function main() {
       metro = spawn(process.execPath, [metroEntry.cli, 'start', '--localhost', '--port', '8081'], {
         cwd: join(root, 'apps/ipad'), env: fixtureEnv, detached: true, stdio: ['ignore', 'pipe', 'pipe'],
       });
+      own(metro);
       metro.stdout.on('data', metroOutput); metro.stderr.on('data', metroOutput);
       for (const event of ['exit', 'close']) metro.on(event, (code, signal) => {
         const safeSignal = typeof signal === 'string' && /^SIG[A-Z0-9]+$/.test(signal) ? signal : 'none';
@@ -236,20 +290,26 @@ async function main() {
       }
     });
   }
+  if (mode === 'release-runtime') {
+    runtimePhase = 'xcode'; phaseDeadline = Infinity;
+    status.preparationSeconds = status.stages.reduce((sum, entry) => sum + (entry.seconds ?? 0), 0);
+    saveStatus();
+  }
   const test = await command('xcode-test', 'xcodebuild', [
     '-workspace', workspace, '-scheme', plan.scheme, '-configuration', plan.configuration, '-sdk', 'iphonesimulator',
     '-destination', `platform=iOS Simulator,id=${simulator.udid}`, '-derivedDataPath', derived,
     '-resultBundlePath', resultBundle, '-parallel-testing-enabled', 'NO', '-jobs', '3',
     '-test-timeouts-enabled', 'YES', '-default-test-execution-time-allowance', '180',
-    '-maximum-test-execution-time-allowance', '300', 'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO', 'test',
-  ], { timeout: 1_500_000 });
+    '-maximum-test-execution-time-allowance', '300', 'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO',
+    ...simulatorArchitectureSettings(mode, status.simulatorArchitecture), 'test',
+  ], { timeout: mode === 'release-runtime' ? NATIVE_RUNTIME_LIMITS.xcodeMs : 1_500_000 });
   status.tests = mode === 'release-runtime' ? passingExpectedXCTestCounts(test.output, status.expectedTestCount) : passingXCTestCounts(test.output);
   if (mode === 'release-runtime') status.runtimeEvidence = { configuration: 'Release', sdk: 'iphonesimulator', fixture: 'disabled', metroServer: false, scope: 'coreimage-effects-and-template-pixel-tests-plus-attract-ui', expectedTestCount: status.expectedTestCount };
   status.result = 'passed';
 }
 try { await main(); }
 catch (error) {
-  status.result = 'failed'; status.error = redact(error instanceof Error ? error.message : String(error)); process.exitCode = 1;
+  status.result = cancellation ? 'cancelled' : 'failed'; status.error = redact(error instanceof Error ? error.message : String(error)); process.exitCode = cancellation?.code ?? 1;
   if (mode === 'release-build' && status.nativeBuild === 'running') status.nativeBuild = 'failed';
   if (metro) {
     try {
@@ -258,4 +318,18 @@ catch (error) {
     } catch { /* Preserve the original native failure if diagnostics are unavailable. */ }
   }
 }
-finally { await cleanup(); saveStatus(); }
+finally {
+  try { await cleanup(); }
+  catch (error) {
+    status.cleanupError = redact(error instanceof Error ? error.message : String(error));
+    if (status.result === 'passed') { status.result = 'failed'; process.exitCode = 1; }
+    const path = join(diagnostics, 'process-cleanup.json');
+    if (existsSync(path)) {
+      const evidence = JSON.parse(readFileSync(path, 'utf8'));
+      evidence.runnerResult = status.result; evidence.safeToRemoveBuildOutputs = false;
+      evidence.cleanupError = status.cleanupError;
+      writeFileSync(path, JSON.stringify(evidence, null, 2) + '\n');
+    }
+  }
+  saveStatus();
+}

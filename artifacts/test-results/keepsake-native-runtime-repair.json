@@ -1,0 +1,103 @@
+{
+  "generatedAtUTC": "2026-10-26T19:01:18.369013+00:00",
+  "scope": "Local uncommitted simulator runtime architecture/budget/process cleanup repair; independent of timer app work. No native CI execution, commit or push by this reviewer.",
+  "inputEvidence": {
+    "provenance": "Coordinator independently inspected actual hosted logs/artifact; no raw artifact download claimed by this executor",
+    "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40372103636",
+    "job": "121745248298",
+    "commit": "d1dbc8fd3254005f24ec00132dc07bc998a18308",
+    "artifact": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40372103636/artifacts/12676910782",
+    "result": "Outer35-minute native step expired during cold compilation, not an established compiler error or XCTest assertion failure",
+    "simulatorReady": {
+      "result": "passed",
+      "seconds": 254
+    },
+    "coldPreparationSeconds": {
+      "pods": 230,
+      "simulatorList": 169,
+      "boot": 254
+    },
+    "architecture": "Both arm64 and x86_64 compiled on Intel; no ONLY_ACTIVE_ARCH/ARCHS restriction",
+    "lastBuildOutput": "Compiling ExpoSQLite",
+    "executedTestsEstablished": 0,
+    "expectedOldSuite": 15,
+    "cleanupFinding": "ModuleCache directory not empty; surviving build writers possible. Missing xcresult Info.plist reflects interruption, not a test assertion."
+  },
+  "implementation": {
+    "architecture": "Only release-runtime verifies process.arch against uname -m and passes ONLY_ACTIVE_ARCH=YES plus exactly ARCHS=x86_64 or ARCHS=arm64. Unsupported/mismatched evidence fails closed.",
+    "deviceRelease": "Entire device Release build branch and physical-SDK workflow byte-identical to00e7a2b; no simulator architecture flags applied to device or historicalDebug mode. Shared command cancellation/cleanup is improved.",
+    "caching": "Existing npm cache retained; no new unvalidated DerivedData/Pods cache introduced. Duplicate architecture elimination addresses observed cold build workload.",
+    "budgets": {
+      "cumulativePreparationMinutes": 18,
+      "xcodeMinutes": 25,
+      "processStopMaximumSeconds": 12,
+      "cleanupMinutes": 2,
+      "outerNativeStepMinutes": 48,
+      "jobMinutes": 75,
+      "bootSeconds": 600,
+      "bootIncreased": false,
+      "relationship": "18+25+2+0.2=45.2minutes <48minute native step;75minute job leaves room for separately bounded install/typecheck/Podtool/evidence steps."
+    },
+    "ownedGroups": "Every detached command and Metro process is registered. Timeouts, captured-output overflow and SIGINT/SIGTERM request TERM then bounded KILL and await quiescence before returning. Parent exit alone is insufficient; zombie-only states are membership revalidated. Only owned negative PGIDs are signaled; no killall/unrelated process dump.",
+    "cancellation": "Signal handlers let pending command unwind through awaited cleanup; no immediate process.exit. Cancellation starts no new simulator cleanup subprocess; ephemeral runner teardown disposes of that dedicated simulator.",
+    "unknownWriters": "Failed/cancelled runtime never recursively removes DerivedData/generated project merely because original parent exited. Removal requires explicit passed-run/quiescence evidence; unknown/interrupted global Xcode writer state retains outputs for ephemeral teardown.",
+    "results": "Bounded text/status diagnostics always uploaded. Incomplete/unverified raw xcresult excluded. A normally exited, quiescent valid failed-XCTest result remains inspectable and is uploaded separately if <=64MiB; test success is not required for that evidence. Unknown/invalid/oversize result remains on ephemeral runner with a diagnostic hold record."
+  },
+  "localValidation": {
+    "contracts": {
+      "tests": 57,
+      "passed": 57,
+      "failed": 0,
+      "skipped": 0,
+      "log": ".cache/simulator-architecture-contracts.txt",
+      "logSHA256": "2a9596193ec487d3d1441c237f28148ade760fa7dc2aa2273d06e8e6739aa0db"
+    },
+    "addedCoverage": [
+      "Intel/Applearchitecture selection and mismatches",
+      "PhysicalRelease branch unchanged/no simulator flags",
+      "Finite cumulative phase/workflow budget relationship and unchanged boot deadline",
+      "Real stubborn grandchild writer stops through SIGKILL; unrelated process survives",
+      "Real parent-exits-first writer still requires group termination",
+      "Unknown observation fails closed within bounded stop budget",
+      "Zombie/fork membership race cannot grant false quiescence",
+      "Valid failed-XCTest evidence retained; interrupted output removal blocked"
+    ],
+    "workflowSyntax": {
+      "yamlParsed": true,
+      "bashSyntaxBlocks": 9,
+      "embeddedNodeModules": 3
+    },
+    "nodeSyntax": "passed for runner and contract module",
+    "linuxPlatformGuard": "Actual runner expected refusal exited1, wrote cleanup evidence denying removal/result inspection, claimed no tests",
+    "diffWhitespace": "passed",
+    "deviceReleaseBranchSHA256": "0364c2daafabb1bd024db0ace4158c6c2e27c34a809344ce28d11585f9b0182f",
+    "physicalWorkflowSHA256": "dfc71f469f1f16282540aaae6a75349a071199d2a646428d8d569865abd9d109"
+  },
+  "sourceSHA256": {
+    ".github/workflows/ios-release-runtime.yml": "a1904785c694af48706e651fe5127ca88650b3de5dd6a7e01052c91defe9d0e2",
+    "scripts/ci-native.mjs": "21a3fa9b59931eea77007cae775b545b2ed89db2f6fd33a4f79b4228c74587ff",
+    "scripts/ci-native-contract.mjs": "96b85123bf1995b01a10e09f92300a1e2999da635186985d7553149d2dfb034d",
+    "scripts/ci-native.test.mjs": "67bd3eba5b450fe13665daf40295ce5d6ef636b39854cf8efd3f5fdb1d61241c"
+  },
+  "nativeVerification": {
+    "status": "NOT RUN by this agent; local contracts are not Xcode compilation/XCTest execution",
+    "expectedCurrentNativeSuite": 20,
+    "sourceInventoryNotExecution": true,
+    "newRemoteRunLaunched": false,
+    "physicalIPadVerified": false,
+    "nativeCancellationEndToEnd": "Requires actual supported macOS runner; Linux tests cover real owned process group mechanics and safety guards only"
+  },
+  "publicationAndProduction": {
+    "committed": false,
+    "pushed": false,
+    "deployed": false,
+    "realSmsRequests": 0,
+    "credentialsChanged": false,
+    "originalDataResetOrRemoved": false
+  },
+  "reviewLimits": [
+    "Matching Node/uname identifies the selected runner execution architecture, not physical owner-iPad architecture.",
+    "Owned PGID quiescence cannot prove a global Xcode service outside that group is idle; failed/cancelled output deletion is therefore skipped.",
+    "Future hosted run must confirm compilation completes and all20 actual required tests pass with0failures/0skips. Enumeration or successful build alone remains insufficient."
+  ]
+}
