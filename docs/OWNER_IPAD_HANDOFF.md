@@ -1,10 +1,10 @@
 # Mac-to-iPad handoff
 
-The latest recovery/visual candidate is being published for fresh exact-commit CI. The source and run links below describe the previous milestone until [the main report](../artifacts/test-results/summary.json) records the new result. Do not install the old milestone expecting the later staging/SQLite/Photos reconciliation fixes. The owner must preserve the existing app container and originals throughout the update.
+The recovery and visual refinement below passed fresh exact-commit hosted CI. Preserve the existing app container and originals throughout the update. Compilation is verified; real-iPad saving and Photos acceptance remain open.
 
 Use a Mac with Xcode providing **Swift 6.2+**, the wedding iPad, Node 24 and CocoaPods 1.16.2. CI selects Xcode 26.3; Xcode 16.4 / Swift 6.1 cannot build the installed ExpoModulesJSI package. Check `xcodebuild -version` and `xcrun swift --version` first, and select the intended installation in Xcode's Locations settings if several are installed. Keep the iPad connected and unlocked. Apple signing/account access is separate from unsigned compilation; do not create certificates, buy membership or accept terms automatically.
 
-Install the **five-photo saving repair, version 0.2.0 / build 2**, at reviewed commit **`c0d6f4dd4ae51e7bb5827e3bf9fb6a06bf8ba900`**. Its [unsigned physical-iOS-SDK Release build](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40281388626) and [Linux checks](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40281388547) passed. The previous `82703b6` / `8e473ddd` build is historical and does not contain this repair. CI does not supply a signed installable app. Actual iPad saving, camera, Photos copies, offline recovery, QR scans and profile expiry remain owner checks.
+Install the **five-photo saving repair, version 0.2.0 / build 2**, at reviewed commit **`d3dec720d75bc23fdabe22bb382493f45224d840`**. Its [unsigned physical-iOS-SDK Release build](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40333689855) passed in 9m38s and [Linux checks](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40333689913) passed in 1m4s. This includes the later staging/SQLite queue repairs, deliberate host Photos reconciliation and visual refinements. The previous `c0d6f4d`, `82703b6` and `8e473ddd` builds are historical. CI does not supply a signed installable app or execute XCTest in this Release lane. Actual iPad saving, camera, Photos copies, offline recovery, QR scans and profile expiry remain owner checks.
 
 ## Install a standalone release
 
@@ -17,7 +17,7 @@ Install the **five-photo saving repair, version 0.2.0 / build 2**, at reviewed c
    pod _1.16.2_ --version
    git clone --branch codex/wedding-photobooth-mvp https://github.com/Xare123/WeddingIpadPhotoboothApp.git
    cd WeddingIpadPhotoboothApp
-   git checkout --detach c0d6f4dd4ae51e7bb5827e3bf9fb6a06bf8ba900
+   git checkout --detach d3dec720d75bc23fdabe22bb382493f45224d840
    npm ci
    cd apps/ipad
    EXPO_PUBLIC_E2E_FIXTURE=0 EXPO_OFFLINE=1 EXPO_NO_TELEMETRY=1 node ../../node_modules/expo/bin/cli prebuild --platform ios --no-install
@@ -46,7 +46,8 @@ Do not uninstall or clear an app that contains event photos. A bundle-identifier
 
 - Enable the device passcode and appropriate kiosk/Guided Access controls. Verify camera permission, denied-permission recovery, front-camera framing, countdown/cancel, preview, retake and Next guest in both orientations.
 - Photograph a readable test card. Verify the saved/downloaded original is sharp, unmirrored and correctly oriented. Test actual booth lighting, glare, stand stability, charging and sustained capture.
-- Disable Internet, capture and confirm several synthetic/test-card photos, force-quit/relaunch, then reboot. Originals and pending jobs must persist; a working guest QR must remain absent until upload and readiness are acknowledged.
+- Disable Internet, capture five test-card photos, swipe through every original, retake one, then confirm. In **Host → Saved sessions**, verify all five selected originals and the retained earlier take. Force-quit/relaunch and reboot; every original and pending job must persist. A working guest QR must remain absent until upload and readiness are acknowledged. Local saving works before pairing.
+- Check the actual Photos app separately. An **uncertain** copy is deliberately not retried automatically. In the host's saved session, inspect that photo and choose **Already in Photos** only after checking the copy, or **Export this copy again** only if absent and after accepting the duplicate warning. Canceling must make no copy. Exporting a retained take must not add it to the guest gallery. If **Finish local save** appears, keep the app/data intact and retry; a staged exposure must not count as saved or enter a guest link before completion.
 - After the approved backend is deployed, configure only its HTTPS origin and booth token through OS-authenticated Host settings. Keep credentials out of source, public environment variables, screenshots and chat. Restore Internet; verify no duplicate sessions and inspect an original download from another phone on cellular data.
 - Scan QR codes using normal iPhone/Android camera apps at practical distances and brightness levels. Confirm the exact session, readable expiry, expiration/revocation behavior, and that Next guest removes the previous photo/QR. Browser decoding and simulator UI tests do not replace this scan.
 - Turn on VoiceOver and check countdown, error, saved/ready announcements and control navigation; test larger text and scrolling. Speech must never reveal the bearer URL.

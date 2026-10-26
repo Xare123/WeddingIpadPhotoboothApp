@@ -19,10 +19,12 @@
   "audit_dependency_entries_high": 5,
   "fixture_boundary": "Native test fixture requires __DEV__ plus explicit opt-in. Generated attract artwork is separate from guest originals.",
   "native_release_build": {
-    "current_source_passed": false,
-    "status": "Pending exact-commit hosted CI; preceding c0d6f4d pass does not verify this source",
+    "current_source_passed": true,
+    "commit": "d3dec720d75bc23fdabe22bb382493f45224d840",
+    "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40333689855",
     "signed": false,
     "xctest_executed": false,
-    "native_binary_security_audited": false
+    "native_binary_security_audited": false,
+    "coverage": "Unsigned iPhoneOS Release compile, embedded JavaScript and iPad metadata; no device/runtime security claim"
   }
 }

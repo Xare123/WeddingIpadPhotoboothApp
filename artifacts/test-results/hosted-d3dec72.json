@@ -1,0 +1,28 @@
+{
+  "observedAt": "2026-10-26T14:00:30.495767+00:00",
+  "sourceCommit": "d3dec720d75bc23fdabe22bb382493f45224d840",
+  "runs": [
+    {
+      "mode": "linux",
+      "status": "passed",
+      "commit": "d3dec720d75bc23fdabe22bb382493f45224d840",
+      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40333689913",
+      "job": "121609452532",
+      "duration": "1m4s",
+      "jobUrl": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40333689913/job/121609452532",
+      "publicSuccessAnnotation": "Commit: d3dec720d75bc23fdabe22bb382493f45224d840; Linux checks completed. Native XCTest execution is reported by the simulator lane.",
+      "rawArtifactDownloaded": false
+    },
+    {
+      "mode": "native",
+      "status": "passed",
+      "commit": "d3dec720d75bc23fdabe22bb382493f45224d840",
+      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40333689855",
+      "job": "121609452149",
+      "duration": "9m38s",
+      "jobUrl": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40333689855/job/121609452149",
+      "publicSuccessAnnotation": "Commit: d3dec720d75bc23fdabe22bb382493f45224d840; unsigned Release iPhoneOS app compiled; embedded JavaScript and iPad bundle metadata verified. No XCTest executed; no signing, installation or device testing.",
+      "rawArtifactDownloaded": false
+    }
+  ]
+}

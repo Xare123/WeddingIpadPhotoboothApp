@@ -1,9 +1,8 @@
 {
-  "scope": "Reviewed recovery repairs and personal wedding UI refinement; publication approved, new hosted results pending",
-  "generatedAt": "2026-10-26T13:46:27.452989+00:00",
+  "scope": "Published and independently reviewed recovery repairs and personal wedding UI refinement; exact-commit Linux and unsigned native Release pass",
+  "generatedAt": "2026-10-26T14:00:30.495256+00:00",
   "publicationApproved": true,
-  "sourceCommit": null,
-  "sourceCommitResolution": "Will be recorded by the result-only handoff commit after exact-SHA CI finishes",
+  "sourceCommit": "d3dec720d75bc23fdabe22bb382493f45224d840",
   "baselineSourceCommit": "c0d6f4dd4ae51e7bb5827e3bf9fb6a06bf8ba900",
   "sourceManifestSha256": "f0354194d08744437ab42d6864511bf6868ec843c61fa802af050dbe294c6457",
   "sourceHashes": {
@@ -109,13 +108,30 @@
     "skipped": 0
   },
   "nativeRelease": {
-    "status": "pending exact-commit hosted CI",
+    "status": "passed",
+    "commit": "d3dec720d75bc23fdabe22bb382493f45224d840",
+    "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40333689855",
+    "job": "121609452149",
+    "duration": "9m38s",
+    "configuration": "Release",
+    "sdk": "iphoneos",
+    "selectedXcode": "26.3",
+    "swiftToolsMinimumGate": "6.2",
+    "executableEmbeddedJsAndIpadMetadataVerified": true,
     "signed": false,
     "xctestExecuted": false,
-    "physicalDeviceTested": false
+    "physicalDeviceTested": false,
+    "artifact": "native-evidence-d3dec720d75bc23fdabe22bb382493f45224d840",
+    "inspectionBoundary": "Public exact-SHA run success and guarded success annotation inspected. Workflow retains bounded metadata/logs; authenticated raw artifact/toolchain JSON was not downloaded. No native executable hash/size invented."
   },
   "hostedLinux": {
-    "status": "pending exact-commit hosted CI"
+    "status": "passed",
+    "commit": "d3dec720d75bc23fdabe22bb382493f45224d840",
+    "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40333689913",
+    "job": "121609452532",
+    "duration": "1m4s",
+    "checks": "Frozen installation, 43 native CI contracts, full 167-test suite, four additional independent recovery faults, workspace typechecks, iOS JavaScript export and local HTTP workflow",
+    "inspectionBoundary": "Public exact-SHA success/annotation and workflow source inspected; raw per-test hosted transcript not downloaded in this executor."
   },
   "iosJavascriptExport": {
     "passed": true,
@@ -149,14 +165,15 @@
     "liveSmsFromThisExecutor": 0
   },
   "remainingGates": [
-    "coordinator secure DEVICE_TOKEN configuration and private pairing",
-    "owner same-team/bundle standalone installation and real-iPad offline save/reboot/Photos test",
-    "live synthetic five-photo storage/download/phone QR rehearsal",
+    "coordinator review/deployment of regenerated Worker and secure DEVICE_TOKEN configuration/private pairing",
+    "owner same-team/bundle standalone installation and actual-iPad five-photo offline save/reboot/Photos/retake acceptance",
+    "live synthetic five-photo storage/download/cellular phone QR rehearsal",
     "provider eligibility/live approval and parent-owned capped recipient test if SMS enabled",
     "environment draft publication/fresh-task restore verification"
   ],
   "firebase": "deferred; no authorized Google identity/project or signed supported test package; no paid run or grant created",
   "projectFinished": false,
   "captureTimeReports": "local-refinement-summary and independent acceptance retain historical local/unpublished labels and original hashes; publication approval came afterward",
-  "privacy": "Source and generated/synthetic evidence only. No real guest photos, private contact data or production credentials are intentionally included."
+  "privacy": "Source and generated/synthetic evidence only. No real guest photos, private contact data or production credentials are intentionally included.",
+  "metadataFollowup": "The result-only handoff commit preserves identical app/backend/build/test code at the tested source commit."
 }

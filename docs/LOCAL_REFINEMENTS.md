@@ -1,6 +1,6 @@
 # Reviewed reliability and visual refinements
 
-The owner approved publication of this source and synthetic evidence on October 26, 2026. This candidate is being published on the existing review branch for fresh Linux and unsigned native Release verification. Deployment, credentials, live pairing, SMS and physical-device acceptance remain separate gates.
+The owner approved publication of this source and synthetic evidence on October 26, 2026. Source `d3dec720d75bc23fdabe22bb382493f45224d840` is published on the existing review branch and passes fresh [Linux](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40333689913) and [unsigned native Release](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40333689855) verification. Deployment, credentials, live pairing, SMS and physical-device acceptance remain separate gates.
 
 The preceding handoff was `5ef615eaf228776dcdedc0df3f0fe65ba55976f9`, with source `c0d6f4dd4ae51e7bb5827e3bf9fb6a06bf8ba900`. Its passing hosted builds do not verify this candidate. Current results are recorded in [the main validation report](../artifacts/test-results/summary.json). The rebuilt Worker artifact is a deployment handoff, not evidence of a production update.
 
