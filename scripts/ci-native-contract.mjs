@@ -1,5 +1,44 @@
 // These parsers consume output from the installed Xcode tools. They are shared
 // with executable fixtures so hosted CI cannot mistake zero tests for a pass.
+export const MAX_MACHINE_STDOUT = 4 * 1024 * 1024;
+
+export function commandStreams(name, { captureStdout = false, stdoutLimit = MAX_MACHINE_STDOUT, onLog = () => {} } = {}) {
+  if (!Number.isInteger(stdoutLimit) || stdoutLimit < 1 || stdoutLimit > MAX_MACHINE_STDOUT) throw new Error('Invalid structured stdout byte limit');
+  const label = String(name).replace(/[^A-Za-z0-9._-]/g, '_').slice(0, 80);
+  const chunks = [];
+  let bytes = 0, failure;
+  return {
+    stdout(chunk) {
+      onLog(chunk, 'stdout');
+      if (!captureStdout) return;
+      if (failure) throw failure;
+      const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+      if (bytes + buffer.byteLength > stdoutLimit) {
+        failure = new Error(label + ': structured stdout exceeded ' + stdoutLimit + ' bytes');
+        throw failure;
+      }
+      bytes += buffer.byteLength;
+      chunks.push(Buffer.from(buffer));
+    },
+    stderr(chunk) { onLog(chunk, 'stderr'); },
+    text() {
+      if (failure) throw failure;
+      if (!captureStdout) return undefined;
+      try { return new TextDecoder('utf-8', { fatal: true }).decode(Buffer.concat(chunks, bytes)); }
+      catch { throw new Error(label + ': structured stdout is not valid UTF-8'); }
+    },
+  };
+}
+
+export function parseNamedJSON(name, source) {
+  try { return JSON.parse(source); }
+  catch (error) {
+    const label = String(name).replace(/[^A-Za-z0-9._-]/g, '_').slice(0, 80);
+    const position = /\bposition (\d+)\b/.exec(error instanceof Error ? error.message : '');
+    throw new Error(label + ': invalid JSON data' + (position ? ' at position ' + position[1] : ''));
+  }
+}
+
 export function selectIpadSimulator(devices) {
   if (!devices || typeof devices !== 'object' || Array.isArray(devices)) throw new Error('simctl returned no device inventory');
   const choices = Object.entries(devices).filter(([runtime, rows]) => {

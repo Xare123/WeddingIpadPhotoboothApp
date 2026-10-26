@@ -18,4 +18,4 @@ These official hosts are outside this executor's current allowed destinations. C
 
 If Firebase is revisited, first verify those official requirements and current iOS availability, select an already-authorized project/identity, review quota/billing, and produce the required signed native test package. Any new credentials, grants, terms or paid commitment need the owner's specific approval. Do not upload production keys, phone numbers or real guest photos.
 
-The practical path for this phase is standard free public-repository GitHub Linux/macOS testing, followed by the owner Mac-to-iPad checklist. The repository was verified public read-only; no visibility change was made. Hosted tests still need actual run evidence, and simulator fixtures never establish real camera or venue readiness.
+The practical path for this phase is standard free public-repository GitHub Linux/macOS testing, followed by the owner Mac-to-iPad checklist. The repository was verified public read-only; no visibility change was made. Actual hosted run results are recorded in [validation](VALIDATION.md); simulator fixtures never establish real camera or venue readiness.

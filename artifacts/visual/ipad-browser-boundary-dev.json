@@ -1,6 +1,6 @@
 {
   "scope": "Browser-only bundle boundary check; not native execution.",
-  "sourceSHA256": "8f0963fdd4530b9ad60a220bf55b4197c698a4dafb55ce66d39a1af76a74a259",
+  "sourceSHA256": "1004bb5a350a47402191489d54e77a4ea275caefc3634419d8d0cd284747ea76",
   "releaseUI": false,
   "nativeFixtureEnabled": false,
   "disabledStubIncluded": true,

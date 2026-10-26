@@ -5,7 +5,7 @@ import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
 const { chromium } = createRequire(import.meta.url)('playwright');
 const browser = await chromium.launch({ executablePath: '/usr/bin/chromium', headless: true, args: ['--no-sandbox'] });
-const checks = { scope: 'Browser fixture of actual App.tsx native JSX; synthetic in-memory camera/storage/auth/sync/permission/AppState/Linking. Not iOS or physical-device verification.', sourceSHA256: createHash('sha256').update(await readFile('apps/ipad/App.tsx')).digest('hex'), timezoneId: 'America/Los_Angeles', states: [], interactions: [], boundedFixtureChecks: [], errors: [], externalRequests: [] };
+const checks = { scope: 'Browser fixture of actual App.tsx native JSX; synthetic in-memory camera/storage/auth/sync/permission/AppState/Linking. Not iOS or physical-device verification.', sourceSHA256: createHash('sha256').update(await readFile('apps/ipad/App.tsx')).digest('hex'), timezoneId: 'America/Los_Angeles', states: [], interactions: [], boundedFixtureChecks: [], contrastChecks: [], errors: [], externalRequests: [] };
 await mkdir('artifacts/visual', { recursive: true });
 try {
   const page = await browser.newPage({ reducedMotion: 'reduce', timezoneId: checks.timezoneId });
@@ -23,6 +23,31 @@ try {
     await page.getByText('THE WEDDING PHOTOBOOTH', { exact: true }).waitFor();
     assert.equal(await page.getByTestId('native-fixture-enabled').count(), 0);
     await page.waitForTimeout(300);
+  };
+  const checkContrast = async (locator, label, worstWhiteFrame = false) => {
+    const result = await locator.evaluate((element, worstWhiteFrame) => {
+      const parse = value => { const numbers = value.match(/[\d.]+/g).map(Number); return [...numbers.slice(0, 3), numbers[3] ?? 1]; };
+      const blend = (front, back) => front.slice(0, 3).map((channel, i) => channel * front[3] + back[i] * (1 - front[3]));
+      const luminance = rgb => rgb.map(channel => { const v = channel / 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }).reduce((sum, channel, i) => sum + channel * [0.2126, 0.7152, 0.0722][i], 0);
+      const style = getComputedStyle(element);
+      const foregroundCSS = style.color;
+      let background = [255, 255, 255];
+      const backgroundLayers = [];
+      if (worstWhiteFrame) {
+        for (let parent = element.parentElement; parent; parent = parent.parentElement) {
+          const color = getComputedStyle(parent).backgroundColor;
+          if (parse(color)[3] > 0) { backgroundLayers.push(color); background = blend(parse(color), background); break; }
+        }
+      } else {
+        for (let parent = element; parent; parent = parent.parentElement) backgroundLayers.unshift(getComputedStyle(parent).backgroundColor);
+        for (const color of backgroundLayers) background = blend(parse(color), background);
+      }
+      const foreground = blend(parse(foregroundCSS), background);
+      const a = luminance(foreground), b = luminance(background);
+      return { foregroundCSS, backgroundLayers, compositedBackgroundRGB: background, fontSize: style.fontSize, ratio: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05), backgroundModel: worstWhiteFrame ? 'Actual rendered overlay composited over a hypothetical white camera frame' : 'Actual rendered ancestor backgrounds composited from page to text' };
+    }, worstWhiteFrame);
+    checks.contrastChecks.push({ label, requiredRatio: 4.5, ...result });
+    assert.ok(result.ratio >= 4.5, `${label} computed contrast ${result.ratio} is below 4.5`);
   };
   for (const [orientation, size] of Object.entries({ portrait: { width: 820, height: 1180 }, landscape: { width: 1180, height: 820 } })) {
     for (const state of ['camera', 'review', 'offline-pending', 'ready', 'mock-share']) {
@@ -42,8 +67,11 @@ try {
     }
   }
   await load('camera');
+  await checkContrast(page.getByText('01 / MAKE A MEMORY', { exact: true }), 'Step label on rendered page');
+  await checkContrast(page.getByText('Made with love · originals stay on this iPad', { exact: true }), 'Footer text on rendered page');
   await page.getByRole('button', { name: 'Take our photo', exact: true }).click();
   await page.getByText('Make it a memory', { exact: true }).waitFor();
+  await checkContrast(page.getByText('Make it a memory', { exact: true }), 'Countdown label over worst white camera frame', true);
   await page.screenshot({ path: 'artifacts/visual/ipad-countdown-portrait.png' });
   const cancel = page.getByRole('button', { name: /cancel countdown/i });
   if (await cancel.count()) {
@@ -126,4 +154,4 @@ try {
   await writeFile('artifacts/visual/ipad-fixture-checks.json', JSON.stringify(checks, null, 2) + '\n');
   await browser.close();
 }
-console.log(JSON.stringify({ states: checks.states.length, interactions: checks.interactions, errors: checks.errors }, null, 2));
+console.log(JSON.stringify({ states: checks.states.length, interactions: checks.interactions, boundedFixtureChecks: checks.boundedFixtureChecks.length, contrastChecks: checks.contrastChecks.map(({ label, ratio }) => ({ label, ratio })), errors: checks.errors }, null, 2));

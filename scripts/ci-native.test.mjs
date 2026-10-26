@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { passingXCTestCounts, selectIpadSimulator } from './ci-native-contract.mjs';
+import { spawn } from 'node:child_process';
+import { commandStreams, MAX_MACHINE_STDOUT, parseNamedJSON, passingXCTestCounts, selectIpadSimulator } from './ci-native-contract.mjs';
 import { annotationText, bounded, diagnosticLines, publicAnnotations, redact, workflowData } from './ci-summary.mjs';
 
 const ipad = { udid: '11111111-1111-4111-8111-111111111111', name: 'iPad Pro 13-inch (M4)',
@@ -111,4 +112,83 @@ test('successful native annotation proves exact SHA and nonzero unskipped passin
   for (const tests of [{ executed: 0, failures: 0 }, { executed: 1, failures: 1 }, { executed: 1, failures: 0, skipped: 1 }]) {
     assert.deepEqual(publicAnnotations({ sha, jobStatus: 'success', status: { result: 'passed', tests } }), []);
   }
+});
+
+test('large simctl inventory survives intact after the diagnostic tail loses its JSON prefix', () => {
+  const inventory = { devices: { 'com.apple.CoreSimulator.SimRuntime.iOS-18-5': Array.from({ length: 300 }, (_, index) => ({
+    ...ipad, name: 'iPad fixture ' + index, udid: String(index).padStart(8, '0') + '-1111-4111-8111-111111111111',
+  })) } };
+  const source = JSON.stringify(inventory, null, 2);
+  assert.ok(source.split('\n').length > 1200);
+  assert.throws(() => JSON.parse(bounded(source, 1200, 200_000)), 'old log-tail transport must reproduce corruption');
+  const capture = commandStreams('simulator-list', { captureStdout: true });
+  const bytes = Buffer.from(source);
+  for (let start = 0; start < bytes.length; start += 1024) capture.stdout(bytes.subarray(start, start + 1024));
+  const result = parseNamedJSON('simulator-list', capture.text());
+  assert.deepEqual(result, inventory);
+  assert.equal(selectIpadSimulator(result.devices).udid, inventory.devices['com.apple.CoreSimulator.SimRuntime.iOS-18-5'][0].udid);
+});
+
+test('real subprocess stderr warnings never contaminate structured stdout JSON', async () => {
+  const logs = [];
+  const capture = commandStreams('simulator-list', { captureStdout: true, onLog: (chunk, stream) => logs.push({ stream, value: chunk.toString() }) });
+  const child = spawn(process.execPath, ['-e',
+    'process.stderr.write("normal simulator warning\\n"); process.stdout.write(JSON.stringify({devices:{}})); process.stderr.write("second warning\\n");']);
+  child.stdout.on('data', chunk => capture.stdout(chunk));
+  child.stderr.on('data', chunk => capture.stderr(chunk));
+  const exit = await new Promise((resolveExit, reject) => { child.on('error', reject); child.on('close', resolveExit); });
+  assert.equal(exit, 0);
+  assert.deepEqual(parseNamedJSON('simulator-list', capture.text()), { devices: {} });
+  assert.ok(logs.some(record => record.stream === 'stderr' && record.value.includes('warning')));
+  assert.ok(!capture.text().includes('warning'));
+});
+
+test('raw structured stdout preserves UTF-8 and values while persisted diagnostic text is redacted', () => {
+  const logs = [];
+  const capture = commandStreams('simulator-types', { captureStdout: true, onLog: chunk => logs.push(chunk) });
+  const source = JSON.stringify({ name: 'iPad café', note: 'Bearer fixture-secret' });
+  for (const byte of Buffer.from(source)) capture.stdout(Buffer.from([byte]));
+  assert.equal(capture.text(), source);
+  assert.deepEqual(parseNamedJSON('simulator-types', capture.text()), JSON.parse(source));
+  assert.ok(!bounded(Buffer.concat(logs).toString()).includes('fixture-secret'));
+});
+
+test('structured capture fails closed on its byte cap and cannot return a truncated partial response', () => {
+  const capture = commandStreams('simulator-list', { captureStdout: true, stdoutLimit: 8 });
+  capture.stdout(Buffer.from('12345678'));
+  assert.throws(() => capture.stdout(Buffer.from('9')), /simulator-list: structured stdout exceeded 8 bytes/);
+  assert.throws(() => capture.text(), /simulator-list: structured stdout exceeded/);
+  const defaults = commandStreams('simulator-list', { captureStdout: true });
+  assert.throws(() => defaults.stdout(Buffer.alloc(MAX_MACHINE_STDOUT + 1)), /structured stdout exceeded 4194304 bytes/);
+  assert.throws(() => commandStreams('simulator-list', { stdoutLimit: MAX_MACHINE_STDOUT + 1 }), /Invalid structured stdout byte limit/);
+});
+
+test('malformed or non-UTF-8 machine data reports a named failure without salvaging or exposing its content', () => {
+  for (const [name, source] of [['simulator-list', '{"private":"do-not-publish"} trailing'],
+    ['native-test-plan', 'do-not-publish malformed plan'], ['simulator-types', '{"devicetypes":']]) {
+    assert.throws(() => parseNamedJSON(name, source), error => error.message.startsWith(name + ': invalid JSON data') && !error.message.includes('do-not-publish'));
+  }
+  const capture = commandStreams('simulator-list', { captureStdout: true });
+  capture.stdout(Buffer.from([0xc3, 0x28]));
+  assert.throws(() => capture.text(), /simulator-list: structured stdout is not valid UTF-8/);
+});
+
+test('simulator creation consumes only its stdout UUID even when stderr adds progress or warnings', () => {
+  const capture = commandStreams('simulator-create', { captureStdout: true });
+  capture.stderr(Buffer.from('normal create warning\n'));
+  capture.stdout(Buffer.from(ipad.udid + '\n'));
+  capture.stderr(Buffer.from('created device\n'));
+  assert.equal(capture.text().trim(), ipad.udid);
+});
+
+test('normal CocoaPods script-phase warnings never drown a later explicit error', () => {
+  const logs = {
+    'pods.log': Array.from({ length: 5 }, () => '[!] hermes-engine has added 1 script phase. Please inspect before executing a build.').join('\n') +
+      '\n[!] Generic informational note',
+    'simulator-list.log': 'Error: simulator-list: invalid JSON data at position 19',
+  };
+  const selected = diagnosticLines(logs, [{ name: 'simulator-list', result: 'failed' }]);
+  assert.ok(selected[0].startsWith('simulator-list.log: Error:'));
+  assert.ok(!selected.join('\n').includes('script phase'));
+  assert.deepEqual(diagnosticLines({ 'pods.log': '[!] hermes-engine has added 1 script phase. Please inspect before executing a build.' }), []);
 });

@@ -1,13 +1,14 @@
 {
-  "scope": "Current cloud-instance verification, not deployment or iOS device verification",
+  "scope": "Cloud-instance and exact-commit hosted verification; production and physical-device checks remain separate",
   "frozen_install": {
     "command": "bash scripts/setup-cloud.sh",
     "passed": true,
-    "packages": 587
+    "packages": 587,
+    "hosted_run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40247502391"
   },
   "tests": {
     "command": "npm test",
-    "passed": 54,
+    "passed": 59,
     "failed": 0,
     "skipped": 0
   },
@@ -17,7 +18,7 @@
   },
   "ios_javascript_export": {
     "passed": true,
-    "metro_modules": 1002,
+    "metro_modules": 1005,
     "native_compilation": false
   },
   "local_http_smoke": {
@@ -29,18 +30,60 @@
   "browser_native_jsx": {
     "development_interactions": 8,
     "bounded_permission_lifecycle_retry": 4,
-    "release_checks": 2
+    "release_checks": 2,
+    "computed_contrast_checks": 3,
+    "source_sha256": "1004bb5a350a47402191489d54e77a4ea275caefc3634419d8d0cd284747ea76"
   },
   "qr_fullframe_cases": 20,
   "qr_independent_decoders": [
     "jsQR 1.4.0",
     "ZXing-C++ zxing-wasm 3.1.6"
   ],
-  "app_source_sha256": "d3a11865e84111dfca253e2f54c900cfc1cfeb0f3a3ae95f0de3e13be62cc266",
+  "app_source_sha256": "1004bb5a350a47402191489d54e77a4ea275caefc3634419d8d0cd284747ea76",
   "worker_sha256": "fa45361fd720d716df92efcc8f4917d53fbba3b55c3d1c00c463604dce8ca870",
-  "hosted_ci_executed": false,
+  "hosted_ci_executed": true,
   "physical_device_tested": false,
   "secrets_generated": false,
   "gallery_browser_groups": 6,
-  "gallery_worker_source_sha256": "4801a7cfcc475da2fa2d180b1a01dc5d98b996cf1dd830cf31f66f7dfb9f42b9"
+  "gallery_worker_source_sha256": "4801a7cfcc475da2fa2d180b1a01dc5d98b996cf1dd830cf31f66f7dfb9f42b9",
+  "ci_contract_tests": {
+    "command": "node --test scripts/ci-native.test.mjs",
+    "passed": 19,
+    "failed": 0,
+    "skipped": 0
+  },
+  "hosted_runs": [
+    {
+      "lane": "linux",
+      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40246386348",
+      "commit": "23608b372a2e26b2b13feb037a931b733e1c3a45",
+      "result": "passed"
+    },
+    {
+      "lane": "native",
+      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40246386349",
+      "commit": "23608b372a2e26b2b13feb037a931b733e1c3a45",
+      "result": "failed",
+      "diagnosis": "Public annotation only exit code 1; exact cause unconfirmed"
+    },
+    {
+      "lane": "linux",
+      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40247502391",
+      "commit": "1c1324f87a365ef8d318f487ae46503aee816589",
+      "result": "passed"
+    },
+    {
+      "lane": "native",
+      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40247502398",
+      "commit": "1c1324f87a365ef8d318f487ae46503aee816589",
+      "result": "failed",
+      "diagnosis": "Unexpected non-whitespace character after JSON; structured simulator output was being parsed from a shortened combined diagnostic log. Runner correction and rerun pending."
+    }
+  ],
+  "firebase": {
+    "result": "not_run",
+    "reason": "No usable configured Google identity or signed iOS XCTest package; bounded assessment completed and Firebase deferred"
+  },
+  "native_xctest_passed": false,
+  "last_successful_hosted_linux_commit": "1c1324f87a365ef8d318f487ae46503aee816589"
 }

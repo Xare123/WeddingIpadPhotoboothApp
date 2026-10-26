@@ -34,18 +34,24 @@ export function annotationText(text, limit = 700) {
 export function diagnosticLines(logs, stages = [], limit = 3) {
   const preferred = stages.filter(stage => stage.result === 'failed').map(stage => stage.name + '.log');
   const names = [...new Set([...preferred, ...Object.keys(logs).sort()])];
-  const selected = [], seen = new Set();
+  const selected = [], seen = new Set(), records = [];
   // Select error records, never a dump of build commands or exported variables.
-  const errorRecord = /^\s*(?:.*?:\d+(?::\d+)?:\s*)?(?:fatal\s+)?error:\s|^\s*(?:\[!\]|npm (?:ERR!|error)\b|Error:|fatal:|xcodebuild:\s*error:|Traceback\b|Could not\b|Cannot\b|Unable to\b)|\((?:LoadError|RuntimeError)\)|:\s*(?:command not found|Permission denied|No such file or directory)\s*$/i;
+  const errorRecord = /^\s*(?:.*?:\d+(?::\d+)?:\s*)?(?:fatal\s+)?error:\s|^\s*(?:npm (?:ERR!|error)\b|Error:|fatal:|xcodebuild:\s*error:|Traceback\b|Could not\b|Cannot\b|Unable to\b)|\((?:LoadError|RuntimeError)\)|:\s*(?:command not found|Permission denied|No such file or directory)\s*$/i;
   for (const name of names) {
-    const candidates = bounded(logs[name] ?? '', 400, 96_000).split('\n').filter(line => errorRecord.test(line));
-    for (const line of candidates.slice(-limit)) {
-      const safe = annotationText(line.trim(), 550);
-      if (!safe || seen.has(safe)) continue;
-      seen.add(safe);
-      selected.push(annotationText(basename(name), 80) + ': ' + safe);
-      if (selected.length >= limit) return selected;
+    for (const line of bounded(logs[name] ?? '', 400, 96_000).split('\n')) {
+      const cocoa = /^\s*\[!\]/.test(line);
+      if (cocoa && /(?:\bwarn(?:ing)?\b|\b(?:has|have) added \d+ script phase|please inspect before executing)/i.test(line)) continue;
+      const explicit = errorRecord.test(line) || (cocoa && /\b(?:error|failed|failure|could not|cannot|unable|invalid|incompatible|not found|requires)\b/i.test(line));
+      if (explicit || cocoa) records.push({ name, line, rank: explicit ? 0 : 1 });
     }
+  }
+  records.sort((left, right) => left.rank - right.rank);
+  for (const { name, line } of records) {
+    const safe = annotationText(line.trim(), 550);
+    if (!safe || seen.has(safe)) continue;
+    seen.add(safe);
+    selected.push(annotationText(basename(name), 80) + ': ' + safe);
+    if (selected.length >= limit) return selected;
   }
   return selected;
 }

@@ -1,6 +1,6 @@
 {
   "scope": "Browser fixture of actual App.tsx native JSX; synthetic in-memory camera/storage/auth/sync/permission/AppState/Linking. Not iOS or physical-device verification.",
-  "sourceSHA256": "8f0963fdd4530b9ad60a220bf55b4197c698a4dafb55ce66d39a1af76a74a259",
+  "sourceSHA256": "1004bb5a350a47402191489d54e77a4ea275caefc3634419d8d0cd284747ea76",
   "timezoneId": "America/Los_Angeles",
   "states": [
     {
@@ -51,7 +51,7 @@
       "verticalScroll": [
         {
           "viewport": 1148,
-          "content": 1231
+          "content": 1210
         }
       ],
       "outOfBounds": []
@@ -68,7 +68,7 @@
       "verticalScroll": [
         {
           "viewport": 1148,
-          "content": 1208
+          "content": 1187
         }
       ],
       "outOfBounds": []
@@ -121,7 +121,7 @@
       "verticalScroll": [
         {
           "viewport": 788,
-          "content": 823
+          "content": 802
         }
       ],
       "outOfBounds": []
@@ -138,7 +138,7 @@
       "verticalScroll": [
         {
           "viewport": 788,
-          "content": 821
+          "content": 800
         }
       ],
       "outOfBounds": []
@@ -159,6 +159,71 @@
     "Denied-but-requestable permission shows actual Allow camera UI; synthetic permission grant mounts the fixture preview and enables capture.",
     "Blocked permission invokes the explicit mocked Linking.openSettings marker; no OS settings launched and no real permission verified.",
     "Synthetic AppState background interrupt cancels countdown with zero camera-adapter calls after 3.3 seconds; active event returns to camera. Native lifecycle remains unrun."
+  ],
+  "contrastChecks": [
+    {
+      "label": "Step label on rendered page",
+      "requiredRatio": 4.5,
+      "foregroundCSS": "rgb(115, 96, 68)",
+      "backgroundLayers": [
+        "rgba(0, 0, 0, 0)",
+        "rgb(246, 239, 228)",
+        "rgba(0, 0, 0, 0)",
+        "rgb(246, 239, 228)",
+        "rgba(0, 0, 0, 0)",
+        "rgba(0, 0, 0, 0)",
+        "rgba(0, 0, 0, 0)",
+        "rgba(0, 0, 0, 0)",
+        "rgba(0, 0, 0, 0)"
+      ],
+      "compositedBackgroundRGB": [
+        246,
+        239,
+        228
+      ],
+      "fontSize": "11px",
+      "ratio": 5.2747080886633775,
+      "backgroundModel": "Actual rendered ancestor backgrounds composited from page to text"
+    },
+    {
+      "label": "Footer text on rendered page",
+      "requiredRatio": 4.5,
+      "foregroundCSS": "rgb(115, 105, 88)",
+      "backgroundLayers": [
+        "rgba(0, 0, 0, 0)",
+        "rgb(246, 239, 228)",
+        "rgba(0, 0, 0, 0)",
+        "rgb(246, 239, 228)",
+        "rgba(0, 0, 0, 0)",
+        "rgba(0, 0, 0, 0)",
+        "rgba(0, 0, 0, 0)",
+        "rgba(0, 0, 0, 0)"
+      ],
+      "compositedBackgroundRGB": [
+        246,
+        239,
+        228
+      ],
+      "fontSize": "12px",
+      "ratio": 4.725713629072485,
+      "backgroundModel": "Actual rendered ancestor backgrounds composited from page to text"
+    },
+    {
+      "label": "Countdown label over worst white camera frame",
+      "requiredRatio": 4.5,
+      "foregroundCSS": "rgb(255, 255, 255)",
+      "backgroundLayers": [
+        "rgba(21, 37, 29, 0.7)"
+      ],
+      "compositedBackgroundRGB": [
+        91.20000000000002,
+        102.4,
+        96.80000000000001
+      ],
+      "fontSize": "20px",
+      "ratio": 5.940518587363632,
+      "backgroundModel": "Actual rendered overlay composited over a hypothetical white camera frame"
+    }
   ],
   "errors": [],
   "externalRequests": []

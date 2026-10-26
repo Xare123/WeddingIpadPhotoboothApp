@@ -1,7 +1,7 @@
 {
   "scope": "Current release-mode iOS Hermes JavaScript source map; native signed binary unbuilt/unreviewed",
-  "app_source_sha256": "d3a11865e84111dfca253e2f54c900cfc1cfeb0f3a3ae95f0de3e13be62cc266",
-  "source_module_count": 990,
+  "app_source_sha256": "1004bb5a350a47402191489d54e77a4ea275caefc3634419d8d0cd284747ea76",
+  "source_module_count": 992,
   "findings": {
     "node-forge": [],
     "@expo/cli": [
@@ -13,9 +13,10 @@
     "react-dom": []
   },
   "source_map_sha256": [
-    "1e149ddea1f1b6a82866084ceaf6de973085a2481aff2fce74e42afb3b523f83"
+    "02553ab7674a19bc22249645bbd1d05c29d28cfaa683d46489e454eb59eac99a"
   ],
   "worker_bundle_sha256": "fa45361fd720d716df92efcc8f4917d53fbba3b55c3d1c00c463604dce8ca870",
   "remaining_cli_advisories": 2,
-  "audit_dependency_entries_high": 5
+  "audit_dependency_entries_high": 5,
+  "fixture_boundary": "Synthetic JPEG remains an inert bundled asset. Native test behavior requires __DEV__ and explicit opt-in; guards tested separately."
 }
