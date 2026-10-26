@@ -178,6 +178,20 @@ final class PhotoEffectsEngineTests: XCTestCase {
       }
       XCTAssertEqual(try Data(contentsOf: outside), sentinel)
     } }
+    // Darwin preserves redundant trailing directory separators in some URL
+    // representations. A rendered URI roundtrip must still release its own file.
+    for slashCount in [1, 2, 3] {
+      let base = directory.appendingPathComponent("slash-release-\(slashCount)", isDirectory: false)
+      let requested = try XCTUnwrap(URL(string: base.absoluteString + String(repeating: "/", count: slashCount)))
+      XCTAssertFalse(FileManager.default.fileExists(atPath: requested.path))
+      let isolated = PhotoEffectsEngine(cacheDirectory: requested)
+      let rendered = try isolated.render(source: source, preset: "warm", intensity: 0.7, preview: true, id: UUID())
+      let roundTrip = try XCTUnwrap(URL(string: rendered.uri))
+      XCTAssertEqual(roundTrip.deletingLastPathComponent().pathComponents,
+        base.standardizedFileURL.resolvingSymlinksInPath().standardizedFileURL.pathComponents)
+      try isolated.release(roundTrip)
+      XCTAssertFalse(FileManager.default.fileExists(atPath: roundTrip.path))
+    }
     XCTAssertEqual(try Data(contentsOf: source), originalBytes)
   }
   func testDisplayP3SourceConvertsIntoSrgbRatherThanReinterpretingChannels() throws {

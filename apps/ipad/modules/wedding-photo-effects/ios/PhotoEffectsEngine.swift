@@ -35,7 +35,8 @@ public final class PhotoEffectsEngine: @unchecked Sendable {
     if cacheDirectory.isFileURL {
       try? FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
     }
-    cache = cacheDirectory.standardizedFileURL.resolvingSymlinksInPath().appendingPathComponent("", isDirectory: true)
+    // An empty appended component can introduce a second slash and a trailing "/" path component on Darwin.
+    cache = cacheDirectory.standardizedFileURL.resolvingSymlinksInPath().standardizedFileURL
     Self.queue.sync {
       guard cache.isFileURL else { return }
       let old = (try? FileManager.default.contentsOfDirectory(at: cache, includingPropertiesForKeys: nil)) ?? []

@@ -65,6 +65,37 @@ final class PhotoTemplateEngineTests: XCTestCase {
   func near(_ actual: [UInt8], _ expected: [UInt8], tolerance: Int = 14, file: StaticString = #filePath, line: UInt = #line) {
     for i in 0..<3 { XCTAssertLessThanOrEqual(abs(Int(actual[i]) - Int(expected[i])), tolerance, file: file, line: line) }
   }
+  /// Rotate the stored raster counterclockwise; EXIF6 must undo this, not rotate upright people sideways.
+  func counterclockwiseRaster(_ image: CGImage) throws -> CGImage {
+    let width = image.width, height = image.height
+    var pixels = [UInt8](repeating: 255, count: width * height * 4)
+    try pixels.withUnsafeMutableBytes { bytes in
+      let context = try XCTUnwrap(CGContext(data: bytes.baseAddress!, width: width, height: height,
+        bitsPerComponent: 8, bytesPerRow: width * 4, space: CGColorSpace(name: CGColorSpace.sRGB)!,
+        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+      context.draw(image, in: CGRect(x: 0, y: 0, width: CGFloat(width), height: CGFloat(height)))
+    }
+    var rotated = [UInt8](repeating: 255, count: pixels.count)
+    for y in 0..<height { for x in 0..<width {
+      let source = (y * width + x) * 4, target = ((width - 1 - x) * height + y) * 4
+      for channel in 0..<4 { rotated[target + channel] = pixels[source + channel] }
+    } }
+    return try XCTUnwrap(CGImage(width: height, height: width, bitsPerComponent: 8, bitsPerPixel: 32,
+      bytesPerRow: height * 4, space: CGColorSpace(name: CGColorSpace.sRGB)!,
+      bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue),
+      provider: CGDataProvider(data: Data(rotated) as CFData)!, decode: nil, shouldInterpolate: false, intent: .defaultIntent))
+  }
+  /// Independent upright source samples, not production orientation code or width-only checks.
+  func assertUprightContent(_ actual: CGImage, source: CGImage, content: CGRect) throws {
+    var error = 0.0, channels = 0
+    for y in [0.15, 0.35, 0.55, 0.75] { for x in [0.2, 0.4, 0.6, 0.8] {
+      let expected = try sample(source, x: Int(Double(source.width) * x), y: Int(Double(source.height) * y))
+      let observed = try sample(actual, x: Int(content.minX + content.width * CGFloat(x)), y: Int(content.minY + content.height * CGFloat(y)))
+      for channel in 0..<3 { error += abs(Double(observed[channel]) - Double(expected[channel])); channels += 1 }
+    } }
+    // JPEG re-encoding and subpixel fit/preview resampling may differ; orientation must not.
+    XCTAssertLessThan(error / Double(channels) / 255, 0.065, "Rendered content must match the upright original")
+  }
   func testAllSixCombinationsKeepFourDistinctPhotosInOrderAndPreserveOriginalHashes() throws {
     let sources = try fixtures(), originalBytes = try sources.map { try Data(contentsOf: $0.url) }
     for layout in ["strip", "grid"] { for theme in ["classic", "botanical", "coastal"] {
@@ -107,6 +138,25 @@ final class PhotoTemplateEngineTests: XCTestCase {
     near(try sample(output, x: 895, y: 465), [245,240,20], tolerance: 25)
     near(try sample(output, x: 305, y: 465), [20,235,235], tolerance: 25)
     near(try sample(output, x: 100, y: 465), [246,241,231])
+    // Expected displayed [top, right, bottom, left] edges for all eight EXIF transforms.
+    // Raw edges: yellow, black, cyan, white. The table is independent of Core Image.
+    let edgeColors: [[UInt8]] = [[245,240,20], [15,15,15], [20,235,235], [250,250,250]]
+    let mappings = [[0,1,2,3], [0,3,2,1], [2,3,0,1], [2,1,0,3],
+      [3,2,1,0], [3,0,1,2], [1,0,3,2], [1,2,3,0]]
+    for orientation in 1...8 {
+      let inputs = try fixtures(orientation: orientation), bytes = try inputs.map { try Data(contentsOf: $0.url) }
+      let rendered = try image(render(inputs, recipe: recipe()).uri)
+      let window = PhotoTemplateEngine.window(layout: "strip", index: 0)
+      let size = orientation >= 5 ? CGSize(width: 300, height: 400) : CGSize(width: 400, height: 300)
+      let factor = min(window.width / size.width, window.height / size.height)
+      let content = CGRect(x: window.midX - size.width * factor / 2, y: window.midY - size.height * factor / 2,
+        width: size.width * factor, height: size.height * factor)
+      let points = [CGPoint(x: content.midX, y: content.minY + 10), CGPoint(x: content.maxX - 10, y: content.midY),
+        CGPoint(x: content.midX, y: content.maxY - 10), CGPoint(x: content.minX + 10, y: content.midY)]
+      for edge in 0..<4 { near(try sample(rendered, x: Int(points[edge].x), y: Int(points[edge].y)),
+        edgeColors[mappings[orientation - 1][edge]], tolerance: 25) }
+      for index in 0..<4 { XCTAssertEqual(try Data(contentsOf: inputs[index].url), bytes[index]) }
+    }
   }
   func testPreviewUsesExactSameRecipeHashesAndCanvasWithJpegTolerance() throws {
     let sources = try fixtures()
@@ -208,6 +258,20 @@ final class PhotoTemplateEngineTests: XCTestCase {
       }
       XCTAssertEqual(try Data(contentsOf: outside), sentinel)
     } }
+    for slashCount in [1, 2, 3] {
+      let base = URL(fileURLWithPath: directory.appendingPathComponent("release-slashes-\(slashCount)").path, isDirectory: false)
+      let requested = try XCTUnwrap(URL(string: base.absoluteString + String(repeating: "/", count: slashCount)))
+      XCTAssertFalse(FileManager.default.fileExists(atPath: base.path))
+      let isolated = PhotoTemplateEngine(cacheDirectory: requested)
+      let rendered = try isolated.render(sources: sources, recipeJSON: json, preview: true, id: UUID())
+      let roundTrip = try XCTUnwrap(URL(string: rendered.uri))
+      let canonical = base.standardizedFileURL.resolvingSymlinksInPath().standardizedFileURL
+      XCTAssertEqual(roundTrip.standardizedFileURL.resolvingSymlinksInPath().deletingLastPathComponent().pathComponents,
+        canonical.pathComponents)
+      try isolated.release(roundTrip)
+      XCTAssertFalse(FileManager.default.fileExists(atPath: roundTrip.path))
+      try isolated.release(roundTrip)
+    }
     for index in 0..<4 { XCTAssertEqual(try Data(contentsOf: sources[index].url), originalBytes[index]) }
   }
   func recipeV2(layout: String = "strip", theme: String = "classic", aspect: String = "portrait") throws -> String {
@@ -320,16 +384,32 @@ final class PhotoTemplateEngineTests: XCTestCase {
     XCTAssertEqual(preview.width, 1440); XCTAssertEqual(preview.height, 1440)
     try attachJPEG(full, name: "native-v2-clean-mixed-square-grid-coastal-FULL")
     try attachJPEG(preview, name: "native-v2-clean-mixed-square-grid-coastal-PREVIEW")
-    var exifSources = [PhotoTemplateEngine.Source]()
-    for (index, source) in mixed.enumerated() {
+    // Representative portrait shots stored with mixed EXIF orientations must still show upright people.
+    let uprightSources = try cleanSources(), uprightBytes = try uprightSources.map { try Data(contentsOf: $0.url) }
+    var exifSources = [PhotoTemplateEngine.Source](), uprightImages = [CGImage]()
+    for (index, source) in uprightSources.enumerated() {
       let input = try XCTUnwrap(CGImageSourceCreateWithURL(source.url as CFURL, nil))
       let cg = try XCTUnwrap(CGImageSourceCreateImageAtIndex(input, 0, nil))
+      uprightImages.append(cg)
       let target = directory.appendingPathComponent("clean-exif-\(index).jpg")
       let output = try XCTUnwrap(CGImageDestinationCreateWithURL(target as CFURL, UTType.jpeg.identifier as CFString, 1, nil))
       let orientation = index % 2 == 0 ? 1 : 6
-      CGImageDestinationAddImage(output, cg, [kCGImageDestinationLossyCompressionQuality: 0.95,
+      let stored = orientation == 6 ? try counterclockwiseRaster(cg) : cg
+      CGImageDestinationAddImage(output, stored, [kCGImageDestinationLossyCompressionQuality: 0.95,
         kCGImagePropertyOrientation: orientation, kCGImagePropertyGPSDictionary: [kCGImagePropertyGPSLatitude: 42.5]] as CFDictionary)
       XCTAssertTrue(CGImageDestinationFinalize(output))
+      let encoded = try XCTUnwrap(CGImageSourceCreateWithURL(target as CFURL, nil))
+      let properties = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(encoded, 0, nil) as? [String: Any])
+      XCTAssertEqual((properties[kCGImagePropertyOrientation as String] as? NSNumber)?.intValue, orientation)
+      XCTAssertEqual((properties[kCGImagePropertyPixelWidth as String] as? NSNumber)?.intValue, stored.width)
+      XCTAssertEqual((properties[kCGImagePropertyPixelHeight as String] as? NSNumber)?.intValue, stored.height)
+      // ImageIO's transform decoder independently checks our stored raster + metadata, not the production CI transform.
+      let decoded = try XCTUnwrap(CGImageSourceCreateThumbnailAtIndex(encoded, 0, [
+        kCGImageSourceCreateThumbnailFromImageAlways: true, kCGImageSourceCreateThumbnailWithTransform: true,
+        kCGImageSourceThumbnailMaxPixelSize: max(cg.width, cg.height)] as CFDictionary))
+      XCTAssertEqual(decoded.width, cg.width); XCTAssertEqual(decoded.height, cg.height)
+      try assertUprightContent(decoded, source: cg,
+        content: CGRect(x: 0, y: 0, width: CGFloat(decoded.width), height: CGFloat(decoded.height)))
       exifSources.append(PhotoTemplateEngine.Source(photoId: source.photoId, url: target))
     }
     let exif = try engine.inspect(sources: exifSources)
@@ -339,6 +419,19 @@ final class PhotoTemplateEngineTests: XCTestCase {
     let exifPreview = try render(exifSources, recipe: result.recipeJSON, preview: true)
     XCTAssertEqual(exifPreview.width, 1152); XCTAssertEqual(exifPreview.height, 1440)
     XCTAssertEqual(result.sourceHashes, exifPreview.sourceHashes)
+    let fullPixels = try image(result.uri), previewPixels = try image(exifPreview.uri)
+    let parsed = try PhotoTemplateEngine.Recipe.parse(result.recipeJSON)
+    for index in 0..<4 {
+      let source = uprightImages[index], window = PhotoTemplateEngine.window(recipe: parsed, index: index)
+      let fit = min(window.width / CGFloat(source.width), window.height / CGFloat(source.height))
+      let content = CGRect(x: window.midX - CGFloat(source.width) * fit / 2,
+        y: window.midY - CGFloat(source.height) * fit / 2, width: CGFloat(source.width) * fit, height: CGFloat(source.height) * fit)
+      try assertUprightContent(fullPixels, source: source, content: content)
+      let scale = CGFloat(exifPreview.width) / CGFloat(result.width)
+      try assertUprightContent(previewPixels, source: source,
+        content: CGRect(x: content.minX * scale, y: content.minY * scale, width: content.width * scale, height: content.height * scale))
+      XCTAssertEqual(try Data(contentsOf: uprightSources[index].url), uprightBytes[index])
+    }
     try attachJPEG(exifPreview, name: "native-v2-clean-mixed-EXIF-portrait-grid-sage-PREVIEW")
     let input = try XCTUnwrap(CGImageSourceCreateWithURL(URL(string: result.uri)! as CFURL, nil))
     let props = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(input, 0, nil) as? [String: Any])
