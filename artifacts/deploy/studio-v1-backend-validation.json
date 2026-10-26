@@ -1,0 +1,24 @@
+{
+  "scope": "Four-photo/original/keepsake backend candidate, preserving legacy five-photo/pairing/Textbelt behavior",
+  "generatedAt": "2026-10-26T17:04:18.887567+00:00",
+  "apiTests": {
+    "passed": 51,
+    "failed": 0,
+    "skipped": 0,
+    "evidence": "Dedicated current backend suite:51tests/51pass/0fail/0skip; also included in integrated266suite"
+  },
+  "typecheck": "passed",
+  "localHttpFourPhotoBrowser": "12groups passed; actual Worker localHTTP/Chromium,12 clicked exact-byte downloads, privacy404, revoke410,natural expiry410",
+  "evidence": "../visual/gallery-four-checks.json",
+  "workerSha256": "f9b8391e82f7eea41022f6cdef1a7c2e063f0c32781ba6068be947674b18fb1a",
+  "workerBytes": 39479,
+  "workerSourceSha256": "377618a384ffecc2452518d85d7fbff4b6a00c0a4eaeb27721735426fa245dfa",
+  "actualSmsRequests": 0,
+  "deployedByThisExecutor": false,
+  "productionGates": [
+    "Coordinator deployment preserving private R2/secret_text bindings and all privacy/rate policies",
+    "Private pairing only when owneriPadready",
+    "Live syntheticR2upload/download/expiry/revoke acceptance separate fromlocal",
+    "SMSeligibility/liveapproval and coordinator-owned cappedtest only"
+  ]
+}

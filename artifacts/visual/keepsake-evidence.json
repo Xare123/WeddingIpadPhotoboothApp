@@ -1,0 +1,744 @@
+{
+  "status": "passed-local-browser-evidence",
+  "counts": {
+    "markerWorkflows": 2,
+    "markerEdgeAssertions": 192,
+    "cleanConfigurations": 4,
+    "imageFailureCases": 5,
+    "cleanDemoWorkflows": 2,
+    "guestflowWorkflows": 2,
+    "fullSizeJPEGs": 13,
+    "screenshots": 113,
+    "recordings": 4
+  },
+  "sourceHashes": {
+    "apps/ipad/App.tsx": "151488bb3fdbf6435a16855ba70bfbc2f7408cbef8cb30de040121ce81dc30e7",
+    "apps/ipad/src/GlassSurface.tsx": "ace64a22e740d69040689495c0aa7147f7456038bbd0ee9aba6f2d52b58af972",
+    "apps/ipad/src/glass-policy.ts": "d3e33995484239887dde90f2743919c17bb2e8ff23093ceb45a804e530499e9e",
+    "apps/ipad/src/host-visibility.ts": "9b8033279a1249c59cd04e3f185792fa2a61c14f892f2cb9cf98953ceab02014",
+    "apps/ipad/src/photo-look-editor.ts": "38d6dc47fb34d9d9da58cf96a7daa6102d9616c7f54720c0406c1962548f817b",
+    "apps/ipad/src/native-photo-effects.ts": "372b1250d399429dc7396d09be1affa44b063216ba471d5cc4ed2d953394f0c9",
+    "apps/ipad/src/local-types.ts": "ab3e1e69d051a7a7c91886445781cbe306bb8839a60c2c4cbbafb49d488bde47",
+    "apps/ipad/src/template-editor.ts": "ad02f03cb5cae30d801e5262fd8f363f4e023b3c7f815f7e22e56ee604abe3df",
+    "apps/ipad/src/TemplateStudio.tsx": "2ce75e3831efeff05e6c841440ace23dfb34d220f09af30f0c80a418800113fc",
+    "apps/ipad/src/publication.ts": "33d26658c1c2de8781bc62ded35c80cbd00394c7413c70fdedf1fbc834875357",
+    "apps/ipad/src/session-capture.ts": "b41f7ee98282fe5661e080a6b4e0b88b17c56e3c1e5908adebbe020ed6323e24",
+    "apps/ipad/src/review-selection.ts": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
+    "apps/ipad/src/sharing.ts": "6bce9b315a8dc7064f858d7ff9d10c5d5587b1b2bf66a56923f738823c1df271",
+    "apps/ipad/src/SmsShare.tsx": "79464043a0e40a6cc7850c0e46cacfab33b3b19e477fee87192c0b38195d7541",
+    "apps/ipad/src/sms-state.ts": "4c7125d4f710c97848b6690196fa328edc83e85488ce3626dd7e843e2e99497a",
+    "apps/ipad/src/booth-presentation.ts": "b6f720f7d9133a0603f847efd0646a9a23f40d409018e9eb757d5326bc43e935",
+    "apps/ipad/src/host-originals.ts": "938e564eb50d984754abf5ec2d07a4671faa2110bb01ad4394f5377f4d271c1e",
+    "apps/ipad/src/photo-export.ts": "8ba8baae4fe425bd0f99079619e0a693f5c3fcf83ee73a93e167c7c93f7fb633",
+    "apps/ipad/src/photo-library.ts": "800b9dd768d660c16720fda134fe33a1a14db1061f7f31531063b136b670b6a8",
+    "packages/core/src/index.ts": "945d97743a621558369c7029acbc5b61daae85d2c08156368c188aedbbb9a991",
+    "apps/ipad/assets/attract-scene.png": "6ca6274beba9483104f19fb35d1ef9b8bfaae458208025e8fb4e8d4890f45cdf"
+  },
+  "reports": [
+    "keepsake-marker-checks.json",
+    "keepsake-clean-checks.json",
+    "keepsake-image-checks.json",
+    "keepsake-design-demo.json",
+    "keepsake-guestflow-checks.json"
+  ],
+  "scope": "Current actual JSX/controller browser evidence; synthetic native ports and Canvas approximations. Native/device/production gates remain separate.",
+  "receiptBinding": "DOM fixture native URI → exact completed renderer event → actual JPEG SHA256/browser blob/recipe; full inspector equals selected preview recipe",
+  "sourceProvenance": "apps/ipad/native-tests/fixtures/studio/provenance.json",
+  "files": [
+    {
+      "file": "keepsake-bundle-boundary.json",
+      "bytes": 28908,
+      "sha256": "29797c0e88743d4b2d1940af0362467a2b40749731af9e4b8081a01899cc2fc7"
+    },
+    {
+      "file": "keepsake-clean-checks.json",
+      "bytes": 130615,
+      "sha256": "4c62d61e8508a49c84cb166173adb3cc976f21cf44d740cdbe3a5c3f5d4891df"
+    },
+    {
+      "file": "keepsake-clean-contact-sheet.png",
+      "bytes": 855661,
+      "sha256": "85d8407a70d7a6a5866570dab018245d64f1aa2059c152298f775009cf4854b9"
+    },
+    {
+      "file": "keepsake-clean-mixed-explicit-fill-landscape.png",
+      "bytes": 515996,
+      "sha256": "04c6cef8d9636e94dda8c0ee439d2c628d1c10a7045047e32d0cd6910bc485a1"
+    },
+    {
+      "file": "keepsake-clean-mixed-explicit-fill-portrait.png",
+      "bytes": 346484,
+      "sha256": "03fbcdf9f4d10d56bce0dbf0c0360c9e4635526482931839dac6549e3db491db"
+    },
+    {
+      "file": "keepsake-clean-mixed-grid-botanical-landscape.png",
+      "bytes": 416421,
+      "sha256": "fb27034d857cb41cf1009077e1ade8b987ddcc126cf586efd7c985e3147b26d5"
+    },
+    {
+      "file": "keepsake-clean-mixed-grid-botanical-portrait.png",
+      "bytes": 283768,
+      "sha256": "bf9a00a545b289ae1483222bf791c115b4056fd4d9b58d96a67d938d5911fec0"
+    },
+    {
+      "file": "keepsake-clean-mixed-grid-botanical.jpg",
+      "bytes": 922161,
+      "sha256": "55e765a5b5ac27d79f0756e41f29092c0c07b5f9d47592ab5634ca63c4fc3d8e"
+    },
+    {
+      "file": "keepsake-clean-mixed-grid-classic-landscape.png",
+      "bytes": 407962,
+      "sha256": "d96f8502575e24910631018e05385cadc97028e375fe52ef7f534f7ae14728c3"
+    },
+    {
+      "file": "keepsake-clean-mixed-grid-classic-portrait.png",
+      "bytes": 277729,
+      "sha256": "8550d01a45c7652189703caceb057f27e865ef007308dc166134162fbe4dc494"
+    },
+    {
+      "file": "keepsake-clean-mixed-grid-classic.jpg",
+      "bytes": 931715,
+      "sha256": "168a7f4442c1dc02a254de379377d90b28ae64f547801e599a8b85390e9bea2a"
+    },
+    {
+      "file": "keepsake-clean-mixed-grid-coastal-landscape.png",
+      "bytes": 430368,
+      "sha256": "5eaad3979c7017898fdc68dde40d6d85fde2b5a7d71ab3764b43b1cb8839bc0d"
+    },
+    {
+      "file": "keepsake-clean-mixed-grid-coastal-portrait.png",
+      "bytes": 291531,
+      "sha256": "20f2c8627df434733aef0888b85382ee4458064f78cba883ac7e4a0c31f096b3"
+    },
+    {
+      "file": "keepsake-clean-mixed-grid-coastal.jpg",
+      "bytes": 971910,
+      "sha256": "d886f28f92ccf9e03327337557b2e4097ffadd1f53ee0a4d32886ef745f767f1"
+    },
+    {
+      "file": "keepsake-clean-mixed-inspection-whole-landscape.png",
+      "bytes": 346276,
+      "sha256": "2064f6ec3f0c45411cbe523f9862df3ee27a37d7b1767d228de1452e7e971908"
+    },
+    {
+      "file": "keepsake-clean-mixed-inspection-whole-portrait.png",
+      "bytes": 611484,
+      "sha256": "bdc2318717f37b88d26c6f0bc7d259eec341313849e21dc662e8cdae339d6a5a"
+    },
+    {
+      "file": "keepsake-clean-mixed-inspection-width-landscape.png",
+      "bytes": 531016,
+      "sha256": "3d5e57f0cb7fa9e95d33b153bae1cad8027c3a6b06a684ce33ebbf947df0fca1"
+    },
+    {
+      "file": "keepsake-clean-mixed-inspection-width-portrait.png",
+      "bytes": 575808,
+      "sha256": "2aa81b9109ee8a7a452055f38ff2c12f7ce9c52f296c976163a37a5f0c8c1d5d"
+    },
+    {
+      "file": "keepsake-clean-mixed-saved-landscape.png",
+      "bytes": 182989,
+      "sha256": "3d333a27c5113b1d9bcfae7445c653fc0bc4dbac37058c3b6addba06e8a120b3"
+    },
+    {
+      "file": "keepsake-clean-mixed-saved-portrait.png",
+      "bytes": 182492,
+      "sha256": "98d500e8293a93308ce2512f12026348f1e4f6374c1815e6e718638c510825eb"
+    },
+    {
+      "file": "keepsake-clean-mixed-strip-botanical-landscape.png",
+      "bytes": 206801,
+      "sha256": "095911fdad63746f1670ac1c348fa02358e72ec95b14d11677ec07bef503f573"
+    },
+    {
+      "file": "keepsake-clean-mixed-strip-botanical-portrait.png",
+      "bytes": 149202,
+      "sha256": "0a5e551b7d9fb108f3fb91683d205c7f9d022c035fcbc70e382723882ebe2e1d"
+    },
+    {
+      "file": "keepsake-clean-mixed-strip-botanical.jpg",
+      "bytes": 746960,
+      "sha256": "d35cb143d72dbe011dbc10bc519cd4f1be57bfcddb55c1a6473d31ad49759be8"
+    },
+    {
+      "file": "keepsake-clean-mixed-strip-classic-landscape.png",
+      "bytes": 203412,
+      "sha256": "df86be2b5cafdb284c778b1b9b2f2d78e10e6091533cae685e5b3b401c20a75a"
+    },
+    {
+      "file": "keepsake-clean-mixed-strip-classic-portrait.png",
+      "bytes": 146924,
+      "sha256": "f7e8be3668885b50d4d8236f15d301dbddd4fa6d389016e1af4681f65bfcc6e9"
+    },
+    {
+      "file": "keepsake-clean-mixed-strip-classic.jpg",
+      "bytes": 764680,
+      "sha256": "c82d964bc1ee6466b1c384174ab48f3006f42191bcb66b3b8071e93b886d8cc2"
+    },
+    {
+      "file": "keepsake-clean-mixed-strip-coastal-landscape.png",
+      "bytes": 214584,
+      "sha256": "73ee9e02746aacb018ff9d5be4711f2bf18a69767e810ff0fabb96664a233c42"
+    },
+    {
+      "file": "keepsake-clean-mixed-strip-coastal-portrait.png",
+      "bytes": 153913,
+      "sha256": "69b457cbdff546b9c00a1cdb062bcf7d5a511ead627e0a7e7e8362ea66b56e20"
+    },
+    {
+      "file": "keepsake-clean-mixed-strip-coastal.jpg",
+      "bytes": 794758,
+      "sha256": "c534f5f22ce6bfbd338e36ccb574fc853c7ae77d409390af12ef08739c611095"
+    },
+    {
+      "file": "keepsake-clean-portrait-explicit-fill-landscape.png",
+      "bytes": 444689,
+      "sha256": "e61bee8e5e79bd0b1f88ceaf5478b2d9be43d3d4fbd5e3fb6f85f3e20a89af5e"
+    },
+    {
+      "file": "keepsake-clean-portrait-explicit-fill-portrait.png",
+      "bytes": 299529,
+      "sha256": "5df87c932530b202a9aeb7fa7e62196e3a4078e52909f06ad2088613e758b1f6"
+    },
+    {
+      "file": "keepsake-clean-portrait-grid-botanical-landscape.png",
+      "bytes": 422162,
+      "sha256": "ad776e18e53e55079858eb80b781af4451ca67f96063c411e80719a08e063080"
+    },
+    {
+      "file": "keepsake-clean-portrait-grid-botanical-portrait.png",
+      "bytes": 285137,
+      "sha256": "3b7dd45f11b356f92cee110418e9c173bb5a3320b0829a5c8268b1b0e235a683"
+    },
+    {
+      "file": "keepsake-clean-portrait-grid-botanical.jpg",
+      "bytes": 1233209,
+      "sha256": "5af0e1e8916928c3dca18156b97d41c26e5869eef0bb6e54499d84a698a311d4"
+    },
+    {
+      "file": "keepsake-clean-portrait-grid-classic-landscape.png",
+      "bytes": 413393,
+      "sha256": "9d4323e24e0868c45733730bcbe4758556f0d0ed35935af6542d1c224092a0e4"
+    },
+    {
+      "file": "keepsake-clean-portrait-grid-classic-portrait.png",
+      "bytes": 279820,
+      "sha256": "978a322d7c850e44e2d2ca8c90668450d627476d5cbe89c75fd820a62feb2ea5"
+    },
+    {
+      "file": "keepsake-clean-portrait-grid-classic.jpg",
+      "bytes": 1247264,
+      "sha256": "93c7e43ab1d2fdb7ce7805f548727f83fc4efebcdcb4c413eff124fac9078ed2"
+    },
+    {
+      "file": "keepsake-clean-portrait-grid-coastal-landscape.png",
+      "bytes": 431575,
+      "sha256": "d25d567554ec8f165c5ab334eb80d4fc42b065b515049b82e9eebee8b8247e1c"
+    },
+    {
+      "file": "keepsake-clean-portrait-grid-coastal-portrait.png",
+      "bytes": 291368,
+      "sha256": "7f48ec098884311a6c7e543f6aee7d9a9f3497d86c4a064e9682faceced60948"
+    },
+    {
+      "file": "keepsake-clean-portrait-grid-coastal.jpg",
+      "bytes": 1289948,
+      "sha256": "4c1d3137b19a3a6a35f38f88a1ff537662ef7582093268ee8483c519b3422301"
+    },
+    {
+      "file": "keepsake-clean-portrait-inspection-whole-landscape.png",
+      "bytes": 364755,
+      "sha256": "3b8a2d9796e9067fd46747c63116c13c48ba8efeca4892b4d0bb165cba409ab0"
+    },
+    {
+      "file": "keepsake-clean-portrait-inspection-whole-portrait.png",
+      "bytes": 799735,
+      "sha256": "d5cd3de6cb76e92805c52200f1eb20ee7a2f05b53ae5a571fdbd5fc33bc6106b"
+    },
+    {
+      "file": "keepsake-clean-portrait-inspection-width-landscape.png",
+      "bytes": 607453,
+      "sha256": "c9dc0758bc2f319c22f9cf79fa330b5ddc8f2dbe52ca9dc0166e59e8edcd5081"
+    },
+    {
+      "file": "keepsake-clean-portrait-inspection-width-portrait.png",
+      "bytes": 820187,
+      "sha256": "c92ab640646eaf74d8eee5b60fb5b96f4e53f4f22ee2e3b02362837313198d90"
+    },
+    {
+      "file": "keepsake-clean-portrait-saved-landscape.png",
+      "bytes": 196917,
+      "sha256": "f54707ae92e61977883d06f4b1021f2468c58744e48b973b34ee2f6eafb4416c"
+    },
+    {
+      "file": "keepsake-clean-portrait-saved-portrait.png",
+      "bytes": 196856,
+      "sha256": "0b5e4663b70c9280fb820ee773e246afc7bb60a39843cae22134f9ca9d884e32"
+    },
+    {
+      "file": "keepsake-clean-portrait-strip-botanical-landscape.png",
+      "bytes": 182665,
+      "sha256": "fd73459d21d7bab06be161bbd480d6a68c27151a1beabb8e8f28c82097533405"
+    },
+    {
+      "file": "keepsake-clean-portrait-strip-botanical-portrait.png",
+      "bytes": 133820,
+      "sha256": "c5f2bde88b6edd8343bd08a01845bfdd68cbd4f1321317fb4506f6ac723dce4f"
+    },
+    {
+      "file": "keepsake-clean-portrait-strip-botanical.jpg",
+      "bytes": 636499,
+      "sha256": "7a67bd467179664dc1cb1cc8ec77fcdcb419df5d83aaf3450977838df0d145c4"
+    },
+    {
+      "file": "keepsake-clean-portrait-strip-classic-fill-top.jpg",
+      "bytes": 771964,
+      "sha256": "0e3697f895886bad1f08c0a3a02f479f23a52957454258b8f02f256c4da2c456"
+    },
+    {
+      "file": "keepsake-clean-portrait-strip-classic-landscape.png",
+      "bytes": 178845,
+      "sha256": "673e709ab340d5fe50ca7123893b270e680e7b73de65d9539b95268188d9d319"
+    },
+    {
+      "file": "keepsake-clean-portrait-strip-classic-portrait.png",
+      "bytes": 131432,
+      "sha256": "f835397817e86b9781ecdbcf630421b214f4b03d6659448d41650b1d62b54214"
+    },
+    {
+      "file": "keepsake-clean-portrait-strip-classic.jpg",
+      "bytes": 653966,
+      "sha256": "bfd7f391bbfc3570f485cb80c08afda18c071b441ad2ac72cb4c2fdc5b93702c"
+    },
+    {
+      "file": "keepsake-clean-portrait-strip-coastal-landscape.png",
+      "bytes": 191325,
+      "sha256": "6b0070bc1f02812c6a21abb128d329d58374f339ef8693128af38aa8d6bd313d"
+    },
+    {
+      "file": "keepsake-clean-portrait-strip-coastal-portrait.png",
+      "bytes": 138571,
+      "sha256": "7ccbb2906d92803ab81f908ee653403f00bcd26fb517f68f0e9cb768bcd04d2e"
+    },
+    {
+      "file": "keepsake-clean-portrait-strip-coastal.jpg",
+      "bytes": 684977,
+      "sha256": "e534dec0b7e1115bb9f90bf9fd02e4c1aeb5f46fce83524a452028bafbf48554"
+    },
+    {
+      "file": "keepsake-design-demo-landscape.webm",
+      "bytes": 1225140,
+      "sha256": "81768c47dc808b0654b78b8889de04699f046de73f409fa138c3a4028181bb4a"
+    },
+    {
+      "file": "keepsake-design-demo-portrait.webm",
+      "bytes": 1157780,
+      "sha256": "2e0adbb6a14069e9938b9b345fa952627084221ff19866515a3d0d875a96352a"
+    },
+    {
+      "file": "keepsake-design-demo.json",
+      "bytes": 16642,
+      "sha256": "8554b2021fb91f3074aefca7473dadc033dcd860dfb119adc000057c1a6f0ec8"
+    },
+    {
+      "file": "keepsake-design-grid-botanical-landscape.png",
+      "bytes": 422159,
+      "sha256": "6b276e6d0bef071ff3f562a39aff8e7eda206b2c8d36f7da443e5ec7fde50ebe"
+    },
+    {
+      "file": "keepsake-design-grid-botanical-portrait.png",
+      "bytes": 285133,
+      "sha256": "2a998f6573582bd29cf34b8d664e4bb289ef9738679ba78e0851186d7bdca00a"
+    },
+    {
+      "file": "keepsake-design-grid-inspection-width-landscape.png",
+      "bytes": 640458,
+      "sha256": "40a94f029858e218b0e5913ffe26ce279ee3d6c40937e64647c8d495c1a22f73"
+    },
+    {
+      "file": "keepsake-design-grid-inspection-width-portrait.png",
+      "bytes": 828386,
+      "sha256": "3085925f96fbf16d8a58ba38862aa3e7dcef63afafd4397e5f17d1c4b067c8a9"
+    },
+    {
+      "file": "keepsake-design-next-guests-landscape.png",
+      "bytes": 896890,
+      "sha256": "4c9343db86a01e72389f053956898ae0c61105b8d737e7d741d8baf716e39fda"
+    },
+    {
+      "file": "keepsake-design-next-guests-portrait.png",
+      "bytes": 811362,
+      "sha256": "a356a4503d6db1f2f7e59b87d636027d4e18dede93971f18ff9d96e3d07f65ec"
+    },
+    {
+      "file": "keepsake-design-ready-landscape.png",
+      "bytes": 147507,
+      "sha256": "d549ff354c472906ea6fae755d82f28efe105e8d88f3ee5f73ab05b850b4e31a"
+    },
+    {
+      "file": "keepsake-design-ready-portrait.png",
+      "bytes": 148170,
+      "sha256": "7172ddabc02162ea8b0456db8e53cbd5429ccf6f030fea337758ee01f3c31e0b"
+    },
+    {
+      "file": "keepsake-design-review-landscape.png",
+      "bytes": 568155,
+      "sha256": "26e3a65f64c777e867ebb0e713e569be424ae180e2bf0f63839d0cbde77c1251"
+    },
+    {
+      "file": "keepsake-design-review-portrait.png",
+      "bytes": 599617,
+      "sha256": "54fa0679a968f04662c6525a8d590248f88ee27e100776ee77a3d91c86be809d"
+    },
+    {
+      "file": "keepsake-design-saved-offline-landscape.png",
+      "bytes": 135800,
+      "sha256": "21a6aa18782e136c60c9a9357cdf4b7e10fcb7c404635e3bf7fb3860ef6c4456"
+    },
+    {
+      "file": "keepsake-design-saved-offline-portrait.png",
+      "bytes": 136093,
+      "sha256": "c493deb112dc70c7cd7575440b7c2f133ea287a38f9f6606c3f53cb4af7e20f1"
+    },
+    {
+      "file": "keepsake-design-strip-classic-landscape.png",
+      "bytes": 178849,
+      "sha256": "8c7e547b9cd2fd06617d98314465244a4c9a2b65a3895acbf32cd73bb16e4808"
+    },
+    {
+      "file": "keepsake-design-strip-classic-portrait.png",
+      "bytes": 131438,
+      "sha256": "1c48c4529fdc7f06d07e2eeacfb86f5979b9bdbf7f671afa8a6951e82cacbffe"
+    },
+    {
+      "file": "keepsake-design-strip-top-fill-inspection-landscape.png",
+      "bytes": 174534,
+      "sha256": "bed0f87358f8baac88c234c6713954d9d5f70fa8648132de70f65d795f003545"
+    },
+    {
+      "file": "keepsake-design-strip-top-fill-inspection-portrait.png",
+      "bytes": 372177,
+      "sha256": "8a2b2320f59369cdc22ab197520821bcbe4dd8c4648b0577e7e53506ca67cfdd"
+    },
+    {
+      "file": "keepsake-design-strip-top-fill-landscape.png",
+      "bytes": 223614,
+      "sha256": "7f9d3bf81dcec477ecc99d7f2093c73a6673ae756d37c6f0a47d8ff1c5fc837b"
+    },
+    {
+      "file": "keepsake-design-strip-top-fill-portrait.png",
+      "bytes": 159927,
+      "sha256": "69cbad6d9fa97e4c28f4d79db196d426124df8125f8bdc8e20324112306fa8dc"
+    },
+    {
+      "file": "keepsake-flow-attract-landscape.png",
+      "bytes": 896890,
+      "sha256": "4c9343db86a01e72389f053956898ae0c61105b8d737e7d741d8baf716e39fda"
+    },
+    {
+      "file": "keepsake-flow-attract-portrait.png",
+      "bytes": 811324,
+      "sha256": "4e973a3dac033b304cf85250c563e0723e9b4bc7663c0ef504db515ec10a922f"
+    },
+    {
+      "file": "keepsake-flow-camera-landscape.png",
+      "bytes": 1081281,
+      "sha256": "39afd15f2e858cc316f19619b6f1b8f01d5f7a797d3e232a360b68394492ef42"
+    },
+    {
+      "file": "keepsake-flow-camera-portrait.png",
+      "bytes": 1060282,
+      "sha256": "21e599721eb57cc2ed2fd3d38c0d6721176dfbd5a6ec43843cd6e1a27aa1726a"
+    },
+    {
+      "file": "keepsake-flow-camera-progress-landscape.png",
+      "bytes": 1109965,
+      "sha256": "795088dd4b356b588c649f4ba7cbc7a3d71ee474ff39f7326602c4891b1d3ff6"
+    },
+    {
+      "file": "keepsake-flow-camera-progress-portrait.png",
+      "bytes": 994315,
+      "sha256": "0f073a3a891b9a5a26c1459970fdc61e4f36e8cf4a0832342ac25124a0b56775"
+    },
+    {
+      "file": "keepsake-flow-countdown-landscape.png",
+      "bytes": 1083270,
+      "sha256": "acc1e4c76ebe01ab13503d8d23078a183eef74632bf12f6e8d4e402449230a44"
+    },
+    {
+      "file": "keepsake-flow-countdown-portrait.png",
+      "bytes": 1063118,
+      "sha256": "3f756ca31be7ba7a4f5c76d2cf88570e88f7c5d1be58beb8427710b68a91d14f"
+    },
+    {
+      "file": "keepsake-flow-host-controls-landscape.png",
+      "bytes": 66672,
+      "sha256": "f85e12e6918b63d9a16df507b72de68d29f3a0800cabfd67daf77d62c41e9e2d"
+    },
+    {
+      "file": "keepsake-flow-host-controls-portrait.png",
+      "bytes": 66903,
+      "sha256": "23f3ab04fd349d48bf9f1f795aea68afd394b6f41ee0504a33182fbc864af50b"
+    },
+    {
+      "file": "keepsake-flow-host-library-landscape.png",
+      "bytes": 83216,
+      "sha256": "00da23f8bdfe573165df3694bf4dee1e5235c57ee3c3a633875eb43d81869a01"
+    },
+    {
+      "file": "keepsake-flow-host-library-portrait.png",
+      "bytes": 83440,
+      "sha256": "cc1e03fe43079e0f2280aae024b2d48f7fcb56d8b0de1e69b5c0e5901049c7bc"
+    },
+    {
+      "file": "keepsake-flow-host-relocked-landscape.png",
+      "bytes": 87139,
+      "sha256": "498f5f3921e8a92d170890585f573223368dddef837f63978dd6a55d0555bd07"
+    },
+    {
+      "file": "keepsake-flow-host-relocked-portrait.png",
+      "bytes": 87680,
+      "sha256": "b2f1b17f0175ebcb89ad076e48c50f6b961d0cbf09a7c6179593aed3b111349d"
+    },
+    {
+      "file": "keepsake-flow-paused-landscape.png",
+      "bytes": 1091317,
+      "sha256": "868dfeec11c3ef8548adadc5573fbcc89e36ce7aefd3c1ee79b8430643c3012c"
+    },
+    {
+      "file": "keepsake-flow-paused-portrait.png",
+      "bytes": 972982,
+      "sha256": "049d94876f580706a725459901f2097588c3dde1c14cd0ee9da318d7f966e13e"
+    },
+    {
+      "file": "keepsake-flow-retake-landscape.png",
+      "bytes": 1062031,
+      "sha256": "3255394b9add1cf00e9c5812377d466619ba727b5f2e4268a46205157d743bdd"
+    },
+    {
+      "file": "keepsake-flow-retake-portrait.png",
+      "bytes": 934734,
+      "sha256": "d068e041350f833617976c34efcfb60be3a8ad7d0c8973f2e1c2af71f63a133b"
+    },
+    {
+      "file": "keepsake-flow-review-landscape.png",
+      "bytes": 568075,
+      "sha256": "bdd9845699f36cdc1e6e47de602acf53454bdea5f3eb625e94646a50a5ec4fbb"
+    },
+    {
+      "file": "keepsake-flow-review-portrait.png",
+      "bytes": 599596,
+      "sha256": "fa827eaf311e2aadfe4b8af3711761939c3ec763b3a56f74ecb4e7957224fff8"
+    },
+    {
+      "file": "keepsake-flow-save-error-landscape.png",
+      "bytes": 1019918,
+      "sha256": "6551231397ca04095dc22a986f680068610f75e75f13e97e1c9070fb62e8b310"
+    },
+    {
+      "file": "keepsake-flow-save-error-portrait.png",
+      "bytes": 1064852,
+      "sha256": "169b18ebe6a4ae0d741eb2e41c8dad689cc775bdc44b965b3dc91808ea7dff86"
+    },
+    {
+      "file": "keepsake-guestflow-checks.json",
+      "bytes": 15913,
+      "sha256": "0dd7cff37a0a01f544a6de2196ee892fd20ce6a9477f4dfef829125f87427e66"
+    },
+    {
+      "file": "keepsake-image-checks.json",
+      "bytes": 8099,
+      "sha256": "9d2b39ff35e2f9dd8e9c6a4735d98cb7e072adba1f467c853ddecb86b0a0e535"
+    },
+    {
+      "file": "keepsake-image-full-inspection-error.png",
+      "bytes": 66562,
+      "sha256": "f1a0ec945c9cf5020567ffb0f04a1697c5a955766854abd97bdcfe04f091be57"
+    },
+    {
+      "file": "keepsake-image-full-inspection-recovered.png",
+      "bytes": 309597,
+      "sha256": "905f0e57b343ae910c6bc1990a41144f164e6903b022f51256b76c362fdea5a5"
+    },
+    {
+      "file": "keepsake-image-look-original-error.png",
+      "bytes": 458592,
+      "sha256": "0f98462011f4b7b80efaa9c427a16e43165c5307e8747c8829850b69beb7012c"
+    },
+    {
+      "file": "keepsake-image-look-warm-error.png",
+      "bytes": 457678,
+      "sha256": "b9ddcf735ff9cb53c12f781a2dc4a251e3ae559e2ebb82dcf19f1b67d378ffa4"
+    },
+    {
+      "file": "keepsake-image-look-warm-recovered.png",
+      "bytes": 599914,
+      "sha256": "ac4ed52edd588d4d6b399e1819340d212718994c6c139909d45159566ad54fae"
+    },
+    {
+      "file": "keepsake-image-template-main-error.png",
+      "bytes": 66543,
+      "sha256": "b62ced022cfea9f07509c83c51d55d31c86af9681a7965723ae291b6bbded175"
+    },
+    {
+      "file": "keepsake-image-template-theme-error.png",
+      "bytes": 66543,
+      "sha256": "b62ced022cfea9f07509c83c51d55d31c86af9681a7965723ae291b6bbded175"
+    },
+    {
+      "file": "keepsake-image-template-theme-recovered.png",
+      "bytes": 140364,
+      "sha256": "75c3aede6b3c6302c0ba27f1c91073e2994481373301cd77286e6844a07636d9"
+    },
+    {
+      "file": "keepsake-index.html",
+      "bytes": 18403,
+      "sha256": "f228c5fc03d648db4706503fc897810e226c2a3d856367d8087ffac55108db87"
+    },
+    {
+      "file": "keepsake-marker-checks.json",
+      "bytes": 208549,
+      "sha256": "e1d78fe6342436840fe36601ff3cc0396cb9d0fa02c66b0debbc85058d530862"
+    },
+    {
+      "file": "keepsake-marker-crop-pan-landscape.png",
+      "bytes": 473968,
+      "sha256": "0a1effcadc75a3bc4c3a46c5c0887b43aa8dfa6f3b7b4061fbd097e761126e0f"
+    },
+    {
+      "file": "keepsake-marker-crop-pan-portrait.png",
+      "bytes": 335846,
+      "sha256": "f434bda89ae8aafa221b9ac842a6aab7ebb3094b2481675512cc33f0d4d50b18"
+    },
+    {
+      "file": "keepsake-marker-demo-landscape.webm",
+      "bytes": 3464103,
+      "sha256": "081e7b6c4e038509448975345ffcde7e6894bae2480198da51eed67151c10c73"
+    },
+    {
+      "file": "keepsake-marker-demo-portrait.webm",
+      "bytes": 4355904,
+      "sha256": "dc1368b2976845bf8110e612976634d7c337ce1f3a9846a4448304a5def8cc19"
+    },
+    {
+      "file": "keepsake-marker-grid-botanical-landscape.png",
+      "bytes": 430573,
+      "sha256": "b9e58be7795a7cd80e2b2073788f5ccedd32e3cb8acf0a9cf897529f47353e0a"
+    },
+    {
+      "file": "keepsake-marker-grid-botanical-portrait.png",
+      "bytes": 289156,
+      "sha256": "faaa499e8080be3a84a651e2c5c1bac7676706aa17112a453d7e421a26952d34"
+    },
+    {
+      "file": "keepsake-marker-grid-classic-landscape.png",
+      "bytes": 423972,
+      "sha256": "16990cc6cc5f6ca4d4c31442b4279aaef196c955f9678595407d0c4432bfeafc"
+    },
+    {
+      "file": "keepsake-marker-grid-classic-portrait.png",
+      "bytes": 285150,
+      "sha256": "a7e839d6960a43b7bc76b4891f5b3b13caca3b2b90ff18dfc2b6957e8a56b21f"
+    },
+    {
+      "file": "keepsake-marker-grid-coastal-landscape.png",
+      "bytes": 442639,
+      "sha256": "07b77a87d9ec16abc37de16a17698331dcc9eac74ba920d9059637a617445ab9"
+    },
+    {
+      "file": "keepsake-marker-grid-coastal-portrait.png",
+      "bytes": 296777,
+      "sha256": "e161e20748682a624292f399d7b8db9bb87fe22a53c7bd3bd9199d0d0a28a1a6"
+    },
+    {
+      "file": "keepsake-marker-inspection-whole-landscape.png",
+      "bytes": 383631,
+      "sha256": "5d754362f29e5b70a07c43a54171a153b1cdaafbe1bfcf6cd52a8caedaf4e304"
+    },
+    {
+      "file": "keepsake-marker-inspection-whole-portrait.png",
+      "bytes": 858617,
+      "sha256": "55e91c965cf06e38f70a62c688001760b383e5b421d0aaf9507b06fde6026be7"
+    },
+    {
+      "file": "keepsake-marker-inspection-width-landscape.png",
+      "bytes": 684951,
+      "sha256": "fba9920c69412517b2ed44750e7df96b3382f40817d0feb2107cf25ee426a3dd"
+    },
+    {
+      "file": "keepsake-marker-inspection-width-portrait.png",
+      "bytes": 883042,
+      "sha256": "6e7eb7e648c5415242cfcee326076fccf5daa42552fb70b98c986ae5e5e604d7"
+    },
+    {
+      "file": "keepsake-marker-legacy-five-portrait.png",
+      "bytes": 72179,
+      "sha256": "2ad3ea5030843f67175843bc31e39b8aa4f61f811707552863bc2ff49cde3dc4"
+    },
+    {
+      "file": "keepsake-marker-next-guests-landscape.png",
+      "bytes": 896890,
+      "sha256": "4c9343db86a01e72389f053956898ae0c61105b8d737e7d741d8baf716e39fda"
+    },
+    {
+      "file": "keepsake-marker-next-guests-portrait.png",
+      "bytes": 811324,
+      "sha256": "4e973a3dac033b304cf85250c563e0723e9b4bc7663c0ef504db515ec10a922f"
+    },
+    {
+      "file": "keepsake-marker-ready-landscape.png",
+      "bytes": 193362,
+      "sha256": "fef0c9460c4a5e164911be040017c9e2abd7a24aa8357f8b9f98ea77bf7bf465"
+    },
+    {
+      "file": "keepsake-marker-ready-portrait.png",
+      "bytes": 192861,
+      "sha256": "35dcf061f701c8e5f7e905c93e1b665e87bb4a42e2a0ac8582c87871767fcfea"
+    },
+    {
+      "file": "keepsake-marker-saved-offline-landscape.png",
+      "bytes": 181712,
+      "sha256": "d9179442d0509b6b129ff33c14a7298e041ac9e87d4659fddd02125a3310e554"
+    },
+    {
+      "file": "keepsake-marker-saved-offline-portrait.png",
+      "bytes": 181107,
+      "sha256": "bb8a858997a648285c73a8af8fb3903f5a60908d52461fa50dc9935389fe5ace"
+    },
+    {
+      "file": "keepsake-marker-strip-botanical-landscape.png",
+      "bytes": 186216,
+      "sha256": "d0819cc39c7661785a74e14559ed1792bc6ed13d4d993cce8bda0671163d2e3c"
+    },
+    {
+      "file": "keepsake-marker-strip-botanical-portrait.png",
+      "bytes": 135458,
+      "sha256": "036764d221e2168e68de74067f91b9bd4f2025fe1ea7664dfd6a9963103b56ef"
+    },
+    {
+      "file": "keepsake-marker-strip-classic-landscape.png",
+      "bytes": 183890,
+      "sha256": "772f6b7a34ca56768568174547e6b70e55608ed3d4dbf6f97ee046df58065721"
+    },
+    {
+      "file": "keepsake-marker-strip-classic-portrait.png",
+      "bytes": 133521,
+      "sha256": "39a08930ff7f11c293b1783b2dc661f8f77a24eb460f167688a4287d42aa298f"
+    },
+    {
+      "file": "keepsake-marker-strip-coastal-landscape.png",
+      "bytes": 194740,
+      "sha256": "1e71e2b7f6cfe92b95e92234d6fad7501866210864d104c29282cd3cd3da813f"
+    },
+    {
+      "file": "keepsake-marker-strip-coastal-portrait.png",
+      "bytes": 140438,
+      "sha256": "94fe7786ec2de5d643f064852a5e4e113760c9490ca90472d4a63b6f2eeab38e"
+    },
+    {
+      "file": "keepsake-visual-review.md",
+      "bytes": 3823,
+      "sha256": "3e2f1c13b0ec9f43e8a0cc2f38f548f23cc4bdb0cd654e6b3503373237da5d8c"
+    }
+  ]
+}

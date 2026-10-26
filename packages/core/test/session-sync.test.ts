@@ -94,7 +94,7 @@ test('four-photo filtered template acknowledges every selected, raw and composit
     assert.equal(id, four.id); assert.deepEqual(ids, four.composite!.recipe.photoIds);
     assert.deepEqual(descriptor, { photoIds: ids, originalPhotoIds: four.composite!.originalPhotoIds,
       composite: { photoId: 'template', layout: 'strip', theme: 'botanical', version: 'wedding-template-v1' } });
-    return { value: ready, origin };
+    return { value: { ...ready, ...descriptor }, origin };
   } }, 1000);
   assert.deepEqual(sessionGuestPage(four, await queue.list(), 1000), { url, expiresAt: 2000 });
 });
@@ -144,7 +144,48 @@ test('plain four-photo originals share one deduplicated acknowledgement with the
   }));
   const queue = store(rows);
   await finalizeReadySessions({ store: queue, async sessions() { return [plain]; },
-    async ready() { return { value: ready, origin }; } }, 1000);
+    async ready(_id, _ids, descriptor) { return { value: { ...ready, ...descriptor }, origin }; } }, 1000);
   assert.equal((await queue.list()).length, 5);
   assert.deepEqual(sessionGuestPage(plain, await queue.list(), 1000), { url, expiresAt: 2000 });
+});
+
+const fourV2: ShareableSession = { ...four, composite: { ...four.composite!, recipe: {
+  ...four.composite!.recipe, version: 'wedding-template-v2', gridAspect: 'portrait',
+} } };
+
+test('finalizer independently enforces the full v2 acknowledgement before assigning any guest URL', async () => {
+  for (const change of ['missing', 'aspect', 'roles', 'version'] as const) {
+    const queue = store(fourJobs());
+    await finalizeReadySessions({ store: queue, async sessions() { return [fourV2]; },
+      async ready(_id, _ids, descriptor) {
+        const good = { ...ready, ...descriptor };
+        const value = change === 'missing' ? ready : change === 'roles' ? { ...good, photoIds: descriptor!.originalPhotoIds, originalPhotoIds: descriptor!.photoIds } :
+          { ...good, composite: { ...descriptor!.composite, ...(change === 'aspect' ? { gridAspect: 'square' } : { version: 'wedding-template-v1' }) } };
+        return { value, origin };
+      } }, 1000);
+    assert.equal(sessionGuestPage(fourV2, await queue.list(), 1000), null);
+    assert((await queue.list()).every(job => job.state === 'complete' && job.guestUrl === undefined));
+  }
+  const queue = store(fourJobs());
+  await finalizeReadySessions({ store: queue, async sessions() { return [fourV2]; },
+    async ready(_id, _ids, descriptor) { return { value: { ...ready, ...descriptor }, origin }; } }, 1000);
+  const restarted = store(JSON.parse(JSON.stringify(await queue.list())));
+  assert.deepEqual(sessionGuestPage(fourV2, await restarted.list(), 1000), { url, expiresAt: 2000 });
+  await finalizeReadySessions({ store: restarted, async sessions() { return [fourV2]; }, async ready() { assert.fail('valid persisted acknowledgements must not repeat'); } }, 1000);
+});
+
+test('a changed durable v2 aspect or an invalid persisted version cannot produce publication readiness', async () => {
+  const queue = store(fourJobs());
+  await finalizeReadySessions({ store: queue, async sessions() { return [fourV2]; },
+    async publicationAssets() { return { photoIds: fourV2.composite!.recipe.photoIds, originalPhotoIds: fourV2.composite!.originalPhotoIds,
+      composite: { photoId: 'template', layout: 'strip', theme: 'botanical', version: 'wedding-template-v2', gridAspect: 'square' } }; },
+    async ready() { assert.fail('durable aspect drift cannot publish'); } }, 1000);
+  assert.equal(sessionGuestPage(fourV2, await queue.list(), 1000), null);
+  const acknowledged = fourJobs().map(job => ({ ...job, guestUrl: url, guestExpiresAt: 2000 }));
+  for (const gridAspect of [undefined, null, 'wide']) {
+    const malformed = { ...fourV2, composite: { ...fourV2.composite!, recipe: { ...fourV2.composite!.recipe, gridAspect } } };
+    assert.equal(sessionGuestPage(malformed as never, acknowledged, 1000), null);
+  }
+  const v1WithAspect = { ...four, composite: { ...four.composite!, recipe: { ...four.composite!.recipe, gridAspect: 'square' } } };
+  assert.equal(sessionGuestPage(v1WithAspect as never, acknowledged, 1000), null);
 });

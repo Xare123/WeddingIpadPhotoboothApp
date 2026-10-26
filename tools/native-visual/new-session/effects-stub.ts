@@ -10,7 +10,7 @@ export function browserImageURI(uri: string): string {
   if (durableRenderedImages.has(uri)) return durableRenderedImages.get(uri)!;
   if (renderedImages.has(uri)) return renderedImages.get(uri)!;
   const match = /^file:\/\/\/synthetic\/([a-zA-Z0-9-]+)\.jpg$/.exec(uri);
-  if (match) return originalImageVariants.has(uri) ? `/synthetic/shot/${match[1]}.png?variant=${originalImageVariants.get(uri)}` : `/synthetic/shot/${match[1]}.png`;
+  if (match) return originalImageVariants.has(uri) ? `/synthetic/shot/${match[1]}.png?variant=${originalImageVariants.get(uri)}&photos=${fixtureControls.photoSet}` : `/synthetic/shot/${match[1]}.png`;
   return uri;
 }
 export async function syntheticSource(uri: string) {

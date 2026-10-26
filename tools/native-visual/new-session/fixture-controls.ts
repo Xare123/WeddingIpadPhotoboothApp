@@ -31,6 +31,8 @@ export const fixtureControls = {
   },
   online: !['pending', 'offline'].includes(fixtureState),
   readyAcknowledged: fixtureState !== 'partial-ready',
+  photoSet: parameters.get('photos') ?? 'marker',
+  templateInspections: [] as { version: string; gridAspect: string; median: number; sources: { photoId: string; width: number; height: number; sha256: string }[] }[],
   templatesAvailable: parameters.get('templates') === 'available',
   templateDelayMs: 0,
   templatesIgnoreCancellation: false,

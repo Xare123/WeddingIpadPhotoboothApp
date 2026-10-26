@@ -1,5 +1,5 @@
 import type { QueueJob, QueueStore } from '@wedding-booth/core';
-import { readyGuestPage, sessionGuestPage } from './sharing';
+import { readyGuestPage, sessionGuestPage, validateReadyPublication } from './sharing';
 import { publicationAssets, publicationAssetIds, type PublicationSession } from './publication';
 import type { SessionPublicationAssets } from './local-types';
 
@@ -29,6 +29,9 @@ export async function finalizeReadySessions(ports: FinalizationPorts, now = Date
         if (JSON.stringify(durable) !== JSON.stringify(assets)) continue;
       }
       const response = await ports.ready(session.id, assets.photoIds, assets);
+      // Keep the exact recipe acknowledgement at this boundary as well as the
+      // native HTTP adapter; an injected callback cannot bypass role/aspect checks.
+      validateReadyPublication(response.value, assets);
       const guest = readyGuestPage(response.value, response.origin, now);
       for (const job of selected as QueueJob[]) await ports.store.save({ ...job, ...guest });
     } catch {

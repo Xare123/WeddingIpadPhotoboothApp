@@ -1,0 +1,188 @@
+{
+  "generatedAtUTC": "2026-10-26T18:09:52.795013+00:00",
+  "scope": "One bounded isolated local-tooling candidate; root package manifests/lockfile/product/workflows unchanged; no commit, push, deploy, credentials or live provider use",
+  "recommendation": "The minimal upstream Wrangler4.153.0 update is compatible within tested Linux boundaries and available for separate integration after the frozen native feature checkpoint. Do not apply the attempted ineffective overrides.",
+  "appliedToRoot": false,
+  "candidate": {
+    "directory": ".cache/tooling-candidate",
+    "effectiveManifestChange": {
+      "services/api/package.json": {
+        "wrangler": {
+          "old": "4.152.0",
+          "new": "4.153.0"
+        }
+      }
+    },
+    "rootPackageJsonByteIdentical": true,
+    "patch": ".cache/tooling-candidate/candidate.patch",
+    "patchSha256": "5cc828f5b58afe19003a472f1d6cd1b76ba178aeae7e80321c1bbd032fc4a1fb",
+    "changedLockEntries": 10,
+    "lockChanges": [
+      {
+        "path": "node_modules/wrangler",
+        "oldVersion": "4.152.0",
+        "newVersion": "4.153.0"
+      },
+      {
+        "path": "node_modules/wrangler/node_modules/@cloudflare/workerd-darwin-64",
+        "oldVersion": "1.20261019.1",
+        "newVersion": "1.20261023.1"
+      },
+      {
+        "path": "node_modules/wrangler/node_modules/@cloudflare/workerd-darwin-arm64",
+        "oldVersion": "1.20261019.1",
+        "newVersion": "1.20261023.1"
+      },
+      {
+        "path": "node_modules/wrangler/node_modules/@cloudflare/workerd-linux-64",
+        "oldVersion": "1.20261019.1",
+        "newVersion": "1.20261023.1"
+      },
+      {
+        "path": "node_modules/wrangler/node_modules/@cloudflare/workerd-linux-arm64",
+        "oldVersion": "1.20261019.1",
+        "newVersion": "1.20261023.1"
+      },
+      {
+        "path": "node_modules/wrangler/node_modules/@cloudflare/workerd-windows-64",
+        "oldVersion": "1.20261019.1",
+        "newVersion": "1.20261023.1"
+      },
+      {
+        "path": "node_modules/wrangler/node_modules/miniflare",
+        "oldVersion": "5.20261019.2-beta",
+        "newVersion": "5.20261023.0-beta"
+      },
+      {
+        "path": "node_modules/wrangler/node_modules/undici",
+        "oldVersion": "7.29.1",
+        "newVersion": "7.30.1"
+      },
+      {
+        "path": "node_modules/wrangler/node_modules/workerd",
+        "oldVersion": "1.20261019.1",
+        "newVersion": "1.20261023.1"
+      },
+      {
+        "path": "services/api",
+        "oldVersion": "0.1.0",
+        "newVersion": "0.1.0"
+      }
+    ],
+    "packageLockSha256": "3e641bdf69fb8255425da63d4d1b827c0cf811c431ea64ab12a4c8fcfad55bf3"
+  },
+  "checks": {
+    "frozenInstall": {
+      "status": "passed",
+      "packages": 590,
+      "logSha256": "445330bba30abe428b00c221789c59c630b8de994b959ca6e79d0cbee729fbdf"
+    },
+    "apiTypecheck": {
+      "status": "passed",
+      "logSha256": "ad201c32dc82237de49f16051cccf4cb84ecfe981a67793258a4e4218fc8ce00"
+    },
+    "apiTests": {
+      "passed": 54,
+      "failed": 0,
+      "skipped": 0,
+      "logSha256": "e6a9063c07c5c782d4878a6946a2377d5f031b20d53b5b8c64385c5841965aba",
+      "scope": "Production current API source and actual direct Miniflare4 emulator; provider adapters injected/no live sends"
+    },
+    "actualUpdatedWranglerHttp": {
+      "status": "passed",
+      "passed": true,
+      "profiles": [
+        "v2-grid-portrait",
+        "legacy-five"
+      ],
+      "immutableUploadRequests": 20,
+      "exactByteDownloads": 10,
+      "realSmsRequests": 0,
+      "privateOrigins": 0,
+      "scope": "Owned 127.0.0.1:8795 only; actual Wrangler4.153.0 local server, v2 portrait-grid and legacy-five readiness/upload/replay/private download/revoke; server stopped in finally",
+      "testSha256": "22b3e1887ed867bc0dd25809af8a8ccedec6ca3e2610f7e544d38dc16f0884b4",
+      "runnerSha256": "ed67347b129b0ec060b70571d16b9c997cdec086e16effd64c90ddbb1ca5d45a"
+    },
+    "audit": {
+      "status": "findings remain",
+      "before": {
+        "high": 8,
+        "moderate": 1,
+        "total": 9
+      },
+      "after": {
+        "info": 0,
+        "low": 0,
+        "moderate": 0,
+        "high": 8,
+        "critical": 0,
+        "total": 8
+      },
+      "remainingPackageEntries": [
+        "@expo/cli",
+        "@expo/code-signing-certificates",
+        "expo",
+        "miniflare",
+        "node-forge",
+        "sharp",
+        "undici",
+        "zod"
+      ],
+      "auditSha256": "ac40b33ef7613698af065d9c053731a85023af94154863ebcc68c2cae083b672"
+    }
+  },
+  "resolvedTooling": {
+    "node_modules/miniflare": "4.20260730.0",
+    "node_modules/sharp": "0.35.2",
+    "node_modules/undici": "7.28.0",
+    "node_modules/wrangler": "4.153.0",
+    "node_modules/wrangler/node_modules/miniflare": "5.20261023.0-beta",
+    "node_modules/wrangler/node_modules/sharp": "0.35.5",
+    "node_modules/wrangler/node_modules/undici": "7.30.1"
+  },
+  "ineffectiveOverrideAttempt": {
+    "requested": {
+      "miniflare@4.20260730.0": {
+        "sharp": "0.35.5",
+        "undici": "7.30.1"
+      }
+    },
+    "commands": [
+      "npm install --package-lock-only --ignore-scripts --no-audit --no-fund",
+      "npm update --package-lock-only --ignore-scripts --no-audit --no-fund sharp undici"
+    ],
+    "result": "Npm11.9.0 retained direct sharp0.35.2 and undici7.28.0 in this existing workspace lock after both commands. This does not prove no possible override can work; no further lock surgery or compatibility claim made. Overrides removed from candidate, final frozen install repeated.",
+    "safeDisposition": "Not recommended or represented as fixed; bounded follow-up requires a real resolved-tree change plus tests."
+  },
+  "remainingFindings": {
+    "directMiniflare": "4.20260730.0 still depends on sharp0.35.2 and Undici7.28.0; cannot label tooling audit clean. Bind emulator loopback, avoid untrusted image/network input. No public emulator exposure.",
+    "expo": "Forge1.4.0 remains affected and has no published fixed release in reviewed registry snapshot; fixed Zod4.6.6+ crosses current ExpoCLI3.x range. No forced major replacement/downgrade applied."
+  },
+  "limits": [
+    "No native compile/XCTest/device test repeated for this tooling candidate.",
+    "No claim of full integration or remaining vulnerability exploitability elimination.",
+    "No production configuration, live storage or real SMS request.",
+    "Package audit is not native-binary or infrastructure audit."
+  ],
+  "rootGuardHashes": {
+    "package.json": "21ab07c98e468f97bf05dc8789ab508bb3ee18ae9fbdd724f2cfadb42bf90a30",
+    "package-lock.json": "1cdd546c539c694b6612b748cb27627aeea87e951a859f162b087dd7becdc2b6",
+    "services/api/package.json": "097cf47a38d098d89f247d0c8b62d8a43c189e87cfcc7700cd463ac57e4d477e"
+  },
+  "apiSourceSha256": "82a548e2f5e640ce6f57f360b7636959e8c6877c3ec3b6c58570a80fb103bd63",
+  "privacyCleanup": {
+    "ownedServerStoppedAndPortClosed": true,
+    "filesRemoved": [
+      "wrangler-owned.log",
+      ".cache/wrangler/logs/wrangler-2026-10-26_18-08-45_373.log",
+      ".cache/emulator/v3/observability/miniflare-wobs-trace-store/metadata.sqlite-shm",
+      ".cache/emulator/v3/observability/miniflare-wobs-trace-store/metadata.sqlite",
+      ".cache/emulator/v3/observability/miniflare-wobs-trace-store/a590acd76969f996ec6e4b599c3c09f58c283a76f2d61392b5d3046caf557602.sqlite-shm",
+      ".cache/emulator/v3/observability/miniflare-wobs-trace-store/metadata.sqlite-wal",
+      ".cache/emulator/v3/observability/miniflare-wobs-trace-store/a590acd76969f996ec6e4b599c3c09f58c283a76f2d61392b5d3046caf557602.sqlite",
+      ".cache/emulator/v3/observability/miniflare-wobs-trace-store/a590acd76969f996ec6e4b599c3c09f58c283a76f2d61392b5d3046caf557602.sqlite-wal"
+    ],
+    "syntheticCapabilityPathByteMatchesInRemovedDiagnostics": 179,
+    "scope": "Only diagnostics created by this owned candidate execution were removed. Synthetic private R2 data/manifest/revocation objects and test reports retained. Local Wrangler/Miniflare observability persistence despite config disabled is a local-tooling finding, not a production logging claim."
+  }
+}

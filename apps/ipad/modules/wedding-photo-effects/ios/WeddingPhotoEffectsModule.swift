@@ -13,22 +13,31 @@ public final class WeddingPhotoEffectsModule: Module {
   private let engine = PhotoEffectsEngine(cacheDirectory:
     FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
       .appendingPathComponent("WeddingPhotoEffects", isDirectory: true))
+  private func checkedTemplateSources(_ sources: [TemplatePhotoSource]) throws -> [PhotoTemplateEngine.Source] {
+    guard sources.count == 4, Set(sources.map { $0.photoId }).count == 4 else { throw PhotoTemplateEngine.Failure.invalidInput }
+    let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+      .appendingPathComponent("photobooth", isDirectory: true).standardizedFileURL.resolvingSymlinksInPath()
+    return try sources.map { source in
+      guard source.photoId.range(of: "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$", options: .regularExpression) != nil,
+        let url = URL(string: source.uri), url.isFileURL, url.host == nil || url.host == "",
+        url.query == nil, url.fragment == nil, !source.uri.contains("%00") else { throw PhotoTemplateEngine.Failure.invalidInput }
+      let resolved = url.standardizedFileURL.resolvingSymlinksInPath()
+      guard resolved.deletingLastPathComponent() == documents,
+        resolved.lastPathComponent == source.photoId + ".jpg" else { throw PhotoTemplateEngine.Failure.invalidInput }
+      return PhotoTemplateEngine.Source(photoId: source.photoId, url: resolved)
+    }
+  }
   public func definition() -> ModuleDefinition {
     Name("WeddingPhotoEffects")
     Constant("capabilityVersion") { 1 }
-    Constant("templateVersion") { PhotoTemplateEngine.version }
+    Constant("templateVersion") { PhotoTemplateEngine.currentVersion }
+    Constant("supportedTemplateVersions") { PhotoTemplateEngine.supportedVersions }
+    AsyncFunction("inspectTemplateSources") { (sources: [TemplatePhotoSource]) -> [String: Any] in
+      return try self.templates.inspect(sources: self.checkedTemplateSources(sources)).dictionary
+    }
     AsyncFunction("renderTemplate") { (sources: [TemplatePhotoSource], recipeJSON: String, preview: Bool, requestUUID: String) -> [String: Any] in
       guard sources.count == 4, let id = UUID(uuidString: requestUUID) else { throw PhotoTemplateEngine.Failure.invalidInput }
-      let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        .appendingPathComponent("photobooth", isDirectory: true).standardizedFileURL.resolvingSymlinksInPath()
-      let checked = try sources.map { source -> PhotoTemplateEngine.Source in
-        guard source.photoId.range(of: "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$", options: .regularExpression) != nil,
-          let url = URL(string: source.uri), url.isFileURL else { throw PhotoTemplateEngine.Failure.invalidInput }
-        let resolved = url.standardizedFileURL.resolvingSymlinksInPath()
-        guard resolved.deletingLastPathComponent() == documents,
-          resolved.lastPathComponent == source.photoId + ".jpg" else { throw PhotoTemplateEngine.Failure.invalidInput }
-        return PhotoTemplateEngine.Source(photoId: source.photoId, url: resolved)
-      }
+      let checked = try self.checkedTemplateSources(sources)
       return try self.templates.render(sources: checked, recipeJSON: recipeJSON, preview: preview, id: id).dictionary
     }
     Function("cancelTemplate") { (requestUUID: String) in

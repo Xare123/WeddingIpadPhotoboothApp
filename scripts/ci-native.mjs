@@ -136,6 +136,7 @@ async function main() {
       const evidence = verifyNativeRuntimeSources(plan, root);
       status.expectedTestCount = evidence.expectedTestCount;
       status.runtimeSources = evidence.runtimeSources;
+      status.runtimeResources = evidence.runtimeResources;
       writeFileSync(join(diagnostics, 'runtime-sources.json'), JSON.stringify(evidence, null, 2) + '\n');
     }
     const workspace = isAbsolute(plan.workspace) ? plan.workspace : resolve(root, plan.workspace);

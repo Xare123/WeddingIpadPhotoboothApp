@@ -1,0 +1,3735 @@
+{
+  "scope": "LOCAL clean generated photo design fixtures through actual v2 App/Studio/controllers. Actual Canvas JPEGs/full-resolution inspection; synthetic native SDK/storage/Photos/publication ports. Not native CoreImage/CoreText, optical capture, print fidelity, real files/SQLite, Photos, cloud publication or phone scanning proof. Marker correctness remains separate and mandatory.",
+  "status": "passed",
+  "sourceSHA256": "151488bb3fdbf6435a16855ba70bfbc2f7408cbef8cb30de040121ce81dc30e7",
+  "screenshots": [
+    "artifacts/visual/keepsake-clean-portrait-strip-classic-portrait.png",
+    "artifacts/visual/keepsake-clean-portrait-strip-botanical-portrait.png",
+    "artifacts/visual/keepsake-clean-portrait-strip-coastal-portrait.png",
+    "artifacts/visual/keepsake-clean-portrait-grid-classic-portrait.png",
+    "artifacts/visual/keepsake-clean-portrait-grid-botanical-portrait.png",
+    "artifacts/visual/keepsake-clean-portrait-inspection-whole-portrait.png",
+    "artifacts/visual/keepsake-clean-portrait-inspection-width-portrait.png",
+    "artifacts/visual/keepsake-clean-portrait-grid-coastal-portrait.png",
+    "artifacts/visual/keepsake-clean-portrait-explicit-fill-portrait.png",
+    "artifacts/visual/keepsake-clean-portrait-saved-portrait.png",
+    "artifacts/visual/keepsake-clean-portrait-strip-classic-landscape.png",
+    "artifacts/visual/keepsake-clean-portrait-strip-botanical-landscape.png",
+    "artifacts/visual/keepsake-clean-portrait-strip-coastal-landscape.png",
+    "artifacts/visual/keepsake-clean-portrait-grid-classic-landscape.png",
+    "artifacts/visual/keepsake-clean-portrait-grid-botanical-landscape.png",
+    "artifacts/visual/keepsake-clean-portrait-inspection-whole-landscape.png",
+    "artifacts/visual/keepsake-clean-portrait-inspection-width-landscape.png",
+    "artifacts/visual/keepsake-clean-portrait-grid-coastal-landscape.png",
+    "artifacts/visual/keepsake-clean-portrait-explicit-fill-landscape.png",
+    "artifacts/visual/keepsake-clean-portrait-saved-landscape.png",
+    "artifacts/visual/keepsake-clean-mixed-strip-classic-portrait.png",
+    "artifacts/visual/keepsake-clean-mixed-strip-botanical-portrait.png",
+    "artifacts/visual/keepsake-clean-mixed-strip-coastal-portrait.png",
+    "artifacts/visual/keepsake-clean-mixed-grid-classic-portrait.png",
+    "artifacts/visual/keepsake-clean-mixed-grid-botanical-portrait.png",
+    "artifacts/visual/keepsake-clean-mixed-inspection-whole-portrait.png",
+    "artifacts/visual/keepsake-clean-mixed-inspection-width-portrait.png",
+    "artifacts/visual/keepsake-clean-mixed-grid-coastal-portrait.png",
+    "artifacts/visual/keepsake-clean-mixed-explicit-fill-portrait.png",
+    "artifacts/visual/keepsake-clean-mixed-saved-portrait.png",
+    "artifacts/visual/keepsake-clean-mixed-strip-classic-landscape.png",
+    "artifacts/visual/keepsake-clean-mixed-strip-botanical-landscape.png",
+    "artifacts/visual/keepsake-clean-mixed-strip-coastal-landscape.png",
+    "artifacts/visual/keepsake-clean-mixed-grid-classic-landscape.png",
+    "artifacts/visual/keepsake-clean-mixed-grid-botanical-landscape.png",
+    "artifacts/visual/keepsake-clean-mixed-inspection-whole-landscape.png",
+    "artifacts/visual/keepsake-clean-mixed-inspection-width-landscape.png",
+    "artifacts/visual/keepsake-clean-mixed-grid-coastal-landscape.png",
+    "artifacts/visual/keepsake-clean-mixed-explicit-fill-landscape.png",
+    "artifacts/visual/keepsake-clean-mixed-saved-landscape.png"
+  ],
+  "exports": [
+    {
+      "set": "clean-portrait",
+      "layout": "strip",
+      "theme": "classic",
+      "gridAspect": "portrait",
+      "file": "artifacts/visual/keepsake-clean-portrait-strip-classic.jpg",
+      "uri": "blob:http://127.0.0.1:8791/abcb5955-63af-4bcb-977c-d6ccdf765fbc",
+      "nativeURI": "file:///synthetic-templates/f0effe31-8e60-4445-a205-914ac8eab1c4.jpg",
+      "width": 1200,
+      "height": 3600,
+      "byteLength": 653966,
+      "jpeg": true,
+      "sha256": "bfd7f391bbfc3570f485cb80c08afda18c071b441ad2ac72cb4c2fdc5b93702c",
+      "recipe": {
+        "cropsByPhotoId": {
+          "10000000-0000-4000-8000-000000000001": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000002": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000003": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000004": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        },
+        "gridAspect": "portrait",
+        "layout": "strip",
+        "photoIds": [
+          "10000000-0000-4000-8000-000000000001",
+          "10000000-0000-4000-8000-000000000002",
+          "10000000-0000-4000-8000-000000000003",
+          "10000000-0000-4000-8000-000000000004"
+        ],
+        "theme": "classic",
+        "version": "wedding-template-v2"
+      },
+      "cssFilter": "none"
+    },
+    {
+      "set": "clean-portrait",
+      "layout": "strip",
+      "theme": "botanical",
+      "gridAspect": "portrait",
+      "file": "artifacts/visual/keepsake-clean-portrait-strip-botanical.jpg",
+      "uri": "blob:http://127.0.0.1:8791/4b3b2615-aa6f-4f78-ae1a-e8ec4b825d2b",
+      "nativeURI": "file:///synthetic-templates/d2242ef9-60e9-4dd9-ae27-c900006a4761.jpg",
+      "width": 1200,
+      "height": 3600,
+      "byteLength": 636499,
+      "jpeg": true,
+      "sha256": "7a67bd467179664dc1cb1cc8ec77fcdcb419df5d83aaf3450977838df0d145c4",
+      "recipe": {
+        "cropsByPhotoId": {
+          "10000000-0000-4000-8000-000000000001": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000002": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000003": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000004": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        },
+        "gridAspect": "portrait",
+        "layout": "strip",
+        "photoIds": [
+          "10000000-0000-4000-8000-000000000001",
+          "10000000-0000-4000-8000-000000000002",
+          "10000000-0000-4000-8000-000000000003",
+          "10000000-0000-4000-8000-000000000004"
+        ],
+        "theme": "botanical",
+        "version": "wedding-template-v2"
+      },
+      "cssFilter": "none"
+    },
+    {
+      "set": "clean-portrait",
+      "layout": "strip",
+      "theme": "coastal",
+      "gridAspect": "portrait",
+      "file": "artifacts/visual/keepsake-clean-portrait-strip-coastal.jpg",
+      "uri": "blob:http://127.0.0.1:8791/31c7bad5-fed4-401c-930d-15bd797987b3",
+      "nativeURI": "file:///synthetic-templates/ca45e89e-6fb8-43da-9229-bb0227bcb4ec.jpg",
+      "width": 1200,
+      "height": 3600,
+      "byteLength": 684977,
+      "jpeg": true,
+      "sha256": "e534dec0b7e1115bb9f90bf9fd02e4c1aeb5f46fce83524a452028bafbf48554",
+      "recipe": {
+        "cropsByPhotoId": {
+          "10000000-0000-4000-8000-000000000001": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000002": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000003": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000004": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        },
+        "gridAspect": "portrait",
+        "layout": "strip",
+        "photoIds": [
+          "10000000-0000-4000-8000-000000000001",
+          "10000000-0000-4000-8000-000000000002",
+          "10000000-0000-4000-8000-000000000003",
+          "10000000-0000-4000-8000-000000000004"
+        ],
+        "theme": "coastal",
+        "version": "wedding-template-v2"
+      },
+      "cssFilter": "none"
+    },
+    {
+      "set": "clean-portrait",
+      "layout": "grid",
+      "theme": "classic",
+      "gridAspect": "portrait",
+      "file": "artifacts/visual/keepsake-clean-portrait-grid-classic.jpg",
+      "uri": "blob:http://127.0.0.1:8791/87143452-1f78-40b8-9bb5-cb87170f6d87",
+      "nativeURI": "file:///synthetic-templates/7fafb5b9-e705-4aa0-83bf-f3c0edfb9206.jpg",
+      "width": 2400,
+      "height": 3000,
+      "byteLength": 1247264,
+      "jpeg": true,
+      "sha256": "93c7e43ab1d2fdb7ce7805f548727f83fc4efebcdcb4c413eff124fac9078ed2",
+      "recipe": {
+        "cropsByPhotoId": {
+          "10000000-0000-4000-8000-000000000001": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000002": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000003": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000004": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        },
+        "gridAspect": "portrait",
+        "layout": "grid",
+        "photoIds": [
+          "10000000-0000-4000-8000-000000000001",
+          "10000000-0000-4000-8000-000000000002",
+          "10000000-0000-4000-8000-000000000003",
+          "10000000-0000-4000-8000-000000000004"
+        ],
+        "theme": "classic",
+        "version": "wedding-template-v2"
+      },
+      "cssFilter": "none"
+    },
+    {
+      "set": "clean-portrait",
+      "layout": "grid",
+      "theme": "botanical",
+      "gridAspect": "portrait",
+      "file": "artifacts/visual/keepsake-clean-portrait-grid-botanical.jpg",
+      "uri": "blob:http://127.0.0.1:8791/a45a6ba9-5671-4fb2-a8d6-516b271af76d",
+      "nativeURI": "file:///synthetic-templates/6e71f06f-9ea1-4b39-a9db-0d135de4445c.jpg",
+      "width": 2400,
+      "height": 3000,
+      "byteLength": 1233209,
+      "jpeg": true,
+      "sha256": "5af0e1e8916928c3dca18156b97d41c26e5869eef0bb6e54499d84a698a311d4",
+      "recipe": {
+        "cropsByPhotoId": {
+          "10000000-0000-4000-8000-000000000001": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000002": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000003": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000004": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        },
+        "gridAspect": "portrait",
+        "layout": "grid",
+        "photoIds": [
+          "10000000-0000-4000-8000-000000000001",
+          "10000000-0000-4000-8000-000000000002",
+          "10000000-0000-4000-8000-000000000003",
+          "10000000-0000-4000-8000-000000000004"
+        ],
+        "theme": "botanical",
+        "version": "wedding-template-v2"
+      },
+      "cssFilter": "none"
+    },
+    {
+      "set": "clean-portrait",
+      "layout": "grid",
+      "theme": "coastal",
+      "gridAspect": "portrait",
+      "file": "artifacts/visual/keepsake-clean-portrait-grid-coastal.jpg",
+      "uri": "blob:http://127.0.0.1:8791/9c94c30c-9d71-44d6-94ad-b13157b86272",
+      "nativeURI": "file:///synthetic-templates/8015402e-34e2-4778-8c02-543f6b56898a.jpg",
+      "width": 2400,
+      "height": 3000,
+      "byteLength": 1289948,
+      "jpeg": true,
+      "sha256": "4c1d3137b19a3a6a35f38f88a1ff537662ef7582093268ee8483c519b3422301",
+      "recipe": {
+        "cropsByPhotoId": {
+          "10000000-0000-4000-8000-000000000001": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000002": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000003": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000004": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        },
+        "gridAspect": "portrait",
+        "layout": "grid",
+        "photoIds": [
+          "10000000-0000-4000-8000-000000000001",
+          "10000000-0000-4000-8000-000000000002",
+          "10000000-0000-4000-8000-000000000003",
+          "10000000-0000-4000-8000-000000000004"
+        ],
+        "theme": "coastal",
+        "version": "wedding-template-v2"
+      },
+      "cssFilter": "none"
+    },
+    {
+      "set": "clean-mixed",
+      "layout": "strip",
+      "theme": "classic",
+      "gridAspect": "square",
+      "file": "artifacts/visual/keepsake-clean-mixed-strip-classic.jpg",
+      "uri": "blob:http://127.0.0.1:8791/376170ee-e272-4d44-a108-104ef9331de0",
+      "nativeURI": "file:///synthetic-templates/e4733e87-22d3-495d-9ca0-de99e7a59d69.jpg",
+      "width": 1200,
+      "height": 3600,
+      "byteLength": 764680,
+      "jpeg": true,
+      "sha256": "c82d964bc1ee6466b1c384174ab48f3006f42191bcb66b3b8071e93b886d8cc2",
+      "recipe": {
+        "cropsByPhotoId": {
+          "10000000-0000-4000-8000-000000000001": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000002": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000003": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000004": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        },
+        "gridAspect": "square",
+        "layout": "strip",
+        "photoIds": [
+          "10000000-0000-4000-8000-000000000001",
+          "10000000-0000-4000-8000-000000000002",
+          "10000000-0000-4000-8000-000000000003",
+          "10000000-0000-4000-8000-000000000004"
+        ],
+        "theme": "classic",
+        "version": "wedding-template-v2"
+      },
+      "cssFilter": "none"
+    },
+    {
+      "set": "clean-mixed",
+      "layout": "strip",
+      "theme": "botanical",
+      "gridAspect": "square",
+      "file": "artifacts/visual/keepsake-clean-mixed-strip-botanical.jpg",
+      "uri": "blob:http://127.0.0.1:8791/30dbc861-7492-484e-aa0c-329a6b91d67f",
+      "nativeURI": "file:///synthetic-templates/2edb9507-5d49-401a-a470-ce22ba18dfe1.jpg",
+      "width": 1200,
+      "height": 3600,
+      "byteLength": 746960,
+      "jpeg": true,
+      "sha256": "d35cb143d72dbe011dbc10bc519cd4f1be57bfcddb55c1a6473d31ad49759be8",
+      "recipe": {
+        "cropsByPhotoId": {
+          "10000000-0000-4000-8000-000000000001": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000002": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000003": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000004": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        },
+        "gridAspect": "square",
+        "layout": "strip",
+        "photoIds": [
+          "10000000-0000-4000-8000-000000000001",
+          "10000000-0000-4000-8000-000000000002",
+          "10000000-0000-4000-8000-000000000003",
+          "10000000-0000-4000-8000-000000000004"
+        ],
+        "theme": "botanical",
+        "version": "wedding-template-v2"
+      },
+      "cssFilter": "none"
+    },
+    {
+      "set": "clean-mixed",
+      "layout": "strip",
+      "theme": "coastal",
+      "gridAspect": "square",
+      "file": "artifacts/visual/keepsake-clean-mixed-strip-coastal.jpg",
+      "uri": "blob:http://127.0.0.1:8791/7d5f4e15-bfe2-4b72-b143-c345609a12fd",
+      "nativeURI": "file:///synthetic-templates/30aa5c43-ea85-4729-a3e8-202031acb64a.jpg",
+      "width": 1200,
+      "height": 3600,
+      "byteLength": 794758,
+      "jpeg": true,
+      "sha256": "c534f5f22ce6bfbd338e36ccb574fc853c7ae77d409390af12ef08739c611095",
+      "recipe": {
+        "cropsByPhotoId": {
+          "10000000-0000-4000-8000-000000000001": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000002": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000003": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000004": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        },
+        "gridAspect": "square",
+        "layout": "strip",
+        "photoIds": [
+          "10000000-0000-4000-8000-000000000001",
+          "10000000-0000-4000-8000-000000000002",
+          "10000000-0000-4000-8000-000000000003",
+          "10000000-0000-4000-8000-000000000004"
+        ],
+        "theme": "coastal",
+        "version": "wedding-template-v2"
+      },
+      "cssFilter": "none"
+    },
+    {
+      "set": "clean-mixed",
+      "layout": "grid",
+      "theme": "classic",
+      "gridAspect": "square",
+      "file": "artifacts/visual/keepsake-clean-mixed-grid-classic.jpg",
+      "uri": "blob:http://127.0.0.1:8791/ceb3e26a-bdac-4da9-a584-113e33519f3a",
+      "nativeURI": "file:///synthetic-templates/118c0d31-6da2-48ac-9eba-e25040f52947.jpg",
+      "width": 2400,
+      "height": 2400,
+      "byteLength": 931715,
+      "jpeg": true,
+      "sha256": "168a7f4442c1dc02a254de379377d90b28ae64f547801e599a8b85390e9bea2a",
+      "recipe": {
+        "cropsByPhotoId": {
+          "10000000-0000-4000-8000-000000000001": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000002": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000003": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000004": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        },
+        "gridAspect": "square",
+        "layout": "grid",
+        "photoIds": [
+          "10000000-0000-4000-8000-000000000001",
+          "10000000-0000-4000-8000-000000000002",
+          "10000000-0000-4000-8000-000000000003",
+          "10000000-0000-4000-8000-000000000004"
+        ],
+        "theme": "classic",
+        "version": "wedding-template-v2"
+      },
+      "cssFilter": "none"
+    },
+    {
+      "set": "clean-mixed",
+      "layout": "grid",
+      "theme": "botanical",
+      "gridAspect": "square",
+      "file": "artifacts/visual/keepsake-clean-mixed-grid-botanical.jpg",
+      "uri": "blob:http://127.0.0.1:8791/46522f83-5485-4db4-a597-549753753f14",
+      "nativeURI": "file:///synthetic-templates/b468bdae-a1f9-4a56-ae8a-d1e60c4ab665.jpg",
+      "width": 2400,
+      "height": 2400,
+      "byteLength": 922161,
+      "jpeg": true,
+      "sha256": "55e765a5b5ac27d79f0756e41f29092c0c07b5f9d47592ab5634ca63c4fc3d8e",
+      "recipe": {
+        "cropsByPhotoId": {
+          "10000000-0000-4000-8000-000000000001": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000002": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000003": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000004": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        },
+        "gridAspect": "square",
+        "layout": "grid",
+        "photoIds": [
+          "10000000-0000-4000-8000-000000000001",
+          "10000000-0000-4000-8000-000000000002",
+          "10000000-0000-4000-8000-000000000003",
+          "10000000-0000-4000-8000-000000000004"
+        ],
+        "theme": "botanical",
+        "version": "wedding-template-v2"
+      },
+      "cssFilter": "none"
+    },
+    {
+      "set": "clean-mixed",
+      "layout": "grid",
+      "theme": "coastal",
+      "gridAspect": "square",
+      "file": "artifacts/visual/keepsake-clean-mixed-grid-coastal.jpg",
+      "uri": "blob:http://127.0.0.1:8791/d6b8db16-9941-4595-b742-2d7b15c558c2",
+      "nativeURI": "file:///synthetic-templates/91be3427-7ed6-4915-b401-f703bbf8de20.jpg",
+      "width": 2400,
+      "height": 2400,
+      "byteLength": 971910,
+      "jpeg": true,
+      "sha256": "d886f28f92ccf9e03327337557b2e4097ffadd1f53ee0a4d32886ef745f767f1",
+      "recipe": {
+        "cropsByPhotoId": {
+          "10000000-0000-4000-8000-000000000001": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000002": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000003": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000004": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        },
+        "gridAspect": "square",
+        "layout": "grid",
+        "photoIds": [
+          "10000000-0000-4000-8000-000000000001",
+          "10000000-0000-4000-8000-000000000002",
+          "10000000-0000-4000-8000-000000000003",
+          "10000000-0000-4000-8000-000000000004"
+        ],
+        "theme": "coastal",
+        "version": "wedding-template-v2"
+      },
+      "cssFilter": "none"
+    }
+  ],
+  "checks": [
+    {
+      "set": "clean-portrait",
+      "gridAspect": "portrait",
+      "orientation": "portrait",
+      "saveBounds": {
+        "x": 20,
+        "y": 1085,
+        "width": 780,
+        "height": 60
+      },
+      "initialRecipe": {
+        "cropsByPhotoId": {
+          "10000000-0000-4000-8000-000000000001": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000002": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000003": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000004": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        },
+        "gridAspect": "portrait",
+        "layout": "strip",
+        "photoIds": [
+          "10000000-0000-4000-8000-000000000001",
+          "10000000-0000-4000-8000-000000000002",
+          "10000000-0000-4000-8000-000000000003",
+          "10000000-0000-4000-8000-000000000004"
+        ],
+        "theme": "classic",
+        "version": "wedding-template-v2"
+      },
+      "outputs": [
+        {
+          "layout": "strip",
+          "theme": "classic",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/b95d6472-f6f4-408b-9421-0fdcea55afe6",
+            "nativeURI": "file:///synthetic-templates/eaf8f0aa-65b4-427d-9a0b-394f491dc50f.jpg",
+            "width": 480,
+            "height": 1440,
+            "byteLength": 154857,
+            "jpeg": true,
+            "sha256": "e42ee4ebdbfa70b80b51c1d0c939891066b2ad9fe4ea181a2c575e44d8d42b08",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "classic",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/abcb5955-63af-4bcb-977c-d6ccdf765fbc",
+            "nativeURI": "file:///synthetic-templates/f0effe31-8e60-4445-a205-914ac8eab1c4.jpg",
+            "width": 1200,
+            "height": 3600,
+            "byteLength": 653966,
+            "jpeg": true,
+            "sha256": "bfd7f391bbfc3570f485cb80c08afda18c071b441ad2ac72cb4c2fdc5b93702c",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "classic",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        },
+        {
+          "layout": "strip",
+          "theme": "botanical",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/1eee3901-c9f8-4691-b352-033732796a34",
+            "nativeURI": "file:///synthetic-templates/0c668704-1f70-4006-ba31-f3474bacf35b.jpg",
+            "width": 480,
+            "height": 1440,
+            "byteLength": 151255,
+            "jpeg": true,
+            "sha256": "2fadb6ba19d5f2f65b1bd9338ba5cd85f9868751177b34b19e1a635fcfd28ba2",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "botanical",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/4b3b2615-aa6f-4f78-ae1a-e8ec4b825d2b",
+            "nativeURI": "file:///synthetic-templates/d2242ef9-60e9-4dd9-ae27-c900006a4761.jpg",
+            "width": 1200,
+            "height": 3600,
+            "byteLength": 636499,
+            "jpeg": true,
+            "sha256": "7a67bd467179664dc1cb1cc8ec77fcdcb419df5d83aaf3450977838df0d145c4",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "botanical",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        },
+        {
+          "layout": "strip",
+          "theme": "coastal",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/9a024e32-af9f-4594-a006-067d0595936b",
+            "nativeURI": "file:///synthetic-templates/25b248a0-25af-48a8-a609-320230456fe4.jpg",
+            "width": 480,
+            "height": 1440,
+            "byteLength": 161515,
+            "jpeg": true,
+            "sha256": "e9ac8537a3e5cc79a8b57fbb383298c84fba71ece29ce31da377a893eb0fa8ab",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "coastal",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/31c7bad5-fed4-401c-930d-15bd797987b3",
+            "nativeURI": "file:///synthetic-templates/ca45e89e-6fb8-43da-9229-bb0227bcb4ec.jpg",
+            "width": 1200,
+            "height": 3600,
+            "byteLength": 684977,
+            "jpeg": true,
+            "sha256": "e534dec0b7e1115bb9f90bf9fd02e4c1aeb5f46fce83524a452028bafbf48554",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "coastal",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        },
+        {
+          "layout": "grid",
+          "theme": "classic",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/b1b12c7a-20a1-45c3-b782-7fdda84e9103",
+            "nativeURI": "file:///synthetic-templates/5973efa6-0216-4bba-9ca5-64520b51faec.jpg",
+            "width": 1152,
+            "height": 1440,
+            "byteLength": 405748,
+            "jpeg": true,
+            "sha256": "b17be7be48bde0a26af2a907844fd7e385169ff25513eb5e05308f20c5b4e97a",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "classic",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/87143452-1f78-40b8-9bb5-cb87170f6d87",
+            "nativeURI": "file:///synthetic-templates/7fafb5b9-e705-4aa0-83bf-f3c0edfb9206.jpg",
+            "width": 2400,
+            "height": 3000,
+            "byteLength": 1247264,
+            "jpeg": true,
+            "sha256": "93c7e43ab1d2fdb7ce7805f548727f83fc4efebcdcb4c413eff124fac9078ed2",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "classic",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        },
+        {
+          "layout": "grid",
+          "theme": "botanical",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/30fb73d6-2655-4981-b3af-9a1e9507a1af",
+            "nativeURI": "file:///synthetic-templates/12fb68c9-8a84-43fc-ab27-c37836016023.jpg",
+            "width": 1152,
+            "height": 1440,
+            "byteLength": 402441,
+            "jpeg": true,
+            "sha256": "db99c93af6d1d5f74de710297a6198becd046d1c114f5835b83a988d7036bb48",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "botanical",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/a45a6ba9-5671-4fb2-a8d6-516b271af76d",
+            "nativeURI": "file:///synthetic-templates/6e71f06f-9ea1-4b39-a9db-0d135de4445c.jpg",
+            "width": 2400,
+            "height": 3000,
+            "byteLength": 1233209,
+            "jpeg": true,
+            "sha256": "5af0e1e8916928c3dca18156b97d41c26e5869eef0bb6e54499d84a698a311d4",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "botanical",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        },
+        {
+          "layout": "grid",
+          "theme": "coastal",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/c190aef1-260d-4ed7-b539-bff87499d825",
+            "nativeURI": "file:///synthetic-templates/9d440767-8d43-48cc-b6c7-705fb9b7b077.jpg",
+            "width": 1152,
+            "height": 1440,
+            "byteLength": 416992,
+            "jpeg": true,
+            "sha256": "2bbaad9c012e2e1538323c81e9a77034d8ace60f06fca2796abf070619455b72",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "coastal",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/9c94c30c-9d71-44d6-94ad-b13157b86272",
+            "nativeURI": "file:///synthetic-templates/8015402e-34e2-4778-8c02-543f6b56898a.jpg",
+            "width": 2400,
+            "height": 3000,
+            "byteLength": 1289948,
+            "jpeg": true,
+            "sha256": "4c1d3137b19a3a6a35f38f88a1ff537662ef7582093268ee8483c519b3422301",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "coastal",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        }
+      ],
+      "saved": {
+        "uri": "blob:http://127.0.0.1:8791/8d94f4ab-12a5-4c0a-96d9-ebfbbd2c9e44",
+        "nativeURI": "file:///synthetic/photobooth/0d6d4416-c58e-4494-9f9d-15251fda01d9.jpg",
+        "width": 2400,
+        "height": 3000,
+        "byteLength": 1289948,
+        "jpeg": true,
+        "sha256": "4c1d3137b19a3a6a35f38f88a1ff537662ef7582093268ee8483c519b3422301",
+        "cssFilter": "none"
+      },
+      "inspectedSources": [
+        {
+          "version": "wedding-template-v2",
+          "gridAspect": "portrait",
+          "sources": [
+            {
+              "photoId": "10000000-0000-4000-8000-000000000001",
+              "width": 960,
+              "height": 1200,
+              "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000002",
+              "width": 960,
+              "height": 1200,
+              "sha256": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000003",
+              "width": 960,
+              "height": 1200,
+              "sha256": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000004",
+              "width": 960,
+              "height": 1200,
+              "sha256": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
+            }
+          ],
+          "median": 0.8
+        },
+        {
+          "version": "wedding-template-v2",
+          "gridAspect": "portrait",
+          "sources": [
+            {
+              "photoId": "10000000-0000-4000-8000-000000000001",
+              "width": 960,
+              "height": 1200,
+              "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000002",
+              "width": 960,
+              "height": 1200,
+              "sha256": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000003",
+              "width": 960,
+              "height": 1200,
+              "sha256": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000004",
+              "width": 960,
+              "height": 1200,
+              "sha256": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
+            }
+          ],
+          "median": 0.8
+        }
+      ],
+      "checks": [
+        "four distinct clean source JPEGs",
+        "ordinary median chooses aspect once",
+        "all six actual preview/full JPEG combinations",
+        "whole/full-width inspection and scrolling",
+        "sticky Save visible",
+        "explicit Fill warns and changes pixels without changing originals",
+        "Full photo restores prior JPEG",
+        "late close/background never reopens inspection",
+        "saved canonical JPEG equals inspected output",
+        "version/gridAspect preserved into confirmed composite",
+        "five deduplicated publication jobs"
+      ]
+    },
+    {
+      "set": "clean-portrait",
+      "gridAspect": "portrait",
+      "orientation": "landscape",
+      "saveBounds": {
+        "x": 804,
+        "y": 586,
+        "width": 356,
+        "height": 60
+      },
+      "initialRecipe": {
+        "cropsByPhotoId": {
+          "10000000-0000-4000-8000-000000000001": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000002": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000003": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000004": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        },
+        "gridAspect": "portrait",
+        "layout": "strip",
+        "photoIds": [
+          "10000000-0000-4000-8000-000000000001",
+          "10000000-0000-4000-8000-000000000002",
+          "10000000-0000-4000-8000-000000000003",
+          "10000000-0000-4000-8000-000000000004"
+        ],
+        "theme": "classic",
+        "version": "wedding-template-v2"
+      },
+      "outputs": [
+        {
+          "layout": "strip",
+          "theme": "classic",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/d387b237-5d07-49aa-9eee-8981128351c3",
+            "nativeURI": "file:///synthetic-templates/d9ba8a1e-5c07-4a70-a79e-6f3a3d2c407c.jpg",
+            "width": 480,
+            "height": 1440,
+            "byteLength": 154857,
+            "jpeg": true,
+            "sha256": "e42ee4ebdbfa70b80b51c1d0c939891066b2ad9fe4ea181a2c575e44d8d42b08",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "classic",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/b161fe83-7737-4d9e-9d50-f4ea19aaed36",
+            "nativeURI": "file:///synthetic-templates/48451e48-5991-4c99-920c-2c75aa23a580.jpg",
+            "width": 1200,
+            "height": 3600,
+            "byteLength": 653966,
+            "jpeg": true,
+            "sha256": "bfd7f391bbfc3570f485cb80c08afda18c071b441ad2ac72cb4c2fdc5b93702c",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "classic",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        },
+        {
+          "layout": "strip",
+          "theme": "botanical",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/f826e345-f34f-448c-9229-664c6d0a0f7a",
+            "nativeURI": "file:///synthetic-templates/82f5fc75-5262-4106-b94b-c7d02e768d31.jpg",
+            "width": 480,
+            "height": 1440,
+            "byteLength": 151255,
+            "jpeg": true,
+            "sha256": "2fadb6ba19d5f2f65b1bd9338ba5cd85f9868751177b34b19e1a635fcfd28ba2",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "botanical",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/0ad174b5-f3c9-45fd-b2d6-5e8c378bcca2",
+            "nativeURI": "file:///synthetic-templates/98d13fa8-f1cd-4a16-9fbc-7f1dd6d34baa.jpg",
+            "width": 1200,
+            "height": 3600,
+            "byteLength": 636499,
+            "jpeg": true,
+            "sha256": "7a67bd467179664dc1cb1cc8ec77fcdcb419df5d83aaf3450977838df0d145c4",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "botanical",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        },
+        {
+          "layout": "strip",
+          "theme": "coastal",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/b98ff250-5242-4be0-b1a9-fd02f8d74052",
+            "nativeURI": "file:///synthetic-templates/61428f83-d005-4f58-8326-a7401d89c32a.jpg",
+            "width": 480,
+            "height": 1440,
+            "byteLength": 161515,
+            "jpeg": true,
+            "sha256": "e9ac8537a3e5cc79a8b57fbb383298c84fba71ece29ce31da377a893eb0fa8ab",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "coastal",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/ac85fa68-868e-4859-bb41-6ef01205cf37",
+            "nativeURI": "file:///synthetic-templates/7b68f52d-c60e-42dd-8709-2687a45bb6a3.jpg",
+            "width": 1200,
+            "height": 3600,
+            "byteLength": 684977,
+            "jpeg": true,
+            "sha256": "e534dec0b7e1115bb9f90bf9fd02e4c1aeb5f46fce83524a452028bafbf48554",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "coastal",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        },
+        {
+          "layout": "grid",
+          "theme": "classic",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/47afb88a-929d-4d68-9252-c2bba578d655",
+            "nativeURI": "file:///synthetic-templates/4025a432-b085-44b3-b90d-3b452cfe3325.jpg",
+            "width": 1152,
+            "height": 1440,
+            "byteLength": 405748,
+            "jpeg": true,
+            "sha256": "b17be7be48bde0a26af2a907844fd7e385169ff25513eb5e05308f20c5b4e97a",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "classic",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/e42dbb35-ab30-4d0f-84d6-473abe36ce02",
+            "nativeURI": "file:///synthetic-templates/9469c049-1eb5-40ba-8178-09222269ae6b.jpg",
+            "width": 2400,
+            "height": 3000,
+            "byteLength": 1247264,
+            "jpeg": true,
+            "sha256": "93c7e43ab1d2fdb7ce7805f548727f83fc4efebcdcb4c413eff124fac9078ed2",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "classic",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        },
+        {
+          "layout": "grid",
+          "theme": "botanical",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/e9bf7e9c-0e7d-4964-9fad-6c518d986337",
+            "nativeURI": "file:///synthetic-templates/70bc1a86-06d4-4115-8270-d660cf2245cc.jpg",
+            "width": 1152,
+            "height": 1440,
+            "byteLength": 402441,
+            "jpeg": true,
+            "sha256": "db99c93af6d1d5f74de710297a6198becd046d1c114f5835b83a988d7036bb48",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "botanical",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/3e9f8bc9-a46b-4d0c-94aa-e7d52ff0e0a3",
+            "nativeURI": "file:///synthetic-templates/e21e687b-99ae-4cdf-aa50-b56916c7da7b.jpg",
+            "width": 2400,
+            "height": 3000,
+            "byteLength": 1233209,
+            "jpeg": true,
+            "sha256": "5af0e1e8916928c3dca18156b97d41c26e5869eef0bb6e54499d84a698a311d4",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "botanical",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        },
+        {
+          "layout": "grid",
+          "theme": "coastal",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/fcc6eb6c-7d3e-4bf8-b6ea-7b16bf295709",
+            "nativeURI": "file:///synthetic-templates/59792a6e-684f-4877-b90a-54a5321d44b2.jpg",
+            "width": 1152,
+            "height": 1440,
+            "byteLength": 416992,
+            "jpeg": true,
+            "sha256": "2bbaad9c012e2e1538323c81e9a77034d8ace60f06fca2796abf070619455b72",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "coastal",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/fe3055f3-5cfd-49d0-913b-fba8d92a4ddf",
+            "nativeURI": "file:///synthetic-templates/f930b6d3-3217-4fc0-be60-140190b65a7e.jpg",
+            "width": 2400,
+            "height": 3000,
+            "byteLength": 1289948,
+            "jpeg": true,
+            "sha256": "4c1d3137b19a3a6a35f38f88a1ff537662ef7582093268ee8483c519b3422301",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "portrait",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "coastal",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        }
+      ],
+      "saved": {
+        "uri": "blob:http://127.0.0.1:8791/7ec2e5e4-b49e-46aa-971d-bde6c0b62b5c",
+        "nativeURI": "file:///synthetic/photobooth/8df14404-5ff5-43b0-a9ba-160a3114fad7.jpg",
+        "width": 2400,
+        "height": 3000,
+        "byteLength": 1289948,
+        "jpeg": true,
+        "sha256": "4c1d3137b19a3a6a35f38f88a1ff537662ef7582093268ee8483c519b3422301",
+        "cssFilter": "none"
+      },
+      "inspectedSources": [
+        {
+          "version": "wedding-template-v2",
+          "gridAspect": "portrait",
+          "sources": [
+            {
+              "photoId": "10000000-0000-4000-8000-000000000001",
+              "width": 960,
+              "height": 1200,
+              "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000002",
+              "width": 960,
+              "height": 1200,
+              "sha256": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000003",
+              "width": 960,
+              "height": 1200,
+              "sha256": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000004",
+              "width": 960,
+              "height": 1200,
+              "sha256": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
+            }
+          ],
+          "median": 0.8
+        },
+        {
+          "version": "wedding-template-v2",
+          "gridAspect": "portrait",
+          "sources": [
+            {
+              "photoId": "10000000-0000-4000-8000-000000000001",
+              "width": 960,
+              "height": 1200,
+              "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000002",
+              "width": 960,
+              "height": 1200,
+              "sha256": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000003",
+              "width": 960,
+              "height": 1200,
+              "sha256": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000004",
+              "width": 960,
+              "height": 1200,
+              "sha256": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
+            }
+          ],
+          "median": 0.8
+        }
+      ],
+      "checks": [
+        "four distinct clean source JPEGs",
+        "ordinary median chooses aspect once",
+        "all six actual preview/full JPEG combinations",
+        "whole/full-width inspection and scrolling",
+        "sticky Save visible",
+        "explicit Fill warns and changes pixels without changing originals",
+        "Full photo restores prior JPEG",
+        "late close/background never reopens inspection",
+        "saved canonical JPEG equals inspected output",
+        "version/gridAspect preserved into confirmed composite",
+        "five deduplicated publication jobs"
+      ]
+    },
+    {
+      "set": "clean-mixed",
+      "gridAspect": "square",
+      "orientation": "portrait",
+      "saveBounds": {
+        "x": 20,
+        "y": 1085,
+        "width": 780,
+        "height": 60
+      },
+      "initialRecipe": {
+        "cropsByPhotoId": {
+          "10000000-0000-4000-8000-000000000001": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000002": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000003": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000004": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        },
+        "gridAspect": "square",
+        "layout": "strip",
+        "photoIds": [
+          "10000000-0000-4000-8000-000000000001",
+          "10000000-0000-4000-8000-000000000002",
+          "10000000-0000-4000-8000-000000000003",
+          "10000000-0000-4000-8000-000000000004"
+        ],
+        "theme": "classic",
+        "version": "wedding-template-v2"
+      },
+      "outputs": [
+        {
+          "layout": "strip",
+          "theme": "classic",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/727d97d5-30c9-468b-bb1a-4f6d6498c08f",
+            "nativeURI": "file:///synthetic-templates/ff58c6b7-a610-40ca-91e5-9a1f87c9e7cf.jpg",
+            "width": 480,
+            "height": 1440,
+            "byteLength": 178600,
+            "jpeg": true,
+            "sha256": "a4b1d7d38669bfd327f8bb9cc2af3be883457608f1d2a3998ff12404f495f3d3",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "classic",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/376170ee-e272-4d44-a108-104ef9331de0",
+            "nativeURI": "file:///synthetic-templates/e4733e87-22d3-495d-9ca0-de99e7a59d69.jpg",
+            "width": 1200,
+            "height": 3600,
+            "byteLength": 764680,
+            "jpeg": true,
+            "sha256": "c82d964bc1ee6466b1c384174ab48f3006f42191bcb66b3b8071e93b886d8cc2",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "classic",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        },
+        {
+          "layout": "strip",
+          "theme": "botanical",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/f6471503-9673-47f8-98be-24a3517933e4",
+            "nativeURI": "file:///synthetic-templates/cf9eb84c-db3d-41d2-bf22-f8d28599333c.jpg",
+            "width": 480,
+            "height": 1440,
+            "byteLength": 175026,
+            "jpeg": true,
+            "sha256": "60af9a46d36479d463b0efc2df7b45cd27a2fe7ab9e76e3ae32953f04f78b84f",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "botanical",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/30dbc861-7492-484e-aa0c-329a6b91d67f",
+            "nativeURI": "file:///synthetic-templates/2edb9507-5d49-401a-a470-ce22ba18dfe1.jpg",
+            "width": 1200,
+            "height": 3600,
+            "byteLength": 746960,
+            "jpeg": true,
+            "sha256": "d35cb143d72dbe011dbc10bc519cd4f1be57bfcddb55c1a6473d31ad49759be8",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "botanical",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        },
+        {
+          "layout": "strip",
+          "theme": "coastal",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/085a78ac-107e-4dca-ac9d-2c1e625aacfb",
+            "nativeURI": "file:///synthetic-templates/ec8ad2a5-b50b-4a52-bbbe-5a55a9e4793c.jpg",
+            "width": 480,
+            "height": 1440,
+            "byteLength": 185279,
+            "jpeg": true,
+            "sha256": "d3cf8860f23307de170bd47c4f5bf0056659c5ce9ad0f05188b8c84499f83e91",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "coastal",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/7d5f4e15-bfe2-4b72-b143-c345609a12fd",
+            "nativeURI": "file:///synthetic-templates/30aa5c43-ea85-4729-a3e8-202031acb64a.jpg",
+            "width": 1200,
+            "height": 3600,
+            "byteLength": 794758,
+            "jpeg": true,
+            "sha256": "c534f5f22ce6bfbd338e36ccb574fc853c7ae77d409390af12ef08739c611095",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "coastal",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        },
+        {
+          "layout": "grid",
+          "theme": "classic",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/17b30cc6-6703-4b04-af12-e555e79af9fa",
+            "nativeURI": "file:///synthetic-templates/a496691f-574d-4617-b171-42cc3e52efa7.jpg",
+            "width": 1440,
+            "height": 1440,
+            "byteLength": 417850,
+            "jpeg": true,
+            "sha256": "e7a966c98982ca5160502656f6ce03c02d81ecd43f474d15c78656eef6ebc709",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "classic",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/ceb3e26a-bdac-4da9-a584-113e33519f3a",
+            "nativeURI": "file:///synthetic-templates/118c0d31-6da2-48ac-9eba-e25040f52947.jpg",
+            "width": 2400,
+            "height": 2400,
+            "byteLength": 931715,
+            "jpeg": true,
+            "sha256": "168a7f4442c1dc02a254de379377d90b28ae64f547801e599a8b85390e9bea2a",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "classic",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        },
+        {
+          "layout": "grid",
+          "theme": "botanical",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/4aef91dd-28da-4031-8aa7-d08ef408f4b0",
+            "nativeURI": "file:///synthetic-templates/f18682e1-ec98-4552-ab18-ed3c59ff1b0e.jpg",
+            "width": 1440,
+            "height": 1440,
+            "byteLength": 408869,
+            "jpeg": true,
+            "sha256": "3140938476664e9a61079db8b68dcc15e95ae88ae164450ac70736888aad8d1a",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "botanical",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/46522f83-5485-4db4-a597-549753753f14",
+            "nativeURI": "file:///synthetic-templates/b468bdae-a1f9-4a56-ae8a-d1e60c4ab665.jpg",
+            "width": 2400,
+            "height": 2400,
+            "byteLength": 922161,
+            "jpeg": true,
+            "sha256": "55e765a5b5ac27d79f0756e41f29092c0c07b5f9d47592ab5634ca63c4fc3d8e",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "botanical",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        },
+        {
+          "layout": "grid",
+          "theme": "coastal",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/82d5e107-5b58-48f4-bea7-cce10aeac7cb",
+            "nativeURI": "file:///synthetic-templates/2c9f9b17-6e5a-4ab2-b8fb-2d93971eb44b.jpg",
+            "width": 1440,
+            "height": 1440,
+            "byteLength": 431260,
+            "jpeg": true,
+            "sha256": "c70024c5c90394127e027af3a98769e4fd1cd3c2d79e72381f3fd4fc95c144c2",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "coastal",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/d6b8db16-9941-4595-b742-2d7b15c558c2",
+            "nativeURI": "file:///synthetic-templates/91be3427-7ed6-4915-b401-f703bbf8de20.jpg",
+            "width": 2400,
+            "height": 2400,
+            "byteLength": 971910,
+            "jpeg": true,
+            "sha256": "d886f28f92ccf9e03327337557b2e4097ffadd1f53ee0a4d32886ef745f767f1",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "coastal",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        }
+      ],
+      "saved": {
+        "uri": "blob:http://127.0.0.1:8791/be3b3970-8892-45fd-8096-d7fb23672d74",
+        "nativeURI": "file:///synthetic/photobooth/32dc406a-ca20-457b-9438-b85ac6a2c91a.jpg",
+        "width": 2400,
+        "height": 2400,
+        "byteLength": 971910,
+        "jpeg": true,
+        "sha256": "d886f28f92ccf9e03327337557b2e4097ffadd1f53ee0a4d32886ef745f767f1",
+        "cssFilter": "none"
+      },
+      "inspectedSources": [
+        {
+          "version": "wedding-template-v2",
+          "gridAspect": "square",
+          "sources": [
+            {
+              "photoId": "10000000-0000-4000-8000-000000000001",
+              "width": 1200,
+              "height": 900,
+              "sha256": "fa7aab6c4948c559a6c2acfbe426ff79293b75edfd15229dbeacf2f8cbd0d365"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000002",
+              "width": 960,
+              "height": 1200,
+              "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000003",
+              "width": 1200,
+              "height": 900,
+              "sha256": "e664fecbb6bdc171e092cb9c11d9ee215cbcf0722ef3f4f29090fecb73295161"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000004",
+              "width": 960,
+              "height": 1200,
+              "sha256": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed"
+            }
+          ],
+          "median": 1.0666666666666667
+        },
+        {
+          "version": "wedding-template-v2",
+          "gridAspect": "square",
+          "sources": [
+            {
+              "photoId": "10000000-0000-4000-8000-000000000001",
+              "width": 1200,
+              "height": 900,
+              "sha256": "fa7aab6c4948c559a6c2acfbe426ff79293b75edfd15229dbeacf2f8cbd0d365"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000002",
+              "width": 960,
+              "height": 1200,
+              "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000003",
+              "width": 1200,
+              "height": 900,
+              "sha256": "e664fecbb6bdc171e092cb9c11d9ee215cbcf0722ef3f4f29090fecb73295161"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000004",
+              "width": 960,
+              "height": 1200,
+              "sha256": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed"
+            }
+          ],
+          "median": 1.0666666666666667
+        }
+      ],
+      "checks": [
+        "four distinct clean source JPEGs",
+        "ordinary median chooses aspect once",
+        "all six actual preview/full JPEG combinations",
+        "whole/full-width inspection and scrolling",
+        "sticky Save visible",
+        "explicit Fill warns and changes pixels without changing originals",
+        "Full photo restores prior JPEG",
+        "late close/background never reopens inspection",
+        "saved canonical JPEG equals inspected output",
+        "version/gridAspect preserved into confirmed composite",
+        "five deduplicated publication jobs"
+      ]
+    },
+    {
+      "set": "clean-mixed",
+      "gridAspect": "square",
+      "orientation": "landscape",
+      "saveBounds": {
+        "x": 804,
+        "y": 586,
+        "width": 356,
+        "height": 60
+      },
+      "initialRecipe": {
+        "cropsByPhotoId": {
+          "10000000-0000-4000-8000-000000000001": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000002": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000003": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "10000000-0000-4000-8000-000000000004": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        },
+        "gridAspect": "square",
+        "layout": "strip",
+        "photoIds": [
+          "10000000-0000-4000-8000-000000000001",
+          "10000000-0000-4000-8000-000000000002",
+          "10000000-0000-4000-8000-000000000003",
+          "10000000-0000-4000-8000-000000000004"
+        ],
+        "theme": "classic",
+        "version": "wedding-template-v2"
+      },
+      "outputs": [
+        {
+          "layout": "strip",
+          "theme": "classic",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/b5b1b01e-8d1d-4983-9221-5d62441a2a5e",
+            "nativeURI": "file:///synthetic-templates/ceea0136-66e8-428b-9843-7d5c872e0c88.jpg",
+            "width": 480,
+            "height": 1440,
+            "byteLength": 178600,
+            "jpeg": true,
+            "sha256": "a4b1d7d38669bfd327f8bb9cc2af3be883457608f1d2a3998ff12404f495f3d3",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "classic",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/1391e848-e490-44b7-b93b-80e9e0b75928",
+            "nativeURI": "file:///synthetic-templates/b0d64d92-4bb9-4ba2-83ae-a51203acac2b.jpg",
+            "width": 1200,
+            "height": 3600,
+            "byteLength": 764680,
+            "jpeg": true,
+            "sha256": "c82d964bc1ee6466b1c384174ab48f3006f42191bcb66b3b8071e93b886d8cc2",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "classic",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        },
+        {
+          "layout": "strip",
+          "theme": "botanical",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/e25f02f3-b92e-40b3-8986-5d8f60825b57",
+            "nativeURI": "file:///synthetic-templates/cc2f1912-1854-4006-8ac1-bf87721b5bd0.jpg",
+            "width": 480,
+            "height": 1440,
+            "byteLength": 175026,
+            "jpeg": true,
+            "sha256": "60af9a46d36479d463b0efc2df7b45cd27a2fe7ab9e76e3ae32953f04f78b84f",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "botanical",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/16653d1a-b44c-425b-9dfd-b671514dde5b",
+            "nativeURI": "file:///synthetic-templates/cb109101-70b1-4673-bfe5-dd46343131ad.jpg",
+            "width": 1200,
+            "height": 3600,
+            "byteLength": 746960,
+            "jpeg": true,
+            "sha256": "d35cb143d72dbe011dbc10bc519cd4f1be57bfcddb55c1a6473d31ad49759be8",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "botanical",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        },
+        {
+          "layout": "strip",
+          "theme": "coastal",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/3f30bd86-99d6-4982-a12f-4bc0d005c75b",
+            "nativeURI": "file:///synthetic-templates/502726ca-209c-4aca-ab43-a6dc797bffa1.jpg",
+            "width": 480,
+            "height": 1440,
+            "byteLength": 185279,
+            "jpeg": true,
+            "sha256": "d3cf8860f23307de170bd47c4f5bf0056659c5ce9ad0f05188b8c84499f83e91",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "coastal",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/dee4616d-64a1-4e4c-be80-fbf0fcda4e54",
+            "nativeURI": "file:///synthetic-templates/4e6c6076-8d25-4b83-b729-c80be724aef1.jpg",
+            "width": 1200,
+            "height": 3600,
+            "byteLength": 794758,
+            "jpeg": true,
+            "sha256": "c534f5f22ce6bfbd338e36ccb574fc853c7ae77d409390af12ef08739c611095",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "strip",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "coastal",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        },
+        {
+          "layout": "grid",
+          "theme": "classic",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/3c72b554-3b56-4545-99d7-5df0300cf87d",
+            "nativeURI": "file:///synthetic-templates/bfed7477-c9e3-49a1-89a5-72343545495e.jpg",
+            "width": 1440,
+            "height": 1440,
+            "byteLength": 417850,
+            "jpeg": true,
+            "sha256": "e7a966c98982ca5160502656f6ce03c02d81ecd43f474d15c78656eef6ebc709",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "classic",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/4de1e176-6bae-4452-a9cb-5e42af6eefce",
+            "nativeURI": "file:///synthetic-templates/8f5f6eb4-9fc2-47ba-9fd9-24e230c396d1.jpg",
+            "width": 2400,
+            "height": 2400,
+            "byteLength": 931715,
+            "jpeg": true,
+            "sha256": "168a7f4442c1dc02a254de379377d90b28ae64f547801e599a8b85390e9bea2a",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "classic",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        },
+        {
+          "layout": "grid",
+          "theme": "botanical",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/ef8caac7-91a5-4de2-be51-2b21e7430050",
+            "nativeURI": "file:///synthetic-templates/192af629-5fa3-4a74-a6fb-fc44c3d74b99.jpg",
+            "width": 1440,
+            "height": 1440,
+            "byteLength": 408869,
+            "jpeg": true,
+            "sha256": "3140938476664e9a61079db8b68dcc15e95ae88ae164450ac70736888aad8d1a",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "botanical",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/2b2c1ca2-c202-4cb9-859d-a8b218ea7a96",
+            "nativeURI": "file:///synthetic-templates/480e6e0a-6a43-45ee-b572-6d4005f1e796.jpg",
+            "width": 2400,
+            "height": 2400,
+            "byteLength": 922161,
+            "jpeg": true,
+            "sha256": "55e765a5b5ac27d79f0756e41f29092c0c07b5f9d47592ab5634ca63c4fc3d8e",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "botanical",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        },
+        {
+          "layout": "grid",
+          "theme": "coastal",
+          "preview": {
+            "uri": "blob:http://127.0.0.1:8791/1d03cd4a-eab2-4379-85dd-699d2cd0f5c9",
+            "nativeURI": "file:///synthetic-templates/06ecceac-e35f-48b7-a4ab-34e328d96121.jpg",
+            "width": 1440,
+            "height": 1440,
+            "byteLength": 431260,
+            "jpeg": true,
+            "sha256": "c70024c5c90394127e027af3a98769e4fd1cd3c2d79e72381f3fd4fc95c144c2",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "coastal",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          },
+          "full": {
+            "uri": "blob:http://127.0.0.1:8791/f0a99a4e-ed39-4d5d-9354-1a362420114e",
+            "nativeURI": "file:///synthetic-templates/b14e029c-bb9c-4b50-9bbf-265d06e347de.jpg",
+            "width": 2400,
+            "height": 2400,
+            "byteLength": 971910,
+            "jpeg": true,
+            "sha256": "d886f28f92ccf9e03327337557b2e4097ffadd1f53ee0a4d32886ef745f767f1",
+            "recipe": {
+              "cropsByPhotoId": {
+                "10000000-0000-4000-8000-000000000001": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000002": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000003": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                },
+                "10000000-0000-4000-8000-000000000004": {
+                  "mode": "fit",
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 1
+                }
+              },
+              "gridAspect": "square",
+              "layout": "grid",
+              "photoIds": [
+                "10000000-0000-4000-8000-000000000001",
+                "10000000-0000-4000-8000-000000000002",
+                "10000000-0000-4000-8000-000000000003",
+                "10000000-0000-4000-8000-000000000004"
+              ],
+              "theme": "coastal",
+              "version": "wedding-template-v2"
+            },
+            "cssFilter": "none"
+          }
+        }
+      ],
+      "saved": {
+        "uri": "blob:http://127.0.0.1:8791/a90bff6a-d215-401b-9156-7e6f2293f41d",
+        "nativeURI": "file:///synthetic/photobooth/8e104858-94a4-4185-8e5d-0d10eb91dbf1.jpg",
+        "width": 2400,
+        "height": 2400,
+        "byteLength": 971910,
+        "jpeg": true,
+        "sha256": "d886f28f92ccf9e03327337557b2e4097ffadd1f53ee0a4d32886ef745f767f1",
+        "cssFilter": "none"
+      },
+      "inspectedSources": [
+        {
+          "version": "wedding-template-v2",
+          "gridAspect": "square",
+          "sources": [
+            {
+              "photoId": "10000000-0000-4000-8000-000000000001",
+              "width": 1200,
+              "height": 900,
+              "sha256": "fa7aab6c4948c559a6c2acfbe426ff79293b75edfd15229dbeacf2f8cbd0d365"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000002",
+              "width": 960,
+              "height": 1200,
+              "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000003",
+              "width": 1200,
+              "height": 900,
+              "sha256": "e664fecbb6bdc171e092cb9c11d9ee215cbcf0722ef3f4f29090fecb73295161"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000004",
+              "width": 960,
+              "height": 1200,
+              "sha256": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed"
+            }
+          ],
+          "median": 1.0666666666666667
+        },
+        {
+          "version": "wedding-template-v2",
+          "gridAspect": "square",
+          "sources": [
+            {
+              "photoId": "10000000-0000-4000-8000-000000000001",
+              "width": 1200,
+              "height": 900,
+              "sha256": "fa7aab6c4948c559a6c2acfbe426ff79293b75edfd15229dbeacf2f8cbd0d365"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000002",
+              "width": 960,
+              "height": 1200,
+              "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000003",
+              "width": 1200,
+              "height": 900,
+              "sha256": "e664fecbb6bdc171e092cb9c11d9ee215cbcf0722ef3f4f29090fecb73295161"
+            },
+            {
+              "photoId": "10000000-0000-4000-8000-000000000004",
+              "width": 960,
+              "height": 1200,
+              "sha256": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed"
+            }
+          ],
+          "median": 1.0666666666666667
+        }
+      ],
+      "checks": [
+        "four distinct clean source JPEGs",
+        "ordinary median chooses aspect once",
+        "all six actual preview/full JPEG combinations",
+        "whole/full-width inspection and scrolling",
+        "sticky Save visible",
+        "explicit Fill warns and changes pixels without changing originals",
+        "Full photo restores prior JPEG",
+        "late close/background never reopens inspection",
+        "saved canonical JPEG equals inspected output",
+        "version/gridAspect preserved into confirmed composite",
+        "five deduplicated publication jobs"
+      ]
+    }
+  ],
+  "errors": [],
+  "mockedHealthRequests": [
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health"
+  ],
+  "unexpectedExternalRequests": [],
+  "sourceHashes": {
+    "apps/ipad/App.tsx": "151488bb3fdbf6435a16855ba70bfbc2f7408cbef8cb30de040121ce81dc30e7",
+    "apps/ipad/src/GlassSurface.tsx": "ace64a22e740d69040689495c0aa7147f7456038bbd0ee9aba6f2d52b58af972",
+    "apps/ipad/src/glass-policy.ts": "d3e33995484239887dde90f2743919c17bb2e8ff23093ceb45a804e530499e9e",
+    "apps/ipad/src/host-visibility.ts": "9b8033279a1249c59cd04e3f185792fa2a61c14f892f2cb9cf98953ceab02014",
+    "apps/ipad/src/photo-look-editor.ts": "38d6dc47fb34d9d9da58cf96a7daa6102d9616c7f54720c0406c1962548f817b",
+    "apps/ipad/src/native-photo-effects.ts": "372b1250d399429dc7396d09be1affa44b063216ba471d5cc4ed2d953394f0c9",
+    "apps/ipad/src/local-types.ts": "ab3e1e69d051a7a7c91886445781cbe306bb8839a60c2c4cbbafb49d488bde47",
+    "apps/ipad/src/template-editor.ts": "ad02f03cb5cae30d801e5262fd8f363f4e023b3c7f815f7e22e56ee604abe3df",
+    "apps/ipad/src/TemplateStudio.tsx": "2ce75e3831efeff05e6c841440ace23dfb34d220f09af30f0c80a418800113fc",
+    "apps/ipad/src/publication.ts": "33d26658c1c2de8781bc62ded35c80cbd00394c7413c70fdedf1fbc834875357",
+    "apps/ipad/src/session-capture.ts": "b41f7ee98282fe5661e080a6b4e0b88b17c56e3c1e5908adebbe020ed6323e24",
+    "apps/ipad/src/review-selection.ts": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
+    "apps/ipad/src/sharing.ts": "6bce9b315a8dc7064f858d7ff9d10c5d5587b1b2bf66a56923f738823c1df271",
+    "apps/ipad/src/SmsShare.tsx": "79464043a0e40a6cc7850c0e46cacfab33b3b19e477fee87192c0b38195d7541",
+    "apps/ipad/src/sms-state.ts": "4c7125d4f710c97848b6690196fa328edc83e85488ce3626dd7e843e2e99497a",
+    "apps/ipad/src/booth-presentation.ts": "b6f720f7d9133a0603f847efd0646a9a23f40d409018e9eb757d5326bc43e935",
+    "apps/ipad/src/host-originals.ts": "938e564eb50d984754abf5ec2d07a4671faa2110bb01ad4394f5377f4d271c1e",
+    "apps/ipad/src/photo-export.ts": "8ba8baae4fe425bd0f99079619e0a693f5c3fcf83ee73a93e167c7c93f7fb633",
+    "apps/ipad/src/photo-library.ts": "800b9dd768d660c16720fda134fe33a1a14db1061f7f31531063b136b670b6a8",
+    "packages/core/src/index.ts": "945d97743a621558369c7029acbc5b61daae85d2c08156368c188aedbbb9a991",
+    "apps/ipad/assets/attract-scene.png": "6ca6274beba9483104f19fb35d1ef9b8bfaae458208025e8fb4e8d4890f45cdf"
+  },
+  "fixturePhotoSets": {
+    "marker": {
+      "scope": "Owned fictional scene with diagnostic edge markers; correctness fixtures.",
+      "sources": [
+        {
+          "index": 0,
+          "sha256": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d"
+        },
+        {
+          "index": 1,
+          "sha256": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6"
+        },
+        {
+          "index": 2,
+          "sha256": "30ef2d60c4ef7e3e77b5c3e82ba45b275a2e69b46900eea25a820c8dd1ab0a0f"
+        },
+        {
+          "index": 3,
+          "sha256": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+        }
+      ]
+    },
+    "clean-portrait": {
+      "scope": "Distinct newly image_gen-generated fictional scenes; clean design fixtures, not marker edge proof.",
+      "sources": [
+        {
+          "index": 0,
+          "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1"
+        },
+        {
+          "index": 1,
+          "sha256": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed"
+        },
+        {
+          "index": 2,
+          "sha256": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5"
+        },
+        {
+          "index": 3,
+          "sha256": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
+        }
+      ]
+    },
+    "clean-mixed": {
+      "scope": "Distinct newly image_gen-generated fictional scenes; clean design fixtures, not marker edge proof.",
+      "sources": [
+        {
+          "index": 0,
+          "sha256": "fa7aab6c4948c559a6c2acfbe426ff79293b75edfd15229dbeacf2f8cbd0d365"
+        },
+        {
+          "index": 1,
+          "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1"
+        },
+        {
+          "index": 2,
+          "sha256": "e664fecbb6bdc171e092cb9c11d9ee215cbcf0722ef3f4f29090fecb73295161"
+        },
+        {
+          "index": 3,
+          "sha256": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed"
+        }
+      ]
+    }
+  }
+}

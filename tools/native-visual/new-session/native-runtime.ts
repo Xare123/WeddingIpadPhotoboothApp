@@ -36,6 +36,7 @@ export const Image = Object.assign(forwardRef<any, any>((props, ref) => {
     }
   }, [uri, testID]);
   return createElement(WebImage, { ...props, source: browserSource(props.source), ref,
+    dataSet: { ...props.dataSet, fixtureNativeUri: uri },
     onLoad: fault.current ? undefined : (event: unknown) => { if (props.onLoad) fixtureControls.imageEvents.push({ kind: 'sdk-load', testID, uri }); props.onLoad?.(event); } });
 }), {
   getSize: WebImage.getSize, prefetch: WebImage.prefetch, resolveAssetSource: WebImage.resolveAssetSource,

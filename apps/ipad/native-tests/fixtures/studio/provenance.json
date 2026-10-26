@@ -1,0 +1,94 @@
+{
+  "scope": "Four independently image_gen-generated fictional adult wedding booth portraits, no guest/vendor/reference assets. Full-frame downsample+JPEG86 only, no crop/diagnostic overlay. For bounded actual-native XCTest inputs; processing results remain unverified until native execution.",
+  "generator": "image_gen",
+  "quality": 86,
+  "maximumLongEdge": 1200,
+  "photos": [
+    {
+      "file": "portrait-1.jpg",
+      "width": 960,
+      "height": 1200,
+      "bytes": 156431,
+      "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+      "description": "Portrait friends in sage and mauve formal dresses",
+      "prompt": "Create one clean photorealistic fictional wedding photo booth photograph, portrait 4:5 composition. Two adult female friends in elegant deep sage and soft mauve evening dresses, one with curly dark hair and dark skin and one with shoulder-length brown hair and olive skin, smiling naturally and leaning together. Warm neutral cream seamless background, direct on-camera flash, candid editorial film-photography feeling, natural skin texture and anatomically realistic faces/hands. Include complete heads with comfortable clearance and bodies to the waist; do not crop faces. Brand-new synthetic wedding application design fixture. No text, date, border, diagnostic marks, watermark, logo, frame, collage, or graphic overlay. Only one photograph.",
+      "generatedPath": "/workspace/generated_images/exec-e7219a01-d230-4300-8a8c-8751ee4bad3d.png",
+      "originalSHA256": "b37324a1169e2d8ac04c7cd030cfd79e6a344ed7ba86327bbd4464f5623e2445",
+      "originalWidth": 1122,
+      "originalHeight": 1402,
+      "transformations": "Full-frame proportional downsample to long edge1200; JPEG86; no crop, retouch, border or text."
+    },
+    {
+      "file": "portrait-2.jpg",
+      "width": 960,
+      "height": 1200,
+      "bytes": 148459,
+      "sha256": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed",
+      "description": "Portrait back-to-back couple in navy and rose gold",
+      "prompt": "Create one clean photorealistic fictional wedding photo booth photograph, portrait 4:5 composition. A different adult couple, an East Asian man in a navy tuxedo and a Middle Eastern woman in a subtle rose-gold formal dress, playfully leaning back to back while smiling toward the camera. Warm neutral cream seamless background, direct on-camera flash, candid editorial film-photography feeling, natural skin texture, anatomically realistic hands and faces. Include complete heads with comfortable clearance and bodies to the waist; no cropped faces. Brand-new synthetic wedding application design fixture. No text, date, border, diagnostic marks, watermark, logo, frame, collage, or graphic overlay. Only one photograph.",
+      "generatedPath": "/workspace/generated_images/exec-401accbb-e6e1-4c5f-ab79-330fea12a104.png",
+      "originalSHA256": "d1ad385e8f04706c7c09363e5704139e99ff360a0399c271bc919caa2c25fe0d",
+      "originalWidth": 1122,
+      "originalHeight": 1402,
+      "transformations": "Full-frame proportional downsample to long edge1200; JPEG86; no crop, retouch, border or text."
+    },
+    {
+      "file": "portrait-3.jpg",
+      "width": 960,
+      "height": 1200,
+      "bytes": 118281,
+      "sha256": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
+      "description": "Fictional portrait couple in burgundy and black, celebrating",
+      "prompt": "Create one clean photorealistic fictional wedding photo booth photograph, portrait 4:5 composition. A smiling adult Black woman in a deep burgundy formal dress and an adult white man with short light-brown hair in a black dinner jacket, standing side by side and making a relaxed celebratory pose with one arm around each other. Warm neutral cream seamless backdrop, direct on-camera flash, candid elegant wedding editorial photography, realistic faces, natural skin texture and hands. Show both complete heads with comfortable top/side clearance and bodies to the waist, no face cropped. Brand-new synthetic application fixture, not real guests. No text, border, marks, watermark, logo, frame, collage or graphic overlay. One photograph only.",
+      "generatedPath": "/workspace/generated_images/exec-53c2bcfd-e4a6-4603-9e83-07e41d610731.png",
+      "originalSHA256": "833b46a2a9bdc1271bf8e7a1cd382b8b2545a43b78898b42aee50da38ccb186f",
+      "originalWidth": 1122,
+      "originalHeight": 1402,
+      "transformations": "Full-frame proportional downsample to long edge1200; JPEG86; no crop, retouch, border or text."
+    },
+    {
+      "file": "portrait-4.jpg",
+      "width": 960,
+      "height": 1200,
+      "bytes": 145429,
+      "sha256": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c",
+      "description": "Fictional portrait friends in navy and champagne, laughing",
+      "prompt": "Create one clean photorealistic fictional wedding photo booth photograph, portrait 4:5 composition. Two different adult wedding friends, a South Asian woman in an elegant midnight-blue evening dress and an East Asian woman with shoulder-length dark hair in a soft champagne formal dress, laughing warmly together, one leaning gently toward the other's shoulder. Warm neutral cream seamless backdrop, direct on-camera flash, candid elegant wedding editorial photography, realistic faces, natural skin texture, anatomically plausible hands. Include complete heads with comfortable top/side clearance and bodies to the waist, do not crop faces. Brand-new synthetic application fixture, not real guests. No text, border, diagnostic marks, watermark, logo, frame, collage or graphic overlay. One photograph only.",
+      "generatedPath": "/workspace/generated_images/exec-787a84ac-41dc-40d0-8a42-3afe11b83c51.png",
+      "originalSHA256": "1a734abe03bea8b27c39b2617f704f4875d3bbc11b80e16f347325bb5a72b2f0",
+      "originalWidth": 1122,
+      "originalHeight": 1402,
+      "transformations": "Full-frame proportional downsample to long edge1200; JPEG86; no crop, retouch, border or text."
+    }
+  ],
+  "landscapes": [
+    {
+      "file": "landscape-1.jpg",
+      "width": 1200,
+      "height": 900,
+      "bytes": 122736,
+      "sha256": "fa7aab6c4948c559a6c2acfbe426ff79293b75edfd15229dbeacf2f8cbd0d365",
+      "description": "Landscape newlywed couple, laughing cheek to cheek",
+      "prompt": "Create one clean photorealistic fictional wedding photo booth photograph, landscape 4:3 composition. Two adult newlyweds, a dark-haired woman in a simple ivory wedding dress and a man in a black tuxedo, laughing together cheek to cheek. Warm neutral cream seamless background, direct on-camera flash, candid editorial film-photography feeling, natural skin texture, realistic hands and faces, soft champagne colors. Show both complete heads with comfortable clearance, shoulders and upper torsos; do not crop faces. This is a brand-new synthetic scene for a wedding application design fixture. No text, date, border, diagnostic marks, watermark, logo, frame, collage, or graphic overlay. Only one photograph.",
+      "generatedPath": "/workspace/generated_images/exec-39db73d5-0c97-4d31-8602-23a2d6870f85.png",
+      "originalSHA256": "c64f0e56104f2dba203c9b2ad359ac3c6c9602f47b9a5826021dcb862d9fffc3",
+      "originalWidth": 1448,
+      "originalHeight": 1086,
+      "transformations": "Full-frame proportional downsample to long edge1200; JPEG86; no crop, retouch, border or text."
+    },
+    {
+      "file": "landscape-2.jpg",
+      "width": 1200,
+      "height": 900,
+      "bytes": 132773,
+      "sha256": "e664fecbb6bdc171e092cb9c11d9ee215cbcf0722ef3f4f29090fecb73295161",
+      "description": "Landscape three friends in charcoal, champagne and forest green",
+      "prompt": "Create one clean photorealistic fictional wedding photo booth photograph, landscape 4:3 composition. Three different adult wedding guests, a Black man in a charcoal tuxedo, an East Asian woman in a champagne satin dress, and a white woman in a dark forest-green formal dress, sharing a relaxed playful laugh with their arms around shoulders. Warm neutral cream seamless background, direct on-camera flash, candid editorial film-photography feeling, realistic skin, faces, hands and proportions. Show all three complete heads with generous side and top clearance and upper torsos, no cropped faces. Brand-new synthetic wedding application design fixture. No text, date, border, diagnostic marks, watermark, logo, frame, collage, or graphic overlay. Only one photograph.",
+      "generatedPath": "/workspace/generated_images/exec-6e9cb6af-3b5f-4471-a966-cd408dffa459.png",
+      "originalSHA256": "aa238644af9329cacaa62c3edf1396461d75474ea32517ffbd0d1484619d399d",
+      "originalWidth": 1448,
+      "originalHeight": 1086,
+      "transformations": "Full-frame proportional downsample to long edge1200; JPEG86; no crop, retouch, border or text."
+    }
+  ]
+}

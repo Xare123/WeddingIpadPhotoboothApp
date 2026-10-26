@@ -23,7 +23,7 @@ const runtimeSourceSpecs = [
   ['apps/ipad/modules/wedding-photo-effects/ios/PhotoEffectsEngine.swift', 0],
   ['apps/ipad/modules/wedding-photo-effects/tests/PhotoEffectsEngineTests.swift', 8],
   ['apps/ipad/modules/wedding-photo-effects/ios/PhotoTemplateEngine.swift', 0],
-  ['apps/ipad/modules/wedding-photo-effects/tests/PhotoTemplateEngineTests.swift', 6],
+  ['apps/ipad/modules/wedding-photo-effects/tests/PhotoTemplateEngineTests.swift', 11],
 ];
 
 // Discover actual named XCTest methods from required, reviewed Swift sources.
@@ -41,16 +41,37 @@ export function nativeRuntimeSources(root) {
   });
 }
 
+const studioResourceNames = ['portrait-1', 'portrait-2', 'portrait-3', 'portrait-4', 'landscape-1', 'landscape-2'];
+export function nativeRuntimeResources(root) {
+  let total = 0;
+  return studioResourceNames.map(name => {
+    const source = 'apps/ipad/native-tests/fixtures/studio/studio-' + name + '.jpg';
+    const bytes = readFileSync(resolve(root, source));
+    if (bytes.length < 4 || bytes.length > 2 * 1024 * 1024 || bytes[0] !== 0xff || bytes[1] !== 0xd8 ||
+      bytes[bytes.length - 2] !== 0xff || bytes[bytes.length - 1] !== 0xd9) throw new Error('Invalid or unbounded clean JPEG resource: ' + source);
+    total += bytes.length;
+    if (total > 8 * 1024 * 1024) throw new Error('Clean JPEG fixture resources exceed 8 MiB');
+    return { source, generatedSource: 'NativeTests/StudioFixtures/' + basename(source),
+      sha256: createHash('sha256').update(bytes).digest('hex'), bytes: bytes.length };
+  });
+}
+
 export function verifyNativeRuntimeSources(plan, root) {
   const actual = nativeRuntimeSources(root);
   if (JSON.stringify(plan?.runtimeSources) !== JSON.stringify(actual)) throw new Error('Native runtime source/hash manifest changed');
+  const resources = nativeRuntimeResources(root);
+  if (JSON.stringify(plan?.runtimeResources) !== JSON.stringify(resources)) throw new Error('Native runtime resource/hash manifest changed');
+  for (const resource of resources) {
+    const copy = readFileSync(resolve(root, 'apps/ipad/ios', resource.generatedSource));
+    if (createHash('sha256').update(copy).digest('hex') !== resource.sha256) throw new Error('Generated native resource hash mismatch: ' + resource.generatedSource);
+  }
   const expected = actual.reduce((count, source) => count + source.testMethods.length, 0);
   if (plan.expectedTestCount !== expected) throw new Error('Native runtime expected test count changed');
   for (const source of actual) {
     const copy = readFileSync(resolve(root, 'apps/ipad/ios', source.generatedSource));
     if (createHash('sha256').update(copy).digest('hex') !== source.sha256) throw new Error('Generated native source hash mismatch: ' + source.generatedSource);
   }
-  return { expectedTestCount: expected, runtimeSources: actual };
+  return { expectedTestCount: expected, runtimeSources: actual, runtimeResources: resources };
 }
 
 export function passingExpectedXCTestCounts(output, expected) {

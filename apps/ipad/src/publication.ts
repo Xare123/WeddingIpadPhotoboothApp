@@ -1,4 +1,32 @@
-import type { SessionComposite, SessionPublicationAssets } from './local-types';
+import type { CompositeRecipe, PublicationComposite, SessionComposite, SessionPublicationAssets } from './local-types';
+
+const localId = (id: unknown): id is string => typeof id === 'string' && /^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/.test(id);
+// Keep the persisted version explicit. Recovery never infers a missing v2
+// aspect or interprets an existing v1 recipe using newer template geometry.
+export function validCompositeRecipe(value: unknown): value is CompositeRecipe {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const recipe = value as CompositeRecipe;
+  if (recipe.version !== 'wedding-template-v1' && recipe.version !== 'wedding-template-v2') return false;
+  const keys = ['version', 'layout', 'theme', 'photoIds', 'cropsByPhotoId', ...(recipe.version === 'wedding-template-v2' ? ['gridAspect'] : [])];
+  if (Object.keys(recipe).length !== keys.length || Object.keys(recipe).some(key => !keys.includes(key)) ||
+    (recipe.version === 'wedding-template-v2' && !['portrait', 'square'].includes(recipe.gridAspect)) ||
+    !['strip', 'grid'].includes(recipe.layout) || !['classic', 'botanical', 'coastal'].includes(recipe.theme) ||
+    !Array.isArray(recipe.photoIds) || recipe.photoIds.length !== 4 || !recipe.photoIds.every(localId) || new Set(recipe.photoIds).size !== 4 ||
+    !recipe.cropsByPhotoId || typeof recipe.cropsByPhotoId !== 'object' || Array.isArray(recipe.cropsByPhotoId) || Object.keys(recipe.cropsByPhotoId).length !== 4) return false;
+  return recipe.photoIds.every(id => {
+    const crop = recipe.cropsByPhotoId[id];
+    return !!crop && typeof crop === 'object' && !Array.isArray(crop) && Object.keys(crop).length === 4 &&
+      Object.keys(crop).every(key => ['mode', 'x', 'y', 'zoom'].includes(key)) && ['fit', 'fill'].includes(crop.mode) &&
+      Number.isFinite(crop.x) && Math.abs(crop.x) <= 1 && Number.isFinite(crop.y) && Math.abs(crop.y) <= 1 &&
+      Number.isFinite(crop.zoom) && crop.zoom >= 1 && crop.zoom <= 1.5 &&
+      (crop.mode !== 'fit' || (crop.x === 0 && crop.y === 0 && crop.zoom === 1));
+  });
+}
+
+export function publicationComposite(photoId: string, recipe: CompositeRecipe): PublicationComposite {
+  const common = { photoId, layout: recipe.layout, theme: recipe.theme };
+  return recipe.version === 'wedding-template-v2' ? { ...common, version: recipe.version, gridAspect: recipe.gridAspect } : { ...common, version: recipe.version };
+}
 
 export type PublicationSession = {
   id: string; confirmed: boolean; targetCount?: number;
@@ -17,25 +45,14 @@ export function publicationAssets(session: PublicationSession): SessionPublicati
   const composite = session.composite;
   if (!composite || !composite.id || !composite.fileUri.startsWith('file://') || ids.includes(composite.id)) return null;
   const recipe = composite.recipe;
-  if (recipe.version !== 'wedding-template-v1' || !['strip', 'grid'].includes(recipe.layout) ||
-    !['classic', 'botanical', 'coastal'].includes(recipe.theme) || recipe.photoIds.length !== 4 ||
-    new Set(recipe.photoIds).size !== 4 || recipe.photoIds.some(id => !ids.includes(id)) ||
-    !recipe.cropsByPhotoId || Object.keys(recipe.cropsByPhotoId).length !== 4) return null;
-  for (const id of recipe.photoIds) {
-    const crop = recipe.cropsByPhotoId[id];
-    if (!crop || !['fit', 'fill'].includes(crop.mode) || !Number.isFinite(crop.x) || Math.abs(crop.x) > 1 ||
-      !Number.isFinite(crop.y) || Math.abs(crop.y) > 1 || !Number.isFinite(crop.zoom) || crop.zoom < 1 || crop.zoom > 1.5 ||
-      (crop.mode === 'fit' && (crop.x !== 0 || crop.y !== 0 || crop.zoom !== 1))) return null;
-  }
+  if (!validCompositeRecipe(recipe) || recipe.photoIds.some(id => !ids.includes(id))) return null;
   const originals = recipe.photoIds.map(id => {
     const shot = session.shots.find(shot => shot.id === id)!;
     return shot.sourcePhotoId ?? shot.id;
   });
-  if (new Set(originals).size !== 4 || originals.includes(composite.id) || composite.originalPhotoIds.length !== 4 ||
+  if (new Set(originals).size !== 4 || originals.includes(composite.id) || !Array.isArray(composite.originalPhotoIds) || composite.originalPhotoIds.length !== 4 ||
     originals.some((id, index) => id !== composite.originalPhotoIds[index])) return null;
-  return { photoIds: [...recipe.photoIds], originalPhotoIds: originals, composite: {
-    photoId: composite.id, layout: recipe.layout, theme: recipe.theme, version: recipe.version,
-  } };
+  return { photoIds: [...recipe.photoIds], originalPhotoIds: originals, composite: publicationComposite(composite.id, recipe) };
 }
 
 export function publicationAssetIds(assets: SessionPublicationAssets): string[] {

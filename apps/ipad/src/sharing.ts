@@ -42,12 +42,15 @@ export function validateReadyPublication(value: unknown, expected: SessionPublic
   const result = value as Record<string, unknown>;
   const sameIds = (actual: unknown, ids: string[] | undefined) => Array.isArray(actual) && !!ids &&
     actual.length === ids.length && actual.every((id, index) => id === ids[index]);
+  const expectedComposite = expected.composite;
+  const keys = ['photoId', 'layout', 'theme', 'version', ...(expectedComposite.version === 'wedding-template-v2' ? ['gridAspect'] : [])];
   const composite = result.composite as Record<string, unknown> | null | undefined;
   if (!sameIds(result.photoIds, expected.photoIds) || !sameIds(result.originalPhotoIds, expected.originalPhotoIds) ||
     !composite || typeof composite !== 'object' || Array.isArray(composite) ||
-    Object.keys(composite).length !== 4 || composite.photoId !== expected.composite.photoId ||
-    composite.layout !== expected.composite.layout || composite.theme !== expected.composite.theme ||
-    composite.version !== expected.composite.version) throw new Error('Publication was not acknowledged');
+    Object.keys(composite).length !== keys.length || Object.keys(composite).some(key => !keys.includes(key)) ||
+    composite.photoId !== expectedComposite.photoId || composite.layout !== expectedComposite.layout || composite.theme !== expectedComposite.theme ||
+    composite.version !== expectedComposite.version || (expectedComposite.version === 'wedding-template-v2' &&
+      (!['portrait', 'square'].includes(expectedComposite.gridAspect) || composite.gridAspect !== expectedComposite.gridAspect))) throw new Error('Publication was not acknowledged');
 }
 
 export function qrForJob(job: {

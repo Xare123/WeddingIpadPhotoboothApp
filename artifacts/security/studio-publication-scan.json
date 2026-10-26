@@ -1,13 +1,23 @@
 {
-  "scope": "Prepublication tracked/unignored text-file pattern scan; not a comprehensive secret detector or OCR review",
-  "filesScanned": 413,
+  "generatedAt": "2026-10-26T18:08:35.175982+00:00",
+  "scope": "Current tracked/unignored text-file credential-pattern scan plus path/provenance checks; not comprehensive secret detection/OCR or a proof that binary files contain no secrets",
+  "filesScanned": 261,
   "credentialPatternFindings": [],
-  "historicalQrFixtureFiles": [
-    "artifacts/visual/new-session-checks.json",
-    "artifacts/visual/qr-rendered-checks.json",
-    "artifacts/visual/qr-review.md"
-  ],
-  "historicalQrDisposition": "Only documented deterministic fabricated QR payloads; no request to real hostname; fixtures predate current change. Empty comment-only .env.example allowed.",
   "privateReferenceScreenshotsIncluded": false,
-  "guestPhotosIncluded": false
+  "guestPhotosIncluded": false,
+  "generatedPhotosProvenance": "apps/ipad/native-tests/fixtures/studio/provenance.json",
+  "historicalQrDisposition": "Known deterministic fabricated QR fixture payloads retained; no real-origin requests made. Gallery local capability values omitted/redacted and sessions revoked. No production token/phone/key introduced.",
+  "scanDefinition": [
+    "github-token",
+    "aws-access-key",
+    "google-api-key",
+    "private-key",
+    "jwt-bearer"
+  ],
+  "sourceHashes": {
+    "apps/ipad/App.tsx": "151488bb3fdbf6435a16855ba70bfbc2f7408cbef8cb30de040121ce81dc30e7",
+    "apps/ipad/src/TemplateStudio.tsx": "2ce75e3831efeff05e6c841440ace23dfb34d220f09af30f0c80a418800113fc",
+    "services/api/src/index.ts": "82a548e2f5e640ce6f57f360b7636959e8c6877c3ec3b6c58570a80fb103bd63",
+    "package-lock.json": "1cdd546c539c694b6612b748cb27627aeea87e951a859f162b087dd7becdc2b6"
+  }
 }

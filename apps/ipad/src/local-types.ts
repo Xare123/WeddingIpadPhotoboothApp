@@ -6,9 +6,16 @@ export type ActiveCapture = {
   relativePath?: string; sessionId?: string; shotIndex?: number; exportStatus?: PhotoExportStatus;
 };
 export type PhotoCrop = { mode: 'fit' | 'fill'; x: number; y: number; zoom: number };
-export type CompositeRecipe = { version: 'wedding-template-v1'; layout: 'strip' | 'grid'; theme: 'classic' | 'botanical' | 'coastal'; photoIds: string[]; cropsByPhotoId: Record<string, PhotoCrop> };
+export type GridAspect = 'portrait' | 'square';
+type CompositeRecipeFields = { layout: 'strip' | 'grid'; theme: 'classic' | 'botanical' | 'coastal'; photoIds: string[]; cropsByPhotoId: Record<string, PhotoCrop> };
+export type CompositeRecipe = CompositeRecipeFields & (
+  { version: 'wedding-template-v1' } | { version: 'wedding-template-v2'; gridAspect: GridAspect }
+);
+export type PublicationComposite = { photoId: string; layout: CompositeRecipe['layout']; theme: CompositeRecipe['theme'] } & (
+  { version: 'wedding-template-v1' } | { version: 'wedding-template-v2'; gridAspect: GridAspect }
+);
 export type SessionComposite = { id: string; fileUri: string; exportStatus?: PhotoExportStatus; recipe: CompositeRecipe; originalPhotoIds: string[] };
-export type SessionPublicationAssets = { photoIds: string[]; originalPhotoIds?: string[]; composite?: { photoId: string; layout: CompositeRecipe['layout']; theme: CompositeRecipe['theme']; version: CompositeRecipe['version'] } };
+export type SessionPublicationAssets = { photoIds: string[]; originalPhotoIds?: string[]; composite?: PublicationComposite };
 export type ActiveSession = {
   id: string; createdAt: number; targetCount: number; shots: ActiveCapture[]; confirmed: boolean;
   composite?: SessionComposite; stagedComposites?: SessionComposite[];

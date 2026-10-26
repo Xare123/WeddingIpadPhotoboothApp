@@ -45,6 +45,7 @@ try {
     const page = await context.newPage();
     try {
       await page.goto('http://127.0.0.1:8791/?state=attract&templates=available&effects=available&network=offline');
+      assert.equal(await page.evaluate(() => window.__NEW_SESSION_FIXTURE__.photoSet), 'marker', 'Correctness runner requires marker sources; clean mode cannot bypass edge checks');
       await page.getByTestId('start-session').tap(); await page.getByTestId('take-photo').tap();
       await page.getByTestId('review-gallery').waitFor({ timeout: 22000 });
       let state = await snapshot(page);

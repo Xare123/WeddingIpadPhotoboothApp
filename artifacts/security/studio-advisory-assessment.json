@@ -1,5 +1,5 @@
 {
-  "timestampUTC": "2026-10-26T17:03:03.788323+00:00",
+  "timestampUTC": "2026-10-26T18:06:18.115486+00:00",
   "scope": "Read-only installed dependency/range/registry assessment; no dependency or lockfile changes, no npm audit fix, no package install or runtime validation of replacement versions",
   "auditSource": "artifacts/security/fullbleed-audit.json",
   "auditCounts": {
@@ -386,7 +386,7 @@
     "artifact": "artifacts/security/bundle-review.json",
     "sourceModuleCount": 1030,
     "sourceMapSHA256": [
-      "0f6c391b0f44936bc0e601a45b9adb648181fbabe2c97672c4f095e80fcd65dc"
+      "2162884d05358f17ff3a30282e8ecdf27fec23886b02d5098cb46c8c106b39a8"
     ],
     "affectedPackageMatches": {
       "node-forge": [],
@@ -397,7 +397,7 @@
       "undici": [],
       "wrangler": []
     },
-    "scope": "Absence in inspected 1030-module source-map graph only. Metro require-loader presence is not inclusion of all Expo CLI code. No conclusion about native binary, CocoaPods, operating-system libraries, or all deployed infrastructure."
+    "scope": "Absence in the inspected current V2 source-map graph only. Metro require-loader is not all Expo CLI code. No native binary/CocoaPods/OS/production audit."
   },
   "nativeBinaryAudit": "Unknown/not performed; npm audit and JS source-map absence are not a native-binary security audit",
   "verificationLimits": [
@@ -410,6 +410,6 @@
     "apps/ipad/package.json": "c38c54aa8cedec22eb0e18e7abc1930f22fa59134ebd841b7346613757cb5cbe",
     "services/api/package.json": "097cf47a38d098d89f247d0c8b62d8a43c189e87cfcc7700cd463ac57e4d477e",
     "artifacts/security/fullbleed-audit.json": "f99b6e2f01df8ae502f5d3cd2651165a95f47e7269f679f0851f537a6ff1d38b",
-    "artifacts/security/bundle-review.json": "d4d58503d72278eed6b1a2a202b81cd8e3a512e59c1c8835da36c8c0bb38357d"
+    "artifacts/security/bundle-review.json": "229c8bea3389edb560fa82add7c55ab329fdd647f3b62c9fa907750b17276d0d"
   }
 }

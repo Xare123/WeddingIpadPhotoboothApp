@@ -152,4 +152,207 @@ final class PhotoTemplateEngineTests: XCTestCase {
     XCTAssertTrue(FileManager.default.fileExists(atPath: unrelated.path))
     XCTAssertTrue(FileManager.default.fileExists(atPath: sources[0].url.path))
   }
+  func recipeV2(layout: String = "strip", theme: String = "classic", aspect: String = "portrait") throws -> String {
+    let v1 = try recipe(layout: layout, theme: theme)
+    var object = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(v1.utf8)) as? [String: Any])
+    object["version"] = PhotoTemplateEngine.currentVersion; object["gridAspect"] = aspect
+    return String(data: try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys]), encoding: .utf8)!
+  }
+  private static var attachmentBytes = 0
+  func attachJPEG(_ result: PhotoTemplateEngine.Result, name: String) throws {
+    let data = try Data(contentsOf: XCTUnwrap(URL(string: result.uri)))
+    XCTAssertLessThan(data.count, 6 * 1024 * 1024, "Keep individual native visual evidence bounded")
+    Self.attachmentBytes += data.count
+    XCTAssertLessThanOrEqual(Self.attachmentBytes, 32 * 1024 * 1024, "Bound total clean native JPEG attachments below xcresult cap")
+    let attachment = XCTAttachment(data: data, uniformTypeIdentifier: UTType.jpeg.identifier)
+    attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
+  }
+  func cleanSources(portraitOnly: Bool = true) throws -> [PhotoTemplateEngine.Source] {
+    let names = portraitOnly ? ["portrait-1", "portrait-2", "portrait-3", "portrait-4"]
+      : ["portrait-1", "landscape-1", "portrait-2", "landscape-2"]
+    return try names.enumerated().map { index, name in
+      let url = try XCTUnwrap(Bundle(for: PhotoTemplateEngineTests.self).url(forResource: "studio-" + name, withExtension: "jpg"),
+        "Required clean generated JPEG must be copied into the native test bundle: " + name)
+      return PhotoTemplateEngine.Source(photoId: "photo-\(index)", url: url)
+    }
+  }
+  func testV2InspectionUsesUprightDimensionsMedianAndUnchangedHashes() throws {
+    let landscape = try fixtures(), before = try landscape.map { try Data(contentsOf: $0.url) }
+    let first = try engine.inspect(sources: landscape)
+    XCTAssertEqual(first.gridAspect, "square")
+    XCTAssertEqual(first.sources.map(\.photoId), landscape.map(\.photoId))
+    for (index, source) in first.sources.enumerated() {
+      XCTAssertEqual(source.width, 400); XCTAssertEqual(source.height, 300)
+      XCTAssertEqual(source.sha256, SHA256.hash(data: before[index]).map { String(format: "%02x", $0) }.joined())
+    }
+    let portrait = try fixtures(orientation: 6)
+    let rotated = try engine.inspect(sources: portrait)
+    XCTAssertEqual(rotated.gridAspect, "portrait")
+    XCTAssertEqual(rotated.sources.map(\.width), [300,300,300,300])
+    XCTAssertEqual(rotated.sources.map(\.height), [400,400,400,400])
+    XCTAssertEqual(try engine.inspect(sources: Array(portrait.reversed())).gridAspect, "portrait")
+    XCTAssertThrowsError(try engine.inspect(sources: Array(portrait.prefix(3))))
+    XCTAssertThrowsError(try engine.inspect(sources: [portrait[0],portrait[0],portrait[2],portrait[3]]))
+    // Exact 0.95 threshold is square; one pixel below is portrait.
+    for width in [95, 94] {
+      var boundary = [PhotoTemplateEngine.Source]()
+      for index in 0..<4 {
+        let context = try XCTUnwrap(CGContext(data: nil, width: width, height: 100, bitsPerComponent: 8, bytesPerRow: width * 4,
+          space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+        context.setFillColor(CGColor(gray: 0.5, alpha: 1)); context.fill(CGRect(x: 0, y: 0, width: CGFloat(width), height: 100))
+        let cg = try XCTUnwrap(context.makeImage()), url = directory.appendingPathComponent("boundary-\(width)-\(index).jpg")
+        let output = try XCTUnwrap(CGImageDestinationCreateWithURL(url as CFURL, UTType.jpeg.identifier as CFString, 1, nil))
+        CGImageDestinationAddImage(output, cg, [kCGImagePropertyOrientation: 1] as CFDictionary)
+        XCTAssertTrue(CGImageDestinationFinalize(output))
+        boundary.append(PhotoTemplateEngine.Source(photoId: "boundary-\(index)", url: url))
+      }
+      XCTAssertEqual(try engine.inspect(sources: boundary).gridAspect, width == 95 ? "square" : "portrait")
+    }
+    let broken = directory.appendingPathComponent("broken-inspection.jpg")
+    try Data("not a JPEG".utf8).write(to: broken)
+    XCTAssertThrowsError(try engine.inspect(sources: [PhotoTemplateEngine.Source(photoId: "photo-0", url: broken)] + Array(portrait.dropFirst())))
+  }
+  func testV2StrictVersionedRecipeAndGeometryKeepV1Unchanged() throws {
+    let v1 = try PhotoTemplateEngine.Recipe.parse(recipe(layout: "grid"))
+    XCTAssertNil(v1.gridAspect); XCTAssertEqual(PhotoTemplateEngine.dimensions(recipe: v1).height, 2100)
+    XCTAssertEqual(PhotoTemplateEngine.window(recipe: v1, index: 3), CGRect(x: 1224, y: 954, width: 1080, height: 810))
+    for aspect in ["portrait", "square"] {
+      let strip = try PhotoTemplateEngine.Recipe.parse(recipeV2(aspect: aspect))
+      XCTAssertEqual(PhotoTemplateEngine.dimensions(recipe: strip).width, 1200)
+      XCTAssertEqual(PhotoTemplateEngine.dimensions(recipe: strip).height, 3600)
+      XCTAssertEqual(PhotoTemplateEngine.window(recipe: strip, index: 3), CGRect(x: 60, y: 2562, width: 1080, height: 810))
+      let grid = try PhotoTemplateEngine.Recipe.parse(recipeV2(layout: "grid", aspect: aspect))
+      XCTAssertEqual(PhotoTemplateEngine.dimensions(recipe: grid).height, aspect == "portrait" ? 3000 : 2400)
+      let last = PhotoTemplateEngine.window(recipe: grid, index: 3)
+      XCTAssertEqual(last, aspect == "portrait" ? CGRect(x: 1212, y: 1428, width: 1116, height: 1332)
+        : CGRect(x: 1224, y: 1164, width: 1080, height: 1080))
+    }
+    XCTAssertThrowsError(try PhotoTemplateEngine.Recipe.parse(recipeV2(aspect: "landscape")))
+    let extraOnV1 = try recipeV2().replacingOccurrences(of: PhotoTemplateEngine.currentVersion, with: PhotoTemplateEngine.version)
+    XCTAssertThrowsError(try PhotoTemplateEngine.Recipe.parse(extraOnV1))
+    let missingOnV2 = try recipe().replacingOccurrences(of: PhotoTemplateEngine.version, with: PhotoTemplateEngine.currentVersion)
+    XCTAssertThrowsError(try PhotoTemplateEngine.Recipe.parse(missingOnV2))
+  }
+  func testV2AllSixCleanNativeJpegFullAndPreviewAttachments() throws {
+    let sources = try cleanSources(), bytes = try sources.map { try Data(contentsOf: $0.url) }
+    let inspection = try engine.inspect(sources: sources)
+    XCTAssertEqual(inspection.gridAspect, "portrait")
+    for layout in ["strip", "grid"] { for theme in ["classic", "botanical", "coastal"] {
+      let json = try recipeV2(layout: layout, theme: theme, aspect: inspection.gridAspect)
+      let full = try render(sources, recipe: json), preview = try render(sources, recipe: json, preview: true)
+      XCTAssertEqual(full.version, PhotoTemplateEngine.currentVersion)
+      XCTAssertEqual(full.width, layout == "strip" ? 1200 : 2400)
+      XCTAssertEqual(full.height, layout == "strip" ? 3600 : 3000)
+      XCTAssertEqual(preview.width, layout == "strip" ? 480 : 1152)
+      XCTAssertEqual(preview.height, 1440)
+      XCTAssertEqual(full.recipeJSON, preview.recipeJSON); XCTAssertEqual(full.sourceHashes, preview.sourceHashes)
+      try attachJPEG(full, name: "native-v2-clean-portrait-\(layout)-\(theme)-FULL")
+      try attachJPEG(preview, name: "native-v2-clean-portrait-\(layout)-\(theme)-PREVIEW")
+      try engine.release(URL(string: full.uri)!); try engine.release(URL(string: preview.uri)!)
+    } }
+    for index in 0..<4 { XCTAssertEqual(try Data(contentsOf: sources[index].url), bytes[index]) }
+  }
+  func testV2CleanMixedAspectAndExifNativeJpegAttachments() throws {
+    let mixed = try cleanSources(portraitOnly: false)
+    let inspection = try engine.inspect(sources: mixed)
+    XCTAssertEqual(inspection.gridAspect, "square")
+    let full = try render(mixed, recipe: recipeV2(layout: "grid", theme: "coastal", aspect: inspection.gridAspect))
+    let preview = try render(mixed, recipe: full.recipeJSON, preview: true)
+    XCTAssertEqual(full.width, 2400); XCTAssertEqual(full.height, 2400)
+    XCTAssertEqual(preview.width, 1440); XCTAssertEqual(preview.height, 1440)
+    try attachJPEG(full, name: "native-v2-clean-mixed-square-grid-coastal-FULL")
+    try attachJPEG(preview, name: "native-v2-clean-mixed-square-grid-coastal-PREVIEW")
+    var exifSources = [PhotoTemplateEngine.Source]()
+    for (index, source) in mixed.enumerated() {
+      let input = try XCTUnwrap(CGImageSourceCreateWithURL(source.url as CFURL, nil))
+      let cg = try XCTUnwrap(CGImageSourceCreateImageAtIndex(input, 0, nil))
+      let target = directory.appendingPathComponent("clean-exif-\(index).jpg")
+      let output = try XCTUnwrap(CGImageDestinationCreateWithURL(target as CFURL, UTType.jpeg.identifier as CFString, 1, nil))
+      let orientation = index % 2 == 0 ? 1 : 6
+      CGImageDestinationAddImage(output, cg, [kCGImageDestinationLossyCompressionQuality: 0.95,
+        kCGImagePropertyOrientation: orientation, kCGImagePropertyGPSDictionary: [kCGImagePropertyGPSLatitude: 42.5]] as CFDictionary)
+      XCTAssertTrue(CGImageDestinationFinalize(output))
+      exifSources.append(PhotoTemplateEngine.Source(photoId: source.photoId, url: target))
+    }
+    let exif = try engine.inspect(sources: exifSources)
+    XCTAssertEqual(exif.gridAspect, "portrait")
+    let result = try render(exifSources, recipe: recipeV2(layout: "grid", theme: "botanical", aspect: exif.gridAspect))
+    try attachJPEG(result, name: "native-v2-clean-mixed-EXIF-portrait-grid-sage-FULL")
+    let exifPreview = try render(exifSources, recipe: result.recipeJSON, preview: true)
+    XCTAssertEqual(exifPreview.width, 1152); XCTAssertEqual(exifPreview.height, 1440)
+    XCTAssertEqual(result.sourceHashes, exifPreview.sourceHashes)
+    try attachJPEG(exifPreview, name: "native-v2-clean-mixed-EXIF-portrait-grid-sage-PREVIEW")
+    let input = try XCTUnwrap(CGImageSourceCreateWithURL(URL(string: result.uri)! as CFURL, nil))
+    let props = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(input, 0, nil) as? [String: Any])
+    XCTAssertNil(props[kCGImagePropertyGPSDictionary as String])
+    XCTAssertEqual((props[kCGImagePropertyOrientation as String] as? NSNumber)?.intValue ?? 1, 1)
+  }
+  func testV2DecorationNeverTouchesPhotoWindowsAndFitPreservesEdgeMarkers() throws {
+    let sources = try fixtures()
+    for layout in ["strip", "grid"] { for aspect in ["portrait", "square"] {
+      var centers = [[[UInt8]]]()
+      for theme in ["classic", "botanical", "coastal"] {
+        let json = try recipeV2(layout: layout, theme: theme, aspect: aspect)
+        let parsed = try PhotoTemplateEngine.Recipe.parse(json), result = try render(sources, recipe: json)
+        let output = try image(result.uri)
+        let field: [UInt8] = theme == "classic" ? [246,240,228] : theme == "botanical" ? [220,229,214] : [219,235,231]
+        near(try sample(output, x: result.width / 2, y: 40), field, tolerance: 8)
+        var pixels = [[UInt8]]()
+        for index in 0..<4 {
+          let window = PhotoTemplateEngine.window(recipe: parsed, index: index)
+          let center = try sample(output, x: Int(window.midX), y: Int(window.midY))
+          near(center, colors[index]); pixels.append(center)
+          // A 4:3 source is width-limited in the two new grid frames: both full
+          // left/right marker strips remain visible under default FIT.
+          near(try sample(output, x: Int(window.minX + 10), y: Int(window.midY)), [250,250,250], tolerance: 25)
+          near(try sample(output, x: Int(window.maxX - 10), y: Int(window.midY)), [15,15,15], tolerance: 25)
+        }
+        centers.append(pixels)
+        let props = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(CGImageSourceCreateWithURL(URL(string: result.uri)! as CFURL, nil)!, 0, nil) as? [String: Any])
+        XCTAssertNil(props[kCGImagePropertyGPSDictionary as String])
+        try engine.release(URL(string: result.uri)!)
+      }
+      for theme in centers { for (index, pixel) in theme.enumerated() { near(pixel, colors[index]) } }
+    } }
+    // An independent tall raster has a yellow TOP band, cyan BOTTOM band,
+    // red upper body and blue lower body. Sample decoded JPEG window edges,
+    // rather than reimplementing the compositor's transform in this test.
+    var vertical = [PhotoTemplateEngine.Source](), originalBytes = [Data]()
+    for index in 0..<4 {
+      let width = 300, height = 800
+      var pixels = [UInt8](repeating: 255, count: width * height * 4)
+      for y in 0..<height {
+        let rgb: [UInt8] = y < 12 ? [245,240,20] : y >= height - 12 ? [20,235,235]
+          : y < height / 2 ? [215,40,35] : [40,65,215]
+        for x in 0..<width { for channel in 0..<3 { pixels[(y * width + x) * 4 + channel] = rgb[channel] } }
+      }
+      let cg = try XCTUnwrap(CGImage(width: width, height: height, bitsPerComponent: 8, bitsPerPixel: 32, bytesPerRow: width * 4,
+        space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipLast.rawValue),
+        provider: CGDataProvider(data: Data(pixels) as CFData)!, decode: nil, shouldInterpolate: false, intent: .defaultIntent))
+      let url = directory.appendingPathComponent("vertical-top-bottom-\(index).jpg")
+      let destination = try XCTUnwrap(CGImageDestinationCreateWithURL(url as CFURL, UTType.jpeg.identifier as CFString, 1, nil))
+      CGImageDestinationAddImage(destination, cg, [kCGImageDestinationLossyCompressionQuality: 1, kCGImagePropertyOrientation: 1] as CFDictionary)
+      XCTAssertTrue(CGImageDestinationFinalize(destination))
+      vertical.append(PhotoTemplateEngine.Source(photoId: "photo-\(index)", url: url))
+      originalBytes.append(try Data(contentsOf: url))
+    }
+    for pan in [-1.0, 1.0] {
+      var object = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(recipeV2().utf8)) as? [String: Any])
+      object["cropsByPhotoId"] = Dictionary(uniqueKeysWithValues: vertical.map { source in
+        (source.photoId, ["mode": "fill", "x": 0, "y": pan, "zoom": 1] as [String: Any])
+      })
+      let json = String(data: try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys]), encoding: .utf8)!
+      let result = try render(vertical, recipe: json), output = try image(result.uri)
+      // Fixed strip windows are at y60/894/1728/2562, each810 high.
+      // y=-1 retains the source top; y=+1 retains its bottom.
+      for (index, top) in [60,894,1728,2562].enumerated() {
+        near(try sample(output, x: 600, y: top + 15), pan == -1 ? [245,240,20] : [40,65,215], tolerance: 25)
+        near(try sample(output, x: 600, y: top + 795), pan == -1 ? [215,40,35] : [20,235,235], tolerance: 25)
+        XCTAssertEqual(result.sourceHashes[vertical[index].photoId], SHA256.hash(data: originalBytes[index]).map { String(format: "%02x", $0) }.joined())
+        XCTAssertEqual(try Data(contentsOf: vertical[index].url), originalBytes[index])
+      }
+      try engine.release(URL(string: result.uri)!)
+    }
+  }
+
 }

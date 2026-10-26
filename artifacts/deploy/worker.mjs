@@ -157,13 +157,16 @@ function parseGalleryRecipe(body) {
   const candidate = body.composite;
   if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) return json({ error: "Valid composite required" }, 400);
   const composite = candidate;
-  if (Object.keys(composite).some((key) => !["photoId", "layout", "theme", "version"].includes(key)) || typeof composite.photoId !== "string" || !uuid.test(composite.photoId) || !["strip", "grid"].includes(composite.layout) || !["classic", "botanical", "coastal"].includes(composite.theme) || composite.version !== "wedding-template-v1") return json({ error: "Unknown or invalid composite recipe" }, 400);
+  const v2 = composite.version === "wedding-template-v2";
+  const keys = ["photoId", "layout", "theme", "version", ...v2 ? ["gridAspect"] : []];
+  if (Object.keys(composite).length !== keys.length || Object.keys(composite).some((key) => !keys.includes(key)) || typeof composite.photoId !== "string" || !uuid.test(composite.photoId) || !["strip", "grid"].includes(composite.layout) || !["classic", "botanical", "coastal"].includes(composite.theme) || !v2 && composite.version !== "wedding-template-v1" || v2 && !["portrait", "square"].includes(composite.gridAspect)) return json({ error: "Unknown or invalid composite recipe" }, 400);
   const photoId = composite.photoId.toLowerCase();
   if (photoIds.includes(photoId) || originalPhotoIds.includes(photoId)) return json({ error: "Composite must have a distinct photo ID" }, 400);
-  return { photoIds, originalPhotoIds, composite: { photoId, layout: composite.layout, theme: composite.theme, version: "wedding-template-v1" } };
+  const common = { photoId, layout: composite.layout, theme: composite.theme };
+  return { photoIds, originalPhotoIds, composite: v2 ? { ...common, version: "wedding-template-v2", gridAspect: composite.gridAspect } : { ...common, version: "wedding-template-v1" } };
 }
 function sameRecipe(left, right) {
-  return samePhotos(left.photoIds, right.photoIds) && (left.originalPhotoIds === void 0 && right.originalPhotoIds === void 0 || !!left.originalPhotoIds && !!right.originalPhotoIds && samePhotos(left.originalPhotoIds, right.originalPhotoIds)) && (left.composite === void 0 && right.composite === void 0 || !!left.composite && !!right.composite && left.composite.photoId === right.composite.photoId && left.composite.layout === right.composite.layout && left.composite.theme === right.composite.theme && left.composite.version === right.composite.version);
+  return samePhotos(left.photoIds, right.photoIds) && (left.originalPhotoIds === void 0 && right.originalPhotoIds === void 0 || !!left.originalPhotoIds && !!right.originalPhotoIds && samePhotos(left.originalPhotoIds, right.originalPhotoIds)) && (left.composite === void 0 && right.composite === void 0 || !!left.composite && !!right.composite && left.composite.photoId === right.composite.photoId && left.composite.layout === right.composite.layout && left.composite.theme === right.composite.theme && left.composite.version === right.composite.version && (left.composite.version !== "wedding-template-v2" || right.composite.version === "wedding-template-v2" && left.composite.gridAspect === right.composite.gridAspect));
 }
 var galleryPhotoIds = (gallery) => [.../* @__PURE__ */ new Set([
   ...gallery.photoIds,

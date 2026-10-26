@@ -8,21 +8,28 @@ import CryptoKit
 /// Original text-spec geometry and vector ornament only; no vendor/reference artwork.
 public final class PhotoTemplateEngine: @unchecked Sendable {
   public static let version = "wedding-template-v1"
+  public static let currentVersion = "wedding-template-v2"
+  public static let supportedVersions = [version, currentVersion]
   public struct Source { public let photoId: String; public let url: URL
     public init(photoId: String, url: URL) { self.photoId = photoId; self.url = url } }
   public struct Crop: Codable { public let mode: String; public let x, y, zoom: Double }
   public struct Recipe: Codable {
     public let version, layout, theme: String
+    public let gridAspect: String?
     public let photoIds: [String]
     public let cropsByPhotoId: [String: Crop]
     public static func parse(_ json: String) throws -> Recipe {
       guard let data = json.data(using: .utf8), data.count <= 8192,
         let raw = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-        Set(raw.keys) == Set(["version", "layout", "theme", "photoIds", "cropsByPhotoId"]),
+        let requestedVersion = raw["version"] as? String,
+        PhotoTemplateEngine.supportedVersions.contains(requestedVersion),
+        Set(raw.keys) == Set(["version", "layout", "theme", "photoIds", "cropsByPhotoId"] +
+          (requestedVersion == PhotoTemplateEngine.currentVersion ? ["gridAspect"] : [])),
         let crops = raw["cropsByPhotoId"] as? [String: [String: Any]],
         crops.values.allSatisfy({ Set($0.keys) == Set(["mode", "x", "y", "zoom"]) }) else { throw Failure.invalidInput }
       let recipe = try JSONDecoder().decode(Recipe.self, from: data)
-      guard recipe.version == PhotoTemplateEngine.version, ["strip", "grid"].contains(recipe.layout),
+      guard (recipe.version == PhotoTemplateEngine.version ? recipe.gridAspect == nil :
+        ["portrait", "square"].contains(recipe.gridAspect ?? "")), ["strip", "grid"].contains(recipe.layout),
         ["classic", "botanical", "coastal"].contains(recipe.theme), recipe.photoIds.count == 4,
         Set(recipe.photoIds).count == 4, Set(crops.keys) == Set(recipe.photoIds),
         recipe.photoIds.allSatisfy({ $0.range(of: "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$", options: .regularExpression) != nil })
@@ -41,9 +48,10 @@ public final class PhotoTemplateEngine: @unchecked Sendable {
   }
   public struct Result {
     public let uri: String; public let width, height: Int; public let preview: Bool
+    public let version: String
     public let recipeJSON: String; public let sourceHashes: [String: String]
     public var dictionary: [String: Any] { ["uri": uri, "width": width, "height": height,
-      "preview": preview, "version": PhotoTemplateEngine.version, "recipeJSON": recipeJSON, "sourceHashes": sourceHashes] }
+      "preview": preview, "version": version, "recipeJSON": recipeJSON, "sourceHashes": sourceHashes] }
   }
   public enum Failure: Error { case invalidInput, resourceLimit, cancelled, encodingFailed }
   private let cache: URL
@@ -85,11 +93,12 @@ public final class PhotoTemplateEngine: @unchecked Sendable {
       let files = try FileManager.default.contentsOfDirectory(at: cache, includingPropertiesForKeys: [.fileSizeKey])
       let used = try files.reduce(0) { try $0 + ($1.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0) }
       guard files.count < 48, used < 192 * 1024 * 1024 else { throw Failure.resourceLimit }
-      let width = recipe.layout == "strip" ? 1200 : 2400, height = recipe.layout == "strip" ? 3600 : 2100
+      let dimensions = Self.dimensions(recipe: recipe), width = dimensions.width, height = dimensions.height
       guard let canvas = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4,
         space: PhotoEffectsEngine.sRGB, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { throw Failure.resourceLimit }
-      let colors = palette(recipe.theme)
+      let colors = recipe.version == Self.version ? palette(recipe.theme) : paletteV2(recipe.theme)
       canvas.setFillColor(colors.background); canvas.fill(CGRect(x: 0, y: 0, width: CGFloat(width), height: CGFloat(height)))
+      if recipe.version == Self.currentVersion { decorationV2(canvas, width: width, height: height, recipe: recipe, colors: colors) }
       var hashes = [String: String]()
       for (index, source) in sources.enumerated() { try autoreleasepool {
         try check(id)
@@ -110,7 +119,7 @@ public final class PhotoTemplateEngine: @unchecked Sendable {
         guard let cg = CGImageSourceCreateImageAtIndex(input, 0, [kCGImageSourceShouldCache: false] as CFDictionary) else { throw Failure.invalidInput }
         let upright = CIImage(cgImage: cg).oriented(forExifOrientation: orientation)
         let image = upright.transformed(by: CGAffineTransform(translationX: -upright.extent.minX, y: -upright.extent.minY))
-        let top = Self.window(layout: recipe.layout, index: index)
+        let top = Self.window(recipe: recipe, index: index)
         let window = CGRect(x: top.minX, y: CGFloat(height) - top.maxY, width: top.width, height: top.height)
         let crop = recipe.cropsByPhotoId[source.photoId]!
         let base = crop.mode == "fit" ? min(window.width / image.extent.width, window.height / image.extent.height)
@@ -125,7 +134,9 @@ public final class PhotoTemplateEngine: @unchecked Sendable {
           colorSpace: PhotoEffectsEngine.sRGB) else { throw Failure.encodingFailed }
         canvas.draw(tile, in: window)
       } }
-      footer(canvas, width: width, height: height, layout: recipe.layout, theme: recipe.theme, colors: colors)
+      if recipe.version == Self.version {
+        footer(canvas, width: width, height: height, layout: recipe.layout, theme: recipe.theme, colors: colors)
+      } else { footerV2(canvas, width: width, height: height, recipe: recipe, colors: colors) }
       try check(id)
       guard let full = canvas.makeImage() else { throw Failure.encodingFailed }
       let factor = preview ? min(1, 1440 / CGFloat(max(width, height))) : 1
@@ -148,12 +159,65 @@ public final class PhotoTemplateEngine: @unchecked Sendable {
       try check(id); try FileManager.default.moveItem(at: temporary, to: final)
       do { try check(id) } catch { try? FileManager.default.removeItem(at: final); throw error }
       return Result(uri: final.absoluteString, width: outWidth, height: outHeight, preview: preview,
-        recipeJSON: try recipe.canonical, sourceHashes: hashes)
+        version: recipe.version, recipeJSON: try recipe.canonical, sourceHashes: hashes)
     } }
   }
   public static func window(layout: String, index: Int) -> CGRect {
     if layout == "strip" { return CGRect(x: 60, y: CGFloat(60 + index * 834), width: 1080, height: 810) }
     return CGRect(x: CGFloat(96 + (index % 2) * 1128), y: CGFloat(96 + (index / 2) * 858), width: 1080, height: 810)
+  }
+  /// Geometry for v1 remains routed to the unchanged original window function.
+  public static func dimensions(recipe: Recipe) -> (width: Int, height: Int) {
+    if recipe.layout == "strip" { return (1200, 3600) }
+    if recipe.version == version { return (2400, 2100) }
+    return (2400, recipe.gridAspect == "portrait" ? 3000 : 2400)
+  }
+  public static func window(recipe: Recipe, index: Int) -> CGRect {
+    if recipe.version == version || recipe.layout == "strip" { return window(layout: recipe.layout, index: index) }
+    if recipe.gridAspect == "portrait" {
+      return CGRect(x: CGFloat(72 + (index % 2) * 1140), y: CGFloat(72 + (index / 2) * 1356), width: 1116, height: 1332)
+    }
+    return CGRect(x: CGFloat(96 + (index % 2) * 1128), y: CGFloat(60 + (index / 2) * 1104), width: 1080, height: 1080)
+  }
+  public struct InspectedSource {
+    public let photoId: String; public let width, height: Int; public let sha256: String
+    public var dictionary: [String: Any] { ["photoId": photoId, "width": width, "height": height, "sha256": sha256] }
+  }
+  public struct Inspection {
+    public let sources: [InspectedSource]; public let gridAspect: String
+    public var dictionary: [String: Any] { ["version": PhotoTemplateEngine.currentVersion, "gridAspect": gridAspect,
+      "sources": sources.map { $0.dictionary }] }
+  }
+  /// Metadata is read without decoding four full bitmaps. Caller persists the choice
+  /// in the v2 recipe, so theme/order/crop mutations never recompute it.
+  public func inspect(sources: [Source]) throws -> Inspection {
+    guard sources.count == 4, Set(sources.map(\.photoId)).count == 4,
+      sources.allSatisfy({ $0.photoId.range(of: "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$", options: .regularExpression) != nil })
+      else { throw Failure.invalidInput }
+    return try PhotoEffectsEngine.queue.sync { try autoreleasepool {
+      let inspected = try sources.map { source -> InspectedSource in
+        guard source.url.isFileURL else { throw Failure.invalidInput }
+        let file = try source.url.resourceValues(forKeys: [.fileSizeKey, .isRegularFileKey])
+        guard file.isRegularFile == true, let bytes = file.fileSize, bytes > 0, bytes <= 64 * 1024 * 1024,
+          let input = CGImageSourceCreateWithURL(source.url as CFURL, nil), CGImageSourceGetCount(input) == 1,
+          let type = CGImageSourceGetType(input), (type as String) == UTType.jpeg.identifier,
+          let props = CGImageSourceCopyPropertiesAtIndex(input, 0, nil) as? [String: Any],
+          let w = props[kCGImagePropertyPixelWidth as String] as? NSNumber,
+          let h = props[kCGImagePropertyPixelHeight as String] as? NSNumber else { throw Failure.invalidInput }
+        let width = w.intValue, height = h.intValue
+        guard width > 0, height > 0, width <= 24000, height <= 24000, width * height <= 24_000_000 else { throw Failure.resourceLimit }
+        let orientation = (props[kCGImagePropertyOrientation as String] as? NSNumber)?.intValue ?? 1
+        guard (1...8).contains(orientation) else { throw Failure.invalidInput }
+        let handle = try FileHandle(forReadingFrom: source.url); defer { try? handle.close() }
+        var value = SHA256()
+        while let data = try handle.read(upToCount: 1024 * 1024), !data.isEmpty { value.update(data: data) }
+        return InspectedSource(photoId: source.photoId, width: orientation >= 5 ? height : width,
+          height: orientation >= 5 ? width : height, sha256: value.finalize().map { String(format: "%02x", $0) }.joined())
+      }
+      let ratios = inspected.map { Double($0.width) / Double($0.height) }.sorted()
+      let median = (ratios[1] + ratios[2]) / 2
+      return Inspection(sources: inspected, gridAspect: median < 0.95 ? "portrait" : "square")
+    } }
   }
   private struct Palette { let background, ink, accent, sand: CGColor }
   private func palette(_ theme: String) -> Palette {
@@ -199,6 +263,104 @@ public final class PhotoTemplateEngine: @unchecked Sendable {
         }; context.strokePath()
       }
     } else { context.move(to: CGPoint(x: center - 80, y: y)); context.addLine(to: CGPoint(x: center + 80, y: y)); context.strokePath() }
+  }
+  private func paletteV2(_ theme: String) -> Palette {
+    func color(_ r: CGFloat, _ g: CGFloat, _ b: CGFloat) -> CGColor {
+      CGColor(colorSpace: PhotoEffectsEngine.sRGB, components: [r / 255, g / 255, b / 255, 1])!
+    }
+    switch theme {
+    case "botanical": return Palette(background: color(220,229,214), ink: color(45,69,55), accent: color(109,131,103), sand: color(250,247,238))
+    case "coastal": return Palette(background: color(219,235,231), ink: color(36,76,73), accent: color(107,159,153), sand: color(250,247,238))
+    default: return Palette(background: color(246,240,228), ink: color(55,45,39), accent: color(182,160,124), sand: color(250,247,238))
+    }
+  }
+  /// Original ornaments are clipped to the space outside all four photo windows.
+  /// Ivory mats remain visible in FIT sidebands; FILL is the only crop operation.
+  private func decorationV2(_ context: CGContext, width: Int, height: Int, recipe: Recipe, colors: Palette) {
+    context.saveGState(); defer { context.restoreGState() }
+    context.translateBy(x: 0, y: CGFloat(height)); context.scaleBy(x: 1, y: -1)
+    let bounds = CGRect(x: 0, y: 0, width: CGFloat(width), height: CGFloat(height))
+    let windows = (0..<4).map { Self.window(recipe: recipe, index: $0) }
+    for window in windows {
+      context.setFillColor(recipe.theme == "classic" ? colors.background : colors.sand)
+      context.fill(window.insetBy(dx: -10, dy: -10))
+    }
+    context.addRect(bounds)
+    for window in windows { context.addRect(window) }
+    context.clip(using: .evenOdd)
+    context.setStrokeColor(colors.accent)
+    if recipe.theme == "classic" {
+      context.setLineWidth(2)
+      context.stroke(bounds.insetBy(dx: 20, dy: 20))
+      context.setLineWidth(1)
+      context.stroke(bounds.insetBy(dx: 30, dy: 30))
+      for window in windows { context.stroke(window.insetBy(dx: -7, dy: -7)) }
+    } else if recipe.theme == "botanical" {
+      // Asymmetric opposite stems, paired filled leaves; all artwork is procedural.
+      func branch(x: CGFloat, y: CGFloat, sign: CGFloat, length: CGFloat) {
+        context.saveGState(); defer { context.restoreGState() }
+        context.translateBy(x: x, y: y); context.scaleBy(x: sign, y: 1)
+        context.setLineWidth(3)
+        context.move(to: CGPoint(x: 0, y: 0))
+        context.addCurve(to: CGPoint(x: length, y: -45), control1: CGPoint(x: length * 0.35, y: -4), control2: CGPoint(x: length * 0.7, y: -40))
+        context.strokePath(); context.setFillColor(colors.accent)
+        for i in 1...6 {
+          let px = CGFloat(i) * length / 7, py = -CGFloat(i) * 45 / 7
+          for side in [CGFloat(-1), CGFloat(1)] {
+            context.move(to: CGPoint(x: px, y: py))
+            context.addQuadCurve(to: CGPoint(x: px + 19, y: py + side * 30), control: CGPoint(x: px - 6, y: py + side * 24))
+            context.addQuadCurve(to: CGPoint(x: px, y: py), control: CGPoint(x: px + 28, y: py + side * 13))
+            context.fillPath()
+          }
+        }
+      }
+      let footerTop = windows.map(\.maxY).max()!
+      let length: CGFloat = recipe.layout == "strip" ? 160 : 270
+      branch(x: recipe.layout == "strip" ? 75 : 120, y: footerTop + (CGFloat(height) - footerTop) * 0.67, sign: 1, length: length)
+      branch(x: CGFloat(width) - (recipe.layout == "strip" ? 75 : 120), y: footerTop + (CGFloat(height) - footerTop) * 0.38, sign: -1, length: length)
+      branch(x: 20, y: 57, sign: 1, length: 170)
+      branch(x: CGFloat(width) - 20, y: 40, sign: -1, length: 170)
+    } else {
+      // Visible flowing coastal contours in the field and footer, never the photos.
+      context.setLineWidth(3)
+      for row in 0..<5 {
+        let y = CGFloat(height) - 22 - CGFloat(row) * 15
+        let wing = recipe.layout == "strip" ? CGFloat(210) : CGFloat(650)
+        for mirror in [false, true] {
+          context.saveGState()
+          if mirror { context.translateBy(x: CGFloat(width), y: 0); context.scaleBy(x: -1, y: 1) }
+          context.move(to: CGPoint(x: 36, y: y))
+          context.addCurve(to: CGPoint(x: wing, y: y - 8), control1: CGPoint(x: wing * 0.35, y: y - 24), control2: CGPoint(x: wing * 0.7, y: y + 20))
+          context.strokePath(); context.restoreGState()
+        }
+      }
+      for row in 0..<3 {
+        let x = CGFloat(18 + row * 13)
+        context.move(to: CGPoint(x: x, y: 35))
+        context.addCurve(to: CGPoint(x: x + 4, y: CGFloat(height) - 40), control1: CGPoint(x: x + 18, y: CGFloat(height) * 0.3), control2: CGPoint(x: x - 10, y: CGFloat(height) * 0.65))
+        context.strokePath()
+        context.move(to: CGPoint(x: CGFloat(width) - x, y: 35))
+        context.addCurve(to: CGPoint(x: CGFloat(width) - x - 4, y: CGFloat(height) - 40), control1: CGPoint(x: CGFloat(width) - x - 18, y: CGFloat(height) * 0.3), control2: CGPoint(x: CGFloat(width) - x + 10, y: CGFloat(height) * 0.65))
+        context.strokePath()
+      }
+    }
+  }
+  private func footerV2(_ context: CGContext, width: Int, height: Int, recipe: Recipe, colors: Palette) {
+    let footerTop = (0..<4).map { Self.window(recipe: recipe, index: $0).maxY }.max()!
+    let strip = recipe.layout == "strip", compact = !strip && recipe.gridAspect == "square"
+    let nameBaseline = strip ? CGFloat(3480) : footerTop + (compact ? 86 : 116)
+    let dateBaseline = strip ? CGFloat(3535) : footerTop + (compact ? 133 : 174)
+    func text(_ value: String, size: CGFloat, font: String, topBaseline: CGFloat) {
+      let attributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key(kCTFontAttributeName as String): CTFontCreateWithName(font as CFString, size, nil),
+        NSAttributedString.Key(kCTForegroundColorAttributeName as String): colors.ink]
+      let line = CTLineCreateWithAttributedString(NSAttributedString(string: value, attributes: attributes) as CFAttributedString)
+      let length = CGFloat(CTLineGetTypographicBounds(line, nil, nil, nil))
+      context.textMatrix = .identity
+      context.textPosition = CGPoint(x: CGFloat(width) / 2 - length / 2, y: CGFloat(height) - topBaseline)
+      CTLineDraw(line, context)
+    }
+    text("Gizelle & Rami", size: strip ? 86 : 84, font: "Georgia", topBaseline: nameBaseline)
+    text("NOVEMBER 1, 2026", size: strip ? 36 : 32, font: "HelveticaNeue", topBaseline: dateBaseline)
   }
   private func hash(_ url: URL, id: UUID) throws -> String {
     let file = try FileHandle(forReadingFrom: url); defer { try? file.close() }; var value = SHA256()

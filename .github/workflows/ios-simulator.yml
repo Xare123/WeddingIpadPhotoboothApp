@@ -19,7 +19,8 @@ jobs:
       github.repository == 'Xare123/WeddingIpadPhotoboothApp' &&
       github.event.repository.private == false &&
       (contains(github.event.head_commit.message, '[native-ci]') || contains(github.event.head_commit.message, '[native-ui]'))
-    runs-on: macos-15
+    # Standard Intel image; avoids observed macos-15 ARM runner acquisition failures.
+    runs-on: macos-15-intel
     timeout-minutes: 45
     defaults:
       run:

@@ -3,7 +3,7 @@ import { createRequire } from 'node:module';
 import { dirname, resolve, relative, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readdir, mkdir, copyFile, writeFile } from 'node:fs/promises';
-import { nativeRuntimeSources, verifyNativeRuntimeSources } from './ci-native-contract.mjs';
+import { nativeRuntimeResources, nativeRuntimeSources, verifyNativeRuntimeSources } from './ci-native-contract.mjs';
 
 const require = createRequire(import.meta.url);
 const xcode = require('xcode');
@@ -18,6 +18,7 @@ const scheme = runtime ? 'WeddingPhotoboothReleaseRuntime' : 'WeddingPhotoboothN
 const configuration = runtime ? 'Release' : 'Debug';
 const testBundleSuffix = runtime ? 'releaseruntimetests' : 'uitests';
 const runtimeSources = runtime ? nativeRuntimeSources(root) : null;
+const runtimeResources = runtime ? nativeRuntimeResources(root) : null;
 const unquote = value => typeof value === 'string' ? value.replace(/^"|"$/g, '') : value;
 const xml = value => String(value).replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 
@@ -131,6 +132,28 @@ if (runtime) {
     }
   }
   if (phase.files.length !== runtimeSources.length) throw new Error('Unexpected extra runtime source files');
+  const resourcePhase = project.pbxResourcesBuildPhaseObj(testUUID);
+  if (!resourcePhase) throw new Error('Runtime resource phase is missing');
+  for (const resource of runtimeResources) {
+    const filename = basename(resource.source);
+    let entry = Object.entries(objects.PBXFileReference).find(([key, value]) => !key.endsWith('_comment') && value && unquote(value.path) === resource.generatedSource);
+    if (!entry) {
+      const uuid = project.generateUuid();
+      objects.PBXFileReference[uuid] = { isa: 'PBXFileReference', lastKnownFileType: 'image.jpeg', name: `"${filename}"`, path: `"${resource.generatedSource}"`, sourceTree: 'SOURCE_ROOT' };
+      objects.PBXFileReference[`${uuid}_comment`] = filename;
+      entry = [uuid, objects.PBXFileReference[uuid]];
+    }
+    const [referenceUUID] = entry;
+    const matches = resourcePhase.files.filter(file => objects.PBXBuildFile[file.value]?.fileRef === referenceUUID);
+    if (matches.length > 1) throw new Error('Duplicate runtime resource: ' + filename);
+    if (!matches.length) {
+      const uuid = project.generateUuid();
+      objects.PBXBuildFile[uuid] = { isa: 'PBXBuildFile', fileRef: referenceUUID, fileRef_comment: filename };
+      objects.PBXBuildFile[`${uuid}_comment`] = `${filename} in Resources`;
+      resourcePhase.files.push({ value: uuid, comment: `${filename} in Resources` });
+    }
+  }
+  if (resourcePhase.files.length !== runtimeResources.length) throw new Error('Unexpected extra runtime resources');
 }
 const productReference = objects.PBXFileReference[testTarget.productReference];
 productReference.name = `"${targetName}.xctest"`;
@@ -148,6 +171,8 @@ removeUndefined(objects);
 await mkdir(resolve(ios, 'NativeTests'), { recursive: true });
 if (runtime) {
   for (const source of runtimeSources) await copyFile(resolve(root, source.source), resolve(ios, source.generatedSource));
+  await mkdir(resolve(ios, 'NativeTests/StudioFixtures'), { recursive: true });
+  for (const resource of runtimeResources) await copyFile(resolve(root, resource.source), resolve(ios, resource.generatedSource));
 } else await copyFile(source, resolve(ios, `NativeTests/${sourceName}.swift`));
 await writeFile(projectPath, project.writeSync());
 
@@ -178,7 +203,7 @@ const plan = {
   configuration, deploymentTarget: unquote(appSettings.IPHONEOS_DEPLOYMENT_TARGET ?? '16.4'),
   metroPort: runtime ? null : 8081, fixture: runtime ? 'disabled' : 'synthetic-camera-real-native-storage',
   testSource: relativeRoot(source),
-  ...(runtime ? { runtimeSources, expectedTestCount: runtimeSources.reduce((count, source) => count + source.testMethods.length, 0) } : {}),
+  ...(runtime ? { runtimeSources, runtimeResources, expectedTestCount: runtimeSources.reduce((count, source) => count + source.testMethods.length, 0) } : {}),
 };
 if (runtime) verifyNativeRuntimeSources(plan, root);
 await writeFile(resolve(ios, 'native-test-plan.json'), JSON.stringify(plan, null, 2) + '\n');

@@ -1,24 +1,56 @@
 {
-  "scope": "Four-photo/original/keepsake backend candidate, preserving legacy five-photo/pairing/Textbelt behavior",
-  "generatedAt": "2026-10-26T17:04:18.887567+00:00",
+  "scope": "Versioned V2 four-photo gallery backend; legacy V1/five-photo behavior preserved",
+  "generatedAt": "2026-10-26T18:07:24.971476+00:00",
   "apiTests": {
-    "passed": 51,
+    "passed": 54,
     "failed": 0,
     "skipped": 0,
-    "evidence": "Dedicated current backend suite:51tests/51pass/0fail/0skip; also included in integrated266suite"
+    "evidence": "Dedicated current V2 backend suite54/54pass/0fail/0skip; also included in integrated293suite",
+    "logSHA256": "2e868ee208f02365f0e5b07bb2b3bf0ec0c922644b4aeabcdca18ae66b05ae9a"
   },
   "typecheck": "passed",
-  "localHttpFourPhotoBrowser": "12groups passed; actual Worker localHTTP/Chromium,12 clicked exact-byte downloads, privacy404, revoke410,natural expiry410",
-  "evidence": "../visual/gallery-four-checks.json",
-  "workerSha256": "f9b8391e82f7eea41022f6cdef1a7c2e063f0c32781ba6068be947674b18fb1a",
-  "workerBytes": 39479,
-  "workerSourceSha256": "377618a384ffecc2452518d85d7fbff4b6a00c0a4eaeb27721735426fa245dfa",
+  "localHttpFourPhotoBrowser": {
+    "groupsPassed": 12,
+    "clickedByteIdenticalDownloads": 12,
+    "screenshots": 15,
+    "evidence": "../visual/gallery-v2-checks.json",
+    "workerSourceSHA256": "82a548e2f5e640ce6f57f360b7636959e8c6877c3ec3b6c58570a80fb103bd63",
+    "boundaries": "Owned loopbackHTTP/Chromium only; no nativeSafari/liveR2/SMS/device claim"
+  },
+  "workerSha256": "43dabd6c9dcda6aa44f23ca11ac544f2588f9efd5428f0837dc839f4f98c9ded",
+  "workerBytes": 39993,
+  "workerSourceSha256": "82a548e2f5e640ce6f57f360b7636959e8c6877c3ec3b6c58570a80fb103bd63",
+  "contractChange": "New wedding-template-v2 composite requires exact gridAspect portrait/square; v1 retains old four fields. Missing or wrong returned metadata cannot establish client QR readiness. Requires this matching Worker before V2 publication.",
+  "compatibility": [
+    "wedding-template-v1 retains old geometry/schema",
+    "legacy five-photo publication unchanged"
+  ],
+  "metadataChecks": {
+    "esModuleImport": "passed",
+    "rateLimitBindings": 8,
+    "keepBindings": [
+      "secret_text"
+    ],
+    "logsAndTracesDisabled": true,
+    "logpush": false,
+    "tailConsumers": []
+  },
   "actualSmsRequests": 0,
   "deployedByThisExecutor": false,
+  "coordinatorReportedLive": {
+    "commit": "e0506f92f56b8847aa36aa4ce7f59002da54cffc",
+    "version": "6d10127d-0cd9-47ff-bc94-23cb110a95e0",
+    "sha256": "f9b8391e82f7eea41022f6cdef1a7c2e063f0c32781ba6068be947674b18fb1a",
+    "deviceToken": "absent",
+    "pairing": "disabled",
+    "sms": "mock",
+    "endToEndVerified": false,
+    "v2Compatible": false
+  },
   "productionGates": [
-    "Coordinator deployment preserving private R2/secret_text bindings and all privacy/rate policies",
-    "Private pairing only when owneriPadready",
-    "Live syntheticR2upload/download/expiry/revoke acceptance separate fromlocal",
-    "SMSeligibility/liveapproval and coordinator-owned cappedtest only"
+    "Coordinator reviewed deployment preserving privateR2/secrets/logging/ratecontrols",
+    "Private pairing when owneriPadready",
+    "Live synthetic upload/download/expiry/revoke proof",
+    "Approved providereligibility and coordinator-owned cappedSMS test only"
   ]
 }

@@ -1,0 +1,392 @@
+{
+  "generatedAt": "2026-10-26T17:56:23.485Z",
+  "status": "passed",
+  "workerSource": {
+    "path": "services/api/src/index.ts",
+    "sha256": "82a548e2f5e640ce6f57f360b7636959e8c6877c3ec3b6c58570a80fb103bd63",
+    "unchangedDuringCapture": true
+  },
+  "browser": "Chromium 154.0.8037.57",
+  "originScope": "Owned loopback HTTP8790 only; no live origin, publication, push, deployment or external upload",
+  "fixtures": {
+    "scope": "Four independently generated fictional adult wedding portraits; raw selected bytes overlap; keepsakes exported from local actual App inspector browser Canvas path, not native CoreImage proof.",
+    "generatedBy": "Actual local App inspector/browser Canvas renderer with clean synthetic portrait inputs; no native CoreImage or camera claim",
+    "files": [
+      {
+        "file": "raw-1.jpg",
+        "width": 960,
+        "height": 1200,
+        "bytes": 156431,
+        "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1"
+      },
+      {
+        "file": "raw-2.jpg",
+        "width": 960,
+        "height": 1200,
+        "bytes": 148459,
+        "sha256": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed"
+      },
+      {
+        "file": "raw-3.jpg",
+        "width": 960,
+        "height": 1200,
+        "bytes": 118281,
+        "sha256": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5"
+      },
+      {
+        "file": "raw-4.jpg",
+        "width": 960,
+        "height": 1200,
+        "bytes": 145429,
+        "sha256": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
+      },
+      {
+        "file": "strip-classic.jpg",
+        "width": 1200,
+        "height": 3600,
+        "bytes": 653966,
+        "sha256": "bfd7f391bbfc3570f485cb80c08afda18c071b441ad2ac72cb4c2fdc5b93702c"
+      },
+      {
+        "file": "grid-botanical.jpg",
+        "width": 2400,
+        "height": 3000,
+        "bytes": 1233209,
+        "sha256": "5af0e1e8916928c3dca18156b97d41c26e5869eef0bb6e54499d84a698a311d4"
+      }
+    ]
+  },
+  "publication": {
+    "version": "wedding-template-v2",
+    "gridAspect": "portrait",
+    "layouts": [
+      "strip/classic",
+      "grid/botanical"
+    ],
+    "selectedPositions": 4,
+    "cameraOriginals": 4,
+    "composite": 1,
+    "distinctRequiredObjectsPerSession": 5,
+    "exactAcknowledgementVerified": true,
+    "localTtlSeconds": 60
+  },
+  "capabilityHandling": "Capability URLs, session IDs and photo IDs are omitted from repository proof and stdout. The owned local Miniflare diagnostics temporarily retained synthetic capability paths; those diagnostics were removed after shutdown. Both synthetic sessions were revoked after proof; local R2 JPEGs/manifests/revocation markers remain. No phone, pairing or messaging request was used.",
+  "scope": "Actual local Worker HTTP and responsive desktop Chromium proof. This is not native iOS/Safari/camera/CoreImage/Photos/QR-scan/SMS-delivery or deployed-Worker proof.",
+  "screenshots": [
+    {
+      "file": "gallery-v2-strip-phone.png",
+      "layout": "strip",
+      "placement": {
+        "width": 306,
+        "height": 918,
+        "fit": "fill",
+        "position": "50% 50%"
+      },
+      "viewport": "390 \u00d7 844",
+      "kind": "Actual browser full page"
+    },
+    {
+      "file": "gallery-v2-strip-phone-viewport.png",
+      "layout": "strip",
+      "placement": {
+        "width": 306,
+        "height": 918,
+        "fit": "fill",
+        "position": "50% 50%"
+      },
+      "viewport": "390 \u00d7 844",
+      "kind": "Actual browser viewport"
+    },
+    {
+      "file": "gallery-v2-strip-tablet.png",
+      "layout": "strip",
+      "placement": {
+        "width": 352,
+        "height": 1056,
+        "fit": "fill",
+        "position": "50% 50%"
+      },
+      "viewport": "820 \u00d7 1180",
+      "kind": "Actual browser full page"
+    },
+    {
+      "file": "gallery-v2-strip-tablet-viewport.png",
+      "layout": "strip",
+      "placement": {
+        "width": 352,
+        "height": 1056,
+        "fit": "fill",
+        "position": "50% 50%"
+      },
+      "viewport": "820 \u00d7 1180",
+      "kind": "Actual browser viewport"
+    },
+    {
+      "file": "gallery-v2-strip-desktop.png",
+      "layout": "strip",
+      "placement": {
+        "width": 352,
+        "height": 1056,
+        "fit": "fill",
+        "position": "50% 50%"
+      },
+      "viewport": "1440 \u00d7 1000",
+      "kind": "Actual browser full page"
+    },
+    {
+      "file": "gallery-v2-strip-desktop-viewport.png",
+      "layout": "strip",
+      "placement": {
+        "width": 352,
+        "height": 1056,
+        "fit": "fill",
+        "position": "50% 50%"
+      },
+      "viewport": "1440 \u00d7 1000",
+      "kind": "Actual browser viewport"
+    },
+    {
+      "file": "gallery-v2-grid-phone.png",
+      "layout": "grid",
+      "placement": {
+        "width": 306,
+        "height": 382.5,
+        "fit": "fill",
+        "position": "50% 50%"
+      },
+      "viewport": "390 \u00d7 844",
+      "kind": "Actual browser full page"
+    },
+    {
+      "file": "gallery-v2-grid-phone-viewport.png",
+      "layout": "grid",
+      "placement": {
+        "width": 306,
+        "height": 382.5,
+        "fit": "fill",
+        "position": "50% 50%"
+      },
+      "viewport": "390 \u00d7 844",
+      "kind": "Actual browser viewport"
+    },
+    {
+      "file": "gallery-v2-grid-tablet.png",
+      "layout": "grid",
+      "placement": {
+        "width": 694,
+        "height": 867.4999389648438,
+        "fit": "fill",
+        "position": "50% 50%"
+      },
+      "viewport": "820 \u00d7 1180",
+      "kind": "Actual browser full page"
+    },
+    {
+      "file": "gallery-v2-grid-tablet-viewport.png",
+      "layout": "grid",
+      "placement": {
+        "width": 694,
+        "height": 867.4999389648438,
+        "fit": "fill",
+        "position": "50% 50%"
+      },
+      "viewport": "820 \u00d7 1180",
+      "kind": "Actual browser viewport"
+    },
+    {
+      "file": "gallery-v2-grid-desktop.png",
+      "layout": "grid",
+      "placement": {
+        "width": 782,
+        "height": 977.5,
+        "fit": "fill",
+        "position": "50% 50%"
+      },
+      "viewport": "1440 \u00d7 1000",
+      "kind": "Actual browser full page"
+    },
+    {
+      "file": "gallery-v2-grid-desktop-viewport.png",
+      "layout": "grid",
+      "placement": {
+        "width": 782,
+        "height": 977.5,
+        "fit": "fill",
+        "position": "50% 50%"
+      },
+      "viewport": "1440 \u00d7 1000",
+      "kind": "Actual browser viewport"
+    },
+    {
+      "file": "gallery-v2-revoked-phone.png",
+      "layout": "revoked",
+      "viewport": "390 \u00d7 844",
+      "kind": "Actual HTTP 410 state"
+    },
+    {
+      "file": "gallery-v2-expired-phone.png",
+      "layout": "expired",
+      "viewport": "390 \u00d7 844",
+      "kind": "Actual HTTP 410 state"
+    },
+    {
+      "file": "gallery-v2-missing-phone.png",
+      "layout": "missing",
+      "viewport": "390 \u00d7 844",
+      "kind": "Actual HTTP 404 state"
+    }
+  ],
+  "downloads": [
+    {
+      "layout": "strip",
+      "role": "composite",
+      "fixture": "strip-classic.jpg",
+      "bytes": 653966,
+      "sha256": "bfd7f391bbfc3570f485cb80c08afda18c071b441ad2ac72cb4c2fdc5b93702c",
+      "suggestedFilename": "wedding-keepsake-strip.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "strip",
+      "role": "selected-original",
+      "fixture": "raw-1.jpg",
+      "bytes": 156431,
+      "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+      "suggestedFilename": "wedding-photo-1.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "strip",
+      "role": "raw-1",
+      "fixture": "raw-1.jpg",
+      "bytes": 156431,
+      "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+      "suggestedFilename": "wedding-photo-1.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "strip",
+      "role": "raw-2",
+      "fixture": "raw-2.jpg",
+      "bytes": 148459,
+      "sha256": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed",
+      "suggestedFilename": "wedding-photo-2.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "strip",
+      "role": "raw-3",
+      "fixture": "raw-3.jpg",
+      "bytes": 118281,
+      "sha256": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
+      "suggestedFilename": "wedding-photo-3.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "strip",
+      "role": "raw-4",
+      "fixture": "raw-4.jpg",
+      "bytes": 145429,
+      "sha256": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c",
+      "suggestedFilename": "wedding-photo-4.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "grid",
+      "role": "composite",
+      "fixture": "grid-botanical.jpg",
+      "bytes": 1233209,
+      "sha256": "5af0e1e8916928c3dca18156b97d41c26e5869eef0bb6e54499d84a698a311d4",
+      "suggestedFilename": "wedding-keepsake-grid.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "grid",
+      "role": "selected-original",
+      "fixture": "raw-1.jpg",
+      "bytes": 156431,
+      "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+      "suggestedFilename": "wedding-photo-1.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "grid",
+      "role": "raw-1",
+      "fixture": "raw-1.jpg",
+      "bytes": 156431,
+      "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+      "suggestedFilename": "wedding-photo-1.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "grid",
+      "role": "raw-2",
+      "fixture": "raw-2.jpg",
+      "bytes": 148459,
+      "sha256": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed",
+      "suggestedFilename": "wedding-photo-2.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "grid",
+      "role": "raw-3",
+      "fixture": "raw-3.jpg",
+      "bytes": 118281,
+      "sha256": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
+      "suggestedFilename": "wedding-photo-3.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "grid",
+      "role": "raw-4",
+      "fixture": "raw-4.jpg",
+      "bytes": 145429,
+      "sha256": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c",
+      "suggestedFilename": "wedding-photo-4.jpg",
+      "method": "Actual Chromium link click/download event"
+    }
+  ],
+  "checks": [
+    "Actual owned loopback Worker health returned local-r2, mock SMS and smsAvailable:false. No shares, pairing, provider or remote request was made.",
+    "Actual HTTP: each layout uploaded five distinct JPEGs for four selected positions, four camera originals and one composite. Missing raw original or composite prevented publication and the predicted guest page remained404. Complete acknowledgement echoed exact ordered recipe; identical replay preserved URL/expiry; changed theme/aspect returned409; missing aspect returned400. Ready URLs stayed on loopback.",
+    "strip 390\u00d7844: actual HTTP200; composite and all selected images decoded at exact JPEG dimensions; four raw originals accessible; nine named >=44px download controls; no horizontal overflow; visible keyboard focus; reduced motion; exact UTC expiry; private retention copy; zero page errors/external requests/referrer headers.",
+    "strip 820\u00d71180: actual HTTP200; composite and all selected images decoded at exact JPEG dimensions; four raw originals accessible; nine named >=44px download controls; no horizontal overflow; visible keyboard focus; reduced motion; exact UTC expiry; private retention copy; zero page errors/external requests/referrer headers.",
+    "strip 1440\u00d71000: actual HTTP200; composite and all selected images decoded at exact JPEG dimensions; four raw originals accessible; nine named >=44px download controls; no horizontal overflow; visible keyboard focus; reduced motion; exact UTC expiry; private retention copy; zero page errors/external requests/referrer headers.",
+    "grid 390\u00d7844: actual HTTP200; composite and all selected images decoded at exact JPEG dimensions; four raw originals accessible; nine named >=44px download controls; no horizontal overflow; visible keyboard focus; reduced motion; exact UTC expiry; private retention copy; zero page errors/external requests/referrer headers.",
+    "grid 820\u00d71180: actual HTTP200; composite and all selected images decoded at exact JPEG dimensions; four raw originals accessible; nine named >=44px download controls; no horizontal overflow; visible keyboard focus; reduced motion; exact UTC expiry; private retention copy; zero page errors/external requests/referrer headers.",
+    "grid 1440\u00d71000: actual HTTP200; composite and all selected images decoded at exact JPEG dimensions; four raw originals accessible; nine named >=44px download controls; no horizontal overflow; visible keyboard focus; reduced motion; exact UTC expiry; private retention copy; zero page errors/external requests/referrer headers.",
+    "Twelve actual Chromium download clicks (composite, Original-selected first photo, and all four raw originals for both layouts) matched uploaded JPEG SHA256. Actual HTTP downloads of all five distinct assets per session also retained exact bytes, length and private headers. Cross-session IDs/raw storage paths/listing paths were unavailable. No messaging endpoint was called.",
+    "Actual session revocation returned HTTP410 in Chromium and every selected/original/composite download and readiness replay returned410.",
+    "A real60second local TTL elapsed without editing R2 state. Chromium then received the designed expired HTTP410 page; all role downloads and readiness replay also returned410. Expiry closes access, not original-byte deletion.",
+    "Missing capability navigation returned the designed real HTTP404 browser state with no image/download controls or horizontal overflow."
+  ],
+  "localDiagnosticsCleanup": {
+    "r2ObjectCountsByPrefix": {
+      "galleries": 2,
+      "revocations": 4,
+      "sessions": 10
+    },
+    "diagnosticRows": {
+      "spans": 809,
+      "logs": 114
+    },
+    "capabilityBearingDiagnosticRows": {
+      "spans": 79,
+      "logs": 79
+    },
+    "removedLocalDiagnosticFiles": 2,
+    "localObservabilityRemoved": true,
+    "workerStdoutCapabilityMatches": 0,
+    "removedOwnedWranglerLogs": 0,
+    "retainedR2": "10 JPEG objects, 2 gallery manifests, 4 revocation markers; no R2 objects were removed.",
+    "publicArtifactScan": {
+      "capability_path": 0,
+      "uuid": 0,
+      "authorization": 0,
+      "private_absolute_path": 0,
+      "phone": 0
+    },
+    "artifactCount": 20
+  },
+  "localDiagnosticsLimit": "Despite disabled Worker observability settings, this local Wrangler/Miniflare runtime retained synthetic capability paths in diagnostic logs/spans. The owned diagnostics were removed after stopping the owned Worker. This is not a production-retention test or claim."
+}

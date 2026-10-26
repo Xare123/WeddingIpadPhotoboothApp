@@ -6,7 +6,7 @@ import type { ActiveCapture, ActiveSession, PhotoExportStatus } from '../../../a
 import { fixtureControls, fixtureState } from './fixture-controls';
 
 import { originalImageVariants } from './effects-stub';
-import { syntheticTemplates } from './template-stub';
+import { syntheticTemplatesV2 as syntheticTemplates } from './template-v2-stub';
 const parameters = new URLSearchParams(location.search);
 const targetCount = parameters.get('count') === '5' ? 5 : 4;
 const clone = <T,>(value: T): T => structuredClone(value);
@@ -216,6 +216,6 @@ export async function getSessionPublicationAssets(sessionId: string) {
   if (!session) throw new Error('capture-session');
   if (session.targetCount !== 4) return { photoIds: session.shots.map(p => p.id) };
   if (!session.composite) throw new Error('composite-required');
-  return { photoIds: [...session.composite.recipe.photoIds], originalPhotoIds: [...session.composite.originalPhotoIds], composite: { photoId: session.composite.id, layout: session.composite.recipe.layout, theme: session.composite.recipe.theme, version: session.composite.recipe.version } };
+  return { photoIds: [...session.composite.recipe.photoIds], originalPhotoIds: [...session.composite.originalPhotoIds], composite: { photoId: session.composite.id, layout: session.composite.recipe.layout, theme: session.composite.recipe.theme, version: session.composite.recipe.version, ...(session.composite.recipe.version === 'wedding-template-v2' ? { gridAspect: session.composite.recipe.gridAspect } : {}) } };
 }
 export const retryStagedComposites = async (sessionId: string) => clone(histories.get(sessionId) ?? null);

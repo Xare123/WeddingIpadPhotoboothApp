@@ -108,3 +108,23 @@ test('four-photo readiness requires the exact selected/raw roles, order and comp
   // Five-photo servers retain their established generic readiness response.
   assert.doesNotThrow(() => validateReadyPublication(ready, { photoIds: ['a', 'b', 'c', 'd', 'e'] }));
 });
+
+test('v2 publication requires the exact aspect on every layout and cannot reinterpret a v1 acknowledgement', () => {
+  for (const layout of ['strip', 'grid'] as const) for (const gridAspect of ['portrait', 'square'] as const) {
+    const expected = { photoIds: ['s1', 's2', 's3', 's4'], originalPhotoIds: ['r1', 'r2', 'r3', 'r4'],
+      composite: { photoId: 'template', layout, theme: 'classic' as const, version: 'wedding-template-v2' as const, gridAspect } };
+    const good = { ...ready, ...expected };
+    assert.doesNotThrow(() => validateReadyPublication(good, expected));
+    const withoutAspect = { photoId: 'template', layout, theme: 'classic', version: 'wedding-template-v2' };
+    const invalid = [ready, { ...good, photoIds: [...expected.photoIds].reverse() },
+      { ...good, originalPhotoIds: [...expected.originalPhotoIds].reverse() },
+      { ...good, photoIds: expected.originalPhotoIds, originalPhotoIds: expected.photoIds },
+      { ...good, composite: withoutAspect },
+      ...[{ gridAspect: gridAspect === 'portrait' ? 'square' : 'portrait' }, { gridAspect: 'wide' }, { version: 'wedding-template-v1' }, { extra: true }]
+        .map(change => ({ ...good, composite: { ...expected.composite, ...change } }))];
+    for (const value of invalid) assert.throws(() => validateReadyPublication(value, expected));
+    const legacy = { ...expected, composite: { photoId: 'template', layout, theme: 'classic' as const, version: 'wedding-template-v1' as const } };
+    assert.doesNotThrow(() => validateReadyPublication({ ...ready, ...legacy }, legacy));
+    assert.throws(() => validateReadyPublication(good, legacy), 'v1 must not silently accept v2 aspect/geometry');
+  }
+});

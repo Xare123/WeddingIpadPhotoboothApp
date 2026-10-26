@@ -558,3 +558,120 @@ test('dedicated composite retry finishes bytes without retrying shots or changin
   assert.equal(f.sql.prepare('SELECT id FROM jobs WHERE id=?').get('retained-template'), undefined);
   assert.equal(await repository.retryStagedComposites('missing-session'), null);
 });
+
+// V2 is explicit persisted data. These filesystem/SQLite tests do not assert
+// native image geometry or rendering; the native renderer owns those checks.
+test('v2 recipes retain the chosen aspect on strip/grid across confirmation, Next guest and restart without resetting done jobs', async t => {
+  for (const layout of ['strip', 'grid'] as const) for (const gridAspect of ['portrait', 'square'] as const) {
+    const f = await diskFixture(t), { repository, session } = await four(f, `v2-${layout}-${gridAspect}`);
+    const selected = session.shots.map(photo => photo.id), ordered = [...selected].reverse();
+    const recipe = { ...templateRecipe(ordered), version: 'wedding-template-v2' as const, layout, gridAspect };
+    const snapshot = structuredClone(recipe);
+    const saving = repository.saveComposite(session.id, { id: 'v2-composite', newRenderedURI: f.source, recipe, expectedSelectedPhotoIds: selected });
+    recipe.gridAspect = gridAspect === 'portrait' ? 'square' : 'portrait';
+    recipe.photoIds.reverse();
+    const saved = await saving;
+    assert.deepEqual(saved.composite?.recipe, snapshot, 'snapshot must include the original aspect and order');
+    const descriptor = { photoIds: [...snapshot.photoIds], originalPhotoIds: [...snapshot.photoIds],
+      composite: { photoId: 'v2-composite', layout, theme: 'botanical', version: 'wedding-template-v2', gridAspect } };
+    assert.deepEqual(await repository.getSessionPublicationAssets(session.id), descriptor);
+    await repository.confirmSession(session.id);
+    const done = { ...f.payload('v2-composite'), state: 'complete', attempts: 7, guestUrl: 'https://photos.example/g/v2', guestExpiresAt: 99999 };
+    f.sql.prepare('UPDATE jobs SET payload=? WHERE id=?').run(JSON.stringify(done), 'v2-composite');
+    await repository.clearActiveSession();
+    const before = await readFile(fileURLToPath(f.uri('photobooth/v2-composite.jpg')));
+    const restored = f.make(); await restored.recover(); await restored.reconcileConfirmedPhotos();
+    assert.equal(await restored.getActiveSession(), null);
+    assert.deepEqual((await restored.getSession(session.id))?.composite?.recipe, snapshot);
+    assert.deepEqual(await restored.getSessionPublicationAssets(session.id), descriptor);
+    assert.deepEqual(f.payload('v2-composite'), done);
+    assert.equal(f.sql.prepare('SELECT count(*) AS n FROM jobs').get()?.n, 5);
+    assert.deepEqual(await readFile(fileURLToPath(f.uri('photobooth/v2-composite.jpg'))), before);
+    for (const id of selected) assert.ok((await f.files.list()).includes(`${id}.jpg`));
+  }
+});
+
+test('v2 staged-composite recovery retains its aspect; v1 remains the same old descriptor and cannot be upgraded after confirmation', async t => {
+  const f = await diskFixture(t), { repository, session } = await four(f, 'v2-stage');
+  const selected = session.shots.map(photo => photo.id);
+  const recipe = { ...templateRecipe(selected), version: 'wedding-template-v2' as const, layout: 'grid' as const, gridAspect: 'portrait' as const };
+  f.faults.move = true;
+  await assert.rejects(repository.saveComposite(session.id, { id: 'v2-stage-composite', newRenderedURI: f.source, recipe, expectedSelectedPhotoIds: selected }), /composite-commit/);
+  assert.deepEqual((await repository.getSession(session.id))?.stagedComposites?.[0]?.recipe, recipe);
+  f.faults.move = false;
+  const restored = f.make(); await restored.recover();
+  assert.deepEqual((await restored.getSession(session.id))?.composite?.recipe, recipe);
+  assert.equal(f.sql.prepare('SELECT count(*) AS n FROM jobs').get()?.n, 0);
+  const legacy = await four(f, 'legacy-v1');
+  const v1 = { ...templateRecipe(legacy.session.shots.map(photo => photo.id)), layout: 'grid' as const };
+  await legacy.repository.saveComposite(legacy.session.id, { id: 'legacy-v1-composite', newRenderedURI: f.source, recipe: v1, expectedSelectedPhotoIds: v1.photoIds });
+  await legacy.repository.confirmSession(legacy.session.id);
+  await assert.rejects(legacy.repository.saveComposite(legacy.session.id, { id: 'upgrade', newRenderedURI: f.source,
+    recipe: { ...v1, version: 'wedding-template-v2', gridAspect: 'square' }, expectedSelectedPhotoIds: v1.photoIds }), /composite-session/);
+  const reopened = f.make(); await reopened.recover();
+  assert.deepEqual((await reopened.getSession(legacy.session.id))?.composite?.recipe, v1);
+  assert.deepEqual((await reopened.getSessionPublicationAssets(legacy.session.id)).composite,
+    { photoId: 'legacy-v1-composite', layout: 'grid', theme: 'botanical', version: 'wedding-template-v1' });
+});
+
+test('invalid or unversioned aspect recipes never copy a new composite or create publication jobs', async t => {
+  const f = await diskFixture(t), { repository, session } = await four(f, 'invalid-v2');
+  const selected = session.shots.map(photo => photo.id), base = templateRecipe(selected);
+  const invalid = [
+    { ...base, version: 'wedding-template-v2' },
+    ...['wide', '', null, 1].map(gridAspect => ({ ...base, version: 'wedding-template-v2', gridAspect })),
+    { ...base, gridAspect: 'portrait' }, { ...base, version: 'wedding-template-v3', gridAspect: 'portrait' },
+    { ...base, version: 'wedding-template-v2', gridAspect: 'square', extra: true },
+  ];
+  const before = await f.files.list();
+  for (let i = 0; i < invalid.length; i++) await assert.rejects(repository.saveComposite(session.id, {
+    id: `invalid-composite-${i}`, newRenderedURI: f.source, recipe: invalid[i] as never, expectedSelectedPhotoIds: selected,
+  }), /composite-selection/);
+  assert.deepEqual(await f.files.list(), before);
+  assert.equal(f.sql.prepare('SELECT count(*) AS n FROM jobs').get()?.n, 0);
+});
+
+async function rewriteCompositeJournals(f: Awaited<ReturnType<typeof diskFixture>>, id: string, edit: (record: Record<string, any>) => void) {
+  for (const name of (await f.files.list()).filter(name => name.endsWith('.json'))) {
+    const journal = JSON.parse(await f.files.read(`photobooth/${name}`));
+    if (journal.kind === 'composite' && journal.composite.id === id) {
+      edit(journal.composite);
+      await f.files.write(`photobooth/${name}`, JSON.stringify(journal));
+    }
+  }
+}
+
+test('a malformed persisted v2 aspect keeps its JPEG and completed jobs without importing the composite as a legacy capture', async t => {
+  const f = await diskFixture(t), { repository, session } = await four(f, 'v2-corrupt');
+  const selected = session.shots.map(photo => photo.id);
+  const recipe = { ...templateRecipe(selected), version: 'wedding-template-v2' as const, gridAspect: 'square' as const };
+  await repository.saveComposite(session.id, { id: 'corrupt-composite', newRenderedURI: f.source, recipe, expectedSelectedPhotoIds: selected });
+  await repository.confirmSession(session.id);
+  const done = { ...f.payload('corrupt-composite'), state: 'complete', attempts: 9, guestUrl: 'https://photos.example/g/retained', guestExpiresAt: 99999 };
+  f.sql.prepare('UPDATE jobs SET payload=? WHERE id=?').run(JSON.stringify(done), 'corrupt-composite');
+  await rewriteCompositeJournals(f, 'corrupt-composite', item => { delete item.recipe.gridAspect; });
+  const restored = f.make(); await restored.recover(); await restored.reconcileConfirmedPhotos();
+  const current = (await restored.getSession(session.id))!;
+  assert.equal(current.composite, undefined);
+  assert.deepEqual(current.shots.map(photo => photo.id), selected);
+  assert.equal((await restored.listLocalSessions()).some(value => value.id === 'corrupt-composite'), false);
+  await assert.rejects(restored.getSessionPublicationAssets(session.id), /composite-required/);
+  assert.deepEqual(f.payload('corrupt-composite'), done);
+  assert.equal(f.sql.prepare('SELECT count(*) AS n FROM jobs').get()?.n, 5);
+  assert.deepEqual(await readFile(fileURLToPath(f.uri('photobooth/corrupt-composite.jpg'))), await readFile(fileURLToPath(f.source)));
+});
+
+test('recovery cannot queue another guest original through a corrupted v2 lineage descriptor', async t => {
+  const f = await diskFixture(t), { repository, session } = await four(f, 'v2-lineage');
+  const selected = session.shots.map(photo => photo.id), recipe = { ...templateRecipe(selected), version: 'wedding-template-v2' as const, gridAspect: 'portrait' as const };
+  await repository.saveComposite(session.id, { id: 'lineage-composite', newRenderedURI: f.source, recipe, expectedSelectedPhotoIds: selected });
+  await repository.confirmSession(session.id);
+  const other = await repository.createSession('other-guest', 5);
+  await repository.saveShot(other, 'other-original', f.source, 0);
+  await rewriteCompositeJournals(f, 'lineage-composite', item => { item.originalPhotoIds[0] = 'other-original'; });
+  const restored = f.make(); await restored.recover(); await restored.reconcileConfirmedPhotos();
+  await assert.rejects(restored.getSessionPublicationAssets(session.id), /composite-source/);
+  assert.equal(f.sql.prepare('SELECT id FROM jobs WHERE id=?').get('other-original'), undefined);
+  assert.equal(f.sql.prepare('SELECT count(*) AS n FROM jobs').get()?.n, 5);
+  assert.deepEqual(await readFile(fileURLToPath(f.uri('photobooth/other-original.jpg'))), await readFile(fileURLToPath(f.source)));
+});

@@ -1,0 +1,163 @@
+{
+  "scope": "Browser fixture SDK boundary simulation: the Image adapter delivers controlled onError callbacks and withholds onLoad. Actual App/TemplateStudio callbacks, controller failure handling and retry actors execute. This is not a failed browser network/decode request or native iOS Image/CoreImage proof.",
+  "status": "passed",
+  "sourceSHA256": "151488bb3fdbf6435a16855ba70bfbc2f7408cbef8cb30de040121ce81dc30e7",
+  "checks": [
+    {
+      "check": "Original SDK Image error disables Apply; explicit Retry remounts same immutable original URI and recovers on actual onLoad.",
+      "failure": {
+        "kind": "synthetic-sdk-error",
+        "testID": "look-preview",
+        "uri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg"
+      },
+      "originalLoads": 1
+    },
+    {
+      "check": "Processed SDK Image error goes through Root/controller, disables Apply, preserves originals; same-preset Retry yields fresh file URI; stale old onError is ignored.",
+      "failedURI": "file:///synthetic-effects/4fde6125-5256-45e3-9938-5d6b53e51db2.jpg",
+      "recoveredURI": "file:///synthetic-effects/3ad33d2b-1442-491c-97bd-468d8e14b62f.jpg"
+    },
+    {
+      "check": "Main template SDK Image error clears receipt and disables Save; explicit Retry yields a fresh same-theme file URI; stale old callback is ignored.",
+      "failedURI": "file:///synthetic-templates/4f2f87cc-0d68-4a2e-89e3-4286638a8cd4.jpg",
+      "recoveredURI": "file:///synthetic-templates/d4d9a247-5d32-45cc-9613-b8eac15cd68e.jpg"
+    },
+    {
+      "check": "Theme-thumbnail SDK Image error invalidates Save; explicit Retry regenerates card at fresh URI, stale card error ignored, recovered Coastal can be selected; originals and queue untouched.",
+      "failedURI": "file:///synthetic-templates/5b19ed7d-9ef0-4ac8-b720-73f787bc0594.jpg",
+      "recoveredURI": "file:///synthetic-templates/8cd97755-8500-4c72-8220-c2a4007e9157.jpg"
+    },
+    {
+      "check": "Full-resolution inspector SDK Image error executes actual Studio handler, closes modal and invalidates Save; explicit preview retry and reopening yield a fresh genuine full JPEG, preserving originals and empty queue.",
+      "failedURI": "file:///synthetic-templates/58e5e6cc-cdc9-4534-a766-7855060d7fa4.jpg",
+      "recoveredURI": "file:///synthetic-templates/74eaa441-04d2-4d6d-8aae-f1bfc6e63f26.jpg",
+      "inspectedDimensions": [
+        1200,
+        3600
+      ]
+    }
+  ],
+  "screenshots": [
+    "artifacts/visual/keepsake-image-look-original-error.png",
+    "artifacts/visual/keepsake-image-look-warm-error.png",
+    "artifacts/visual/keepsake-image-look-warm-recovered.png",
+    "artifacts/visual/keepsake-image-template-main-error.png",
+    "artifacts/visual/keepsake-image-template-theme-error.png",
+    "artifacts/visual/keepsake-image-template-theme-recovered.png",
+    "artifacts/visual/keepsake-image-full-inspection-error.png",
+    "artifacts/visual/keepsake-image-full-inspection-recovered.png"
+  ],
+  "errors": [],
+  "mockedHealthRequests": [],
+  "unexpectedExternalRequests": [],
+  "sdkImageEvents": [
+    {
+      "kind": "synthetic-sdk-error",
+      "testID": "look-preview",
+      "uri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg"
+    },
+    {
+      "kind": "sdk-load",
+      "testID": "look-preview",
+      "uri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg"
+    },
+    {
+      "kind": "synthetic-sdk-error",
+      "testID": "look-preview",
+      "uri": "file:///synthetic-effects/4fde6125-5256-45e3-9938-5d6b53e51db2.jpg"
+    },
+    {
+      "kind": "sdk-load",
+      "testID": "look-preview",
+      "uri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg"
+    },
+    {
+      "kind": "sdk-load",
+      "testID": "look-preview",
+      "uri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg"
+    },
+    {
+      "kind": "sdk-load",
+      "testID": "look-preview",
+      "uri": "file:///synthetic-effects/3ad33d2b-1442-491c-97bd-468d8e14b62f.jpg"
+    },
+    {
+      "kind": "synthetic-sdk-error-replay",
+      "testID": "look-preview",
+      "uri": "file:///synthetic-effects/4fde6125-5256-45e3-9938-5d6b53e51db2.jpg"
+    },
+    {
+      "kind": "synthetic-sdk-error",
+      "testID": "template-preview",
+      "uri": "file:///synthetic-templates/4f2f87cc-0d68-4a2e-89e3-4286638a8cd4.jpg"
+    },
+    {
+      "kind": "sdk-load",
+      "testID": "template-preview",
+      "uri": "file:///synthetic-templates/d4d9a247-5d32-45cc-9613-b8eac15cd68e.jpg"
+    },
+    {
+      "kind": "synthetic-sdk-error-replay",
+      "testID": "template-preview",
+      "uri": "file:///synthetic-templates/4f2f87cc-0d68-4a2e-89e3-4286638a8cd4.jpg"
+    },
+    {
+      "kind": "sdk-load",
+      "testID": "template-preview",
+      "uri": "file:///synthetic-templates/5bf719d4-6bab-40af-83b0-3ac4d017846f.jpg"
+    },
+    {
+      "kind": "synthetic-sdk-error",
+      "testID": "template-theme-preview-coastal",
+      "uri": "file:///synthetic-templates/5b19ed7d-9ef0-4ac8-b720-73f787bc0594.jpg"
+    },
+    {
+      "kind": "sdk-load",
+      "testID": "template-preview",
+      "uri": "file:///synthetic-templates/726f6708-53f8-464a-82f7-d5dc584e771f.jpg"
+    },
+    {
+      "kind": "synthetic-sdk-error-replay",
+      "testID": "template-theme-preview-coastal",
+      "uri": "file:///synthetic-templates/5b19ed7d-9ef0-4ac8-b720-73f787bc0594.jpg"
+    },
+    {
+      "kind": "sdk-load",
+      "testID": "template-preview",
+      "uri": "file:///synthetic-templates/8cd97755-8500-4c72-8220-c2a4007e9157.jpg"
+    },
+    {
+      "kind": "synthetic-sdk-error",
+      "testID": "template-inspect-image",
+      "uri": "file:///synthetic-templates/58e5e6cc-cdc9-4534-a766-7855060d7fa4.jpg"
+    },
+    {
+      "kind": "sdk-load",
+      "testID": "template-preview",
+      "uri": "file:///synthetic-templates/b372cad2-7694-427a-8c24-3c1235454425.jpg"
+    }
+  ],
+  "sourceHashes": {
+    "apps/ipad/App.tsx": "151488bb3fdbf6435a16855ba70bfbc2f7408cbef8cb30de040121ce81dc30e7",
+    "apps/ipad/src/GlassSurface.tsx": "ace64a22e740d69040689495c0aa7147f7456038bbd0ee9aba6f2d52b58af972",
+    "apps/ipad/src/glass-policy.ts": "d3e33995484239887dde90f2743919c17bb2e8ff23093ceb45a804e530499e9e",
+    "apps/ipad/src/host-visibility.ts": "9b8033279a1249c59cd04e3f185792fa2a61c14f892f2cb9cf98953ceab02014",
+    "apps/ipad/src/photo-look-editor.ts": "38d6dc47fb34d9d9da58cf96a7daa6102d9616c7f54720c0406c1962548f817b",
+    "apps/ipad/src/native-photo-effects.ts": "372b1250d399429dc7396d09be1affa44b063216ba471d5cc4ed2d953394f0c9",
+    "apps/ipad/src/local-types.ts": "ab3e1e69d051a7a7c91886445781cbe306bb8839a60c2c4cbbafb49d488bde47",
+    "apps/ipad/src/template-editor.ts": "ad02f03cb5cae30d801e5262fd8f363f4e023b3c7f815f7e22e56ee604abe3df",
+    "apps/ipad/src/TemplateStudio.tsx": "2ce75e3831efeff05e6c841440ace23dfb34d220f09af30f0c80a418800113fc",
+    "apps/ipad/src/publication.ts": "33d26658c1c2de8781bc62ded35c80cbd00394c7413c70fdedf1fbc834875357",
+    "apps/ipad/src/session-capture.ts": "b41f7ee98282fe5661e080a6b4e0b88b17c56e3c1e5908adebbe020ed6323e24",
+    "apps/ipad/src/review-selection.ts": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
+    "apps/ipad/src/sharing.ts": "6bce9b315a8dc7064f858d7ff9d10c5d5587b1b2bf66a56923f738823c1df271",
+    "apps/ipad/src/SmsShare.tsx": "79464043a0e40a6cc7850c0e46cacfab33b3b19e477fee87192c0b38195d7541",
+    "apps/ipad/src/sms-state.ts": "4c7125d4f710c97848b6690196fa328edc83e85488ce3626dd7e843e2e99497a",
+    "apps/ipad/src/booth-presentation.ts": "b6f720f7d9133a0603f847efd0646a9a23f40d409018e9eb757d5326bc43e935",
+    "apps/ipad/src/host-originals.ts": "938e564eb50d984754abf5ec2d07a4671faa2110bb01ad4394f5377f4d271c1e",
+    "apps/ipad/src/photo-export.ts": "8ba8baae4fe425bd0f99079619e0a693f5c3fcf83ee73a93e167c7c93f7fb633",
+    "apps/ipad/src/photo-library.ts": "800b9dd768d660c16720fda134fe33a1a14db1061f7f31531063b136b670b6a8",
+    "packages/core/src/index.ts": "945d97743a621558369c7029acbc5b61daae85d2c08156368c188aedbbb9a991",
+    "apps/ipad/assets/attract-scene.png": "6ca6274beba9483104f19fb35d1ef9b8bfaae458208025e8fb4e8d4890f45cdf"
+  }
+}

@@ -8,7 +8,7 @@ import { Miniflare } from 'miniflare';
 const origin = 'http://localhost';
 const linkKey = 'template-local-test-key';
 const auth = { Authorization: 'Bearer local-development-only' };
-type Composite = { photoId: string; layout: 'strip' | 'grid'; theme: 'classic' | 'botanical' | 'coastal'; version: 'wedding-template-v1' };
+type Composite = { photoId: string; layout: 'strip' | 'grid'; theme: 'classic' | 'botanical' | 'coastal' } & ({ version: 'wedding-template-v1' } | { version: 'wedding-template-v2'; gridAspect: 'portrait' | 'square' });
 type Recipe = { photoIds: string[]; originalPhotoIds: string[]; composite: Composite };
 type Ready = Recipe & { status: 'ready'; url: string; expiresAt: number };
 let runtime: Miniflare;
@@ -190,4 +190,57 @@ test('mock SMS uses the complete four-photo template URL and expiry/revocation c
   await bucket.put(manifestKey(expiredResult.url), JSON.stringify({ ...manifest, expiresAt: Date.now() - 1 }));
   for (const id of expired.allIds) assert.equal((await runtime.dispatchFetch(`${expiredResult.url}/photos/${id}?download=1`)).status, 410);
   assert.equal((await runtime.dispatchFetch(expiredResult.url)).status, 410); assert.equal((await ready(expired.sessionId, expired.recipe)).status, 410);
+});
+
+
+test('v2 descriptors require a strict explicit aspect even for strips; v1 retains exactly its original fields', async () => {
+  const value = fixture();
+  const invalid = [
+    { ...value.recipe.composite, version: 'wedding-template-v2' },
+    ...['wide', '', null, 1].map(gridAspect => ({ ...value.recipe.composite, version: 'wedding-template-v2', gridAspect })),
+    { ...value.recipe.composite, gridAspect: 'portrait' },
+    { ...value.recipe.composite, version: 'wedding-template-v2', gridAspect: 'square', extra: true },
+    { ...value.recipe.composite, version: 'wedding-template-v3', gridAspect: 'portrait' },
+  ];
+  for (const layout of ['strip', 'grid']) for (const composite of invalid)
+    assert.equal((await ready(value.sessionId, { ...value.recipe, composite: { ...composite, layout } })).status, 400);
+  assert.equal((await runtime.dispatchFetch(guestUrl(value.sessionId))).status, 404);
+  const legacy = await publish(value);
+  assert.deepEqual(legacy.composite, value.recipe.composite);
+  assert.equal(Object.hasOwn(legacy.composite, 'gridAspect'), false);
+  assert.equal((await ready(value.sessionId, { ...value.recipe, composite: { ...value.recipe.composite, version: 'wedding-template-v2', gridAspect: 'square' } })).status, 409);
+});
+
+test('v2 strip/grid portrait/square aspects persist exactly and cannot drift across ready replay or version changes', async () => {
+  for (const layout of ['strip', 'grid'] as const) for (const gridAspect of ['portrait', 'square'] as const) {
+    const value = fixture(); value.recipe.composite = { ...value.recipe.composite, version: 'wedding-template-v2', layout, gridAspect };
+    const result = await publish(value);
+    assert.deepEqual(result.composite, value.recipe.composite);
+    assert.deepEqual(await (await ready(value.sessionId, value.recipe)).json(), result);
+    const changed = { ...value.recipe, composite: { ...value.recipe.composite, gridAspect: gridAspect === 'portrait' ? 'square' : 'portrait' } };
+    assert.equal((await ready(value.sessionId, changed)).status, 409);
+    const v1 = { ...value.recipe, composite: { photoId: value.recipe.composite.photoId, layout, theme: value.recipe.composite.theme, version: 'wedding-template-v1' } };
+    assert.equal((await ready(value.sessionId, v1)).status, 409);
+    const saved = await (await (await runtime.getR2Bucket('PHOTOS')).get(manifestKey(result.url)))!.json<{ composite: Composite }>();
+    assert.deepEqual(saved.composite, value.recipe.composite);
+    for (const id of value.allIds) {
+      const response = await runtime.dispatchFetch(`${result.url}/photos/${id}?download=1`);
+      assert.equal(response.status, 200); assert.deepEqual(new Uint8Array(await response.arrayBuffer()), value.bytes.get(id));
+    }
+  }
+});
+
+test('racing v2 aspects preserves one immutable winner and revocation closes every selected/raw/composite role', async () => {
+  const value = fixture(); value.recipe.composite = { ...value.recipe.composite, version: 'wedding-template-v2', layout: 'grid', gridAspect: 'portrait' };
+  await upload(value);
+  const other = { ...value.recipe, composite: { ...value.recipe.composite, gridAspect: 'square' } };
+  const responses = await Promise.all([ready(value.sessionId, value.recipe), ready(value.sessionId, other)]);
+  assert.deepEqual(responses.map(response => response.status).sort(), [200, 409]);
+  const result = await responses.find(response => response.status === 200)!.json() as Ready;
+  assert.equal(result.composite.version, 'wedding-template-v2');
+  const winner = result.composite.version === 'wedding-template-v2' && result.composite.gridAspect === 'portrait' ? value.recipe : other;
+  assert.deepEqual(await (await ready(value.sessionId, winner)).json(), result);
+  assert.equal((await runtime.dispatchFetch(`${origin}/v1/sessions/${value.sessionId}/gallery`, { method: 'DELETE', headers: auth })).status, 200);
+  assert.equal((await runtime.dispatchFetch(result.url)).status, 410);
+  for (const id of value.allIds) assert.equal((await runtime.dispatchFetch(`${result.url}/photos/${id}?download=1`)).status, 410);
 });

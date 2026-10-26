@@ -1,5 +1,6 @@
 import { uploadJob, type QueueJob } from '@wedding-booth/core';
 import type { ActiveCapture, ActiveSession, PhotoExportStatus, PhotoLook, CompositeRecipe, SessionComposite, SessionPublicationAssets } from './local-types';
+import { publicationComposite, validCompositeRecipe } from './publication';
 export type { ActiveCapture, ActiveSession, PhotoExportStatus, PhotoLook, CompositeRecipe, SessionComposite, SessionPublicationAssets } from './local-types';
 
 export type RenderedPhotoInput = { id: string; newRenderedURI: string; sourcePhotoId: string; look: PhotoLook; expectedSelectedPhotoId: string; slot: number };
@@ -103,11 +104,15 @@ export class LocalRepository {
     const model: Model = { composites: new Map(), captures: new Map(), sessions: new Map(), sessionSequences: new Map(), active: null, hasActiveJournal: false,
       sequence: 0, files: names, journaled: new Set() };
     const records: Journal[] = [];
+    const reservedCompositeIds = new Set<string>();
     for (const name of names.filter(name => /^journal-.*\.json$/.test(name))) {
       try {
         const item = JSON.parse(await this.files.read(`photobooth/${name}`)) as Journal;
+        if (item.version === 1 && item.kind === 'composite' && validId(item.composite.id) && validId(item.composite.sessionId)) reservedCompositeIds.add(item.composite.id);
         if (item.version === 1 && Number.isSafeInteger(item.sequence) && item.sequence > 0 &&
-          ((item.kind === 'composite' && validId(item.composite.id) && validId(item.composite.sessionId) && this.validRecipe(item.composite.recipe)) ||
+          ((item.kind === 'composite' && validId(item.composite.id) && validId(item.composite.sessionId) && this.validRecipe(item.composite.recipe) &&
+            Array.isArray(item.composite.originalPhotoIds) && item.composite.originalPhotoIds.length === 4 && new Set(item.composite.originalPhotoIds).size === 4 &&
+            item.composite.originalPhotoIds.every(validId)) ||
            (item.kind === 'capture' && validId(item.capture.id) && validId(item.capture.sessionId)) ||
            (item.kind === 'session' && validId(item.session.id) && Array.isArray(item.session.selected)) || item.kind === 'active')) records.push(item);
       } catch { /* A torn append never destroys earlier committed journal records. */ }
@@ -124,7 +129,7 @@ export class LocalRepository {
     // selecting them for the next guest. Legacy .jpg files were explicit keeps.
     for (const name of names.filter(name => /(?:\.draft\.jpg|\.jpg|\.partial)$/.test(name))) {
       const id = name.replace(/(?:\.draft\.jpg|\.jpg|\.partial)$/, '');
-      if (!validId(id) || model.captures.has(id) || model.composites.has(id)) continue;
+      if (!validId(id) || model.captures.has(id) || model.composites.has(id) || reservedCompositeIds.has(id)) continue;
       const bytes = await this.verified(`photobooth/${name}`); if (!bytes) continue;
       const confirmed = name.endsWith('.jpg') && !name.endsWith('.draft.jpg');
       const capture: CaptureRecord = { id, sessionId: id, shotIndex: 0, createdAt: 0, confirmed,
@@ -191,16 +196,7 @@ export class LocalRepository {
       retakes: [...model.captures.values()].filter(photo => photo.sessionId === id && photo.relativePath.endsWith('.jpg') && !data.selected.includes(photo.id)).map(photo => this.hydrate(photo)) };
   }
   private validRecipe(recipe: CompositeRecipe): boolean {
-    if (!recipe || recipe.version !== 'wedding-template-v1' || !['strip', 'grid'].includes(recipe.layout) ||
-      !['classic', 'botanical', 'coastal'].includes(recipe.theme) || !Array.isArray(recipe.photoIds) || recipe.photoIds.length !== 4 ||
-      new Set(recipe.photoIds).size !== 4 || !recipe.photoIds.every(validId) || !recipe.cropsByPhotoId ||
-      Object.keys(recipe.cropsByPhotoId).length !== 4) return false;
-    return recipe.photoIds.every(id => {
-      const crop = recipe.cropsByPhotoId[id];
-      return crop && ['fit', 'fill'].includes(crop.mode) && Number.isFinite(crop.x) && Math.abs(crop.x) <= 1 &&
-        Number.isFinite(crop.y) && Math.abs(crop.y) <= 1 && Number.isFinite(crop.zoom) && crop.zoom >= 1 && crop.zoom <= 1.5 &&
-        (crop.mode !== 'fit' || (crop.x === 0 && crop.y === 0 && crop.zoom === 1));
-    });
+    return validCompositeRecipe(recipe);
   }
   private samePhotoSet(left: string[], right: string[]): boolean {
     return left.length === 4 && right.length === 4 && new Set(left).size === 4 && new Set(right).size === 4 && left.every(id => right.includes(id));
@@ -278,10 +274,9 @@ export class LocalRepository {
       if (session.targetCount !== 4) return { photoIds: [...session.selected] };
       const item = this.currentComposite(model, session);
       if (!item || !await this.verified(item.relativePath, item.bytes)) throw new LocalSaveError('composite-required');
-      await this.originalsFor(model, session, item.recipe.photoIds);
-      return { photoIds: [...item.recipe.photoIds], originalPhotoIds: [...item.originalPhotoIds], composite: {
-        photoId: item.id, layout: item.recipe.layout, theme: item.recipe.theme, version: item.recipe.version,
-      } };
+      const originals = await this.originalsFor(model, session, item.recipe.photoIds);
+      if (originals.some((photo, index) => photo.id !== item.originalPhotoIds[index])) throw new LocalSaveError('composite-source');
+      return { photoIds: [...item.recipe.photoIds], originalPhotoIds: [...item.originalPhotoIds], composite: publicationComposite(item.id, item.recipe) };
     });
   }
   private async indexSession(model: Model, id: string): Promise<boolean> {
@@ -435,6 +430,12 @@ export class LocalRepository {
     let indexed = true;
     const composite = session.targetCount === 4 ? this.currentComposite(model, session) : undefined;
     if (session.targetCount === 4 && !composite) return false;
+    if (composite) {
+      try {
+        const originals = await this.originalsFor(model, session, composite.recipe.photoIds);
+        if (originals.some((photo, index) => photo.id !== composite.originalPhotoIds[index])) return false;
+      } catch { return false; }
+    }
     const assetIds = [...new Set([...session.selected, ...(composite?.originalPhotoIds ?? [])])];
     for (const id of assetIds) {
       let capture = model.captures.get(id); if (!capture) { indexed = false; continue; }

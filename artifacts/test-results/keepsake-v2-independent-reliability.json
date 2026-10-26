@@ -1,0 +1,125 @@
+{
+  "reportVersion": 1,
+  "review": "Fresh independent local uncommitted v2 reliability acceptance",
+  "startedAtUTC": "2026-10-26T17:53:40.973038+00:00",
+  "completedAtUTC": "2026-10-26T17:53:41.231083+00:00",
+  "verdict": "PASS for reviewed Linux-executable controller, persistence and publication boundaries; native and physical acceptance pending",
+  "blockingProductFindings": [],
+  "sourceBoundary": {
+    "workingTree": "Current local uncommitted files; no remote checkout used",
+    "headCommit": "d1dbc8fd3254005f24ec00132dc07bc998a18308",
+    "sha256": {
+      "apps/ipad/src/template-editor.ts": "ad02f03cb5cae30d801e5262fd8f363f4e023b3c7f815f7e22e56ee604abe3df",
+      "apps/ipad/src/TemplateStudio.tsx": "b2c67bb3c750103f1063b3a1d7fed20ea9aeef606c18292bf177cefd5c293655",
+      "apps/ipad/src/local-types.ts": "ab3e1e69d051a7a7c91886445781cbe306bb8839a60c2c4cbbafb49d488bde47",
+      "apps/ipad/src/local-persistence.ts": "3d4dbd4d52b50d14fa35fe6f57815e18ca472294f0675e97cc9f821ad09df90a",
+      "apps/ipad/src/publication.ts": "33d26658c1c2de8781bc62ded35c80cbd00394c7413c70fdedf1fbc834875357",
+      "apps/ipad/src/sharing.ts": "6bce9b315a8dc7064f858d7ff9d10c5d5587b1b2bf66a56923f738823c1df271",
+      "apps/ipad/src/session-sync.ts": "4aa8b3242424286990704f3e343e0b1709f322edbcf4a234b5fa767dde16ea99",
+      "apps/ipad/src/native-photo-effects.ts": "372b1250d399429dc7396d09be1affa44b063216ba471d5cc4ed2d953394f0c9",
+      "apps/ipad/App.tsx": "151488bb3fdbf6435a16855ba70bfbc2f7408cbef8cb30de040121ce81dc30e7",
+      "apps/ipad/modules/wedding-photo-effects/ios/PhotoTemplateEngine.swift": "768c4d9185eef2d53c623b6087303b5700748d73bc532730b3767330a38d19f6",
+      "apps/ipad/modules/wedding-photo-effects/ios/WeddingPhotoEffectsModule.swift": "17571647c399a6a2e15bdf89b49628246dd2826b8d99e29d55d21c6093a3ed1c",
+      "apps/ipad/modules/wedding-photo-effects/ios/PhotoEffectsEngine.swift": "c7d921b35c64df606fcb2eb34c7d240385b240c2629684a4b0d2a42e1fc0a775",
+      "apps/ipad/modules/wedding-photo-effects/tests/PhotoTemplateEngineTests.swift": "d9dd41f6a77b18375754f63a3a355b81a8aac2490acc5c271faec5b0cfa065b7",
+      "apps/ipad/modules/wedding-photo-effects/tests/PhotoEffectsEngineTests.swift": "75494a4afa5fbb53860a397bbca38a5f76b03f2cfb7cb3be490c2d50644111f7",
+      "apps/ipad/modules/wedding-photo-effects/README.md": "7f81ca3dd01cfc8ea3a10e4478ed93eeeac7d39974aeaffe2efe8165d10a28a9",
+      "apps/ipad/native-tests/WeddingPhotoboothReleaseSmokeTests.swift": "c5a6b71bf5864d1f0326d0dce274ebd5f5001d055d1551b1aa49c824a1ba494f",
+      "scripts/ci-native-contract.mjs": "e7695099d8de7d389efdf177bc16de23083594ee58d3cbca8c49b93a5e1a1709",
+      "scripts/prepare-ios-tests.mjs": "807837607d331227ba7a69cda2d1aaf7bbc5e77e3c71fe4f798cb09927168bcf",
+      "scripts/ci-native.mjs": "ce12a213fd8bc8fd1d7a48037ca4b954c6c1c8aab435c49b06d1090f6a84d5d1",
+      ".github/workflows/ios-simulator.yml": "dfc71f469f1f16282540aaae6a75349a071199d2a646428d8d569865abd9d109",
+      "docs/OWNER_IPAD_HANDOFF.md": "add7e8aff24e98df0fb0fcce53fdff29a44258f1ec6953db3b71f9d4dcd02a9a",
+      "docs/SAVING_REPAIR.md": "99aeede70f3b911e92185218d926a255164055a662c0a2a2ea60cce6a1ac8326",
+      "docs/API.md": "d308c57af5811a2febe4a58406ebbf8285f4bc809d0ffa53bcca2bc5ea86caff",
+      "apps/ipad/native-tests/fixtures/studio/provenance.json": "5e04b41e8a7c80090005f5f22db10caf6c7fb54243ae2bc8dcbf8cb029183bb2",
+      "apps/ipad/native-tests/fixtures/studio/studio-landscape-1.jpg": "fa7aab6c4948c559a6c2acfbe426ff79293b75edfd15229dbeacf2f8cbd0d365",
+      "apps/ipad/native-tests/fixtures/studio/studio-landscape-2.jpg": "e664fecbb6bdc171e092cb9c11d9ee215cbcf0722ef3f4f29090fecb73295161",
+      "apps/ipad/native-tests/fixtures/studio/studio-portrait-1.jpg": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+      "apps/ipad/native-tests/fixtures/studio/studio-portrait-2.jpg": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed",
+      "apps/ipad/native-tests/fixtures/studio/studio-portrait-3.jpg": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
+      "apps/ipad/native-tests/fixtures/studio/studio-portrait-4.jpg": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
+    },
+    "hashesUnchangedAcrossProbeRun": true
+  },
+  "execution": {
+    "command": "node --import tsx --test .cache/independent-v2-reliability/probes.ts",
+    "exitCode": 0,
+    "testsPassed": 9,
+    "testsFailed": 0,
+    "probeScript": ".cache/independent-v2-reliability/probes.ts",
+    "probeScriptSha256": "481a2c7c27d236f6c2988617c25bd17100b00d313565a4ec4ff0d4b1b59a6d15",
+    "output": ".cache/independent-v2-reliability/results.tap",
+    "outputSha256": "5edd62518227f783bfa7b4882613cbc2278e6e45dca8db42284cf5ad6d5c664b",
+    "fullRepositorySuiteRepeated": false
+  },
+  "probes": [
+    {
+      "name": "Median boundary, choose once, cached full output reused by Save",
+      "evidence": "Fresh portrait median and exactly 0.95 square cases survive grid/order/crop changes without reinspection. Full inspection coalesces; Save performs no extra full render, copies the inspected URI, retains v2 aspect, and releases cache without releasing source files."
+    },
+    {
+      "name": "Close and reopen during source inspection",
+      "evidence": "Late old square receipt cannot select aspect or launch previews for the reopened editor; current portrait receipt succeeds."
+    },
+    {
+      "name": "Source URI changes while full inspection is pending",
+      "evidence": "Receipt is not cached, phase becomes error, Save returns false, no durable copy occurs, and output cache is released."
+    },
+    {
+      "name": "Current versus old Image failure",
+      "evidence": "Current full inspection image failure invalidates Save. After explicit retry, an error for the old released full URI leaves the new ready state intact."
+    },
+    {
+      "name": "Composite rename fault and relaunch recovery",
+      "evidence": "A v2 portrait grid with a retake and a filtered selection fails rename into staged state, never queues before confirmation, preserves all six source JPEG arrays byte-for-byte, then recovers on a fresh repository. Queue contains current selected/raw/composite assets and excludes the discarded old take."
+    },
+    {
+      "name": "Foreign raw source rejection",
+      "evidence": "Attempting to create a look from another session raw file rejects render-source, retains current selection, and creates no upload jobs."
+    },
+    {
+      "name": "Nine adversarial server ACK forms",
+      "evidence": "Reordered selection, reordered raw lineage, foreign raw ID, missing aspect, wrong aspect, wrong version, wrong composite ID, wrong layout, and an extra composite key all reject."
+    },
+    {
+      "name": "Exact server ACK required before guest QR",
+      "evidence": "Wrong-aspect ACK leaves every queue row without guest capability and hides QR. Exact durable ACK on retry makes the selected/raw/composite rows ready while an unselected retake row remains unacknowledged."
+    },
+    {
+      "name": "Native source inventory only",
+      "evidence": "Current source contract enumerates five Swift inputs, six JPEG resources and twenty expected methods; no Apple compilation or execution is implied."
+    }
+  ],
+  "staticReview": {
+    "files": "Current template editor/studio/native bridge, local persistence/types, publication/sharing/finalization, App lifecycle, native engine/module and native source preparation contract",
+    "legacyComparisons": {
+      "legacy_window_body_identical_to_HEAD": true,
+      "legacy_palette_and_footer_bodies_identical_to_HEAD": true
+    },
+    "geometry": "Source routes v1 grid to 2400x2100, all strips to 1200x3600, v2 portrait grid to 2400x3000 and v2 square grid to 2400x2400. Legacy window/palette/footer function bodies compare byte-identical with local HEAD.",
+    "inspection": "Native metadata inspection uses JPEG/type/count/resource bounds, upright EXIF dimensions (5 through 8 swap axes), streamed source SHA256, and average of middle ratios with strict less-than-0.95 portrait threshold. Rendering applies EXIF orientation once and preserves the persisted aspect.",
+    "ownership": "Native module requires four unique IDs and canonical ID.jpg files directly in Documents/photobooth after symlink resolution; release authorizes only its UUID JPEG cache. Durable repository checks selected and original ownership, slot lineage and verified files before composite save, confirmation and publication.",
+    "lifecycle": "App background handler closes the editor. Controller generation checks reject late preview/inspection/full results; output copying is protected from close-time release and disposed after copy finishes. On-screen Image load establishes Save presentation gating in App/Studio. Controller receipt errors before Save invalidate ready state.",
+    "documentation": "The new v2 README section accurately describes implemented inspection, strict aspect schema, geometry and current expected inventory. Historical v1 counts and old v1 evidence are retained as prior scope; no native pass is inferred from them."
+  },
+  "runBoundaries": {
+    "nativeAppleExecution": "NOT RUN: CoreImage, ImageIO, CoreText, Expo bridge integration, Apple compiler typechecking, XCTest assertions and JPEG attachments require the supported Apple environment.",
+    "expectedCurrentNativeInventory": {
+      "swiftSources": 5,
+      "jpegResources": 6,
+      "pureEngineMethods": 19,
+      "releaseAppSmokeMethods": 1,
+      "totalMethods": 20
+    },
+    "remoteCI": "Not queried or rerun by this independent review. Per task boundary, existing remote run concerns old 15-test source plus boot repair and cannot establish this uncommitted v2 source.",
+    "physicalIPad": "NOT RUN: camera capture, EXIF on actual capture, UIKit image decoding, offline power-loss durability, OS Photos, memory/performance, full-size visual review and device lifecycle need device acceptance.",
+    "syntheticPersistence": "Bounded LocalRepository probes use in-memory byte arrays and injected failures; they execute production repository logic but do not establish filesystem power-loss or SQLite behavior.",
+    "syntheticRendering": "Controller probes inject native-shaped metadata/receipts; they do not decode or render native images.",
+    "network": "No real API, publication, downloads, SMS or credentials used.",
+    "mutations": "Only ignored .cache test/report helper files and this requested report were written. Product sources, original photos/data, v1 reports and git history were not changed."
+  },
+  "harnessNotes": [
+    "An initial independent fixture used Array.map(structuredClone), which passed the numeric index as clone options. The fixture was corrected to an explicit value callback; no product fault was involved. The final hash-bounded nine-probe run passes."
+  ]
+}

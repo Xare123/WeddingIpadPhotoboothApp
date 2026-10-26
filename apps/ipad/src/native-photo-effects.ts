@@ -12,11 +12,11 @@ export function loadPhotoEffects(): NativePhotoEffects | null {
     return { render: (...args) => module.render(...args), cancel: id => module.cancel(id), release: uri => module.release(uri) };
   } catch { return null; }
 }
-export type NativeTemplateEffects = Pick<TemplateEditorPorts, 'renderTemplate' | 'cancelTemplate' | 'releaseTemplate'>;
+export type NativeTemplateEffects = Pick<TemplateEditorPorts, 'renderTemplate' | 'cancelTemplate' | 'releaseTemplate' | 'inspectTemplateSources'>;
 export function loadTemplateEffects(): NativeTemplateEffects | null {
   try {
     const module = requireOptionalNativeModule<NativeTemplateEffects & { templateVersion?: string }>('WeddingPhotoEffects');
-    if (module?.templateVersion !== 'wedding-template-v1' || typeof module.renderTemplate !== 'function' || typeof module.cancelTemplate !== 'function' || typeof module.releaseTemplate !== 'function') return null;
-    return { renderTemplate: (...args) => module.renderTemplate(...args), cancelTemplate: id => module.cancelTemplate(id), releaseTemplate: uri => module.releaseTemplate(uri) };
+    if (module?.templateVersion !== 'wedding-template-v2' || typeof module.inspectTemplateSources !== 'function' || typeof module.renderTemplate !== 'function' || typeof module.cancelTemplate !== 'function' || typeof module.releaseTemplate !== 'function') return null;
+    return { inspectTemplateSources: sources => module.inspectTemplateSources(sources), renderTemplate: (...args) => module.renderTemplate(...args), cancelTemplate: id => module.cancelTemplate(id), releaseTemplate: uri => module.releaseTemplate(uri) };
   } catch { return null; }
 }

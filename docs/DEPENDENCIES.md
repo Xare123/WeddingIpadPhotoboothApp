@@ -4,7 +4,13 @@ The existing, validated Expo/React Native foundation was retained rather than re
 
 Installed license metadata reviewed: Expo, React Native, react-native-svg, react-native-qrcode-svg and Miniflare are MIT; Wrangler is MIT OR Apache-2.0. The original project MIT license is unchanged. Browser-only visual tooling is isolated from the native product: react-native-web and React DOM render the actual native JSX with explicit device stubs solely for visual review.
 
-## Audit outcome — October 25, 2026
+## Current assessment — October 26, 2026
+
+The frozen four-photo candidate retains **eight high and one moderate affected package entries**. [Exact installed versions, advisory ranges and registry-supported remedies](../artifacts/security/studio-advisory-assessment.json) were checked again. The current 1,030-source iOS map matches App and excludes the affected Node libraries; this is not a native-binary audit. Expo CLI forge has no patched published release, and fixed Zod crosses its declared major. Wrangler 4.153.0 is an available upstream-supported tooling update; direct Miniflare 4 has no patched upstream release, so scoped child overrides need separate runtime validation. No dependency was changed during the frozen native feature verification. Keep these findings visible and test the isolated tooling update rather than force an Expo downgrade.
+
+The new photo module uses Apple's built-in Core Image/CoreText frameworks, not Skia or a vendor booth base. Its local wrapper is original MIT code; Apple frameworks are not represented as open source. No third-party filter assets or photo-processing service was added.
+
+## Historical audit outcome — October 25, 2026
 
 `npm audit --omit=dev --audit-level=high` reported two underlying high-severity advisories in Expo's CLI dependency path, represented as five affected dependency entries:
 

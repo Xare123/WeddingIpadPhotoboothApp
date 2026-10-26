@@ -5,7 +5,7 @@ import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createServer } from 'node:http';
-import { nativeModeSettings, requireNativeTestPlan, nativeRuntimeSources, verifyNativeRuntimeSources, passingExpectedXCTestCounts, commandStreams, MAX_MACHINE_STDOUT, metroErrorCodes, metroHTTPStatus, ownedProcessTree, parseNamedJSON, passingXCTestCounts, requireSwiftTools62, resolveExpoEntry, selectIpadSimulator, verifyReleaseApp, waitForMetro } from './ci-native-contract.mjs';
+import { nativeModeSettings, requireNativeTestPlan, nativeRuntimeResources, nativeRuntimeSources, verifyNativeRuntimeSources, passingExpectedXCTestCounts, commandStreams, MAX_MACHINE_STDOUT, metroErrorCodes, metroHTTPStatus, ownedProcessTree, parseNamedJSON, passingXCTestCounts, requireSwiftTools62, resolveExpoEntry, selectIpadSimulator, verifyReleaseApp, waitForMetro } from './ci-native-contract.mjs';
 import { annotationText, bounded, diagnosticLines, publicAnnotations, redact, workflowData } from './ci-summary.mjs';
 
 const ipad = { udid: '11111111-1111-4111-8111-111111111111', name: 'iPad Pro 13-inch (M4)',
@@ -542,11 +542,22 @@ function runtimeSourceFixture(t) {
     ['apps/ipad/modules/wedding-photo-effects/ios/PhotoEffectsEngine.swift', 0],
     ['apps/ipad/modules/wedding-photo-effects/tests/PhotoEffectsEngineTests.swift', 8],
     ['apps/ipad/modules/wedding-photo-effects/ios/PhotoTemplateEngine.swift', 0],
-    ['apps/ipad/modules/wedding-photo-effects/tests/PhotoTemplateEngineTests.swift', 6],
+    ['apps/ipad/modules/wedding-photo-effects/tests/PhotoTemplateEngineTests.swift', 11],
   ];
   for (const [source, count] of specs) {
     mkdirSync(join(root, source, '..'), { recursive: true });
     writeFileSync(join(root, source), 'import Foundation\n' + Array.from({ length: count }, (_, i) => '  func testCase' + i + '() throws {}').join('\n'));
+  }
+  for (const name of ['portrait-1', 'portrait-2', 'portrait-3', 'portrait-4', 'landscape-1', 'landscape-2']) {
+    const file = join(root, 'apps/ipad/native-tests/fixtures/studio/studio-' + name + '.jpg');
+    mkdirSync(join(file, '..'), { recursive: true });
+    writeFileSync(file, Buffer.from([0xff, 0xd8, 1, 2, 0xff, 0xd9]));
+  }
+  const runtimeResources = nativeRuntimeResources(root);
+  for (const resource of runtimeResources) {
+    const target = join(root, 'apps/ipad/ios', resource.generatedSource);
+    mkdirSync(join(target, '..'), { recursive: true });
+    writeFileSync(target, readFileSync(join(root, resource.source)));
   }
   const runtimeSources = nativeRuntimeSources(root);
   for (const source of runtimeSources) {
@@ -554,14 +565,16 @@ function runtimeSourceFixture(t) {
     mkdirSync(join(target, '..'), { recursive: true });
     writeFileSync(target, readFileSync(join(root, source.source)));
   }
-  return { root, plan: { runtimeSources, expectedTestCount: 15 } };
+  return { root, plan: { runtimeSources, runtimeResources, expectedTestCount: 20 } };
 }
 
 test('native source manifest hashes exact required production/test bytes and counts all methods', t => {
   const { root, plan } = runtimeSourceFixture(t);
   const result = verifyNativeRuntimeSources(plan, root);
-  assert.equal(result.expectedTestCount, 15);
+  assert.equal(result.expectedTestCount, 20);
   assert.equal(result.runtimeSources.length, 5);
+  assert.equal(result.runtimeResources.length, 6);
+  assert.equal(result.runtimeSources[4].testMethods.length, 11);
   assert.equal(result.runtimeSources[2].testMethods.length, 8);
   for (const source of result.runtimeSources) assert.match(source.sha256, /^[a-f0-9]{64}$/);
 });
@@ -569,6 +582,10 @@ test('native source manifest hashes exact required production/test bytes and cou
 test('native source manifest rejects source drift, copy drift, missing template suites and false expected totals', t => {
   for (const mutate of [
     ({ root, plan }) => writeFileSync(join(root, plan.runtimeSources[1].source), '// changed production engine'),
+    ({ root, plan }) => writeFileSync(join(root, plan.runtimeResources[0].source), 'corrupt JPEG'),
+    ({ root, plan }) => writeFileSync(join(root, 'apps/ipad/ios', plan.runtimeResources[0].generatedSource), 'changed copied JPEG'),
+    ({ plan }) => { plan.runtimeResources[0].sha256 = '0'.repeat(64); },
+    ({ plan }) => { plan.runtimeResources = []; },
     ({ root, plan }) => writeFileSync(join(root, 'apps/ipad/ios', plan.runtimeSources[1].generatedSource), '// changed generated engine'),
     ({ root, plan }) => rmSync(join(root, plan.runtimeSources[4].source)),
     ({ plan }) => { plan.expectedTestCount = 9; },
@@ -589,4 +606,16 @@ test('native runtime refuses incomplete execution, missing totals, any skipped t
     assert.throws(() => passingExpectedXCTestCounts(output, 15));
   }
   for (const expected of [0, undefined, NaN, 1.5]) assert.throws(() => passingExpectedXCTestCounts('Executed 15 tests, with 0 failures', expected));
+});
+
+
+test('clean native JPEG resources have bounded bytes and exact copied hash manifests', t => {
+  const { root, plan } = runtimeSourceFixture(t);
+  const resources = nativeRuntimeResources(root);
+  assert.equal(resources.length, 6);
+  assert.ok(resources.every(item => /^[a-f0-9]{64}$/.test(item.sha256) && item.bytes > 0));
+  const first = join(root, resources[0].source);
+  writeFileSync(first, Buffer.alloc(2 * 1024 * 1024 + 1));
+  assert.throws(() => nativeRuntimeResources(root), /unbounded clean JPEG/);
+  assert.throws(() => verifyNativeRuntimeSources(plan, root));
 });
