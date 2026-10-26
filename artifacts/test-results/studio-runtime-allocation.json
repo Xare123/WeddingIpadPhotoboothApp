@@ -1,0 +1,25 @@
+{
+  "sourceCommit": "e0506f92f56b8847aa36aa4ce7f59002da54cffc",
+  "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40365263356",
+  "job": "121721125516",
+  "outcome": "GitHub hosted-runner acquisition failed; application and XCTest steps never executed",
+  "actualAnnotations": [
+    "Internal server error. Correlation ID: db28471e-baea-4107-9cb0-80c78b51ac76",
+    "The job was not acquired by Runner of type hosted even after multiple attempts",
+    "Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times."
+  ],
+  "nativeTestsExecuted": 0,
+  "applicationFailureEstablished": false,
+  "targetedRepair": "Select the documented standard macos-15-intel runner; keep Xcode26.3/Swift>=6.2 and exact 15-test source inventory unchanged",
+  "officialSourcesRead": [
+    "https://github.com/actions/runner-images/blob/main/README.md",
+    "https://github.com/actions/runner-images/blob/main/images/macos/macos-15-Readme.md"
+  ],
+  "runnerImageEvidence": "README maps macos-15 to ARM and macos-15-intel to x64; Intel image20260824.0482.1 lists /Applications/Xcode_26.3.app",
+  "paidOrLargerRunnerSelected": false,
+  "productSourceChanged": false,
+  "precedingPassedChecks": {
+    "linux": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40365263266",
+    "physicalSdkRelease": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40365263378"
+  }
+}
