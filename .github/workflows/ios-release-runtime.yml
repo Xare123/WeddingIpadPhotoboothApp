@@ -23,7 +23,7 @@ jobs:
     # GitHub runner-images lists Xcode26.3 on this image; no larger runner is used.
     runs-on: macos-15-intel
     # Bounded install/bootstrap steps plus the phase-budgeted native invocation.
-    timeout-minutes: 75
+    timeout-minutes: 90
     defaults:
       run:
         shell: bash
@@ -89,9 +89,9 @@ jobs:
           } 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/cocoapods-install.log"
       - name: Verify selected unsigned native target
         id: native
-        # 18m cumulative preparation + 25m Xcode + 2m cleanup + stop grace <48m.
-        # Architecture restriction addresses the observed duplicate cold build.
-        timeout-minutes: 48
+        # 18m preparation + 40m Xcode + 2m cleanup + stop grace <63m.
+        # Single-arch cold compilation still progressed at the former 25m limit.
+        timeout-minutes: 63
         run: node scripts/ci-native.mjs "$WEDDING_NATIVE_MODE" 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/native-invocation.log"
       - name: Publish bounded redacted diagnostics in the public job summary
         if: always()

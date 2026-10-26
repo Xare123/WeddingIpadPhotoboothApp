@@ -1,0 +1,121 @@
+{
+  "generatedAtUTC": "2026-10-26T20:11:11.597826+00:00",
+  "scope": "One minimal CI budget-only correction following newly diagnosed single-architecture cold compilation timeout. Local uncommitted; no application/native engine/process cleanup/artifact policy changes.",
+  "inputEvidence": {
+    "provenance": "Exact coordinator-provided independent hosted log review; this agent did not download authenticated artifacts or infer execution from enumeration.",
+    "sourceCommit": "d592cfc36773a136f24d38e5bc71c1928fb57de7",
+    "runtimeRun": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40386078606",
+    "runtimeJob": "121794588878",
+    "artifact": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40386078606/artifacts/12685090101",
+    "result": "failure after40m6s at inner25-minute Xcode deadline while compilation still progressed",
+    "selectedArchitecture": "x86_64 only; previous duplicate architecture issue corrected",
+    "simulatorReadySeconds": 303,
+    "preparationSeconds": 650,
+    "xcodeElapsedSeconds": 1541,
+    "lastProgress": "Compiling RNSVG before BUILD INTERRUPTED / SIGTERM",
+    "executedXCTestTests": 0,
+    "assertionFailureEstablished": false,
+    "cleanup": "Owned groups quiescent; prior cleanup writer race absent",
+    "matchingDeviceSdkRun": {
+      "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40386078669",
+      "result": "passed",
+      "duration": "25m11s",
+      "scope": "Unsigned physical-SDK Release compilation, not XCTest/device acceptance"
+    },
+    "matchingLinuxRun": {
+      "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40386078572",
+      "result": "passed",
+      "duration": "1m12s"
+    }
+  },
+  "justification": {
+    "materialNewEvidence": "The architecture and cleanup repairs executed successfully. The remaining failure is the measured inner compilation deadline, with continued RNSVG build progress and no tests reached.",
+    "why25MinutesInsufficient": "The correctly restricted cold simulator build had not completed at its1500-second limit; recorded stage elapsed1541seconds includes timeout/termination overhead. Physical-SDK compilation on the same feature also took25m11s, corroborating that this cold native workload is substantial without proving simulator duration.",
+    "change": "Increase Xcode allowance by15minutes (25 to40;60percent) and finite outer allowances accordingly. No identical unchanged retry or new lightweight target architecture.",
+    "noPromise": "Forty minutes is bounded new headroom, not a guarantee of completed compilation or passing XCTest. A subsequent failure requires fresh diagnosis rather than automatic extension."
+  },
+  "budget": {
+    "preparationMinutes": 18,
+    "preparationChanged": false,
+    "xcodeMinutes": {
+      "old": 25,
+      "new": 40
+    },
+    "cleanupMinutes": 2,
+    "processStopMaximumSeconds": 12,
+    "nativeStepMinutes": {
+      "old": 48,
+      "new": 63
+    },
+    "jobMinutes": {
+      "old": 75,
+      "new": 90
+    },
+    "bootSeconds": 600,
+    "bootChanged": false,
+    "relationship": "18+40+2+0.2=60.2minutes <63minute native step;90minute job exceeds63+10install+3typecheck+5Podtool+5evidence=86minutes.",
+    "nativeStepMarginSeconds": 168,
+    "preparationObservedVsCapSeconds": {
+      "observed": 650,
+      "cap": 1080
+    },
+    "xcodeObservedVsNewCapSeconds": {
+      "observedStage": 1541,
+      "newCap": 2400
+    }
+  },
+  "preserved": {
+    "application": {
+      "version": "0.3.2",
+      "build": "5",
+      "appSourceSHA256": "feab5d929c5f8552e7e72540974bb28c5dd415063072f677ebe2704362353e18",
+      "appConfigSHA256": "f24136a88f4045c910702d79f3bad5459accb7acd79a012486fa4993831185a1",
+      "unchangedFromSourceCommit": true
+    },
+    "physicalSdkWorkflowByteIdentical": true,
+    "runnerScriptByteIdentical": true,
+    "singleArchitecturePolicy": "unchanged",
+    "cancellationAndQuiescencePolicy": "unchanged",
+    "validFailedXcresultAnd64MiBUploadPolicy": "unchanged",
+    "requiredActualNativeTests": 20,
+    "zeroFailureAndZeroSkipRequirement": "unchanged",
+    "priorRepairReport": "artifacts/test-results/keepsake-native-runtime-repair.json",
+    "priorRepairReportSHA256": "a917447f4d90b89ee106167243e46c090cdcf440f2999bc2b5e747b0d9a5805f"
+  },
+  "validation": {
+    "ciContracts": {
+      "tests": 57,
+      "passed": 57,
+      "failed": 0,
+      "skipped": 0,
+      "log": ".cache/native-runtime-cold-budget-contracts.txt",
+      "logSHA256": "ab3393e933be8cca4097134b7de4fc4b44ac3db14f92b621dbede1859f99207e"
+    },
+    "workflowYaml": "parsed",
+    "shellSyntaxBlocks": 9,
+    "embeddedNodeModules": 3,
+    "nodeSyntax": "passed for contract and unchanged runner",
+    "diffWhitespace": "passed",
+    "currentNativeInventory": {
+      "methods": 20,
+      "swiftSources": 5,
+      "jpegResources": 6,
+      "isExecution": false
+    },
+    "newHostedNativeExecution": "NOT RUN by this agent",
+    "physicalIPad": "NOT VERIFIED by this agent"
+  },
+  "sourceSHA256": {
+    "scripts/ci-native-contract.mjs": "9797005a52ad28da581ed699ba08929d276a50afa1cc5acc649599f09c4d1ab1",
+    ".github/workflows/ios-release-runtime.yml": "d4b7551fa798159aa2d4bb50b6ef3f66444de8837a8a22152114a0ea555bb102",
+    "scripts/ci-native.test.mjs": "65ce45a754c9717f3472d7f23cd682e311e964fcffb72c528e5df96f5e55136c"
+  },
+  "actions": {
+    "committed": false,
+    "pushed": false,
+    "hostedRunStarted": false,
+    "deployed": false,
+    "newCredentialsOrPaidResources": false,
+    "realSmsSent": 0
+  }
+}

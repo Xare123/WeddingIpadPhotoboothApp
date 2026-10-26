@@ -645,7 +645,7 @@ test('runtime preparation, Xcode, stop and cleanup budgets fit the workflow back
   assert.equal(nativeMinutes, NATIVE_RUNTIME_LIMITS.nativeStepMinutes);
   assert.equal(jobMinutes, NATIVE_RUNTIME_LIMITS.jobMinutes);
   assert.equal(NATIVE_RUNTIME_LIMITS.preparationMs, 18 * 60_000);
-  assert.equal(NATIVE_RUNTIME_LIMITS.xcodeMs, 25 * 60_000);
+  assert.equal(NATIVE_RUNTIME_LIMITS.xcodeMs, 40 * 60_000);
   assert.ok(NATIVE_RUNTIME_LIMITS.preparationMs + NATIVE_RUNTIME_LIMITS.xcodeMs +
     NATIVE_RUNTIME_LIMITS.cleanupMs + NATIVE_RUNTIME_LIMITS.processStopMs < nativeMinutes * 60_000);
   assert.ok(jobMinutes >= nativeMinutes + 10 + 3 + 5 + 5);

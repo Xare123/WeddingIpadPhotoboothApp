@@ -21,13 +21,15 @@ export function nativeModeSettings(mode) {
 // The observed cold Intel preparation consumed about eleven minutes before
 // compilation. Keep separate finite preparation/build/cleanup allowances; the
 // workflow backstop must exceed their sum, rather than interrupting Xcode first.
+// The single-architecture cold run still compiled RNSVG at the former 25m
+// Xcode deadline; retain finite headroom for that observed compilation workload.
 export const NATIVE_RUNTIME_LIMITS = Object.freeze({
   preparationMs: 18 * 60_000,
-  xcodeMs: 25 * 60_000,
+  xcodeMs: 40 * 60_000,
   cleanupMs: 2 * 60_000,
   processStopMs: 12_000,
-  nativeStepMinutes: 48,
-  jobMinutes: 75,
+  nativeStepMinutes: 63,
+  jobMinutes: 90,
 });
 
 export function simulatorBuildArchitecture(nodeArchitecture, machine) {
