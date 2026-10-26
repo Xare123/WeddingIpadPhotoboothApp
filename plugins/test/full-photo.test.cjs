@@ -3,8 +3,17 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const { execFileSync } = require('node:child_process');
 const plugin = require('../with-full-photo.cjs');
 const fixture = path.join(__dirname, 'fixtures/expo-camera-58.0.12');
+const appRoot = path.resolve(__dirname, '../../apps/ipad');
+const autolinkingRoot = path.dirname(require.resolve('expo-modules-autolinking/package.json'));
+function resolveApple(projectRoot, platform) {
+  return JSON.parse(execFileSync(process.execPath, [
+    path.join(autolinkingRoot, 'bin/expo-modules-autolinking.js'),
+    'resolve', '--platform', platform, '--json',
+  ], { cwd: projectRoot, encoding: 'utf8', timeout: 30000 }));
+}
 function tree(t) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'full-photo-contract-'));
   fs.cpSync(fixture, root, { recursive: true });
@@ -17,6 +26,36 @@ test('official source fixture has exact pinned provenance hashes', () => {
 test('installed Expo native sources satisfy the same version and full-file contract', () => {
   const root = path.dirname(require.resolve('expo-camera/package.json'));
   assert.equal(plugin.preparePatch(root).length, 3);
+});
+test('installed iOS autolinker opts only patched camera out of prebuilt modules', t => {
+  // Exercise Expo's actual CLI/package discovery, not just our package.json shape.
+  // CocoaPods uses "apple"; also cover the supported "ios" CLI spelling.
+  for (const platform of ['ios', 'apple']) {
+    const resolved = resolveApple(appRoot, platform);
+    assert.deepEqual(resolved.configuration?.buildFromSource, ['expo-camera']);
+    const camera = resolved.modules.find(module => module.packageName === 'expo-camera');
+    assert.ok(camera, 'camera must still be autolinked');
+    assert.equal(camera.packageVersion, '58.0.12');
+    assert.ok(camera.pods.some(pod => pod.podName === 'ExpoCamera'));
+    assert.ok(resolved.modules.some(module => module.packageName === 'expo-modules-core'),
+      'unpatched Expo modules must remain linked');
+  }
+
+  // A source-only fixture cannot expose this regression. Without the opt-out,
+  // this same installed autolinker resolves camera but provides no instruction
+  // to CocoaPods to reject its bundled (unpatched) xcframework.
+  const controlRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'full-photo-autolink-'));
+  t.after(() => fs.rmSync(controlRoot, { recursive: true, force: true }));
+  const manifest = JSON.parse(fs.readFileSync(path.join(appRoot, 'package.json'), 'utf8'));
+  delete manifest.expo.autolinking.ios.buildFromSource;
+  fs.writeFileSync(path.join(controlRoot, 'package.json'), JSON.stringify(manifest));
+  fs.symlinkSync(path.resolve(autolinkingRoot, '..'), path.join(controlRoot, 'node_modules'), 'dir');
+  for (const platform of ['ios', 'apple']) {
+    const control = resolveApple(controlRoot, platform);
+    assert.equal(control.configuration?.buildFromSource, undefined);
+    assert.ok(control.modules.some(module => module.packageName === 'expo-camera'),
+      'control must resolve the same installed camera without the source-build opt-out');
+  }
 });
 test('patch is deterministic and idempotent, byte-writing path precedes stock crop', t => {
   const root = tree(t);

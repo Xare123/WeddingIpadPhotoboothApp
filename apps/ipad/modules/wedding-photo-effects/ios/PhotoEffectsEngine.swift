@@ -31,8 +31,13 @@ public final class PhotoEffectsEngine: @unchecked Sendable {
   public enum Failure: Error { case invalidInput, cancelled, resourceLimit, encodingFailed }
   /// A new module lifetime owns this cache exclusively; prior cache URIs are ephemeral.
   public init(cacheDirectory: URL) {
-    cache = cacheDirectory.standardizedFileURL.resolvingSymlinksInPath()
+    // Resolve existing ancestors only after creating the leaf (e.g. Darwin's /var alias).
+    if cacheDirectory.isFileURL {
+      try? FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
+    }
+    cache = cacheDirectory.standardizedFileURL.resolvingSymlinksInPath().appendingPathComponent("", isDirectory: true)
     Self.queue.sync {
+      guard cache.isFileURL else { return }
       let old = (try? FileManager.default.contentsOfDirectory(at: cache, includingPropertiesForKeys: nil)) ?? []
       for item in old where Self.ownedName(item) { try? FileManager.default.removeItem(at: item) }
     }
@@ -161,7 +166,8 @@ public final class PhotoEffectsEngine: @unchecked Sendable {
   public func release(_ url: URL) throws {
     try Self.queue.sync {
       let resolved = url.standardizedFileURL.resolvingSymlinksInPath()
-      guard url.isFileURL, resolved.deletingLastPathComponent() == cache,
+      guard url.isFileURL, cache.isFileURL, url.pathExtension == "jpg", Self.ownedName(url),
+        resolved.deletingLastPathComponent().pathComponents == cache.pathComponents,
         resolved.pathExtension == "jpg", UUID(uuidString: resolved.deletingPathExtension().lastPathComponent) != nil
         else { throw Failure.invalidInput }
       if FileManager.default.fileExists(atPath: resolved.path) { try FileManager.default.removeItem(at: resolved) }

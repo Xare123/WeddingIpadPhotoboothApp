@@ -235,7 +235,12 @@ export function exportNamedPixelJpegs({ exportDirectory, outputDirectory, manife
         typeof record.exportedFileName !== 'string' || typeof record.suggestedHumanReadableName !== 'string') {
         throw failure('Unsupported native attachment record schema', record);
       }
-      const name = record.suggestedHumanReadableName.replace(/\.(?:jpg|jpeg)$/i, '');
+      const label = record.suggestedHumanReadableName;
+      let name = label.replace(/\.(?:jpg|jpeg)$/i, '');
+      // Xcode's observed attachment exporter appends an occurrence index and
+      // UUID. Normalize only that exact format for an already approved name.
+      const exportedLabel = label.match(/^(.+)_0_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(?:jpg|jpeg)$/i);
+      if (!expected.has(name) && exportedLabel?.[0] === label && expected.has(exportedLabel[1])) name = exportedLabel[1];
       if (!expected.has(name)) {
         if (name.startsWith('native-v2-')) throw failure('Unexpected named native JPEG evidence', record);
         continue;

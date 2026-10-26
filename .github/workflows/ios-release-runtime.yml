@@ -68,7 +68,7 @@ jobs:
           JS
       - name: Verify native CI parsing and diagnostic contracts
         id: contracts
-        run: node --test --test-reporter=tap scripts/ci-native.test.mjs 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/ci-contracts.log"
+        run: node --test --test-reporter=tap scripts/ci-native.test.mjs scripts/native-camera-capability.test.mjs 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/ci-contracts.log"
       - name: Frozen dependency installation
         id: npmci
         timeout-minutes: 10

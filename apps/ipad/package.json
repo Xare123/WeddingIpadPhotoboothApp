@@ -3,6 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "main": "index.ts",
+  "expo": {
+    "autolinking": {
+      "ios": {
+        "buildFromSource": ["expo-camera"]
+      }
+    }
+  },
   "scripts": {
     "start": "EXPO_OFFLINE=1 expo start --localhost",
     "ios": "expo run:ios",

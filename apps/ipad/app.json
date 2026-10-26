@@ -2,14 +2,14 @@
   "expo": {
     "name": "Wedding Photobooth",
     "slug": "wedding-ipad-photobooth",
-    "version": "0.3.2",
+    "version": "0.3.3",
     "platforms": [
       "ios"
     ],
     "orientation": "default",
     "userInterfaceStyle": "light",
     "ios": {
-      "buildNumber": "5",
+      "buildNumber": "6",
       "supportsTablet": true,
       "requireFullScreen": true,
       "bundleIdentifier": "com.example.weddingphotobooth",

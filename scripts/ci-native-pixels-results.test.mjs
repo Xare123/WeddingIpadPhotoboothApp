@@ -159,6 +159,67 @@ test('legitimate partial failed-run evidence can be retained but cannot satisfy 
   assert.equal(result.complete, false); assert.equal(result.entries.length, 1); assert.equal(result.missing.length, 15);
 });
 
+const observedAttachmentUUID = '6D96F847-5D91-43F9-B2B1-4F707D4B7014';
+
+test('observed Xcode zero-index UUID filenames normalize only approved names and preserve exact bytes and producers', t => {
+  const fixture = attachmentFixture(t);
+  for (const group of fixture.manifest) for (const [index, record] of group.attachments.entries()) {
+    record.suggestedHumanReadableName += '_0_' + observedAttachmentUUID + (index % 2 ? '.jpg' : '.jpeg');
+  }
+  assert.equal(fixture.manifest[0].attachments[0].suggestedHumanReadableName,
+    'native-v2-clean-portrait-strip-classic-FULL_0_6D96F847-5D91-43F9-B2B1-4F707D4B7014.jpeg');
+  const result = exportNamedPixelJpegs(fixture);
+  assert.equal(result.complete, true); assert.equal(result.entries.length, 16);
+  result.entries.forEach((entry, index) => {
+    assert.equal(entry.name, EXPECTED_PIXEL_ATTACHMENTS[index].name);
+    const original = readFileSync(join(fixture.exportDirectory, 'exported-' + index + '.jpg'));
+    assert.deepEqual(readFileSync(join(fixture.outputDirectory, entry.file)), original);
+    assert.equal(entry.sha256, createHash('sha256').update(original).digest('hex'));
+    assert.equal(entry.producer, index < 12
+      ? 'PhotoTemplateEngineTests.testV2AllSixCleanNativeJpegFullAndPreviewAttachments'
+      : 'PhotoTemplateEngineTests.testV2CleanMixedAspectAndExifNativeJpegAttachments');
+  });
+});
+
+test('unobserved counters, malformed UUIDs, trailing text and unapproved suffixed names fail closed', t => {
+  const base = EXPECTED_PIXEL_ATTACHMENTS[0].name;
+  const suffix = '_0_' + observedAttachmentUUID + '.jpeg';
+  for (const label of [
+    base + '_1_' + observedAttachmentUUID + '.jpeg', base + '_00_' + observedAttachmentUUID + '.jpeg',
+    base + '_-1_' + observedAttachmentUUID + '.jpeg', base + suffix + '.extra', base + suffix + '\n', base + suffix + '\r\n',
+    base + '_0_' + observedAttachmentUUID + '-extra.jpeg', base + '_0_' + observedAttachmentUUID,
+    base + '_0_' + observedAttachmentUUID.replace('-', '') + '.jpeg',
+    base + '_0_' + observedAttachmentUUID.slice(1) + '.jpeg',
+    base + '_0_' + observedAttachmentUUID.replace('6', 'G') + '.jpeg',
+    base + '_0_{' + observedAttachmentUUID + '}.jpeg',
+    'native-v2-unapproved-output' + suffix,
+  ]) {
+    const fixture = attachmentFixture(t);
+    fixture.manifest[0].attachments[0].suggestedHumanReadableName = label;
+    assert.throws(() => exportNamedPixelJpegs(fixture), /Unexpected named native JPEG/);
+    assert.equal(existsSync(fixture.outputDirectory), false);
+  }
+});
+
+test('plain and observed suffixed aliases cannot duplicate evidence or bypass producer, path or geometry guards', t => {
+  const duplicate = attachmentFixture(t), first = duplicate.manifest[0].attachments[0];
+  duplicate.manifest[0].attachments.push({ ...first,
+    suggestedHumanReadableName: first.suggestedHumanReadableName + '_0_' + observedAttachmentUUID + '.jpeg' });
+  assert.throws(() => exportNamedPixelJpegs(duplicate), /Duplicate named native JPEG/);
+  assert.equal(existsSync(duplicate.outputDirectory), false);
+  for (const change of [
+    value => { value.manifest[0].testIdentifier = value.manifest[1].testIdentifier; },
+    value => { value.manifest[0].attachments[0].exportedFileName = '../outside.jpg'; },
+    value => { writeFileSync(join(value.exportDirectory, 'exported-0.jpg'), jpeg(3, 4)); },
+  ]) {
+    const fixture = attachmentFixture(t);
+    fixture.manifest[0].attachments[0].suggestedHumanReadableName += '_0_' + observedAttachmentUUID + '.jpeg';
+    change(fixture);
+    assert.throws(() => exportNamedPixelJpegs(fixture), /wrong producing|safely|dimensions disagree/);
+    assert.equal(existsSync(fixture.outputDirectory), false);
+  }
+});
+
 test('duplicate labels, unexpected native labels, wrong producers and unknown manifest schemas fail closed', t => {
   for (const change of [
     value => value.manifest[0].attachments.push({ ...value.manifest[0].attachments[0] }),

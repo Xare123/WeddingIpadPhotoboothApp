@@ -151,6 +151,64 @@ final class PhotoTemplateEngineTests: XCTestCase {
     XCTAssertFalse(FileManager.default.fileExists(atPath: URL(string: result.uri)!.path))
     XCTAssertTrue(FileManager.default.fileExists(atPath: unrelated.path))
     XCTAssertTrue(FileManager.default.fileExists(atPath: sources[0].url.path))
+
+    // Missing cache leaves, directory URL flags, and symlinked ancestors must all
+    // permit our rendered JPEG while keeping release inside the canonical root.
+    let originalBytes = try sources.map { try Data(contentsOf: $0.url) }
+    for directoryFlag in [false, true] { for aliasedParent in [false, true] {
+      let parent = directory.appendingPathComponent("release-\(directoryFlag)-\(aliasedParent)", isDirectory: true)
+      try FileManager.default.createDirectory(at: parent, withIntermediateDirectories: true)
+      let alias = directory.appendingPathComponent("alias-\(directoryFlag)-\(aliasedParent)", isDirectory: true)
+      if aliasedParent { try FileManager.default.createSymbolicLink(at: alias, withDestinationURL: parent) }
+      let requested = URL(fileURLWithPath: (aliasedParent ? alias : parent).appendingPathComponent("cache").path,
+        isDirectory: directoryFlag)
+      XCTAssertFalse(FileManager.default.fileExists(atPath: requested.path))
+      let isolated = PhotoTemplateEngine(cacheDirectory: requested)
+      XCTAssertTrue(FileManager.default.fileExists(atPath: requested.path))
+      let rendered = try isolated.render(sources: sources, recipeJSON: json, preview: true, id: UUID())
+      let renderedURL = try XCTUnwrap(URL(string: rendered.uri))
+      try isolated.release(renderedURL)
+      XCTAssertFalse(FileManager.default.fileExists(atPath: renderedURL.path))
+      try isolated.release(renderedURL) // Releasing an already removed owned file is harmless.
+
+      let root = requested.standardizedFileURL.resolvingSymlinksInPath()
+      let owned = root.appendingPathComponent(UUID().uuidString + ".jpg")
+      let sentinel = Data("must remain unchanged".utf8)
+      try sentinel.write(to: owned)
+      var remote = URLComponents(); remote.scheme = "https"; remote.host = "invalid.example"; remote.path = owned.path
+      XCTAssertThrowsError(try isolated.release(try XCTUnwrap(remote.url)))
+      XCTAssertEqual(try Data(contentsOf: owned), sentinel)
+      // The same file is releasable through the requested (possibly aliased) root.
+      try isolated.release(requested.appendingPathComponent(owned.lastPathComponent))
+      XCTAssertFalse(FileManager.default.fileExists(atPath: owned.path))
+
+      let sibling = parent.appendingPathComponent("cache-sibling", isDirectory: true)
+      let nested = root.appendingPathComponent("nested", isDirectory: true)
+      try FileManager.default.createDirectory(at: sibling, withIntermediateDirectories: true)
+      try FileManager.default.createDirectory(at: nested, withIntermediateDirectories: true)
+      let outside = sibling.appendingPathComponent(UUID().uuidString + ".jpg")
+      let nestedFile = nested.appendingPathComponent(UUID().uuidString + ".jpg")
+      let wrongExtension = root.appendingPathComponent(UUID().uuidString + ".png")
+      let wrongName = root.appendingPathComponent("keep.jpg")
+      for file in [outside, nestedFile, wrongExtension, wrongName] { try sentinel.write(to: file) }
+      let escape = root.appendingPathComponent(UUID().uuidString + ".jpg")
+      try FileManager.default.createSymbolicLink(at: escape, withDestinationURL: outside)
+      for invalid in [outside, nestedFile, wrongExtension, wrongName, escape] {
+        XCTAssertThrowsError(try isolated.release(invalid))
+        XCTAssertEqual(try Data(contentsOf: invalid), sentinel)
+      }
+      // A misleading name/extension must not become valid by resolving to an owned file.
+      let target = root.appendingPathComponent(UUID().uuidString + ".jpg")
+      try sentinel.write(to: target)
+      for name in [UUID().uuidString + ".tmp", "alias.jpg"] {
+        let misleading = root.appendingPathComponent(name)
+        try FileManager.default.createSymbolicLink(at: misleading, withDestinationURL: target)
+        XCTAssertThrowsError(try isolated.release(misleading))
+        XCTAssertEqual(try Data(contentsOf: target), sentinel)
+      }
+      XCTAssertEqual(try Data(contentsOf: outside), sentinel)
+    } }
+    for index in 0..<4 { XCTAssertEqual(try Data(contentsOf: sources[index].url), originalBytes[index]) }
   }
   func recipeV2(layout: String = "strip", theme: String = "classic", aspect: String = "portrait") throws -> String {
     let v1 = try recipe(layout: layout, theme: theme)

@@ -59,8 +59,13 @@ public final class PhotoTemplateEngine: @unchecked Sendable {
   private var active = Set<UUID>(), cancelled = Set<UUID>(), completed = Set<UUID>()
   private var recent = [UUID](), pending = [UUID]()
   public init(cacheDirectory: URL) {
-    cache = cacheDirectory.standardizedFileURL.resolvingSymlinksInPath()
+    // Resolve existing ancestors only after creating the leaf (e.g. Darwin's /var alias).
+    if cacheDirectory.isFileURL {
+      try? FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
+    }
+    cache = cacheDirectory.standardizedFileURL.resolvingSymlinksInPath().appendingPathComponent("", isDirectory: true)
     PhotoEffectsEngine.queue.sync {
+      guard cache.isFileURL else { return }
       let files = (try? FileManager.default.contentsOfDirectory(at: cache, includingPropertiesForKeys: nil)) ?? []
       for file in files where Self.owned(file) { try? FileManager.default.removeItem(at: file) }
     }
@@ -370,7 +375,9 @@ public final class PhotoTemplateEngine: @unchecked Sendable {
   public func release(_ url: URL) throws {
     try PhotoEffectsEngine.queue.sync {
       let resolved = url.standardizedFileURL.resolvingSymlinksInPath()
-      guard url.isFileURL, resolved.deletingLastPathComponent() == cache, resolved.pathExtension == "jpg", Self.owned(resolved) else { throw Failure.invalidInput }
+      guard url.isFileURL, cache.isFileURL, url.pathExtension == "jpg", Self.owned(url),
+        resolved.deletingLastPathComponent().pathComponents == cache.pathComponents,
+        resolved.pathExtension == "jpg", Self.owned(resolved) else { throw Failure.invalidInput }
       if FileManager.default.fileExists(atPath: resolved.path) { try FileManager.default.removeItem(at: resolved) }
     }
   }
