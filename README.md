@@ -1,8 +1,8 @@
 # Wedding iPad Photobooth
 
-A native iOS photobooth for a personal wedding on November 1, 2026: a front-camera photo at a physical backdrop, a private guest page, downloads, and a QR code once the upload finishes. Digital photos only. The provisional device is an M1 iPad Air (5th generation); confirm its model, iPadOS version, and stand fit before rehearsal.
+A native iOS photobooth for a personal wedding on November 1, 2026: five front-camera photos at a physical backdrop, a private guest page, original downloads, and one QR code when the complete session is ready. Digital photos only. The provisional device is an M1 iPad Air (5th generation); confirm its model, iPadOS version, and stand fit before rehearsal.
 
-This is an implemented MVP under local validation, **not yet deployed, signed, or verified on the wedding iPad**. The existing wedding website is unchanged. Production storage, device installation, camera behavior, and venue connectivity remain launch gates in [the launch checklist](docs/LAUNCH.md).
+The owner reported a saving failure in the earlier build. This revision fixes SDK 58 native file-awaiting, replaces local recovery and the single-shot interface, and is **not yet verified on the wedding iPad**. Earlier synthetic checks and unsigned compilation did not establish device usability. The coordinator reports this revision's backend deployed fail-closed; initial secure device provisioning is still required. Production storage, installation, camera/Photos behavior and venue sharing remain gates in [the launch checklist](docs/LAUNCH.md).
 
 ## Run on the cloud host
 
@@ -29,9 +29,9 @@ The API binds to loopback port 8787, uses local disk-backed R2, and never sends 
 
 | Path | Purpose |
 | --- | --- |
-| `apps/ipad` | Expo SDK 58 / React Native iOS app, camera, local preservation, queue, QR |
+| `apps/ipad` | Native five-photo capture/review/retakes, file-backed local library/recovery, optional Photos copies, queue and QR |
 | `packages/core` | Persistable upload/share queue, dependency ordering, retries |
-| `services/api` | Cloudflare Worker, private R2 objects, session guest galleries and mock SMS |
+| `services/api` | Cloudflare Worker, private R2 galleries, one-use pairing and approval-gated Textbelt adapter |
 | `.github/workflows` | Automated Linux checks, unsigned iOS Release build and separate Debug UI test mode |
 | `docs` | Architecture, native installation, SMS decision, launch gates, validation evidence |
 
@@ -41,11 +41,11 @@ Follow [native setup](docs/IOS.md). This is an iOS app, not a web replacement. E
 
 ## Guest privacy and storage
 
-Each confirmed session has a hard-to-guess, expiring guest-page capability. There is no public event gallery or raw bucket access. Guests can view and download only the photos in their session. Links can be forwarded, so treat them as bearer access. SMS is optional, requires consent and an approved provider, and currently returns an explicit mock result. The iPad does not collect names or email addresses.
+Each confirmed session has a hard-to-guess, expiring guest-page capability. There is no public event gallery or raw bucket access. Guests can view and download only their session's five selected photos. Links can be forwarded, so treat them as bearer access. SMS is optional, requires consent and an approved provider, and remains mocked/disabled until live approval. The iPad collects no names or email addresses and hides phone collection unless the backend explicitly advertises approved live SMS.
 
-Originals remain in the app's documents directory after upload. Local durability covers app restarts, not app deletion, a lost iPad, or device failure. Back up the device and verify cloud originals before clearing anything. Cloud originals are separate from guest-link expiry and can later be selected for the wedding website with the couple's approval; no automatic public website import is enabled.
+Each exposed photo is copied and verified in the app's documents directory before its saved thumbnail appears or capture advances. File journals retain local sessions and retakes even if the SQLite upload index fails. Host controls include an offline local library and separate permission-aware Photos export. Originals remain after upload and Next guest. Local preservation does not cover app deletion, a lost iPad or device failure; verify a second copy before cleanup. Cloud retention is separate from link expiry; no automatic public website import is enabled.
 
-Cloudflare is preferred because the wedding website already uses it. The owner has activated R2 and created `gizelleandrami-photoboothphotos`; the coordinating task verified that it is private, with `r2.dev` disabled and no custom domains. The production example binds that existing bucket. A separate Worker on the proposed `photos.gizelleandrami.com` preserves the apex and `www`. This cloud task has not deployed that Worker or created a hostname, provider account or credentials.
+Cloudflare is preferred because the wedding website already uses it. The owner-created `gizelleandrami-photoboothphotos` bucket remains private. The coordinator owns deployment to the isolated `wedding-photobooth` Worker and `photos.gizelleandrami.com`, preserving the existing website. The app prefills that origin and uses [private one-time setup](docs/PRIVATE_PROVISIONING.md) to store its booth credential in Keychain. No production secrets are in the app or this public repository. This executor performs no deployment or live SMS sends.
 
 ## More detail
 

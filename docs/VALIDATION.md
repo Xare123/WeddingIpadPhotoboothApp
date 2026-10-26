@@ -1,6 +1,19 @@
 # Validation and progress
 
-## Current checkpoint
+## Current five-photo saving repair
+
+The owner reported real saving failures after the earlier checkpoint. Source review found a concrete native bug: SDK 58 file copy/move/write promises were not awaited. The production adapter now waits for native completion and propagates errors; delayed/rejected bridge tests cover that boundary. Retrying a truncated owned staging file is permitted without overwriting originals. File journals, an offline host library, independent add-only Photos export, and the five-shot interface are implemented. The physical-device report is not considered closed until the owner repeats the saving rehearsal.
+
+- Frozen install succeeded with 588 packages. Current workspace typechecks and **130 app/core/API tests pass, zero failed/skipped**; this includes 29 storage/adapter and 12 capture/review checks. All 43 native-runner contract tests pass. One manual check omitted the cloud helper and failed only at Expo's home-directory/telemetry initialization after its tests passed; repeating the affected export with the documented environment succeeded. The saved setup script already sources the helper.
+- Linux native-project generation passes and verifies version **0.2.0/build 2**, unchanged bundle identifier, camera usage and add-only Photos usage. The final native JavaScript export resolves **1,019 modules**. Its source map matches the final App exactly and excludes forge, Zod, code-signing-certificate tooling, React DOM and RN Web from the inspected runtime graph. The two underlying Expo CLI advisories remain unresolved (five affected high entries); this is not a native-binary audit.
+- [Actual-JSX browser evidence](../artifacts/visual/new-session-evidence.md) contains **50 labeled PNGs and two short WebMs**, both portrait and landscape flows, six bounded checks, eight selected contrast checks, and **22 full-frame exact QR matches in each independent decoder**. A no-wait thumbnail-to-retake race was reproduced and repaired. These use synthetic camera/files/SQLite/Photos/auth/sync adapters; they do not prove native storage or device behavior. Older `ipad-*`/`qr-*` reports below describe the prior UI.
+- The updated real local HTTP smoke passes five-photo immutable upload/replay, full-session readiness, scoped download, consent, mock sharing and revocation. Six guest-gallery browser groups pass with five byte-identical original downloads. Production Wrangler dry-run passes with the cloud helper. No provider request was sent outside intercepted test transports.
+- A fresh unsigned Release build for this exact reworked source is still required. The previous green `82703b6` run below does not validate this revision. Debug XCTest source was updated for five-shot recovery/retakes but remains **unrun**; its separate hosted Metro startup problem remains unresolved.
+- The coordinator reports the backend-only handoff deployed as Worker `wedding-photobooth`, version `e11f1d52-24ce-49cf-83a5-c9b6aa035de9`, SHA-256 `5cc1e7390ecebc05d7815bf0b7819c5aca2478f6db105adac81d10cd9f3672c9`. It is **fail-closed**, with no `DEVICE_TOKEN`, pairing/SMS disabled and expected JSON 503. Signing/Textbelt secret bindings were preserved. This is not live guest-sharing or R2-write verification.
+
+Current source/report hashes are in [summary.json](../artifacts/test-results/summary.json). Next gates are coordinator secure device-token configuration and private pairing, then the owner's same-identity Release installation and real-iPad saving/Photos/reboot/phone-QR rehearsal. Free Apple ID personal-team signing is confirmed; inspect expiry and refresh near November 1. Firebase remains bounded/deferred without an existing identity/project and signed test package. The project is not launch-complete.
+
+## Prior one-photo checkpoint (historical)
 
 The initially empty repository is intentionally being developed into a native iOS MVP under the owner's expanded authorization. The original license remains unchanged. This task uses the existing isolated checkout; do not create a Git worktree for future cloud tasks unless the user requests one.
 
@@ -10,7 +23,7 @@ The unsigned **Release app now compiles for the physical iOS SDK** on source `82
 
 Do not infer native or production readiness from a running process, a successful dependency install, a JavaScript bundle, or a zero-test run.
 
-## Completed current-instance validation
+## Prior one-photo validation (historical)
 
 - The saved setup command and hosted Linux lane passed frozen `npm ci` (587 packages), workspace typechecks, the current test suite and iOS Hermes export. The latest direct `npm test` executed **59 tests / 59 passed / 0 failed / 0 skipped**. These cover 11 queue, 3 queue-consumer concurrency, 8 capture-state, 2 native-fixture release/opt-in guards, 7 readiness/QR/origin/phone/expiry, 20 Worker/R2 and 8 rate/auth gate tests. The release export resolved 1,005 Metro modules. Rate tests exercise real native workerd bindings as well as zero-storage tripwires for missing, throwing, malformed or denied policies.
 - `bash scripts/dev-api.sh` / `npm run dev:api`: local health returned the expected mock/local-R2 response; `npm run smoke` passed after the frozen install. It exercised authenticated immutable upload/replay, pre-upload readiness denial, scoped guest page/download, consent, mock sharing and permanent revocation. All images/numbers were synthetic/test-only; no SMS was sent.

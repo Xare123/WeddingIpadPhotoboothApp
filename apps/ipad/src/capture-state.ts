@@ -6,7 +6,7 @@ export type CaptureState = {
   guestUrl?: string;
 };
 export type CaptureEvent =
-  | { type: 'start' }
+  | { type: 'start'; seconds?: 2 | 3 | 5 | 8 | 10 }
   | { type: 'tick'; attempt: number }
   | { type: 'interrupt' }
   | { type: 'saved'; attempt: number; photoId: string }
@@ -23,7 +23,7 @@ export const createCaptureState = (): CaptureState => ({ phase: 'camera', attemp
 export function captureTransition(state: CaptureState, event: CaptureEvent): CaptureState {
   switch (event.type) {
     case 'start': return state.phase === 'camera'
-      ? { phase: 'countdown', attempt: state.attempt + 1, remaining: 3 } : state;
+      ? { phase: 'countdown', attempt: state.attempt + 1, remaining: event.seconds ?? 3 } : state;
     case 'tick':
       if (state.phase !== 'countdown' || event.attempt !== state.attempt) return state;
       return state.remaining === 1

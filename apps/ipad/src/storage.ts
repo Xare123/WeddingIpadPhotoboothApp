@@ -1,76 +1,89 @@
 import { Directory, File, Paths } from 'expo-file-system';
 import * as SQLite from 'expo-sqlite';
-import { type QueueJob, type QueueStore, uploadJob } from '@wedding-booth/core';
+import { randomUUID } from 'expo-crypto';
+import { type QueueJob, type QueueStore } from '@wedding-booth/core';
+import { relativeDocumentPhotoPath } from './local-paths';
+import { createNativeFilePorts } from './native-file-ports';
+import { LocalRepository, type LocalIndex } from './local-persistence';
+import type { ActiveCapture, ActiveSession, PhotoExportStatus } from './local-types';
+export type { ActiveCapture, ActiveSession, PhotoExportStatus } from './local-types';
 
-export type ActiveCapture = { id: string; fileUri: string; confirmed: boolean; createdAt: number };
 const photos = new Directory(Paths.document, 'photobooth');
-const database = SQLite.openDatabaseAsync('photobooth.db').then(async db => {
-  await db.execAsync(`PRAGMA journal_mode=WAL;
-    CREATE TABLE IF NOT EXISTS jobs (id TEXT PRIMARY KEY NOT NULL, payload TEXT NOT NULL);
-    CREATE TABLE IF NOT EXISTS metadata (key TEXT PRIMARY KEY NOT NULL, payload TEXT NOT NULL);`);
-  return db;
-});
-
+let opening: Promise<SQLite.SQLiteDatabase> | undefined;
+function database(): Promise<SQLite.SQLiteDatabase> {
+  if (!opening) {
+    const attempt = SQLite.openDatabaseAsync('photobooth.db').then(async db => {
+      await db.execAsync(`PRAGMA journal_mode=WAL;
+        CREATE TABLE IF NOT EXISTS jobs (id TEXT PRIMARY KEY NOT NULL, payload TEXT NOT NULL);
+        CREATE TABLE IF NOT EXISTS metadata (key TEXT PRIMARY KEY NOT NULL, payload TEXT NOT NULL);`);
+      return db;
+    });
+    opening = attempt;
+    void attempt.catch(() => { if (opening === attempt) opening = undefined; });
+  }
+  return opening;
+}
+export function documentPhotoURI(path: string): string {
+  if (!/^photobooth\/[A-Za-z0-9_.-]+$/.test(path) || path.includes('..')) throw new Error('Invalid local photo path');
+  return new File(Paths.document, path).uri;
+}
+const relativePhotoPath = relativeDocumentPhotoPath;
+function hydrateJob(job: QueueJob): QueueJob {
+  if (job.kind !== 'upload') return job;
+  let path = relativePhotoPath(job.fileUri);
+  if (!new File(documentPhotoURI(path)).exists) {
+    const alternate = path.endsWith('.draft.jpg') ? path.replace(/\.draft\.jpg$/, '.jpg') : path.replace(/\.jpg$/, '.draft.jpg');
+    if (new File(documentPhotoURI(alternate)).exists) path = alternate;
+  }
+  return { ...job, fileUri: documentPhotoURI(path) };
+}
+function serializeJob(job: QueueJob): QueueJob {
+  return job.kind === 'upload' ? { ...job, fileUri: relativePhotoPath(job.fileUri) } : job;
+}
 export const store: QueueStore = {
   async list() {
-    const rows = await (await database).getAllAsync<{ payload: string }>('SELECT payload FROM jobs');
-    return rows.map(row => JSON.parse(row.payload) as QueueJob);
+    const rows = await (await database()).getAllAsync<{ payload: string }>('SELECT payload FROM jobs');
+    const result: QueueJob[] = [];
+    for (const row of rows) { try { result.push(hydrateJob(JSON.parse(row.payload) as QueueJob)); } catch { /* Originals remain in the file-backed library if an old index row is corrupt. */ } }
+    return result;
   },
   async save(job) {
-    await (await database).runAsync('INSERT INTO jobs(id, payload) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET payload=excluded.payload', job.id, JSON.stringify(job));
+    await (await database()).runAsync('INSERT INTO jobs(id, payload) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET payload=excluded.payload', job.id, JSON.stringify(serializeJob(job)));
   },
 };
-
-export async function getActiveCapture(): Promise<ActiveCapture | null> {
-  const row = await (await database).getFirstAsync<{ payload: string }>('SELECT payload FROM metadata WHERE key = ?', 'active');
-  return row ? JSON.parse(row.payload) as ActiveCapture : null;
-}
-
-export async function setActiveCapture(capture: ActiveCapture | null): Promise<void> {
-  if (capture) {
-    await (await database).runAsync('INSERT INTO metadata(key, payload) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET payload=excluded.payload', 'active', JSON.stringify(capture));
-  } else {
-    await (await database).runAsync('DELETE FROM metadata WHERE key = ?', 'active');
-  }
-}
-
-// Only confirmed .jpg filenames form the upload recovery journal. Draft originals
-// survive retakes and restarts but are never silently uploaded.
-export async function recoverPreservedPhotos(): Promise<void> {
-  photos.create({ idempotent: true, intermediates: true });
-  const known = new Set((await store.list()).filter(job => job.kind === 'upload').map(job => job.photoId));
-  const active = await getActiveCapture();
-  for (const entry of photos.list()) {
-    if (!(entry instanceof File) || !entry.name.endsWith('.jpg') || entry.name.endsWith('.draft.jpg') || entry.size === 0) continue;
-    const id = entry.name.slice(0, -4);
-    if (!known.has(id)) await store.save(uploadJob(id, entry.uri));
-    if (active?.id === id && !active.confirmed) {
-      await setActiveCapture({ ...active, fileUri: entry.uri, confirmed: true });
-    }
-  }
-}
-
+const files = createNativeFilePorts<File>({
+  uri: documentPhotoURI,
+  file: uri => new File(uri),
+  directory: photos,
+  isFile: (entry): entry is File => entry instanceof File,
+});
+const index: LocalIndex = {
+  async read(key) { const row = await (await database()).getFirstAsync<{ payload: string }>('SELECT payload FROM metadata WHERE key = ?', key); return row ? JSON.parse(row.payload) as unknown : null; },
+  async write(key, value) {
+    if (value === null) { await (await database()).runAsync('DELETE FROM metadata WHERE key = ?', key); return; }
+    await (await database()).runAsync('INSERT INTO metadata(key, payload) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET payload=excluded.payload', key, JSON.stringify(value));
+  },
+  async ensureJob(job) {
+    // Recovery cannot overwrite a completed upload while repairing its index.
+    await (await database()).runAsync('INSERT INTO jobs(id, payload) VALUES (?, ?) ON CONFLICT(id) DO NOTHING', job.id, JSON.stringify(serializeJob(job)));
+  },
+};
+const repository = new LocalRepository(files, index, randomUUID);
+export const createSession = (id?: string) => repository.createSession(id);
+export const getActiveSession = () => repository.getActiveSession();
+export const getLocalSession = (id: string) => repository.getSession(id);
+export const saveShot = (session: ActiveSession | string, photoId: string, temporaryUri: string, index?: number) => repository.saveShot(session, photoId, temporaryUri, index);
+export const confirmSession = (session: ActiveSession | string) => repository.confirmSession(session);
+export const clearActiveSession = () => repository.clearActiveSession();
+export const listLocalSessions = () => repository.listLocalSessions();
+export const updatePhotoExport = (sessionId: string, photoId: string, status: PhotoExportStatus) => repository.updateExport(sessionId, photoId, status);
+export const recoverPreservedPhotos = () => repository.recover();
+export const getActiveCapture = () => repository.getActiveCapture();
+export const setActiveCapture = (capture: ActiveCapture | null) => repository.setActiveCapture(capture);
 export async function preserveCapture(id: string, temporaryUri: string): Promise<ActiveCapture> {
-  photos.create({ idempotent: true, intermediates: true });
-  const staging = new File(photos, `${id}.partial`);
-  new File(temporaryUri).copy(staging);
-  if (staging.size === 0) throw new Error('The camera returned an empty image');
-  const original = new File(photos, `${id}.draft.jpg`);
-  staging.move(original);
-  const capture = { id, fileUri: original.uri, confirmed: false, createdAt: Date.now() };
-  await setActiveCapture(capture);
-  return capture;
+  const session = await repository.createSession(id, 1);
+  return (await repository.saveShot(session, id, temporaryUri, 0)).shots[0]!;
 }
-
 export async function confirmCapture(capture: ActiveCapture): Promise<ActiveCapture> {
-  const confirmed = new File(photos, `${capture.id}.jpg`);
-  if (!confirmed.exists) new File(capture.fileUri).move(confirmed);
-  const saved = { ...capture, fileUri: confirmed.uri, confirmed: true };
-  // Journal the confirmed file first; recovery reconstructs the queue if the
-  // process stops between the rename and this database write.
-  if (!(await store.list()).some(job => job.kind === 'upload' && job.id === capture.id)) {
-    await store.save(uploadJob(capture.id, confirmed.uri));
-  }
-  await setActiveCapture(saved);
-  return saved;
+  return (await repository.confirmSession(capture.sessionId ?? capture.id)).shots.find(photo => photo.id === capture.id)!;
 }

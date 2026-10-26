@@ -5,7 +5,7 @@ export type QueueJob = {
   createdAt: number;
   attempts: number;
   nextAttemptAt: number;
-  state: 'pending' | 'complete' | 'mocked';
+  state: 'pending' | 'complete' | 'mocked' | 'test_accepted' | 'uncertain' | 'rejected' | 'expired';
   guestUrl?: string;
   guestExpiresAt?: number;
 } & (
@@ -22,7 +22,7 @@ export interface QueueTransport {
   upload(job: Extract<QueueJob, { kind: 'upload' }>): Promise<{ guestUrl: string; guestExpiresAt?: number } | void>;
   // Implementations must resolve recipientRef from a secure vault, never logs.
   // 'mocked' is a distinct outcome and must never be displayed as sent.
-  share(job: Extract<QueueJob, { kind: 'share' }>): Promise<'accepted' | 'mocked'>;
+  share(job: Extract<QueueJob, { kind: 'share' }>): Promise<'accepted' | 'mocked' | 'test_accepted' | 'uncertain' | 'rejected' | 'expired'>;
 }
 
 export function uploadJob(id: string, fileUri: string, now = Date.now(), sessionId = id): QueueJob {
@@ -49,7 +49,10 @@ export async function drainQueue(
         guest = await transport.upload(job);
       } else {
         if (!job.consentedAt || !job.recipientRef) throw new Error('Consent and secure recipient reference required');
-        if (await transport.share(job) === 'mocked') state = 'mocked';
+        const outcome = await transport.share(job);
+        // Provider acceptance is not delivery. Uncertain sends must not replay:
+        // the server retains its matching session/request guard as well.
+        state = outcome === 'accepted' ? 'complete' : outcome;
       }
       await store.save({ ...job, ...guest, state });
       if (job.kind === 'upload') completedUploads.add(job.id);

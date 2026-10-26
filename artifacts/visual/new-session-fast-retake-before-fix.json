@@ -1,0 +1,14 @@
+{
+  "scope": "Observed browser-native-JSX fast thumbnail intent race before source fix; not iOS proof.",
+  "sourceSHA256": "a23397472b930d3793f5b040a9601f17c699496873393243eb4b481d23fc2ff1",
+  "mockedHealthRequests": [],
+  "unexpectedExternalRequests": [],
+  "errors": [],
+  "expectedRetakeSlot": 3,
+  "retakeTapLabel": "Retake photo 1",
+  "cameraActionAfterFastTap": "Retake photo 1",
+  "changedSlots": [
+    1
+  ],
+  "matchesExplicitThumbnailIntent": false
+}

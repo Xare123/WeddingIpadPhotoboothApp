@@ -1,0 +1,17 @@
+{
+  "scope": "npm audit --omit=dev after frozen official media-library addition",
+  "exit_code": 1,
+  "vulnerability_counts": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 5,
+    "critical": 0,
+    "total": 5
+  },
+  "underlying_advisories": [
+    "https://github.com/advisories/GHSA-86w9-cpqp-85rv",
+    "https://github.com/advisories/GHSA-mrhx-c7xc-m3w5"
+  ],
+  "resolution": "No compatible fix applied; Expo44 downgrade/Zod major override not forced. See docs/DEPENDENCIES.md."
+}

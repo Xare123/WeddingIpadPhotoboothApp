@@ -1,28 +1,25 @@
 {
-  "scope": "Linux release-mode iOS Hermes JavaScript source map; successful unsigned native Release CI build is separate and is not a native-binary security audit",
-  "app_source_sha256": "1004bb5a350a47402191489d54e77a4ea275caefc3634419d8d0cd284747ea76",
-  "source_module_count": 992,
+  "scope": "Linux final-source release-mode iOS Hermes source map; not native runtime or native-binary security audit",
+  "app_source_sha256": "a2d8e4f62b855c54e489d8311ba6fb794b59f3e7a71e9dd521827332ab6d5548",
+  "source_module_count": 1005,
   "findings": {
     "node-forge": [],
-    "@expo/cli": [
-      "/node_modules/@expo/cli/build/metro-require/require.js"
-    ],
     "@expo/code-signing-certificates": [],
     "node_modules/zod/": [],
     "react-native-web": [],
     "react-dom": []
   },
   "source_map_sha256": [
-    "02553ab7674a19bc22249645bbd1d05c29d28cfaa683d46489e454eb59eac99a"
+    "d0129b50a1b67e9cda013791c40e1c53b96ed377d68bb6163b0976557709a98f"
   ],
-  "worker_bundle_sha256": "fa45361fd720d716df92efcc8f4917d53fbba3b55c3d1c00c463604dce8ca870",
+  "native_js_bundle_sha256": "d8e8b1dca3cc1ba4c2bcf2bb94eb8531a86b07d350cdc1255173e4e909a613ee",
+  "worker_bundle_sha256": "5cc1e7390ecebc05d7815bf0b7819c5aca2478f6db105adac81d10cd9f3672c9",
   "remaining_cli_advisories": 2,
   "audit_dependency_entries_high": 5,
-  "fixture_boundary": "Synthetic JPEG remains an inert bundled asset. Native test behavior requires __DEV__ and explicit opt-in; guards tested separately.",
+  "fixture_boundary": "Native fixture requires __DEV__ plus explicit opt-in. Fixed generated attract art is separate from guest originals.",
   "native_release_build": {
-    "passed": true,
-    "signed": false,
-    "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40258141808",
+    "current_source_passed": false,
+    "status": "awaiting fresh exact-commit hosted Release verification",
     "native_binary_security_audited": false
   }
 }

@@ -1,477 +1,543 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  AccessibilityInfo, Animated, AppState, Easing, Image, Linking, Modal, Platform, Pressable, SafeAreaView, ScrollView,
-  StyleSheet, Text, TextInput, useWindowDimensions, View,
+  AccessibilityInfo, Animated, AppState, Easing, Image, ImageBackground, Linking, Modal,
+  Platform, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Switch, Text, TextInput,
+  useWindowDimensions, View,
 } from 'react-native';
+import type { ScrollViewInstance } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { randomUUID } from 'expo-crypto';
 import QRCode from 'react-native-qrcode-svg';
 import type { QueueJob } from '@wedding-booth/core';
-import { clearConnection, loadConnection, saveConnection } from './src/config';
-import { formatGuestExpiry, qrForJob } from './src/sharing';
-import { queueMockShare } from './src/recipients';
+import { SmsShare } from './src/SmsShare';
 import { authenticateHost } from './src/host-auth';
-import { captureTransition, createCaptureState } from './src/capture-state';
+import { loadConnection, loadHostPreferences, provisionBooth, saveHostPreferences } from './src/config';
+import { formatGuestExpiry, sessionGuestPage } from './src/sharing';
 import {
-  confirmCapture, getActiveCapture, preserveCapture, recoverPreservedPhotos,
-  setActiveCapture, store, type ActiveCapture,
+  clearActiveSession, confirmSession, createSession, getActiveCapture, getActiveSession,
+  listLocalSessions, recoverPreservedPhotos, saveShot, store, type ActiveCapture, type ActiveSession,
 } from './src/storage';
+import { exportSessionPhotos, getPhotoLibraryCapability } from './src/photo-library';
 import { retryPendingNow, syncPending } from './src/sync';
-import { interruptNativeFixtureConfirmation, nativeFixtureEnabled, nativeFixtureImage, nativeFixturePhotoId, nativeFixtureStorageStatus, takeNativeFixturePhoto } from './src/native-fixture';
+import { nativeFixtureEnabled, nativeFixtureImage, nativeFixturePhotoId, nativeFixtureStorageStatus, takeNativeFixturePhoto } from './src/native-fixture';
+import { createReviewSelection } from './src/review-selection';
+import { createSessionCaptureRunner, nextPhotoSlot, screenForSession, sessionIsComplete, type PendingPhoto } from './src/session-capture';
 
 const pause = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
+const TIMERS = [2, 3, 5, 8, 10] as const;
+type Seconds = typeof TIMERS[number];
+type Screen = 'attract' | 'camera' | 'review' | 'share';
+type HostPage = 'controls' | 'library' | 'setup';
+
+function photoSlot(photo: ActiveCapture, index: number) { return photo.shotIndex ?? index; }
+function needsPhotosExport(session: ActiveSession): boolean {
+  return session.shots.some(photo => photo.exportStatus !== 'saved' && String(photo.exportStatus) !== 'uncertain');
+}
+function photosExportTitle(session: ActiveSession): string {
+  if (!session.shots.length) return 'No photos to export';
+  if (needsPhotosExport(session)) return 'Export copies to Photos';
+  if (session.shots.some(photo => String(photo.exportStatus) === 'uncertain')) return 'Check Photos for unconfirmed copies';
+  return 'All copies are saved in Photos';
+}
+function photosStatus(session: ActiveSession | null): string {
+  if (!session?.shots.length) return 'Photos export is separate from your saved originals.';
+  const saved = session.shots.filter(photo => photo.exportStatus === 'saved').length;
+  if (session.shots.some(photo => String(photo.exportStatus) === 'uncertain')) return 'Photos result unconfirmed · check Photos before retrying';
+  if (saved === session.shots.length) return `${saved} of ${session.shots.length} also saved in Photos`;
+  if (session.shots.some(photo => photo.exportStatus === 'denied')) return 'Photos access needed · originals are safe here';
+  if (session.shots.some(photo => photo.exportStatus === 'failed')) return 'Photos export needs a retry · originals are safe here';
+  if (session.shots.some(photo => photo.exportStatus === 'unavailable')) return 'Photos unavailable · originals are safe here';
+  return saved ? `${saved} of ${session.shots.length} saved in Photos` : 'Not yet exported to Photos';
+}
+
+function Button({ title, onPress, disabled, secondary, light, testID }: {
+  title: string; onPress(): void; disabled?: boolean; secondary?: boolean; light?: boolean; testID?: string;
+}) {
+  return <Pressable accessibilityRole="button" accessibilityState={{ disabled: !!disabled }} testID={testID}
+    onPress={onPress} disabled={disabled} style={({ pressed }) => [
+      styles.button, secondary && styles.secondaryButton, light && styles.lightButton,
+      disabled && styles.disabled, pressed && !disabled && styles.pressed,
+    ]}><Text style={[styles.buttonText, secondary && styles.secondaryButtonText, light && styles.lightButtonText]}>{title}</Text></Pressable>;
+}
+
+function PhotoThumbnail({ photo, slot, active, onSelect, dark, reduceMotion, compact }: {
+  photo?: ActiveCapture; slot: number; active: boolean; onSelect?(slot: number): void; dark: boolean; reduceMotion: boolean; compact?: boolean;
+}) {
+  const reveal = useRef(new Animated.Value(1)).current;
+  const previous = useRef(photo?.id);
+  useEffect(() => {
+    reveal.stopAnimation();
+    const changed = !!photo && previous.current !== photo.id;
+    previous.current = photo?.id;
+    if (reduceMotion || !changed) { reveal.setValue(1); return; }
+    reveal.setValue(0);
+    const animation = Animated.timing(reveal, { toValue: 1, duration: 200, easing: Easing.out(Easing.quad), useNativeDriver: true });
+    animation.start(); return () => animation.stop();
+  }, [photo?.id, reduceMotion, reveal]);
+  return <Pressable accessibilityRole="button" accessibilityLabel={`Photo ${slot + 1}${photo ? ', saved on this iPad' : ', not taken'}`}
+    accessibilityState={{ selected: active, disabled: !photo || !onSelect }} testID={`photo-thumbnail-${slot + 1}`}
+    disabled={!photo || !onSelect} onPress={() => onSelect?.(slot)} style={[styles.thumbnail, compact && styles.thumbnailCompact, !dark && styles.thumbnailLight, active && styles.thumbnailSelected]}>
+    {photo ? <Animated.Image source={{ uri: photo.fileUri }} style={[StyleSheet.absoluteFill, { opacity: reveal, transform: [{ scale: reveal.interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] }) }] }]} resizeMode="cover" />
+      : <Text style={[styles.thumbnailNumber, !dark && styles.thumbnailNumberLight]}>{slot + 1}</Text>}
+    {photo && <View style={styles.thumbnailTick}><Text style={styles.thumbnailTickText}>✓</Text></View>}
+  </Pressable>;
+}
+
+function Thumbnails({ session, active, onSelect, dark = true, reduceMotion = true, compact = false }: {
+  session: ActiveSession; active: number; onSelect?(slot: number): void; dark?: boolean; reduceMotion?: boolean; compact?: boolean;
+}) {
+  return <View style={[styles.thumbnails, compact && styles.thumbnailsCompact]}>{Array.from({ length: session.targetCount }, (_, slot) => <PhotoThumbnail key={slot}
+    photo={session.shots.find((shot, index) => photoSlot(shot, index) === slot)} slot={slot} active={active === slot}
+    onSelect={onSelect} dark={dark} reduceMotion={reduceMotion} compact={compact} />)}</View>;
+}
 
 export default function App() {
   const { width, height } = useWindowDimensions();
-  const landscape = width > height * 1.15;
-  const camera = useRef<CameraView>(null);
-  const flow = useRef(createCaptureState());
-  const reveal = useRef(new Animated.Value(1)).current;
-  const countdownScale = useRef(new Animated.Value(1)).current;
-  const [reduceMotion, setReduceMotion] = useState(true);
-  const mounted = useRef(true);
+  const landscape = width > height;
   const [permission, requestPermission] = useCameraPermissions();
-  const [cameraReady, setCameraReady] = useState(false);
+  const camera = useRef<CameraView>(null);
+  const review = useRef<ScrollViewInstance>(null);
+  const reviewSelection = useRef(createReviewSelection());
+  const reviewWidthRef = useRef(width);
+  const mounted = useRef(true);
+  const sessionRef = useRef<ActiveSession | null>(null);
+  const actionLock = useRef(false);
+  const exportLock = useRef(false);
+  const pairingLock = useRef(false);
+  const screenFade = useRef(new Animated.Value(1)).current;
+  const countdownReveal = useRef(new Animated.Value(1)).current;
+  const exposureFlash = useRef(new Animated.Value(0)).current;
+  const reduceMotionRef = useRef(true);
+  const [screen, setScreen] = useState<Screen>('attract');
+  const [session, setSession] = useState<ActiveSession | null>(null);
   const [initialized, setInitialized] = useState(false);
+  const [cameraReady, setCameraReady] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [capture, setCapture] = useState<ActiveCapture | null>(null);
-  const [jobs, setJobs] = useState<QueueJob[]>([]);
   const [countdown, setCountdown] = useState<number>();
+  const [saving, setSaving] = useState(false);
+  const [activeSlot, setActiveSlot] = useState(0);
+  const [focusedSlot, setFocusedSlot] = useState(0);
+  const [retakeSlot, setRetakeSlot] = useState<number>();
+  const [reviewWidth, setReviewWidth] = useState(width);
+  const [failedPhoto, setFailedPhoto] = useState<PendingPhoto>();
   const [message, setMessage] = useState('');
+  const [hostDiagnostic, setHostDiagnostic] = useState('');
+  const [jobs, setJobs] = useState<QueueJob[]>([]);
   const [now, setNow] = useState(Date.now());
-  const [settingsVisible, setSettingsVisible] = useState(false);
-  const [origin, setOrigin] = useState('');
-  const [token, setToken] = useState('');
-  const [configured, setConfigured] = useState(false);
-  const [settingsMessage, setSettingsMessage] = useState('');
-  const [settingsBusy, setSettingsBusy] = useState(false);
-  const [phoneVisible, setPhoneVisible] = useState(false);
-  const [phone, setPhone] = useState('');
-  const [consent, setConsent] = useState(false);
-  const [shareBusy, setShareBusy] = useState(false);
-  const [shareMessage, setShareMessage] = useState('');
+  const [reduceMotion, setReduceMotion] = useState(true);
+  const [foreground, setForeground] = useState(AppState.currentState === 'active');
+  const [seconds, setSeconds] = useState<Seconds>(3);
+  const [exportEnabled, setExportEnabled] = useState(true);
+  const preferencesRef = useRef({ countdownSeconds: 3 as Seconds, photosExportEnabled: true });
+  const [hostVisible, setHostVisible] = useState(false);
+  const [hostPage, setHostPage] = useState<HostPage>('controls');
+  const [hostBusy, setHostBusy] = useState(false);
+  const [hostMessage, setHostMessage] = useState('');
+  const [paired, setPaired] = useState(false);
+  const [pairingCode, setPairingCode] = useState('');
+  const [scanningSetup, setScanningSetup] = useState(false);
+  const [savedSessions, setSavedSessions] = useState<ActiveSession[]>([]);
+  const [librarySession, setLibrarySession] = useState<ActiveSession | null>(null);
+  const [exporting, setExporting] = useState(false);
+  const [libraryPermission, setLibraryPermission] = useState('undetermined');
   const [fixtureStatus, setFixtureStatus] = useState('');
-  const [fixtureCheckpoint, setFixtureCheckpoint] = useState('');
 
-  useEffect(() => {
-    let alive = true;
-    void AccessibilityInfo.isReduceMotionEnabled().then(enabled => { if (alive) setReduceMotion(enabled); });
-    const listener = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduceMotion);
-    return () => { alive = false; listener.remove(); };
-  }, []);
-
-  function cancelCountdown() {
-    if (flow.current.phase !== 'countdown') return;
-    flow.current = captureTransition(flow.current, { type: 'interrupt' });
-    setCountdown(undefined);
-    setBusy(false);
+  function focusReview(slot: number) {
+    reviewSelection.current.select(slot);
+    setFocusedSlot(slot);
+  }
+  function adoptSession(value: ActiveSession | null) {
+    sessionRef.current = value;
+    if (value?.storageWarning === 'index-repair-pending') setHostDiagnostic('Originals and the recovery journal are saved. The sharing index is waiting for repair.');
+    if (mounted.current) setSession(value);
+  }
+  function diagnose(error: unknown) {
+    setHostDiagnostic(error instanceof Error ? error.message : 'An operation could not finish.');
+  }
+  async function refreshQueue() {
+    try {
+      const values = await store.list();
+      if (mounted.current) { setJobs(values); setNow(Date.now()); }
+      if (nativeFixtureEnabled && mounted.current) setFixtureStatus(nativeFixtureStorageStatus(await getActiveCapture(), values));
+    } catch (error) { diagnose(error); /* Queue indexing must never disable durable local capture. */ }
+  }
+  async function refreshLibrary() {
+    const values = await listLocalSessions();
+    if (mounted.current) setSavedSessions([...values].sort((a, b) => b.createdAt - a.createdAt));
+  }
+  async function refreshCapability() {
+    try { setLibraryPermission((await getPhotoLibraryCapability()).permission); }
+    catch { setLibraryPermission('unavailable'); }
+  }
+  async function retrySharing(immediate = false) {
+    try { await (immediate ? retryPendingNow() : syncPending()); }
+    catch (error) { diagnose(error); }
+    await refreshQueue();
+  }
+  async function exportPhotos(value: ActiveSession, requestPermission: boolean) {
+    if (exportLock.current) return;
+    exportLock.current = true;
+    setExporting(true);
+    try {
+      const updated = await exportSessionPhotos(value, { requestPermission });
+      if (sessionRef.current?.id === updated.id) adoptSession(updated);
+      if (librarySession?.id === updated.id) setLibrarySession(updated);
+      await refreshLibrary();
+      await refreshCapability();
+    } catch (error) {
+      diagnose(error);
+      setHostMessage('Photos export could not finish. Your originals remain on this iPad.');
+    } finally { exportLock.current = false; setExporting(false); }
   }
 
-  async function refresh() {
-    const list = await store.list();
-    if (mounted.current) {
-      setJobs(list); setNow(Date.now());
-      if (nativeFixtureEnabled) setFixtureStatus(nativeFixtureStorageStatus(await getActiveCapture(), list));
+  async function persistPhoto(value: ActiveSession, photo: PendingPhoto): Promise<ActiveSession> {
+    try { return await saveShot(value, photo.id, photo.uri, photo.slot); }
+    catch (error) {
+      // A verified filesystem journal can survive an index/database error. Ask
+      // storage to recover before presenting an exposed photo as unsaved.
+      const recovered = await getActiveSession().catch(() => null);
+      if (recovered?.id === value.id && recovered.shots.some((shot, index) => shot.id === photo.id && photoSlot(shot, index) === photo.slot)) return recovered;
+      throw error;
     }
   }
-  async function retry(immediate = false) {
-    await (immediate ? retryPendingNow() : syncPending());
-    await refresh();
-  }
+
+  const runner = useRef<ReturnType<typeof createSessionCaptureRunner<ActiveSession>> | null>(null);
+  if (!runner.current) runner.current = createSessionCaptureRunner<ActiveSession>({
+    wait: pause,
+    isActive: () => AppState.currentState === 'active',
+    async capture() {
+      const photo = nativeFixtureEnabled ? await takeNativeFixturePhoto() : await camera.current?.takePictureAsync({ quality: 1, skipProcessing: false });
+      if (!photo?.uri) throw new Error('The camera did not return a photo.');
+      if (!reduceMotionRef.current) {
+        exposureFlash.stopAnimation(); exposureFlash.setValue(0.2);
+        Animated.timing(exposureFlash, { toValue: 0, duration: 130, useNativeDriver: true }).start();
+      }
+      const id = randomUUID();
+      return { id: nativeFixtureEnabled ? nativeFixturePhotoId(id) : id, uri: photo.uri };
+    },
+    save: persistPhoto,
+    onEvent(event) {
+      if (!mounted.current) return;
+      if (event.kind === 'countdown') {
+        setBusy(true); setSaving(false); setActiveSlot(event.slot); setCountdown(event.remaining);
+      } else if (event.kind === 'saving') {
+        setCountdown(undefined); setSaving(true);
+      } else if (event.kind === 'saved') {
+        adoptSession(event.session); setFailedPhoto(undefined); setSaving(false);
+        void refreshQueue();
+      } else if (event.kind === 'done') {
+        setBusy(false); setSaving(false); setCountdown(undefined); setRetakeSlot(undefined);
+        focusReview(event.retake ? event.slot : 0); setScreen('review'); setCameraReady(false);
+        if (preferencesRef.current.photosExportEnabled && sessionIsComplete(event.session)) void exportPhotos(event.session, true);
+      } else if (event.kind === 'paused') {
+        setBusy(false); setSaving(false); setCountdown(undefined);
+      } else if (event.kind === 'error') {
+        setBusy(false); setSaving(false); setCountdown(undefined); setFailedPhoto(event.photo);
+        diagnose(event.error);
+        setMessage(event.photo ? 'This photo has not finished saving. Keep the booth open and retry saving.' : 'The camera could not finish this photo. Your earlier photos are safe. Try again.');
+      }
+    },
+  });
+
   useEffect(() => {
     mounted.current = true;
     void (async () => {
       try {
-        await recoverPreservedPhotos();
-        const active = await getActiveCapture();
+        try { await recoverPreservedPhotos(); } catch (error) { diagnose(error); }
+        const active = await getActiveSession();
         if (!mounted.current) return;
-        setCapture(active);
-        if (active) flow.current = captureTransition(flow.current, { type: 'restore', photoId: active.id, confirmed: active.confirmed });
-        await refresh();
+        adoptSession(active); setScreen(screenForSession(active)); setActiveSlot(active ? nextPhotoSlot(active) ?? 0 : 0);
         setInitialized(true);
-        // A Keychain/configuration problem must never prevent offline capture.
+        await refreshQueue();
         try {
-          const config = await loadConnection();
-          setConfigured(!!config);
-          setOrigin(config?.origin ?? '');
-        } catch {
-          setMessage('Sharing settings could not open. You can still take photos offline.');
-        }
-        void retry().catch(() => setMessage('Your photo is saved on this iPad. Sharing will retry.'));
-      } catch {
-        setMessage('Local photo storage could not open. Ask the booth host for help.');
-      }
+          const prefs = await loadHostPreferences();
+          preferencesRef.current = prefs; setSeconds(prefs.countdownSeconds); setExportEnabled(prefs.photosExportEnabled);
+        } catch (error) { diagnose(error); }
+        try { setPaired(!!await loadConnection()); } catch (error) { diagnose(error); }
+        void refreshCapability();
+        void retrySharing();
+      } catch (error) { diagnose(error); setMessage('Local storage needs attention. Please ask the host before starting.'); }
     })();
-    const subscription = AppState.addEventListener('change', state => {
-      if (state === 'active') {
-        void retry().catch(() => setMessage('Your photo is saved on this iPad. Sharing will retry.'));
-      } else {
-        // A countdown interrupted by another app must never take a surprise photo.
-        cancelCountdown();
-      }
+    let alive = true;
+    void AccessibilityInfo.isReduceMotionEnabled().then(value => { if (alive) setReduceMotion(value); }).catch(() => {});
+    const motion = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduceMotion);
+    const lifecycle = AppState.addEventListener('change', state => {
+      setForeground(state === 'active');
+      if (state !== 'active') { setScanningSetup(false); setPairingCode(''); runner.current?.interrupt(); screenFade.stopAnimation(); screenFade.setValue(1); countdownReveal.stopAnimation(); exposureFlash.stopAnimation(); exposureFlash.setValue(0); }
+      else { void retrySharing(); void refreshCapability(); }
     });
     const timer = setInterval(() => {
-      if (AppState.currentState === 'active') void retry().catch(() => {});
+      if (AppState.currentState === 'active') { setNow(Date.now()); void retrySharing(); }
     }, 15_000);
-    return () => {
-      mounted.current = false;
-      flow.current = captureTransition(flow.current, { type: 'interrupt' });
-      subscription.remove();
-      clearInterval(timer);
-    };
+    return () => { mounted.current = false; alive = false; runner.current?.interrupt(); screenFade.stopAnimation(); countdownReveal.stopAnimation(); exposureFlash.stopAnimation(); motion.remove(); lifecycle.remove(); clearInterval(timer); };
   }, []);
 
-  const currentJob = capture?.confirmed ? jobs.find(job => job.kind === 'upload' && job.photoId === capture.id) : undefined;
-  const qr = qrForJob(currentJob, now);
-  const expiryLabel = formatGuestExpiry(currentJob?.guestExpiresAt);
-  const currentShare = capture?.confirmed ? jobs.find(job => job.kind === 'share' && job.sessionId === capture.id) : undefined;
+  useEffect(() => { reduceMotionRef.current = reduceMotion; if (reduceMotion) { exposureFlash.stopAnimation(); exposureFlash.setValue(0); } }, [reduceMotion, exposureFlash]);
+
+  const guestPage = session?.confirmed ? sessionGuestPage(session, jobs, now) : null;
+  const expiry = formatGuestExpiry(guestPage?.expiresAt);
   const pendingCount = jobs.filter(job => job.kind === 'upload' && job.state === 'pending').length;
-
   useEffect(() => {
-    if (!currentJob?.guestExpiresAt || currentJob.guestExpiresAt <= Date.now()) return;
-    const timer = setTimeout(() => setNow(Date.now()), Math.min(currentJob.guestExpiresAt - Date.now() + 1, 2_147_483_647));
+    if (!guestPage?.expiresAt) return;
+    const timer = setTimeout(() => setNow(Date.now()), Math.max(0, Math.min(guestPage.expiresAt - Date.now() + 1, 2_147_483_647)));
     return () => clearTimeout(timer);
-  }, [currentJob?.guestExpiresAt]);
-
+  }, [guestPage?.expiresAt]);
   useEffect(() => {
-    if (qr && capture) flow.current = captureTransition(flow.current, { type: 'ready', photoId: capture.id, guestUrl: qr });
-    reveal.stopAnimation();
-    if (reduceMotion) { reveal.setValue(1); return; }
-    reveal.setValue(0);
-    const animation = Animated.timing(reveal, { toValue: 1, duration: 280, easing: Easing.out(Easing.quad), useNativeDriver: true });
-    animation.start();
-    return () => animation.stop();
-  }, [capture?.id, capture?.confirmed, qr, reduceMotion, reveal]);
-
+    screenFade.stopAnimation();
+    if (reduceMotion) { screenFade.setValue(1); return; }
+    screenFade.setValue(0);
+    const transition = Animated.timing(screenFade, { toValue: 1, duration: 220, easing: Easing.out(Easing.quad), useNativeDriver: true });
+    transition.start(); return () => transition.stop();
+  }, [screen, reduceMotion, screenFade]);
   useEffect(() => {
-    countdownScale.stopAnimation();
-    if (reduceMotion || countdown === undefined) { countdownScale.setValue(1); return; }
-    countdownScale.setValue(0.92);
-    const animation = Animated.timing(countdownScale, { toValue: 1, duration: 350, easing: Easing.out(Easing.quad), useNativeDriver: true });
-    animation.start();
-    return () => animation.stop();
-  }, [countdown, reduceMotion, countdownScale]);
+    countdownReveal.stopAnimation();
+    if (reduceMotion || countdown === undefined) { countdownReveal.setValue(1); return; }
+    countdownReveal.setValue(0);
+    const animation = Animated.timing(countdownReveal, { toValue: 1, duration: 200, easing: Easing.out(Easing.quad), useNativeDriver: true });
+    animation.start(); return () => animation.stop();
+  }, [countdown, reduceMotion, countdownReveal]);
+  useEffect(() => { if (Platform.OS === 'ios' && countdown !== undefined) AccessibilityInfo.announceForAccessibility(`Photo ${activeSlot + 1}, in ${countdown}`); }, [countdown, activeSlot]);
+  useEffect(() => { if (Platform.OS === 'ios' && message) AccessibilityInfo.announceForAccessibility(message); }, [message]);
+  useEffect(() => { if (Platform.OS === 'ios' && guestPage) AccessibilityInfo.announceForAccessibility(`All ${session?.shots.length ?? 5} photos are ready. Scan the QR code to open your photo page.`); }, [!!guestPage]);
+  useEffect(() => { if (Platform.OS === 'ios' && hostVisible && hostMessage) AccessibilityInfo.announceForAccessibility(hostMessage); }, [hostVisible, hostMessage]);
 
-  useEffect(() => {
-    if (Platform.OS === 'ios' && countdown !== undefined) AccessibilityInfo.announceForAccessibility(`Photo in ${countdown}`);
-  }, [countdown]);
-
-  useEffect(() => {
-    if (Platform.OS === 'ios' && message) AccessibilityInfo.announceForAccessibility(message);
-  }, [message]);
-
-  useEffect(() => {
-    if (Platform.OS === 'ios' && settingsVisible && settingsMessage) AccessibilityInfo.announceForAccessibility(settingsMessage);
-  }, [settingsVisible, settingsMessage]);
-
-  useEffect(() => {
-    if (Platform.OS !== 'ios' || !capture?.confirmed) return;
-    AccessibilityInfo.announceForAccessibility(qr ? 'Your private photo page is ready. Scan the QR code with your phone.' : 'Your photo is saved on this iPad.');
-  }, [capture?.id, capture?.confirmed, !!qr]);
-
-  async function takePhoto() {
-    if (busy || !cameraReady || !initialized || capture) return;
-    const started = captureTransition(flow.current, { type: 'start' });
-    if (started === flow.current) return;
-    flow.current = started;
-    const attempt = started.attempt;
-    setBusy(true);
+  async function startSession() {
+    if (actionLock.current || !initialized) return;
+    actionLock.current = true; setBusy(true); setMessage('');
+    try {
+      const value = sessionRef.current ?? await createSession();
+      adoptSession(value); setActiveSlot(nextPhotoSlot(value) ?? 0); setCameraReady(false); setScreen(screenForSession(value) === 'attract' ? 'camera' : screenForSession(value));
+    } catch (error) { diagnose(error); setMessage('We could not start saving a session. Please ask the host to check this iPad.'); }
+    finally { actionLock.current = false; setBusy(false); }
+  }
+  async function startPhotos() {
+    if (!sessionRef.current || !cameraReady || runner.current?.isBusy() || actionLock.current || failedPhoto) return;
     setMessage('');
-    try {
-      while (flow.current.phase === 'countdown' && flow.current.attempt === attempt) {
-        setCountdown(flow.current.remaining);
-        await pause(1_000);
-        if (AppState.currentState !== 'active') flow.current = captureTransition(flow.current, { type: 'interrupt' });
-        if (attempt !== flow.current.attempt) return;
-        flow.current = captureTransition(flow.current, { type: 'tick', attempt });
-      }
-      if (flow.current.phase !== 'saving' || flow.current.attempt !== attempt) return;
-      setCountdown(undefined);
-      const photo = nativeFixtureEnabled ? await takeNativeFixturePhoto()
-        : await camera.current?.takePictureAsync({ quality: 1, skipProcessing: false });
-      if (!photo?.uri) throw new Error('No photo');
-      const id = randomUUID();
-      const saved = await preserveCapture(nativeFixtureEnabled ? nativeFixturePhotoId(id) : id, photo.uri);
-      flow.current = captureTransition(flow.current, { type: 'saved', attempt, photoId: saved.id });
-      if (mounted.current) { setCapture(saved); setCameraReady(false); }
-      if (nativeFixtureEnabled) await refresh();
-    } catch {
-      flow.current = captureTransition(flow.current, { type: 'failed', attempt });
-      if (mounted.current) {
-        setBusy(false);
-        setMessage('Could not save your photo. Ask the booth host to check storage, then try again.');
-      }
-    } finally {
-      // A canceled timer may finish after a new countdown has started. Only
-      // the current attempt owns these UI flags.
-      if (mounted.current && flow.current.attempt === attempt) { setBusy(false); setCountdown(undefined); }
-    }
+    await runner.current?.run(sessionRef.current, { seconds: preferencesRef.current.countdownSeconds, ...(retakeSlot !== undefined ? { retakeSlot } : {}) });
+    if (mounted.current && !runner.current?.isBusy()) { setBusy(false); setSaving(false); setCountdown(undefined); }
   }
-
-  async function usePhoto() {
-    if (!capture || capture.confirmed || busy) return;
-    setBusy(true);
-    setMessage('');
+  function cancelPhotos() { runner.current?.cancel(); }
+  async function retrySave() {
+    if (!failedPhoto || !sessionRef.current || actionLock.current || runner.current?.isBusy()) return;
+    actionLock.current = true; setBusy(true); setSaving(true);
     try {
-      const saved = await confirmCapture(capture);
-      flow.current = captureTransition(flow.current, { type: 'confirm', photoId: saved.id });
-      setCapture(saved);
-      await refresh();
-      void retry(true).catch(() => setMessage('Saved on this iPad. Sharing will retry when the connection returns.'));
-    } catch {
-      // The confirmed-file journal can recover even if the database write failed.
-      try {
-        await recoverPreservedPhotos();
-        const recovered = await getActiveCapture();
-        setCapture(recovered);
-        if (recovered) flow.current = captureTransition(flow.current, { type: 'restore', photoId: recovered.id, confirmed: recovered.confirmed });
-        await refresh();
-      } catch { /* Keep the current preview visible for the host. */ }
-      setMessage('Your original remains on this iPad. Ask the booth host to check storage before continuing.');
-    } finally { setBusy(false); }
+      const updated = await persistPhoto(sessionRef.current, failedPhoto);
+      adoptSession(updated); setFailedPhoto(undefined); setMessage(''); setActiveSlot(nextPhotoSlot(updated) ?? failedPhoto.slot);
+      if (retakeSlot !== undefined || sessionIsComplete(updated)) { focusReview(failedPhoto.slot); setRetakeSlot(undefined); setCameraReady(false); setScreen('review'); }
+      await refreshQueue();
+    } catch (error) { diagnose(error); setMessage('Saving still needs attention. Keep this session open and ask the host.'); }
+    finally { actionLock.current = false; setBusy(false); setSaving(false); }
   }
-
-  async function startAgain() {
-    if (busy) return;
-    setBusy(true);
+  function selectReview(slot: number) {
+    const value = sessionRef.current;
+    if (!value || busy || saving) return;
+    const index = value.shots.findIndex((photo, i) => photoSlot(photo, i) === slot);
+    if (index < 0) return;
+    // Reserve before React renders or any scrollTo callback can run.
+    focusReview(slot); setScreen('review'); setCameraReady(false);
+    requestAnimationFrame(() => { if (reviewSelection.current.isTarget(slot)) review.current?.scrollTo({ x: index * reviewWidthRef.current, animated: !reduceMotion }); });
+  }
+  function reviewSlots() { return sessionRef.current?.shots.map(photoSlot) ?? []; }
+  function updateReviewSelection(offset: number) {
+    setFocusedSlot(reviewSelection.current.scroll(offset, reviewWidthRef.current, reviewSlots()));
+  }
+  function beginReviewDrag(offset?: number) {
+    setFocusedSlot(reviewSelection.current.beginDrag(reviewWidthRef.current, reviewSlots(), offset));
+  }
+  function retakePhoto() {
+    const value = sessionRef.current;
+    if (!value || value.confirmed || busy || exporting) return;
+    // Read synchronous intent, never a potentially stale React render closure.
+    const slot = reviewSelection.current.current();
+    if (!value.shots.some((photo, index) => photoSlot(photo, index) === slot)) return;
+    setRetakeSlot(slot); setActiveSlot(slot); setCameraReady(false); setMessage(''); setScreen('camera');
+  }
+  function leaveRetake() {
+    if (saving || failedPhoto) return;
+    cancelPhotos(); setRetakeSlot(undefined); setCameraReady(false); setScreen('review');
+  }
+  async function keepSession() {
+    const value = sessionRef.current;
+    if (!value || !sessionIsComplete(value) || actionLock.current || runner.current?.isBusy()) return;
+    actionLock.current = true; setBusy(true); setMessage('');
     try {
-      // Clear the persisted guest selection before the UI. Pending uploads and
-      // originals remain durable, while the next guest sees no previous QR.
-      await setActiveCapture(null);
-      flow.current = captureTransition(flow.current, { type: 'reset' });
-      setCapture(null);
-      setCameraReady(false);
-      setMessage('');
-      setPhone('');
-      setConsent(false);
-      setPhoneVisible(false);
-      setShareMessage('');
-      if (nativeFixtureEnabled) { setFixtureCheckpoint(''); await refresh(); }
-    } catch { setMessage('Could not reset this session. Ask the booth host for help.'); }
-    finally { setBusy(false); }
+      const updated = await confirmSession(value);
+      adoptSession(updated); setScreen('share'); setCameraReady(false); await refreshQueue(); void retrySharing(true);
+    } catch (error) { diagnose(error); setMessage('Your originals are safe here. Sharing setup needs a retry; keep this session open.'); }
+    finally { actionLock.current = false; setBusy(false); }
   }
-
-  async function openSettings() {
-    if (busy || shareBusy || settingsBusy) return;
-    setSettingsBusy(true);
-    try { await authenticateHost(); }
-    catch (error) { setMessage(error instanceof Error ? error.message : 'Host authentication is unavailable.'); setSettingsBusy(false); return; }
-    setSettingsBusy(false);
-    setToken('');
-    setSettingsMessage('');
+  async function nextGuests() {
+    if (actionLock.current || runner.current?.isBusy()) return;
+    actionLock.current = true; setBusy(true);
     try {
-      const config = await loadConnection();
-      setOrigin(config?.origin ?? '');
-      setConfigured(!!config);
-    } catch { setSettingsMessage('Could not read the device connection settings.'); }
-    setSettingsVisible(true);
+      await clearActiveSession(); adoptSession(null); setJobs([]); setScreen('attract'); focusReview(0); setActiveSlot(0); setRetakeSlot(undefined); setFailedPhoto(undefined); setMessage(''); setCameraReady(false);
+      void refreshQueue();
+    } catch (error) { diagnose(error); setMessage('Please ask the host to reset this screen. Your originals remain safe.'); }
+    finally { actionLock.current = false; setBusy(false); }
   }
-
-  async function saveSettings() {
-    setSettingsBusy(true);
+  async function openHost() {
+    if (hostBusy || busy || saving) return;
+    setHostBusy(true);
+    try {
+      await authenticateHost(); setCameraReady(false); setScanningSetup(false); setHostPage('controls'); setHostMessage(''); setHostVisible(true); setPairingCode('');
+      await refreshLibrary(); await refreshCapability();
+      try { setPaired(!!await loadConnection()); } catch (error) { diagnose(error); }
+    } catch (error) { setMessage(error instanceof Error ? error.message : 'Host authentication is unavailable.'); }
+    finally { setHostBusy(false); }
+  }
+  async function savePreferences() {
+    setHostBusy(true); setHostMessage('');
     try {
       await authenticateHost();
-      // An empty token keeps the existing credential only for the same origin.
-      const existing = await loadConnection().catch(() => null);
-      const accessToken = token.trim() || (origin.trim().replace(/\/$/, '') === existing?.origin ? existing.token : '');
-      await saveConnection(origin, accessToken);
-      setConfigured(true);
-      setToken('');
-      setSettingsVisible(false);
-      void retry(true).catch(() => setMessage('Connection saved. Photos remain on this iPad while sharing retries.'));
-    } catch (error) {
-      setSettingsMessage(error instanceof Error ? error.message : 'Could not save connection settings.');
-    } finally { setSettingsBusy(false); }
+      const prefs = await saveHostPreferences({ countdownSeconds: seconds, photosExportEnabled: exportEnabled });
+      preferencesRef.current = prefs; setHostMessage('Booth settings saved.');
+    } catch (error) { setHostMessage(error instanceof Error ? error.message : 'Settings could not save.'); }
+    finally { setHostBusy(false); }
+  }
+  async function pairBooth(scannedCode?: string) {
+    const code = (scannedCode ?? pairingCode).trim();
+    if (!code || hostBusy || pairingLock.current) return;
+    pairingLock.current = true;
+    setScanningSetup(false); setPairingCode(''); setHostBusy(true); setHostMessage('');
+    try { await provisionBooth(code); setPairingCode(''); setPaired(true); setHostPage('controls'); setHostMessage('Sharing connected securely.'); void retrySharing(true); }
+    catch (error) { diagnose(error); setHostMessage('Pairing did not finish. Ask the owner for a fresh private code. Local capture still works.'); }
+    finally { pairingLock.current = false; setPairingCode(''); setScanningSetup(false); setHostBusy(false); }
   }
 
-  async function submitMockShare() {
-    if (!__DEV__ || !capture?.confirmed || shareBusy || currentShare) return;
-    setShareBusy(true);
-    setShareMessage('');
-    try {
-      await queueMockShare(capture, phone, consent);
-      setPhone('');
-      setConsent(false);
-      setPhoneVisible(false);
-      await refresh();
-      void retry(true).catch(() => setShareMessage('Your test request is queued. No text was sent.'));
-    } catch (error) {
-      setShareMessage(error instanceof Error ? error.message : 'Could not save the sharing test. Please try again.');
-    } finally { setShareBusy(false); }
+  function closeHost() { setHostVisible(false); setPairingCode(''); setScanningSetup(false); }
+  async function scanPrivateSetup() {
+    setHostMessage('');
+    if (!permission?.granted) {
+      const result = await requestPermission();
+      if (!result.granted) { setHostMessage('Camera access is needed to scan. You can paste a private setup code instead.'); return; }
+    }
+    setPairingCode(''); setScanningSetup(true);
   }
 
-  const heading = !capture ? 'A moment to keep' : !capture.confirmed ? 'Made for remembering' : qr ? 'Take your memory home' : 'Your moment is safe';
-  const description = !capture ? 'Gather close, find your light, and let the good times show.'
-    : !capture.confirmed ? 'Love this one? Keep it, or step back in for another.'
-    : qr ? 'Scan with your phone to open your private photo page.'
-    : 'Your original is saved on this iPad. You can keep celebrating while sharing catches up.';
-
-  return <SafeAreaView style={styles.page}>
-    <ScrollView contentContainerStyle={[styles.content, landscape && styles.wideContent]} keyboardShouldPersistTaps="handled">
-      <View style={styles.topbar}>
-        <Text style={styles.eyebrow}>THE WEDDING PHOTOBOOTH</Text>
-        <Pressable accessibilityRole="button" accessibilityLabel="Open host settings" disabled={busy || shareBusy || settingsBusy} onPress={() => void openSettings()} hitSlop={12}>
-          <Text style={styles.hostLink}>Host settings</Text>
-        </Pressable>
-      </View>
-      <View style={styles.header}>
-        <Text style={styles.title}>{heading}</Text>
-        <Text style={styles.body}>{description}</Text>
-      </View>
-      <Animated.View style={[styles.booth, landscape && styles.boothWide, { opacity: reveal, transform: [{ translateY: reveal.interpolate({ inputRange: [0, 1], outputRange: [5, 0] }) }] }]}>
-        <View style={[styles.preview, landscape && { flex: 1, aspectRatio: undefined, height: Math.max(300, height - 350) }, !landscape && capture?.confirmed && { aspectRatio: undefined, height: Math.min(390, height * 0.31) }]}>
-          {capture ? <Image source={{ uri: capture.fileUri }} style={StyleSheet.absoluteFill} resizeMode="contain" testID="photo-preview" accessibilityLabel="Your captured wedding photo" />
-            : permission?.granted ? nativeFixtureEnabled ? <Image source={nativeFixtureImage()} style={StyleSheet.absoluteFill} resizeMode="cover" onLoad={() => setCameraReady(true)} accessibilityLabel="Synthetic native test scene" /> : <CameraView ref={camera} facing="front" mirror={false}
-                onCameraReady={() => setCameraReady(true)}
-                onMountError={() => { setCameraReady(false); setMessage('Front camera unavailable. Ask the booth host to check this iPad.'); }}
-                style={StyleSheet.absoluteFill} />
-            : <View style={styles.permissionBox}>
-                <Text style={styles.permissionTitle}>A little camera magic</Text>
-                <Text style={styles.permissionText}>Allow the front camera to take your photo.</Text>
-                <Pressable accessibilityRole="button" testID="allow-camera" style={styles.lightButton} onPress={() => void (permission?.canAskAgain === false ? Linking.openSettings() : requestPermission())}>
-                  <Text style={styles.darkButtonText}>{permission?.canAskAgain === false ? 'Open iPad settings' : 'Allow camera'}</Text>
-                </Pressable>
-              </View>}
-          {countdown !== undefined && <View style={styles.countdownOverlay}><Animated.Text accessibilityLiveRegion="assertive" style={[styles.countdown, { transform: [{ scale: countdownScale }] }]}>{countdown}</Animated.Text><Text style={styles.countdownLabel}>Make it a memory</Text></View>}
-          {!capture && permission?.granted && countdown === undefined && <View style={styles.cameraLabel}><Text style={styles.cameraLabelText}>FRONT CAMERA · FIND YOUR PEOPLE</Text></View>}
+  const selectedPhoto = session?.shots.find((photo, index) => photoSlot(photo, index) === focusedSlot);
+  const total = session?.targetCount ?? 5;
+  const lightScreen = screen === 'attract' || screen === 'share';
+  return <SafeAreaView style={[styles.page, lightScreen && styles.lightPage]}>
+    <StatusBar barStyle={lightScreen ? 'dark-content' : 'light-content'} />
+    <Animated.View style={[styles.app, { opacity: screenFade }]}>
+      {screen === 'attract' ? <ImageBackground source={require('./assets/attract-scene.png')} resizeMode="cover" style={styles.attract} imageStyle={styles.attractImage}>
+        <View style={styles.attractShade} />
+        <View style={styles.attractTop}><Text style={styles.brand}>THE PHOTO STUDIO</Text><Pressable accessibilityRole="button" accessibilityLabel="Open host controls" onPress={() => void openHost()} disabled={hostBusy}><Text style={styles.attractHost}>Host</Text></Pressable></View>
+        <View style={[styles.attractContent, landscape && styles.attractContentWide]}>
+          <Text style={styles.attractEyebrow}>FIVE FRAMES. ALL YOURS.</Text>
+          <Text style={[styles.attractTitle, landscape && styles.attractTitleWide]}>Come{`\n`}closer.</Text>
+          <Text style={styles.attractSubtitle}>A little flash. A lot of feeling.</Text>
+          <Button title={busy ? 'Opening the booth…' : 'Let’s make memories'} testID="start-session" light disabled={!initialized || busy} onPress={() => void startSession()} />
+          <Text style={styles.attractFootnote}>Five photos, one moment together.</Text>
         </View>
-        <View style={[styles.actions, landscape && styles.sideActions]}>
-          {!capture ? <>
-            <Text style={styles.step}>01 / MAKE A MEMORY</Text>
-            <Pressable accessibilityRole="button" disabled={!cameraReady || busy || !initialized} testID="take-photo" style={[styles.button, (!cameraReady || busy || !initialized) && styles.disabled]} onPress={() => void takePhoto()}>
-              <Text style={styles.buttonText}>{countdown ? 'Get ready…' : busy ? 'Saving your photo…' : 'Take our photo'}</Text>
-            </Pressable>
-            {countdown !== undefined && <Pressable accessibilityRole="button" accessibilityLabel="Cancel countdown" testID="cancel-countdown" style={styles.secondaryButton} onPress={cancelCountdown}><Text style={styles.secondaryText}>Cancel countdown</Text></Pressable>}
-            <Text style={styles.note}>A 3-second countdown. A memory for a lifetime.</Text>
-          </> : !capture.confirmed ? <>
-            <Text style={styles.step}>02 / PICK YOUR FAVORITE</Text>
-            <Pressable accessibilityRole="button" disabled={busy} testID="use-photo" style={[styles.button, busy && styles.disabled]} onPress={() => void usePhoto()}><Text style={styles.buttonText}>{busy ? 'Keeping your photo…' : 'Use this photo'}</Text></Pressable>
-            <Pressable accessibilityRole="button" disabled={busy} testID="retake-photo" style={styles.secondaryButton} onPress={() => void startAgain()}><Text style={styles.secondaryText}>Retake photo</Text></Pressable>
-            <Text style={styles.note}>Sharing starts only when you choose “Use this photo”.</Text>
-          </> : <>
-            <Text style={styles.step}>03 / KEEP THE GOOD TIMES</Text>
-            {qr ? <View testID="guest-qr" style={styles.qrCard}>
-              <QRCode value={qr} size={224} backgroundColor="#ffffff" color="#1e2723" quietZone={32} ecl="M" />
-              <Text style={styles.qrCaption}>YOUR PRIVATE PHOTO PAGE</Text>
-              <Text style={styles.expiryLabel} accessibilityLabel={`Photo link expires ${expiryLabel}`}>Available until {expiryLabel}</Text>
-              <Text style={styles.smallNote}>Anyone with this link can open your photo until then. Your original stays private with the host afterward.</Text>
-            </View> : <View style={styles.savedCard}>
-              <Text style={styles.savedIcon}>✓</Text>
-              <Text style={styles.savedTitle}>Saved on this iPad</Text>
-              <Text style={styles.note}>{currentJob?.state === 'complete' ? (currentJob.guestExpiresAt && currentJob.guestExpiresAt <= now ? 'This sharing link has expired. Ask the host about your saved original.' : 'Local emulator test complete. Configure a public HTTPS API to show a guest QR.') : configured ? 'Preparing your photo page. The QR appears only after the server confirms it is ready.' : 'Sharing is offline. Ask the host to connect the booth to enable a photo link.'}</Text>
-            </View>}
-            {!qr && currentJob?.state !== 'complete' && <Pressable accessibilityRole="button" testID="retry-sharing" style={styles.secondaryButton} onPress={() => void retry(true).catch(() => setMessage('Saved on this iPad. Sharing will retry.'))}><Text style={styles.secondaryText}>Retry sharing</Text></Pressable>}
-            {__DEV__ && <>
-            {currentShare ? <Text accessibilityLiveRegion="polite" style={styles.note}>{currentShare.state === 'mocked' ? 'Phone-sharing simulation complete. No text was sent.' : 'Phone-sharing test queued. No text was sent.'}</Text> : <>
-              <Pressable accessibilityRole="button" onPress={() => { setPhoneVisible(!phoneVisible); setPhone(''); setConsent(false); setShareMessage(''); }} style={styles.phoneToggle}><Text style={styles.hostLink}>{phoneVisible ? 'Close sharing test' : 'Test phone sharing · no SMS'}</Text></Pressable>
-              {phoneVisible && <View style={styles.phoneForm}>
-                <Text style={styles.note}>Use a fictional test number only. No text messages will be sent.</Text>
-                <TextInput accessibilityLabel="International phone number for simulation" value={phone} onChangeText={setPhone} placeholder="+1 555 123 4567" keyboardType="phone-pad" autoComplete="tel" style={styles.phoneInput} />
-                <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: consent }} onPress={() => setConsent(!consent)} style={styles.consentRow}>
-                  <Text style={styles.check}>{consent ? '☑' : '☐'}</Text><Text style={styles.consentText}>I agree to use this test number for this simulation.</Text>
-                </Pressable>
-                <Pressable accessibilityRole="button" disabled={!consent || shareBusy} style={[styles.secondaryButton, (!consent || shareBusy) && styles.disabled]} onPress={() => void submitMockShare()}><Text style={styles.secondaryText}>{shareBusy ? 'Saving test…' : 'Queue simulated share'}</Text></Pressable>
-              </View>}
-            </>}
-            {!!shareMessage && <Text accessibilityLiveRegion="polite" style={styles.message}>{shareMessage}</Text>}
-            </>}
-            <Pressable accessibilityRole="button" disabled={busy || shareBusy} testID="next-guest" style={[styles.button, (busy || shareBusy) && styles.disabled]} onPress={() => void startAgain()}><Text style={styles.buttonText}>Next guest</Text></Pressable>
-            {!qr && <Text style={styles.note}>The host can recover your original. Starting the next guest clears this screen.</Text>}
-          </>}
-          {!!message && <Text accessibilityLiveRegion="polite" style={styles.message}>{message}</Text>}
+      </ImageBackground> : <>
+        <View style={[styles.topbar, lightScreen && styles.topbarLight]}>
+          <Text style={[styles.brand, lightScreen && styles.brandDark]}>THE PHOTO STUDIO</Text>
+          <Pressable accessibilityRole="button" accessibilityLabel="Open host controls" disabled={busy || hostBusy} onPress={() => void openHost()}><Text style={[styles.hostLink, lightScreen && styles.hostLinkDark]}>Host</Text></Pressable>
         </View>
-      </Animated.View>
-      {nativeFixtureEnabled && <View style={styles.fixturePanel}>
-        <Text testID="native-fixture-enabled" style={styles.smallNote}>SYNTHETIC NATIVE TEST · camera fixture · real local storage · sharing offline</Text>
-        <Text testID="native-fixture-storage" style={styles.smallNote}>{fixtureStatus}</Text>
-        {capture && !capture.confirmed && <Pressable accessibilityRole="button" testID="native-fixture-checkpoint" style={styles.secondaryButton} onPress={() => {
-          try { interruptNativeFixtureConfirmation(capture); setFixtureCheckpoint('Confirmed-file checkpoint saved'); }
-          catch { setFixtureCheckpoint('Checkpoint failed'); }
-        }}><Text style={styles.secondaryText}>Test interrupted confirmation</Text></Pressable>}
-        <Text testID="native-fixture-checkpoint-status" style={styles.smallNote}>{fixtureCheckpoint}</Text>
-      </View>}
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>{pendingCount ? `${pendingCount} confirmed ${pendingCount === 1 ? 'photo' : 'photos'} waiting to share · originals stay on this iPad` : 'Made with love · originals stay on this iPad'}</Text>
-        <Text style={styles.footerText}>No text messages are sent.</Text>
-      </View>
-    </ScrollView>
-    <Modal visible={settingsVisible} animationType={reduceMotion ? "none" : "slide"} presentationStyle="pageSheet" onRequestClose={() => setSettingsVisible(false)}>
-      <SafeAreaView style={styles.page}>
-        <ScrollView contentContainerStyle={styles.settings} keyboardShouldPersistTaps="handled">
-          <Text style={styles.eyebrow}>BOOTH HOST</Text>
-          <Text style={styles.settingsTitle}>Connection settings</Text>
-          <Text style={styles.body}>Configure the booth’s authenticated API to create guest photo links. Leaving this disconnected keeps confirmed photos queued on the iPad.</Text>
-          <Text style={styles.fieldLabel}>HTTPS API origin</Text>
-          <TextInput accessibilityLabel="HTTPS API origin" value={origin} onChangeText={setOrigin} placeholder="https://photos.example.com" autoCapitalize="none" autoCorrect={false} keyboardType="url" style={styles.input} />
-          <Text style={styles.fieldLabel}>Booth access token</Text>
-          <TextInput accessibilityLabel="Booth access token" value={token} onChangeText={setToken} placeholder={configured ? 'Saved securely · enter to replace' : 'Enter the operator-provided token'} autoCapitalize="none" autoCorrect={false} secureTextEntry textContentType="none" style={styles.input} />
-          <Text style={styles.note}>Credentials are stored in this iPad’s Keychain. No credentials are bundled with the app. Use a token issued for this booth.</Text>
-          {!!settingsMessage && <Text accessibilityLiveRegion="polite" style={styles.message}>{settingsMessage}</Text>}
-          <Pressable accessibilityRole="button" disabled={settingsBusy} style={[styles.button, settingsBusy && styles.disabled]} onPress={() => void saveSettings()}><Text style={styles.buttonText}>Save & retry sharing</Text></Pressable>
-          {configured && <Pressable accessibilityRole="button" disabled={settingsBusy} style={styles.secondaryButton} onPress={() => {
-            setSettingsBusy(true);
-            void authenticateHost().then(() => clearConnection()).then(() => { setConfigured(false); setOrigin(''); setToken(''); setSettingsMessage('Disconnected. Photos remain on this iPad.'); })
-              .catch(error => setSettingsMessage(error instanceof Error ? error.message : 'Could not disconnect. Try again.')).finally(() => setSettingsBusy(false));
-          }}><Text style={styles.secondaryText}>Disconnect sharing</Text></Pressable>}
-          <Pressable accessibilityRole="button" disabled={settingsBusy} style={styles.secondaryButton} onPress={() => { setToken(''); setSettingsVisible(false); }}><Text style={styles.secondaryText}>Back to booth</Text></Pressable>
-          <Text style={styles.smallNote}>Native iPad MVP · one confirmed photo per guest session. Retakes remain local. Phone sharing is simulated; no SMS is sent.</Text>
-        </ScrollView>
-      </SafeAreaView>
+        {screen === 'camera' && session && <View style={styles.capturePage}>
+          <View style={styles.cameraStage}>
+            {permission?.granted ? hostVisible ? <View style={StyleSheet.absoluteFill} /> : nativeFixtureEnabled
+              ? <Image source={nativeFixtureImage()} resizeMode="cover" style={StyleSheet.absoluteFill} onLoad={() => setCameraReady(true)} accessibilityLabel="Synthetic native camera scene" />
+              : <CameraView ref={camera} facing="front" mirror={false} style={StyleSheet.absoluteFill} onCameraReady={() => setCameraReady(true)} onMountError={() => { setCameraReady(false); setMessage('The front camera is unavailable. Please ask the host.'); }} />
+              : <View style={styles.permission}><Text style={styles.permissionTitle}>You bring the smiles.</Text><Text style={styles.permissionBody}>We just need the camera.</Text><Button title={permission?.canAskAgain === false ? 'Open iPad Settings' : 'Enable camera'} testID="allow-camera" light onPress={() => void (permission?.canAskAgain === false ? Linking.openSettings() : requestPermission())} /></View>}
+            <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: '#fff', opacity: exposureFlash }]} />
+            <View style={styles.cameraTop}><Text style={styles.progressText}>{retakeSlot !== undefined ? 'RETAKE' : 'PHOTO'} {activeSlot + 1} <Text style={styles.progressMuted}>OF {total}</Text></Text><Text style={styles.cameraSaved}>{session.shots.length} saved here</Text></View>
+            {countdown !== undefined && <View pointerEvents="none" style={styles.countdownShade}><Animated.Text accessibilityLiveRegion="assertive" style={[styles.countdown, { opacity: countdownReveal.interpolate({ inputRange: [0, 1], outputRange: [0.78, 1] }), transform: [{ scale: countdownReveal.interpolate({ inputRange: [0, 1], outputRange: [0.92, 1] }) }] }]}>{countdown}</Animated.Text><Text style={styles.countdownNote}>Make it a good one.</Text></View>}
+            {saving && <View style={styles.savingBadge}><Text style={styles.savingText}>Saving original…</Text></View>}
+          </View>
+          <View style={[styles.captureBottom, landscape && styles.captureBottomWide]}>
+            <Thumbnails reduceMotion={reduceMotion || !foreground} session={session} active={activeSlot} onSelect={!busy && !failedPhoto ? selectReview : undefined} />
+            <View style={styles.captureActions}>
+              {busy ? <Button title={saving ? 'Saving original…' : 'Pause countdown'} testID="cancel-countdown" secondary disabled={saving} onPress={cancelPhotos} />
+                : failedPhoto ? <Button title={`Retry saving photo ${failedPhoto.slot + 1}`} testID="retry-save" onPress={() => void retrySave()} />
+                : <Button title={retakeSlot !== undefined ? `Retake photo ${retakeSlot + 1}` : session.shots.length ? `Continue · photo ${(nextPhotoSlot(session) ?? 0) + 1}` : `Start ${total} photos`} testID="take-photo" disabled={!cameraReady || !initialized} onPress={() => void startPhotos()} />}
+              {retakeSlot !== undefined && !saving && !failedPhoto && <Pressable accessibilityRole="button" style={styles.textAction} onPress={leaveRetake}><Text style={styles.mutedButtonText}>Back to review</Text></Pressable>}
+              <Text style={styles.cameraHint}>{saving ? 'The next photo waits until this original is safe.' : `${preferencesRef.current.countdownSeconds} seconds per photo · originals saved on this iPad`}</Text>
+            </View>
+          </View>
+        </View>}
+        {screen === 'review' && session && <View style={[styles.reviewPage, landscape && styles.reviewPageWide]}>
+          {!landscape && <View style={styles.reviewHeading}><View><Text style={styles.reviewEyebrow}>YOUR SESSION</Text><Text style={styles.reviewTitle}>{sessionIsComplete(session) ? (total === 5 ? 'Five worth keeping.' : 'Worth keeping.') : 'Looking good so far.'}</Text></View><Text style={styles.reviewCount}>{focusedSlot + 1} / {total}</Text></View>}
+          <View style={styles.reviewStage} onLayout={event => { const w = event.nativeEvent.layout.width; reviewWidthRef.current = w; setReviewWidth(w); const slot = reviewSelection.current.current(); reviewSelection.current.select(slot); requestAnimationFrame(() => { if (!reviewSelection.current.isTarget(slot)) return; const index = sessionRef.current?.shots.findIndex((photo, i) => photoSlot(photo, i) === slot) ?? 0; review.current?.scrollTo({ x: Math.max(0, index) * w, animated: false }); }); }}>
+            <ScrollView ref={review} horizontal pagingEnabled showsHorizontalScrollIndicator={false} testID="review-gallery" scrollEventThrottle={32} onScrollBeginDrag={event => beginReviewDrag(event.nativeEvent.contentOffset.x)} onTouchMove={() => beginReviewDrag()} onScroll={event => updateReviewSelection(event.nativeEvent.contentOffset.x)} onMomentumScrollEnd={event => updateReviewSelection(event.nativeEvent.contentOffset.x)}>
+              {session.shots.map(photo => <View key={photo.id} style={[styles.reviewSlide, { width: reviewWidth }]}><Image testID={photo.id === selectedPhoto?.id ? 'photo-preview' : undefined} source={{ uri: photo.fileUri }} style={StyleSheet.absoluteFill} resizeMode="contain" accessibilityLabel={`Saved photo ${(photo.shotIndex ?? 0) + 1}`} /></View>)}
+            </ScrollView>
+          </View>
+          <View style={[styles.reviewBottom, landscape && styles.reviewSideRail]}>
+            {landscape && <View style={styles.reviewRailHeading}><Text style={styles.reviewEyebrow}>YOUR SESSION</Text><Text style={styles.reviewTitle}>{sessionIsComplete(session) ? (total === 5 ? 'Five worth keeping.' : 'Worth keeping.') : 'Looking good so far.'}</Text><Text style={styles.reviewCount}>Photo {focusedSlot + 1} of {total}</Text></View>}
+            <Thumbnails compact={landscape} reduceMotion={reduceMotion || !foreground} session={session} active={focusedSlot} onSelect={selectReview} />
+            <View style={[styles.reviewActions, landscape && styles.reviewActionsWide]}><Button title={`Retake photo ${focusedSlot + 1}`} testID="retake-photo" secondary disabled={busy || exporting} onPress={retakePhoto} />
+              <Button title={busy ? 'Preparing your session…' : sessionIsComplete(session) ? `Keep all ${total} photos` : 'Finish the session'} testID="use-photo" disabled={busy} onPress={sessionIsComplete(session) ? () => void keepSession() : () => { setRetakeSlot(undefined); setActiveSlot(nextPhotoSlot(session) ?? 0); setCameraReady(false); setScreen('camera'); }} /></View>
+            <Text style={styles.localSaved}>{session.shots.length} originals saved on this iPad</Text><Text style={styles.libraryStatus}>{photosStatus(session)}</Text>
+            {needsPhotosExport(session) && <Pressable accessibilityRole="button" disabled={exporting} style={styles.textAction} onPress={() => void exportPhotos(session, true)}><Text style={styles.mutedButtonText}>{exporting ? 'Exporting to Photos…' : 'Save a copy to Photos'}</Text></Pressable>}
+          </View>
+        </View>}
+        {screen === 'share' && session && <ScrollView contentContainerStyle={[styles.sharePage, landscape && styles.sharePageWide]}>
+          <View style={styles.shareStory}><Text style={styles.shareEyebrow}>{total === 5 ? 'FIVE FRAMES. ALL YOURS.' : 'YOUR MOMENT. ALL YOURS.'}</Text><Text style={styles.shareTitle}>Yours to keep.</Text><Text style={styles.shareBody}>{guestPage ? `Scan once. Take all ${session.shots.length} home.` : `All ${session.shots.length} originals are saved on this iPad. Your photo page will appear when sharing is ready.`}</Text><Thumbnails reduceMotion={reduceMotion || !foreground} session={session} active={-1} dark={false} />
+            <SmsShare key={session.id} session={session} jobs={jobs} onChanged={async () => { await retrySharing(); }} />
+            <Text style={styles.shareLocal}>{session.shots.length} originals saved on this iPad</Text><Text style={styles.shareLibrary}>{photosStatus(session)}</Text>
+            {needsPhotosExport(session) && <Pressable accessibilityRole="button" disabled={exporting} style={styles.textAction} onPress={() => void exportPhotos(session, true)}><Text style={styles.lightTextAction}>{exporting ? 'Exporting to Photos…' : 'Save a copy to Photos'}</Text></Pressable>}
+          </View>
+          <View style={styles.shareCard}>{guestPage ? <View testID="guest-qr" style={styles.qrContent}><QRCode value={guestPage.url} size={224} quietZone={32} ecl="M" backgroundColor="#ffffff" color="#1e2723" /><Text style={styles.qrCaption}>YOUR PRIVATE PHOTO PAGE</Text><Text style={styles.expiry} accessibilityLabel={`Photo link expires ${expiry}`}>Available until {expiry}</Text><Text style={styles.sharePrivacy}>Anyone with the link can open your photos until then. Your originals stay private with the host afterward.</Text></View>
+              : <View style={styles.offlineCard}><Text style={styles.offlineGlyph}>✓</Text><Text style={styles.offlineTitle}>Safe here.</Text><Text style={styles.sharePrivacy}>Sharing is still preparing. You can leave your originals with the host and keep celebrating.</Text><Button title="Retry sharing" testID="retry-sharing" secondary light onPress={() => void retrySharing(true)} /></View>}
+            <Button title={busy ? 'Clearing this screen…' : 'Next guests'} testID="next-guest" disabled={busy} onPress={() => void nextGuests()} />
+          </View>
+        </ScrollView>}
+      </>}
+      {!!message && <View accessibilityLiveRegion="polite" style={styles.message}><Text style={styles.messageText}>{message}</Text></View>}
+      {nativeFixtureEnabled && <View style={styles.fixture}><Text testID="native-fixture-enabled" style={styles.fixtureText}>SYNTHETIC CAMERA · REAL LOCAL STORAGE · OFFLINE SHARING</Text><Text testID="native-fixture-storage" style={styles.fixtureText}>{fixtureStatus}</Text></View>}
+    </Animated.View>
+    <Modal visible={hostVisible} animationType={reduceMotion ? 'none' : 'slide'} presentationStyle="pageSheet" onRequestClose={closeHost}>
+      <SafeAreaView style={styles.hostPage}><ScrollView contentContainerStyle={styles.hostContent} keyboardShouldPersistTaps="handled">
+        <View style={styles.hostHeader}><Text style={styles.hostTitle}>{hostPage === 'library' ? 'On this iPad' : hostPage === 'setup' ? 'Private setup' : 'Booth controls'}</Text><Pressable accessibilityRole="button" onPress={closeHost}><Text style={styles.closeHost}>Done</Text></Pressable></View>
+        <View style={styles.hostTabs}>{(['controls', 'library', 'setup'] as HostPage[]).map(page => <Pressable key={page} accessibilityRole="button" accessibilityState={{ selected: hostPage === page }} style={[styles.hostTab, hostPage === page && styles.hostTabActive]} onPress={() => { setHostPage(page); setHostMessage(''); setScanningSetup(false); setPairingCode(''); }}><Text style={styles.hostTabText}>{page === 'controls' ? 'Controls' : page === 'library' ? 'Saved sessions' : 'Private setup'}</Text></Pressable>)}</View>
+        {hostPage === 'controls' && <>
+          <View style={styles.hostCard}><Text style={styles.hostSectionTitle}>Countdown</Text><Text style={styles.hostBody}>Time to settle into each frame.</Text><View style={styles.timerOptions}>{TIMERS.map(value => <Pressable key={value} accessibilityRole="button" accessibilityState={{ selected: seconds === value }} testID={`host-timer-${value}`} onPress={() => setSeconds(value)} style={[styles.timerOption, seconds === value && styles.timerOptionSelected]}><Text style={[styles.timerNumber, seconds === value && styles.timerNumberSelected]}>{value}s</Text></Pressable>)}</View></View>
+          <View style={styles.hostCard}><View style={styles.switchRow}><View style={styles.switchText}><Text style={styles.hostSectionTitle}>Copies in Photos</Text><Text style={styles.hostBody}>Try an additional Photos export after capture. Local originals always save first.</Text></View><Switch accessibilityLabel="Automatically export copies to Photos" value={exportEnabled} onValueChange={setExportEnabled} trackColor={{ true: '#596857' }} /></View><Text style={styles.hostSmall}>Photos permission: {libraryPermission}. Failed or denied exports keep their local originals.</Text><Pressable accessibilityRole="button" style={styles.textAction} onPress={() => void Linking.openSettings()}><Text style={styles.lightTextAction}>Open iPad permission settings</Text></Pressable></View>
+          <Button title={hostBusy ? 'Saving settings…' : 'Save booth settings'} disabled={hostBusy} onPress={() => void savePreferences()} />
+          <View style={styles.hostCard}><Text style={styles.hostSectionTitle}>Sharing {paired ? 'paired' : 'offline'}</Text><Text style={styles.hostBody}>{pendingCount} photos waiting for upload. Local capture and saved sessions work independently.</Text><Pressable accessibilityRole="button" style={styles.textAction} onPress={() => void retrySharing(true)}><Text style={styles.lightTextAction}>Retry pending sharing</Text></Pressable>{!!hostDiagnostic && <Text selectable style={styles.diagnostic}>{hostDiagnostic}</Text>}</View>
+        </>}
+        {hostPage === 'library' && <>
+          <Text style={styles.hostBody}>Originals saved in this app, available without a network connection. Photos export is listed separately.</Text>
+          <Button title="Refresh local sessions" secondary light onPress={() => void refreshLibrary().catch(error => { diagnose(error); setHostMessage('Could not refresh local sessions.'); })} />
+          {librarySession && <View style={styles.hostCard}><Text style={styles.hostSectionTitle}>{librarySession.createdAt > 0 ? new Date(librarySession.createdAt).toLocaleString() : 'Recovered session'}</Text><ScrollView horizontal pagingEnabled style={{ height: Math.min(420, height * 0.4) }}>{librarySession.shots.map(photo => <Image key={photo.id} source={{ uri: photo.fileUri }} style={{ width: Math.min(width - 96, 650), height: '100%' }} resizeMode="contain" />)}</ScrollView><Text style={styles.hostBody}>{librarySession.shots.length} originals on this iPad · {photosStatus(librarySession)}</Text><Button title={exporting ? 'Exporting copies…' : photosExportTitle(librarySession)} disabled={exporting || !needsPhotosExport(librarySession)} onPress={() => void exportPhotos(librarySession, true)} /></View>}
+          {!savedSessions.length && <Text style={styles.hostBody}>No saved sessions yet.</Text>}
+          {savedSessions.map(value => <Pressable key={value.id} accessibilityRole="button" style={styles.hostCard} onPress={() => setLibrarySession(value)}><Text style={styles.hostSectionTitle}>{value.createdAt > 0 ? new Date(value.createdAt).toLocaleString() : 'Recovered session'}</Text><View style={styles.libraryStrip}>{value.shots.map(photo => <Image key={photo.id} source={{ uri: photo.fileUri }} style={styles.libraryThumb} resizeMode="cover" />)}</View><Text style={styles.hostBody}>{value.shots.length} originals · {photosStatus(value)}</Text><Text style={styles.lightTextAction}>Open saved session →</Text></Pressable>)}
+        </>}
+        {hostPage === 'setup' && <View style={styles.hostCard}><Text style={styles.hostSectionTitle}>Connect this booth</Text><Text style={styles.hostBody}>Use the one-time pairing code provided by the booth owner. This is separate from guest capture.</Text>{scanningSetup ? <View style={styles.setupScanner}><CameraView facing="back" style={StyleSheet.absoluteFill} barcodeScannerSettings={{ barcodeTypes: ['qr'] }} onBarcodeScanned={({ data }) => {
+              if (!hostVisible || hostPage !== 'setup' || pairingLock.current) return;
+              if (!/^[a-f0-9]{64}$/i.test(data)) { setHostMessage('This is not a private booth setup code.'); return; }
+              // Reserve synchronously inside pairBooth before its first await.
+              void pairBooth(data);
+            }} onMountError={() => { setScanningSetup(false); setHostMessage('The scanner is unavailable. Paste the private setup code instead.'); }} /></View>
+            : <Button title="Scan private setup QR" light secondary disabled={hostBusy} onPress={() => void scanPrivateSetup()} />}
+            {scanningSetup && <Button title="Cancel scanner" light secondary onPress={() => setScanningSetup(false)} />}
+            <TextInput accessibilityLabel="One-time booth pairing code" value={pairingCode} onChangeText={setPairingCode} autoCapitalize="none" autoCorrect={false} secureTextEntry placeholder="One-time pairing code" style={styles.pairingInput} /><Button title={hostBusy ? 'Pairing securely…' : 'Pair this iPad'} disabled={hostBusy || !pairingCode.trim()} onPress={() => void pairBooth()} /><Text style={styles.hostSmall}>Local capture needs no cloud connection. Pairing requires owner setup and device authentication.</Text></View>}
+        {!!hostMessage && <Text accessibilityLiveRegion="polite" style={styles.hostNotice}>{hostMessage}</Text>}
+      </ScrollView></SafeAreaView>
     </Modal>
   </SafeAreaView>;
 }
 
 const styles = StyleSheet.create({
-  page: { flex: 1, backgroundColor: '#F6EFE4' },
-  content: { padding: 28, gap: 24, width: '100%', maxWidth: 1120, alignSelf: 'center', flexGrow: 1 },
-  wideContent: { maxWidth: 1440, paddingHorizontal: 34, gap: 18 },
-  topbar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 16 },
-  eyebrow: { fontSize: 11, letterSpacing: 2.5, color: '#6E6557', fontWeight: '600' },
-  hostLink: { fontSize: 13, color: '#6E6557', paddingVertical: 8 },
-  header: { gap: 10, alignItems: 'center' },
-  title: { fontSize: 42, textAlign: 'center', color: '#3B342B', fontFamily: 'Georgia' },
-  body: { fontSize: 17, lineHeight: 25, textAlign: 'center', color: '#62594B', maxWidth: 680 },
-  booth: { gap: 24, alignItems: 'center' },
-  boothWide: { flexDirection: 'row', alignItems: 'center' },
-  preview: { width: '100%', aspectRatio: 4 / 3, backgroundColor: '#3B342B', borderRadius: 20, overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
-  actions: { width: '100%', alignItems: 'center', gap: 14 },
-  sideActions: { width: 306, flexShrink: 0 },
-  step: { fontSize: 11, letterSpacing: 2, color: '#736044', fontWeight: '600', textAlign: 'center' },
-  button: { backgroundColor: '#9A4F32', paddingVertical: 21, paddingHorizontal: 26, borderRadius: 12, minHeight: 68, width: '100%', maxWidth: 500, justifyContent: 'center' },
-  buttonText: { color: '#FBF6EC', fontSize: 21, fontWeight: '600', textAlign: 'center' },
-  disabled: { opacity: 0.45 },
-  secondaryButton: { borderWidth: 1, borderColor: '#CEBFA6', paddingVertical: 17, paddingHorizontal: 20, borderRadius: 12, minHeight: 58, width: '100%', maxWidth: 500, justifyContent: 'center' },
-  secondaryText: { fontSize: 18, color: '#9A4F32', textAlign: 'center', fontWeight: '500' },
-  note: { fontSize: 14, lineHeight: 21, textAlign: 'center', color: '#736958', maxWidth: 560 },
-  smallNote: { fontSize: 12, lineHeight: 18, textAlign: 'center', color: '#736958', maxWidth: 380 },
-  message: { fontSize: 15, textAlign: 'center', color: '#9A4F32', lineHeight: 23 },
-  permissionBox: { padding: 28, gap: 18, alignItems: 'center' },
-  permissionTitle: { color: '#FBF6EC', fontSize: 28, fontFamily: 'Georgia', textAlign: 'center' },
-  permissionText: { color: '#E8DFD1', fontSize: 17, textAlign: 'center' },
-  lightButton: { backgroundColor: '#FBF6EC', paddingHorizontal: 24, paddingVertical: 18, borderRadius: 12, minHeight: 60 },
-  darkButtonText: { color: '#3B342B', fontSize: 19, fontWeight: '600' },
-  cameraLabel: { position: 'absolute', bottom: 20, backgroundColor: '#3B342Bbb', borderRadius: 20, paddingHorizontal: 18, paddingVertical: 10 },
-  cameraLabelText: { color: '#FBF6EC', fontSize: 10, letterSpacing: 2 },
-  countdownOverlay: { position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: '#15251db3', alignItems: 'center', justifyContent: 'center' },
-  countdown: { color: '#fff', fontSize: 144, fontFamily: 'Georgia' },
-  countdownLabel: { color: '#fff', fontSize: 20, marginTop: 8 },
-  savedCard: { padding: 22, gap: 12, backgroundColor: '#F0E7D8', borderRadius: 16, width: '100%', maxWidth: 500, alignItems: 'center' },
-  savedIcon: { fontSize: 34, color: '#9A4F32' },
-  savedTitle: { fontSize: 23, color: '#9A4F32', fontFamily: 'Georgia', textAlign: 'center' },
-  qrCard: { backgroundColor: '#fff', padding: 14, borderRadius: 16, gap: 10, alignItems: 'center', maxWidth: 300 },
-  expiryLabel: { fontSize: 14, lineHeight: 21, fontWeight: '600', textAlign: 'center', color: '#3B342B' },
-  qrCaption: { fontSize: 10, letterSpacing: 1.5, color: '#9A4F32', fontWeight: '600' },
-  fixturePanel: { borderWidth: 1, borderColor: '#CEBFA6', borderRadius: 12, padding: 14, gap: 10, alignItems: 'center' },
-  footer: { gap: 6, alignItems: 'center', marginTop: 'auto', paddingTop: 10 },
-  footerText: { fontSize: 12, color: '#736958', textAlign: 'center' },
-  phoneToggle: { paddingVertical: 2, minHeight: 44, justifyContent: 'center' },
-  phoneForm: { width: '100%', gap: 12, maxWidth: 500 },
-  phoneInput: { backgroundColor: '#fff', borderWidth: 1, borderColor: '#CEBFA6', borderRadius: 10, padding: 14, fontSize: 17, minHeight: 54, color: '#3B342B' },
-  consentRow: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 52, paddingVertical: 6 },
-  check: { fontSize: 28, color: '#9A4F32' },
-  consentText: { fontSize: 13, lineHeight: 19, color: '#62594B', flex: 1 },
-  settings: { padding: 32, gap: 18, maxWidth: 680, width: '100%', alignSelf: 'center' },
-  settingsTitle: { fontSize: 34, color: '#3B342B', fontFamily: 'Georgia' },
-  fieldLabel: { color: '#9A4F32', fontSize: 16, marginTop: 6, fontWeight: '600' },
-  input: { backgroundColor: '#fff', borderWidth: 1, borderColor: '#CEBFA6', borderRadius: 12, padding: 18, fontSize: 17, minHeight: 60, color: '#3B342B' },
+  page: { flex: 1, backgroundColor: '#101512' }, lightPage: { backgroundColor: '#F5F0E8' }, app: { flex: 1 },
+  attract: { flex: 1, justifyContent: 'space-between', backgroundColor: '#403A32' }, attractImage: { opacity: 0.96 }, attractShade: { ...StyleSheet.absoluteFill, backgroundColor: '#0B17114D' },
+  attractTop: { backgroundColor: '#102117B3', paddingHorizontal: 32, paddingTop: 24, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }, brand: { fontSize: 11, letterSpacing: 3, fontWeight: '700', color: '#F8F4EB' }, brandDark: { color: '#252B25' }, attractHost: { color: '#fff', fontSize: 14, padding: 14, borderWidth: 1, borderColor: '#FFFFFF70', borderRadius: 24 },
+  attractContent: { padding: 36, paddingTop: 26, gap: 20, backgroundColor: '#101B13D9' }, attractContentWide: { width: '53%', maxWidth: 620, margin: 32, borderRadius: 24, padding: 34 }, attractEyebrow: { color: '#F0D8B0', fontSize: 11, letterSpacing: 2.5, fontWeight: '600' }, attractTitle: { color: '#fffaf0', fontSize: 72, lineHeight: 73, fontFamily: 'Georgia', letterSpacing: -2 }, attractTitleWide: { fontSize: 68, lineHeight: 69 }, attractSubtitle: { color: '#EEE8D9', fontSize: 19 }, attractFootnote: { color: '#D5D7CA', fontSize: 13, textAlign: 'center' },
+  topbar: { height: 62, paddingHorizontal: 28, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }, topbarLight: { backgroundColor: '#F5F0E8' }, hostLink: { color: '#D7DBD1', padding: 12, minHeight: 44, fontSize: 14 }, hostLinkDark: { color: '#4D594D' },
+  capturePage: { flex: 1, paddingHorizontal: 18, paddingBottom: 16, gap: 16 }, cameraStage: { flex: 1, minHeight: 250, borderRadius: 22, overflow: 'hidden', backgroundColor: '#222B24' }, cameraTop: { zIndex: 1, position: 'absolute', left: 18, right: 18, top: 18, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }, progressText: { backgroundColor: '#101512D9', color: '#fff', paddingHorizontal: 16, paddingVertical: 11, borderRadius: 24, fontWeight: '700', letterSpacing: 1, fontSize: 13 }, progressMuted: { color: '#CDD1C7' }, cameraSaved: { backgroundColor: '#101512D9', color: '#E7ECDF', padding: 11, borderRadius: 20, fontSize: 12 },
+  countdownShade: { ...StyleSheet.absoluteFill, backgroundColor: '#102117B3', justifyContent: 'center', alignItems: 'center' }, countdown: { color: '#fff', fontSize: 170, fontWeight: '200', fontVariant: ['tabular-nums'] }, countdownNote: { color: '#fff', fontSize: 20, marginTop: 8 }, savingBadge: { position: 'absolute', alignSelf: 'center', bottom: 25, backgroundColor: '#101512EB', borderRadius: 24, padding: 15 }, savingText: { color: '#fff', fontSize: 15, fontWeight: '600' },
+  permission: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 40, gap: 22 }, permissionTitle: { color: '#fff', fontFamily: 'Georgia', fontSize: 34, textAlign: 'center' }, permissionBody: { color: '#E4E9DB', fontSize: 19 },
+  captureBottom: { gap: 14, alignItems: 'center' }, captureBottomWide: { flexDirection: 'row', justifyContent: 'space-between', gap: 28 }, captureActions: { width: '100%', maxWidth: 440, alignItems: 'center', gap: 8, flexShrink: 1 }, cameraHint: { color: '#B8C0B0', fontSize: 12, lineHeight: 18, textAlign: 'center' },
+  thumbnailCompact: { width: 48, height: 62 }, thumbnailsCompact: { gap: 7 },
+  thumbnails: { flexDirection: 'row', gap: 9, justifyContent: 'center', paddingVertical: 3 }, thumbnail: { width: 62, height: 76, borderRadius: 10, borderWidth: 1, borderColor: '#65715F', backgroundColor: '#263027', overflow: 'hidden', justifyContent: 'center', alignItems: 'center' }, thumbnailLight: { backgroundColor: '#E6E8DF', borderColor: '#8B9381' }, thumbnailSelected: { borderColor: '#E8D3AA', borderWidth: 3 }, thumbnailNumber: { fontSize: 19, color: '#D5DDCD', fontVariant: ['tabular-nums'] }, thumbnailNumberLight: { color: '#4A5947' }, thumbnailTick: { position: 'absolute', right: 3, bottom: 3, width: 17, height: 17, borderRadius: 9, backgroundColor: '#FCF9EE', alignItems: 'center', justifyContent: 'center' }, thumbnailTickText: { fontSize: 11, color: '#26432A', fontWeight: '700' },
+  button: { minHeight: 64, paddingHorizontal: 25, paddingVertical: 18, borderRadius: 16, backgroundColor: '#D3A06E', flexShrink: 1, justifyContent: 'center', alignItems: 'center', width: '100%' }, buttonText: { color: '#182319', fontSize: 19, fontWeight: '700', textAlign: 'center' }, secondaryButton: { backgroundColor: 'transparent', borderWidth: 1, borderColor: '#899581' }, secondaryButtonText: { color: '#DCE4D4' }, lightButton: { backgroundColor: '#FAF4E8' }, lightButtonText: { color: '#172719' }, disabled: { opacity: 0.4 }, pressed: { opacity: 0.8 }, textAction: { paddingVertical: 10, paddingHorizontal: 8, minHeight: 44, justifyContent: 'center' }, mutedButtonText: { color: '#CFD7C5', fontSize: 14, textAlign: 'center' },
+  reviewPageWide: { flexDirection: 'row', gap: 24 }, reviewSideRail: { width: 300, flexShrink: 0, justifyContent: 'center', gap: 14 }, reviewRailHeading: { gap: 12, width: '100%', paddingBottom: 14 },
+  reviewPage: { flex: 1, paddingHorizontal: 18, paddingBottom: 12, gap: 12 }, reviewHeading: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10 }, reviewEyebrow: { color: '#B6C2AB', fontSize: 10, letterSpacing: 2, marginBottom: 6 }, reviewTitle: { color: '#FAF7EF', fontSize: 27, fontFamily: 'Georgia' }, reviewCount: { color: '#D0D8C8', fontSize: 17, fontVariant: ['tabular-nums'] }, reviewStage: { flex: 1, minHeight: 250, borderRadius: 20, overflow: 'hidden', backgroundColor: '#080C09' }, reviewSlide: { height: '100%' }, reviewBottom: { alignItems: 'center', gap: 8 }, reviewActions: { width: '100%', gap: 10, maxWidth: 700, flexDirection: 'row' }, reviewActionsWide: { flexDirection: 'column', width: '100%' }, localSaved: { color: '#E8EDDF', fontSize: 13, fontWeight: '600', marginTop: 2 }, libraryStatus: { color: '#B8C0B0', fontSize: 12, textAlign: 'center' },
+  sharePage: { flexGrow: 1, padding: 30, gap: 26, alignItems: 'center', justifyContent: 'center' }, sharePageWide: { flexDirection: 'row', gap: 48, paddingHorizontal: 46 }, shareStory: { alignItems: 'center', gap: 17, flexShrink: 1, maxWidth: 510 }, shareEyebrow: { fontSize: 10, color: '#5A6954', letterSpacing: 2.4, fontWeight: '700' }, shareTitle: { fontSize: 46, fontFamily: 'Georgia', color: '#263426', textAlign: 'center' }, shareBody: { fontSize: 17, color: '#53614D', lineHeight: 26, textAlign: 'center', maxWidth: 430 }, shareLocal: { color: '#2F482E', fontWeight: '700', fontSize: 14, marginTop: 4 }, shareLibrary: { color: '#53614D', fontSize: 13, textAlign: 'center' }, shareCard: { width: '100%', maxWidth: 350, backgroundColor: '#fff', padding: 22, borderRadius: 24, gap: 20 }, qrContent: { alignItems: 'center', gap: 12 }, qrCaption: { color: '#394F35', fontSize: 10, letterSpacing: 1.8, fontWeight: '700' }, expiry: { color: '#34462F', fontSize: 14, lineHeight: 21, fontWeight: '600', textAlign: 'center' }, sharePrivacy: { color: '#586451', fontSize: 12, lineHeight: 19, textAlign: 'center' }, offlineCard: { alignItems: 'center', gap: 17, paddingVertical: 12 }, offlineGlyph: { color: '#385B34', fontSize: 38 }, offlineTitle: { fontSize: 32, fontFamily: 'Georgia', color: '#2D452A' }, lightTextAction: { color: '#385731', fontSize: 14, fontWeight: '600', textAlign: 'center' },
+  message: { padding: 16, backgroundColor: '#652E25', marginHorizontal: 18, marginBottom: 12, borderRadius: 12 }, messageText: { color: '#fff', fontSize: 15, lineHeight: 22, textAlign: 'center' },
+  hostPage: { flex: 1, backgroundColor: '#F3F1E9' }, hostContent: { padding: 28, gap: 20, maxWidth: 850, width: '100%', alignSelf: 'center' }, hostHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 16 }, hostTitle: { fontSize: 30, color: '#253D25', fontWeight: '600' }, closeHost: { color: '#385731', fontSize: 18, padding: 12 }, hostTabs: { flexDirection: 'row', gap: 8 }, hostTab: { flex: 1, padding: 14, borderRadius: 12, backgroundColor: '#E6E9DE' }, hostTabActive: { backgroundColor: '#D2DDC7' }, hostTabText: { color: '#2E482B', fontSize: 14, textAlign: 'center', fontWeight: '600' }, hostCard: { backgroundColor: '#fff', borderRadius: 20, padding: 22, gap: 16 }, hostSectionTitle: { color: '#263D25', fontSize: 20, fontWeight: '600' }, hostBody: { color: '#53634D', fontSize: 15, lineHeight: 23 }, hostSmall: { color: '#5E6A57', fontSize: 13, lineHeight: 20 }, timerOptions: { flexDirection: 'row', gap: 9 }, timerOption: { flex: 1, minHeight: 61, borderWidth: 1, borderColor: '#ACB99E', borderRadius: 13, alignItems: 'center', justifyContent: 'center' }, timerOptionSelected: { backgroundColor: '#314D2D', borderColor: '#314D2D' }, timerNumber: { fontSize: 22, fontWeight: '600', color: '#314D2D' }, timerNumberSelected: { color: '#fff' }, switchRow: { flexDirection: 'row', gap: 20, alignItems: 'center' }, switchText: { flex: 1, gap: 8 }, pairingInput: { borderWidth: 1, borderColor: '#9BA78E', borderRadius: 12, minHeight: 60, padding: 17, color: '#263D25', backgroundColor: '#FCFDF8', fontSize: 18 }, hostNotice: { color: '#395B31', fontSize: 16, lineHeight: 23 }, diagnostic: { color: '#733C2B', fontSize: 12, lineHeight: 19 }, libraryStrip: { flexDirection: 'row', gap: 7 }, libraryThumb: { width: 62, height: 76, borderRadius: 9 },
+  setupScanner: { height: 330, backgroundColor: '#172219', borderRadius: 18, overflow: 'hidden' },
+  fixture: { backgroundColor: '#fff7df', padding: 7 }, fixtureText: { color: '#47391C', fontSize: 10 },
 });

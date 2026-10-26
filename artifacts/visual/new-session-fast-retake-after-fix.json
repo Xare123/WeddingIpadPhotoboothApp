@@ -1,0 +1,28 @@
+{
+  "scope": "Actual native JSX through browser adapters; immediate thumbnail3→Retake with no actor wait after selection. Not iOS proof.",
+  "sourceSHA256": "a2d8e4f62b855c54e489d8311ba6fb794b59f3e7a71e9dd521827332ab6d5548",
+  "mockedHealthRequests": [],
+  "unexpectedExternalRequests": [],
+  "errors": [],
+  "cases": [
+    {
+      "orientation": "portrait",
+      "actorSleepAfterThumbnail": false,
+      "retakeTapLabel": "Retake photo 3",
+      "cameraActionAfterFastTap": "Retake photo 3",
+      "changedSlots": [
+        3
+      ]
+    },
+    {
+      "orientation": "landscape",
+      "actorSleepAfterThumbnail": false,
+      "retakeTapLabel": "Retake photo 3",
+      "cameraActionAfterFastTap": "Retake photo 3",
+      "changedSlots": [
+        3
+      ]
+    }
+  ],
+  "status": "passed"
+}

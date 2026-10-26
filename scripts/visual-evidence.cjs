@@ -28,15 +28,20 @@ async function api(route, options = {}) {
   let session;
   let revoked = false;
   try {
+    const health = await api('/health');
+    assert.equal(health.status, 'ok');
+    assert.equal(health.storage, 'local-r2');
+    assert.equal(health.sms, 'mock');
+    assert.equal(health.smsAvailable, false);
     const generator = await browser.newPage();
     const samples = [];
     // Original synthetic illustrations, deliberately labeled as samples: no guest photography.
-    for (let variant = 0; variant < 3; variant++) {
+    for (let variant = 0; variant < 5; variant++) {
       const data = await generator.evaluate(v => {
         const c = document.createElement('canvas'); c.width = 1200; c.height = 1500;
         const x = c.getContext('2d');
         const palettes = [['#bba18a', '#eee1ca', '#52685d'], ['#c39c81', '#f3dbb9', '#9a4f32'], ['#7b9282', '#e9d7b6', '#4b655d']];
-        const [dark, light, leaf] = palettes[v];
+        const [dark, light, leaf] = palettes[v % palettes.length];
         const gradient = x.createLinearGradient(0, 0, 1200, 1500); gradient.addColorStop(0, dark); gradient.addColorStop(1, light);
         x.fillStyle = gradient; x.fillRect(0, 0, 1200, 1500);
         x.fillStyle = '#fbf6ec'; x.globalAlpha = .65; x.beginPath(); x.roundRect(230, 200, 740, 1180, [380, 380, 0, 0]); x.fill(); x.globalAlpha = 1;
@@ -57,7 +62,7 @@ async function api(route, options = {}) {
             x.fillStyle = '#b8964f'; x.beginPath(); x.arc(px, py, 10, 0, Math.PI * 2); x.fill();
           } x.restore();
         }
-        x.textAlign = 'center'; x.fillStyle = '#4a4236'; x.font = 'italic 78px Georgia'; x.fillText(['A little magic.', 'To the happy days.', 'Just married.'][v], 600, 520);
+        x.textAlign = 'center'; x.fillStyle = '#4a4236'; x.font = 'italic 78px Georgia'; x.fillText(['A little magic.', 'To the happy days.', 'Just married.'][v % 3], 600, 520);
         x.font = '22px sans-serif'; x.fillText('A MOMENT FROM THE CELEBRATION', 600, 580);
         // Stylized champagne coupes; clearly illustrative rather than a camera photograph.
         for (let i = 0; i < 2; i++) {
@@ -79,7 +84,7 @@ async function api(route, options = {}) {
     for (const sample of samples) await api(`/v1/sessions/${session}/photos/${sample.photoId}`, { method: 'PUT', headers: { 'Content-Type': 'image/jpeg' }, body: sample.bytes });
     const ready = await api(`/v1/sessions/${session}/ready`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ photoIds: samples.map(s => s.photoId) }) });
     const galleryUrl = ready.url;
-    passed('Uploaded three original labeled synthetic 1200 × 1500 JPEGs to the local R2 emulator and finalized a real gallery.');
+    passed('Health confirmed local R2, mock SMS and smsAvailable:false. Uploaded five original labeled synthetic 1200 × 1500 JPEGs to the local R2 emulator and finalized a real gallery. No messaging request was made.');
     const screenshots = [];
     for (const size of [{ name: 'phone', width: 390, height: 844 }, { name: 'tablet', width: 820, height: 1180 }, { name: 'desktop', width: 1440, height: 1000 }]) {
       const context = await browser.newContext({ viewport: { width: size.width, height: size.height }, deviceScaleFactor: 1, acceptDownloads: true, timezoneId: 'America/Los_Angeles' });
@@ -110,7 +115,8 @@ async function api(route, options = {}) {
         const bounds = await link.boundingBox(); assert(bounds.height >= 44 && bounds.width >= 44);
       }
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
-      assert.equal(await page.getByText('Full resolution · JPEG', { exact: true }).count(), 3);
+      assert.equal(await page.locator('.photo img').count(), samples.length);
+      assert.equal(await page.getByText('Full resolution · JPEG', { exact: true }).count(), samples.length);
       await page.evaluate(() => scrollTo(0, 0));
       await page.waitForTimeout(800);
       assert.equal(await page.locator('.hero').evaluate(e => getComputedStyle(e).animationName), 'reveal');
@@ -132,7 +138,7 @@ async function api(route, options = {}) {
       assert(await page.evaluate(() => [...document.querySelectorAll('.reveal')].every(e => getComputedStyle(e).animationName === 'none')));
       assert.equal(await page.locator('.download').first().evaluate(e => getComputedStyle(e).transitionDuration), '0s');
       assert.equal(errors.length, 0); assert.equal(externalRequests, 0);
-      passed(`${size.width} × ${size.height}: three images decoded at original dimensions; no horizontal overflow; named download controls ≥44 px; full-resolution labels; keyboard focus visible; entrance animations complete; reduced motion removes animation/transitions; exact UTC expiry with semantic time element remains consistent in America/Los_Angeles browser timezone; photo-retention copy visible; zero page errors or external requests.`);
+      passed(`${size.width} × ${size.height}: five images decoded at original dimensions; no horizontal overflow; named download controls ≥44 px; full-resolution labels; keyboard focus visible; entrance animations complete; reduced motion removes animation/transitions; exact UTC expiry with semantic time element remains consistent in America/Los_Angeles browser timezone; photo-retention copy visible; zero page errors or external requests.`);
       await context.close();
     }
     for (const sample of samples) {
@@ -140,7 +146,7 @@ async function api(route, options = {}) {
       assert.equal(download.status, 200); assert.match(download.headers.get('content-disposition'), /^attachment;/);
       assert.equal(hash(Buffer.from(await download.arrayBuffer())), hash(sample.bytes));
     }
-    passed('All three served downloads were byte-identical to their uploaded JPEGs. Actual browser download of the first JPEG also matched and used wedding-photo-1.jpg.');
+    passed('All five served downloads were byte-identical to their uploaded JPEGs. Actual browser download of the first JPEG also matched and used wedding-photo-1.jpg.');
     await api(`/v1/sessions/${session}/gallery`, { method: 'DELETE' }); revoked = true;
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, timezoneId: 'America/Los_Angeles' });
     const closed = await page.goto(galleryUrl, { waitUntil: 'networkidle' });
@@ -160,7 +166,7 @@ async function api(route, options = {}) {
       generatedAt: new Date().toISOString(), engine: `Chromium ${browser.version()}`, command: 'node scripts/visual-evidence.cjs (local Worker required)',
       source: { path: 'services/api/src/index.ts', sha256: sourceSha256, stableDuringCapture: true }, browserTimezone: 'America/Los_Angeles',
       scope: 'Actual local Worker guest gallery rendered in desktop Chromium at responsive viewport sizes. Native iPad / iOS Safari / physical camera / native animations were not executed.',
-      samples: 'Original synthetic illustrations created with browser canvas; labeled SAMPLE SCENE in every image. No private photos, phone numbers, or messaging used.',
+      sampleCount: samples.length, samples: 'Five original synthetic illustrations created with browser canvas; labeled SAMPLE SCENE in every image. No private photos, phone numbers, or messaging used.',
       capabilityHandling: 'Capability URLs and session identifiers omitted from artifacts and stdout. Gallery revoked after captures. Emulator photo bytes remain local.', screenshots, checks,
     };
     await fs.writeFile(path.join(output, 'checks.json'), JSON.stringify(manifest, null, 2) + '\n');

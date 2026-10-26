@@ -60,6 +60,20 @@ export function normalizePhone(input: string): string {
   return phone;
 }
 
+export function sessionGuestPage(
+  session: { id: string; confirmed: boolean; shots: { id: string }[] } | null | undefined,
+  jobs: { kind: string; state: string; sessionId: string; photoId: string; guestUrl?: string; guestExpiresAt?: number }[],
+  now = Date.now(),
+): { url: string; expiresAt: number } | null {
+  if (!session?.confirmed || !session.shots.length || new Set(session.shots.map(s => s.id)).size !== session.shots.length) return null;
+  const selected = session.shots.map(shot => jobs.find(job => job.kind === 'upload' && job.sessionId === session.id && job.photoId === shot.id));
+  const first = selected[0];
+  const url = qrForJob(first, now);
+  if (!url || !first?.guestExpiresAt || selected.some(job =>
+    qrForJob(job, now) !== url || job?.guestExpiresAt !== first.guestExpiresAt)) return null;
+  return { url, expiresAt: first.guestExpiresAt };
+}
+
 // Uses the iPad's locale/time zone in production; explicit options make the
 // acknowledged server expiry inspectable in deterministic tests.
 export function formatGuestExpiry(

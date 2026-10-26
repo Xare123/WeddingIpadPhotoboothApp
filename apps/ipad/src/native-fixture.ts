@@ -49,13 +49,14 @@ export function nativeFixtureStorageStatus(active: ActiveCapture | null, jobs: Q
     `pending=${jobs.filter(job => job.kind === 'upload' && job.state === 'pending').length}`,
     `drafts=${files.filter(file => file.name.endsWith('.draft.jpg')).length}`,
     `originals=${files.filter(file => file.name.endsWith('.jpg') && !file.name.endsWith('.draft.jpg')).length}`,
+    `verifiedOriginals=${files.filter(file => file.name.startsWith('e2e00000-') && file.name.endsWith('.jpg') && !file.name.endsWith('.draft.jpg') && file.size > 0 && file.md5 === '2619d8590042d44e0786109755db2bf5').length}`,
   ].join(';');
 }
 
 // Simulate the precise termination window after the confirmed-file rename and
 // before the queue/active-row commits. Do not touch SQLite here: real startup
 // recovery must reconstruct exactly one pending job on the next native launch.
-export function interruptNativeFixtureConfirmation(capture: ActiveCapture): void {
+export function interruptNativeFixtureConfirmation(capture: ActiveCapture): Promise<void> {
   requireNativeFixture();
   const expected = new File(Paths.document, 'photobooth', `${capture.id}.draft.jpg`);
   if (!capture.id.startsWith('e2e00000-') || capture.confirmed || capture.fileUri !== expected.uri) {
@@ -65,5 +66,7 @@ export function interruptNativeFixtureConfirmation(capture: ActiveCapture): void
   if (!source.exists || source.size <= 0) throw new Error('Synthetic draft is missing');
   const destination = new File(Paths.document, 'photobooth', `${capture.id}.jpg`);
   if (destination.exists) throw new Error('Synthetic checkpoint already exists');
-  source.move(destination);
+  // SDK58 native relocation is asynchronous. A caller must await the checkpoint
+  // before terminating; the synchronous guard above still rejects Release use.
+  return source.move(destination);
 }

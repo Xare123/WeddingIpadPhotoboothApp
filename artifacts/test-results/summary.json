@@ -1,247 +1,111 @@
 {
-  "scope": "Cloud-instance and exact-commit hosted verification; production and physical-device checks remain separate",
-  "frozen_install": {
-    "command": "bash scripts/setup-cloud.sh",
+  "scope": "Five-photo saving repair and premium native kiosk revision; source checks are distinct from deployment/device acceptance",
+  "generatedAt": "2026-10-26T06:36:29.244925+00:00",
+  "appVersion": "0.2.0",
+  "iosBuildNumber": "2",
+  "sourceHashes": {
+    "apps/ipad/App.tsx": "a2d8e4f62b855c54e489d8311ba6fb794b59f3e7a71e9dd521827332ab6d5548",
+    "apps/ipad/src/storage.ts": "0aaf80c9483099448395286e9b6990aacfab2c3ff8eecb337bdd715b3ab961aa",
+    "apps/ipad/src/native-file-ports.ts": "49107b78dd8d96b75375b588d7c68af3fcc1858ecaa63046847008314996af14",
+    "apps/ipad/src/local-persistence.ts": "15b5c6e2083a91cfde34a34433964c60c290e8e608961beee9fe995ba047c049",
+    "apps/ipad/src/photo-export.ts": "937800017be4108f18ea99d4333104a821d1fd3ad61af71713c99c3f1cb89999",
+    "apps/ipad/src/photo-library.ts": "b352f4c5c002838f36325d8d6150f9521eba9979515b3a97bc814674376f12bc",
+    "apps/ipad/src/session-capture.ts": "b41f7ee98282fe5661e080a6b4e0b88b17c56e3c1e5908adebbe020ed6323e24",
+    "apps/ipad/src/review-selection.ts": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
+    "apps/ipad/src/sharing.ts": "fc0579c2c93a04707a437b995554b3abb3430062a695bbfdc1b08064b281d755",
+    "apps/ipad/src/sync.ts": "f7d2171f74cff468129200cdf1d1ac0b25deb48a3db0f70cc6d265a89e7e46ec",
+    "apps/ipad/app.json": "11076a77d973779f03140127522c9451532d1e52af0d6309c873c54fbe263ffb",
+    "package-lock.json": "4757632ae553208c948e62b93c2f80e662e840ac4924d1a9c2e438a31af535b8"
+  },
+  "frozenInstall": {
     "passed": true,
-    "packages": 587,
-    "hosted_run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40258141817"
+    "packages": 588,
+    "command": "bash scripts/setup-cloud.sh"
   },
-  "tests": {
-    "command": "npm test",
-    "passed": 59,
-    "failed": 0,
-    "skipped": 0
-  },
-  "typecheck": {
-    "command": "npm run typecheck",
-    "passed": true
-  },
-  "ios_javascript_export": {
-    "passed": true,
-    "metro_modules": 1005,
-    "native_compilation": false
-  },
-  "local_http_smoke": {
-    "passed": true,
-    "native_rate_bindings": 8,
-    "live_cloudflare": false,
-    "real_sms": false
-  },
-  "browser_native_jsx": {
-    "development_interactions": 8,
-    "bounded_permission_lifecycle_retry": 4,
-    "release_checks": 2,
-    "computed_contrast_checks": 3,
-    "source_sha256": "1004bb5a350a47402191489d54e77a4ea275caefc3634419d8d0cd284747ea76"
-  },
-  "qr_fullframe_cases": 20,
-  "qr_independent_decoders": [
-    "jsQR 1.4.0",
-    "ZXing-C++ zxing-wasm 3.1.6"
-  ],
-  "app_source_sha256": "1004bb5a350a47402191489d54e77a4ea275caefc3634419d8d0cd284747ea76",
-  "worker_sha256": "fa45361fd720d716df92efcc8f4917d53fbba3b55c3d1c00c463604dce8ca870",
-  "hosted_ci_executed": true,
-  "physical_device_tested": false,
-  "secrets_generated": false,
-  "gallery_browser_groups": 6,
-  "gallery_worker_source_sha256": "4801a7cfcc475da2fa2d180b1a01dc5d98b996cf1dd830cf31f66f7dfb9f42b9",
-  "ci_contract_tests": {
-    "command": "node --test scripts/ci-native.test.mjs",
-    "passed": 43,
-    "failed": 0,
-    "skipped": 0
-  },
-  "hosted_runs": [
-    {
-      "lane": "linux",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40246386348",
-      "commit": "23608b372a2e26b2b13feb037a931b733e1c3a45",
-      "result": "passed"
-    },
-    {
-      "lane": "native",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40246386349",
-      "commit": "23608b372a2e26b2b13feb037a931b733e1c3a45",
-      "result": "failed",
-      "diagnosis": "Public annotation only exit code 1; exact cause unconfirmed"
-    },
-    {
-      "lane": "linux",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40247502391",
-      "commit": "1c1324f87a365ef8d318f487ae46503aee816589",
-      "result": "passed"
-    },
-    {
-      "lane": "native",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40247502398",
-      "commit": "1c1324f87a365ef8d318f487ae46503aee816589",
-      "result": "failed",
-      "diagnosis": "Unexpected non-whitespace character after JSON; structured simulator output was being parsed from a shortened combined diagnostic log. Runner correction and rerun pending."
-    },
-    {
-      "lane": "linux",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40248391461",
-      "commit": "2b4f4912202e9c44f2a48f76b2ae0a2bac442b63",
-      "result": "passed"
-    },
-    {
-      "lane": "native",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40248391441",
-      "commit": "2b4f4912202e9c44f2a48f76b2ae0a2bac442b63",
-      "result": "failed",
-      "diagnosis": "Project/dependency setup and simulator boot completed; Metro readiness failed before xcodebuild. Mac-specific cause unconfirmed; additional startup diagnostics pending."
-    },
-    {
-      "lane": "linux",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40249710316",
-      "commit": "ed78989d0f9ae8c1b67587224d0e29eb69d6a5d2",
-      "result": "passed"
-    },
-    {
-      "lane": "native",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40249710331",
-      "commit": "ed78989d0f9ae8c1b67587224d0e29eb69d6a5d2",
-      "result": "failed",
-      "diagnosis": "Coordinator retrieved actual logs: Node24.19.0 Undici setTypeOfService EINVAL during Metro status request; CocoaPods and simulator boot completed. No native compile/XCTest. Targeted node:http repair locally verified; hosted rerun required."
-    },
-    {
-      "lane": "linux",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40250912454",
-      "commit": "43ceaa34bfa135bc6bde3399981408f3aae50fea",
-      "result": "passed"
-    },
-    {
-      "lane": "native",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40250912422",
-      "commit": "43ceaa34bfa135bc6bde3399981408f3aae50fea",
-      "result": "failed",
-      "diagnosis": "Undici crash resolved; metro-ready reached60s with npxlauncher alive, localhost timeout and IPconnectionrefused. Coordinator fullyinspectedartifact: no metro.log/no capturedCLIoutput; cleanup passed. Underlying npxstall cause unproven. Direct installedExpoCLI invocation and initialized lifecycle logs are the next targeted repair; no nativecompile/XCTest yet."
-    },
-    {
-      "lane": "linux",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40253365792",
-      "commit": "ad8adc811cb3e9e76b2e0574df911367eeca9ae7",
-      "result": "passed"
-    },
-    {
-      "lane": "native",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40253365785",
-      "commit": "ad8adc811cb3e9e76b2e0574df911367eeca9ae7",
-      "result": "failed",
-      "diagnosis": "Resolverfixture35 expected a rawtemporarypath ratherthan canonicalpath onmacOS; stopped beforeinstallation/Metro. Canonicalpath assertion and actualworkspace-symlink coverage now pass in all38isolated preinstall checks. Functionalrunner unchanged; newhostedattemptrequired."
-    },
-    {
-      "lane": "linux",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40253752308",
-      "commit": "d1f69864d6a90f6ca1640c4276478045b06b9593",
-      "result": "passed"
-    },
-    {
-      "lane": "native-ui",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40253752322",
-      "commit": "d1f69864d6a90f6ca1640c4276478045b06b9593",
-      "result": "failed",
-      "diagnosis": "DirectExpoCLI reachedprojectinitialization; Metrodeadlineexpired. Coordinatorinspectedartifact; SIGKILLfromcleanupnotprovenOOM; emptyps inconclusive. Releasephysical-SDKcompile is now independent ofMetro; UItestsremainunrun."
-    },
-    {
-      "lane": "linux",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40256121532",
-      "commit": "7a51427ab1305ff401a4a0ca36954a7ada607ace",
-      "result": "passed"
-    },
-    {
-      "lane": "native-release",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40256121530",
-      "commit": "7a51427ab1305ff401a4a0ca36954a7ada607ace",
-      "result": "failed",
-      "diagnosis": "Confirmedtoolchainmismatch: ExpoModulesJSI apple package requiresSwiftTools6.2.0; selectedXcode16.4/Swift6.1. Job-wideinstalledXcode26.3selection+effectiveSwift6.2guardimplemented; no dependencyrequirementdowngrade. CorrectedReleasebuildpending."
-    },
-    {
-      "lane": "linux",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40258141817",
-      "commit": "82703b627aa3df7d0a7e5e6a930c2612fda43891",
-      "result": "passed"
-    },
-    {
-      "lane": "native-release",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40258141808",
-      "job": "121364360643",
-      "commit": "82703b627aa3df7d0a7e5e6a930c2612fda43891",
-      "result": "passed",
-      "evidence": "Public exact-SHA success annotation: unsigned Release iPhoneOS app compiled; executable, embedded JavaScript and iPad metadata verified. No XCTest, signing, installation or device testing."
-    }
-  ],
-  "firebase": {
-    "result": "not_run",
-    "reason": "No usable configured Google identity or signed iOS XCTest package; bounded assessment completed and Firebase deferred"
-  },
-  "native_xctest_passed": false,
-  "last_successful_hosted_linux_commit": "82703b627aa3df7d0a7e5e6a930c2612fda43891",
-  "metro_entry_checks": {
-    "passed": true,
-    "native_test_flag": true,
-    "virtual_entry_http_status": 200,
-    "app_entry_http_status": 200,
-    "native_execution": false,
-    "owned_server_stopped": true
-  },
-  "native_xctest_executed": false,
-  "isolated_preinstall_contracts": {
-    "passed": 43,
+  "typecheck": "passed",
+  "appCoreApiTests": {
+    "passed": 130,
     "failed": 0,
     "skipped": 0,
-    "project_dependencies_available": false
+    "evidence": "artifacts/test-results/save-rework-final-tests.tap"
   },
-  "direct_expo_cli_startup": {
-    "expo_version": "58.0.19",
-    "ready_seconds": 2,
-    "http_status": 200,
-    "owned_process_group_stopped": true,
-    "macos_result": "UI mode reached project initialization then stalled before listening; unresolved. Release mode does not start Metro."
+  "nativeAdapterStorageTests": {
+    "passed": 29,
+    "note": "Includes deferred/rejected production native adapter methods and truncated staging retry"
   },
-  "native_release_build": {
-    "result": "passed",
-    "configuration": "Release",
-    "sdk": "iphoneos",
-    "signed": false,
-    "metro_required": false,
-    "xctest_executed": false,
-    "embedded_javascript_check_configured": true,
-    "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40258141808",
-    "exit_code": 0,
-    "native_app_verified": true,
-    "specific_build_diagnostic": "Prior Swift6.1/6.2 mismatch resolved with installedXcode26.3; successful Releaseevidence verified.",
-    "commit": "82703b627aa3df7d0a7e5e6a930c2612fda43891",
-    "coverage": [
-      "physical iOS SDK Release build",
-      "nonempty executable",
-      "nonempty embedded main.jsbundle",
-      "matching bundle identifier",
-      "iPad UIDeviceFamily",
-      "iPhoneOS supported platform",
-      "embedded bundle SHA-256 recorded by CI"
-    ],
-    "inspection_boundary": "Successful public exact-SHA annotation and its validation code inspected; raw hosted status.json/release-evidence.json not downloaded in this executor because api.github.com remains outside the runtime allowlist."
+  "captureReviewTests": {
+    "passed": 12,
+    "note": "Includes synchronous thumbnail intent and stale-animation cancellation"
   },
-  "native_compilation_attempted": true,
-  "native_compilation_passed": true,
-  "local_release_embed": {
+  "ciRunnerContracts": {
+    "passed": 43,
+    "failed": 0,
+    "skipped": 0
+  },
+  "nativePrebuild": {
     "passed": true,
-    "command": "Expo export:embed --platform ios --dev false --minify false",
-    "fixture_enabled": false,
-    "metro_modules": 1005,
-    "bytes": 3968418,
-    "sha256": "fa9f550069c553cc4e09c3b9cd4a523ef8c90a9c5fb3562b9983f8991df55b13",
-    "native_build": false
+    "photosAddOnlyUsageKeyVerified": true,
+    "bundleIdentifierUnchanged": "com.example.weddingphotobooth",
+    "actualNativeCompile": false
   },
-  "toolchain_repair": {
-    "developer_dir": "/Applications/Xcode_26.3.app/Contents/Developer",
-    "minimum_swift": "6.2",
-    "dependency_requirement_lowered": false,
-    "hosted_result": "passed",
-    "swift_minimum_verified_before_pods": true
+  "browserNativeJsx": {
+    "passed": true,
+    "report": "artifacts/visual/new-session-checks.json",
+    "index": "artifacts/visual/new-session-evidence.md",
+    "screenshots": 50,
+    "videos": 2,
+    "boundedChecks": 6,
+    "selectedContrasts": 8,
+    "fullFrameExactQrDecodesPerIndependentDecoder": 22,
+    "physicalDeviceProof": false
   },
-  "tested_native_source_commit": "82703b627aa3df7d0a7e5e6a930c2612fda43891",
-  "deployed": false
+  "galleryBrowser": {
+    "passed": true,
+    "groups": 6,
+    "photos": 5,
+    "downloadsByteIdentical": true
+  },
+  "localHttpSmoke": "passed five-photo upload/replay/readiness/private download/consent/mock/revocation",
+  "productionWorkerDryRun": "passed with repository cloud-env helper",
+  "dependencyAudit": {
+    "passed": false,
+    "underlyingExpoCliAdvisories": 2,
+    "affectedHighEntries": 5,
+    "report": "artifacts/security/save-rework-audit.json",
+    "incompatibleFixNotForced": true
+  },
+  "nativeRelease": {
+    "status": "awaiting fresh exact-commit hosted run",
+    "signed": false,
+    "xctestExecuted": false,
+    "physicalDeviceTested": false
+  },
+  "coordinatorDeployment": {
+    "reportedVerified": true,
+    "worker": "wedding-photobooth",
+    "version": "e11f1d52-24ce-49cf-83a5-c9b6aa035de9",
+    "sha256": "5cc1e7390ecebc05d7815bf0b7819c5aca2478f6db105adac81d10cd9f3672c9",
+    "state": "fail-closed; DEVICE_TOKEN absent, pairing/SMS disabled, JSON503 expected",
+    "liveR2WritesVerified": false,
+    "liveSmsFromThisExecutor": 0
+  },
+  "remainingGates": [
+    "fresh unsigned native Release compile",
+    "coordinator secure DEVICE_TOKEN configuration and private pairing",
+    "owner same-team/bundle standalone installation and real-iPad offline save/reboot/Photos test",
+    "live synthetic five-photo storage/download/phone QR rehearsal",
+    "provider eligibility/live approval and parent-owned capped recipient test if SMS enabled",
+    "environment draft publication/fresh-task restore verification"
+  ],
+  "firebase": "deferred; no authorized Google identity/project or signed supported test package; no paid run or grant created",
+  "projectFinished": false,
+  "iosJavascriptExport": {
+    "passed": true,
+    "modules": 1019,
+    "assets": 2,
+    "finalAppSourceHashMatchedInSourceMap": true,
+    "bundleSha256": "d8e8b1dca3cc1ba4c2bcf2bb94eb8531a86b07d350cdc1255173e4e909a613ee",
+    "sourceMapModules": 1005
+  },
+  "manualEnvironmentCorrection": "One direct npm run check reached 130 passing tests but its bundle step failed because the cloud helper/telemetry environment was omitted. Rerunning the affected export with the documented environment passed. The saved setup script already sources that helper."
 }

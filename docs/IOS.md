@@ -23,13 +23,13 @@ Use the application scheme and connected iPad in Xcode; follow [the standalone R
 npx expo run:ios --device
 ```
 
-These commands generate ignored native files. They install open-source dependencies but do not create an Apple account, agree to new legal terms, enroll a paid developer membership, or submit an app automatically. The installed `expo run:ios` command needs the relevant signing team/profile. Replace the example bundle identifier deliberately before establishing the final signing identity. Do not put certificates or provisioning profiles in Git.
+These commands generate ignored native files. They do not create an Apple account, accept terms, buy membership or submit an app automatically. Use the existing personal-team signing identity. If an app is already installed, preserve its bundle identifier and team: changing identity creates a different photo container. Never uninstall or clear an installation containing originals. Do not put certificates or profiles in Git.
 
 Expo Go can run supported native modules only when its SDK matches this app. It depends on a development server; its caching, permissions and data lifetime do not establish wedding readiness. A development build can also depend on Metro. The wedding needs a release build whose JavaScript is embedded and that opens after a cold reboot without a laptop or development server.
 
 ## Distribution decision (owner action)
 
-The owner will use a MacBook to install on the iPad. Apple Developer membership/signing availability is still unknown. Free personal-team device provisioning can expire within roughly a week, which overlaps this wedding's timeline; verify actual profile expiration rather than relying on it. Paid Apple Developer distribution, ad hoc installation and TestFlight have different account, registered-device, review and expiry requirements. TestFlight approval or Apple enrollment should not be assumed immediate. Choose an already-available route, verify its requirements in the current Apple documentation and rehearse installation early. No signing, account enrollment, EAS build, submission or paid build was performed here.
+The owner confirmed a MacBook, Xcode, the wedding iPad and a **free Apple ID personal team**. Use that route by default. Personal-team provisioning commonly expires within roughly a week; inspect the actual expiry, refresh with the same team/bundle identifier near November 1, and rehearse a cold launch after renewal. Do not depend on an expired build at the event or require paid membership as a default. Signing, account prompts and real-device installation remain owner actions; none was executed by the Linux agent.
 
 The macOS workflow uses an explicitly marked `[native-ci]` push to build an **unsigned Release app for the physical iOS SDK**, without Metro or simulator startup. It checks the executable, embedded `main.jsbundle`, bundle identifier and iPad device family, and records small hash/metadata evidence. Compilation does not run XCTest or install the app.
 
@@ -37,14 +37,15 @@ The separate `[native-ui]` mode builds the Debug XCTest target for synthetic cap
 
 ## Operator configuration
 
-Keep the default offline until an approved HTTPS backend is deployed. Configure its origin and dedicated device token through the OS-authenticated operator settings on the iPad; enable a device passcode first. Public Expo variables must never contain production credentials. The optional phone-sharing simulation is labeled for fictional test numbers only. Live guest messaging is not enabled until a provider and approved sender are available; a QR to the uploaded guest page is the practical fallback.
+The intended HTTPS origin is prefilled. Use [private one-time pairing](PRIVATE_PROVISIONING.md) through OS-authenticated host settings; guests never enter an origin or token. Enable an iPad passcode first. Capture and the local library work without pairing or Internet. No public Expo variable contains a production credential. Phone collection remains hidden until the backend confirms approved live SMS; QR is the normal sharing path.
 
 ## Required physical-device rehearsal
 
 - Install the intended standalone release build, check its provisioning expiry beyond November 1, and restart the iPad with no development server.
-- Allow camera permission; deny it once and verify the recovery path. Verify front-camera framing in portrait and landscape, countdown, preview, retake and next-guest reset.
+- Allow camera permission; deny it once and verify recovery. Verify full-screen framing in both orientations, host timer choices, all five countdowns, thumbnail progress, swipe review, individual retakes and Next guest.
 - Use a card with readable text to confirm the final JPEG is not unintentionally mirrored or rotated. Front-camera preview and final capture can differ; inspect the downloaded original.
-- Capture several photos with Wi-Fi disabled. Force-quit/reopen and reboot; verify originals and pending IDs persist. Restore Wi-Fi and confirm one guest session per confirmed photo, no duplicate uploads and no QR before actual readiness.
+- Capture five photos with Wi-Fi disabled. Check the host's local library, force-quit/reopen and reboot; verify originals, selected order and pending IDs persist. Restore Wi-Fi and confirm one guest page for all five selected photos, no duplicate uploads, and no QR before complete readiness.
+- Grant Photos add-only access and inspect the actual Photos app. Deny access once, verify the app still retains originals, then allow/retry without overwriting originals. Distinguish confirmed Photos copies from failed/unconfirmed exports. Test low storage with synthetic cards; never erase existing originals to create space.
 - Scan each QR from a second phone on cellular data. Check that it opens the right session, downloads the original and cannot open another guest's image. Test expiry and revocation without real guest photos.
 - Test venue Wi-Fi, access-point isolation, captive portals and cellular backup. A guest phone can scan a QR offline but cannot load a website without connectivity. Never present a local-development URL as a working guest link.
 - Rehearse a long capture run, low storage, permission failures, power/charging and thermal conditions in the actual stand/backdrop lighting. Turn off notifications and enable an appropriate iPad kiosk/Guided Access configuration with a host-controlled exit.

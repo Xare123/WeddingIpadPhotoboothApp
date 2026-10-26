@@ -1,24 +1,34 @@
 # Native simulator UI and persistence checks
 
-Hosted modes are separate. A `[native-ci]` review-branch push now selects `node scripts/ci-native.mjs release-build`: unsigned Release compilation for the physical iOS SDK, embedded JavaScript verification and small metadata/hash evidence, with no Metro, simulator or XCTest. A `[native-ui]` push selects `ui-tests`, described below. Running the script without a mode still selects UI tests for owner reproduction. Consult [validation](../../../docs/VALIDATION.md) for actual outcomes; the Release build is not a UI-test result, and hosted Metro startup remains unresolved.
+The five-photo XCTest source is updated and **UNRUN**. It has received source review only in this Linux environment; no Swift/XCTest compilation, simulator execution, `.xcresult`, or new hosted run is claimed. The optional Debug `[native-ui]` lane remains blocked on Metro startup. Consult [validation](../../../docs/VALIDATION.md) for recorded outcomes.
 
-`WeddingPhotoboothUITests.swift` is an XCTest UI test for a fresh iPad simulator app install. It launches the actual Debug native application, accepts the actual iOS camera permission dialog, and uses a committed **synthetic JPEG** in place of physical camera hardware. The synthetic image then travels through the normal `preserveCapture`, `confirmCapture`, SQLite queue and startup recovery paths.
+Hosted modes are separate. A `[native-ci]` review-branch push selects `node scripts/ci-native.mjs release-build`: unsigned Release compilation for the physical iOS SDK, embedded JavaScript verification, and metadata/hash evidence. That mode uses no Metro, simulator, or XCTest and cannot establish whether these UI assertions pass. `[native-ui]` selects `ui-tests`; invoking the script without a mode also selects UI tests for owner reproduction. No CI run is required merely to review this source.
 
-Both `__DEV__` and `EXPO_PUBLIC_E2E_FIXTURE=1` are required. Each fixture entrypoint checks the guard itself. Release builds never activate it. No credentials, test URL or provider connection is supplied; fixture upload/share requests fail offline before reading Keychain or making API requests. The fixture does not bypass host authentication, reset/delete existing booth data or seed data at module load. Its captures use a recognizable `e2e00000-…` UUID prefix, and the interrupted-confirmation mutator accepts only those draft files in the app's photo directory.
+`WeddingPhotoboothUITests.swift` targets the unchanged `com.example.weddingphotobooth` bundle on a **fresh, dedicated iPad simulator app install**. It launches the actual Debug native app and uses the committed synthetic JPEG instead of a hardware camera image. Captures use the normal five-shot runner, durable `saveShot`/journal/SQLite paths, `confirmSession`, pending queue, and startup recovery. Debug JavaScript and the fixture JPEG are supplied by local Metro.
 
-Use a fresh simulator or fresh app install. The test rejects existing uploads instead of clearing user data. Do not enable this mode on an event iPad with existing photos. The source image is the repository's synthetic illustration, not a guest photo.
+Both `__DEV__` and `EXPO_PUBLIC_E2E_FIXTURE=1` are mandatory. Guarded fixture entrypoints do not activate in Release builds. No credential, hosted API URL, or provider connection is supplied; fixture sharing fails offline before loading a connection or making API requests. The fixture does not bypass host authentication, reset booth data, or seed captures at module load. Its generated photo IDs use the recognizable `e2e00000-…` prefix.
 
-## Checks exercised
+The initial assertion requires no active capture, uploads, drafts, or originals. Existing data fails the test rather than being erased. Do not enable the fixture on an event iPad containing photos. The image is a repository illustration, not a guest photo.
 
-The single sequential test checks native launch/permission grant, countdown cancellation with no late capture, draft file bytes (including the committed fixture’s MD5) and active SQLite state across terminate/relaunch, retake preserving the old draft, ordinary confirmation creating a pending job, API-offline retry showing no QR, next-guest clearing surviving restart, and confirmed-file journal recovery.
+## Intended coverage — not yet executed
 
-For the journal checkpoint, the fixture renames its synthetic draft to a confirmed `.jpg` but deliberately leaves the active SQLite row pointing to the old draft and creates no upload row. XCTest terminates the app immediately afterward. Real startup recovery must reconstruct one pending job, update the active file URI, retain readable bytes, and remain idempotent on another relaunch. Screenshot attachments in the `.xcresult` are labeled synthetic.
+One sequential test follows the actual controls and storage observations:
 
-This is **API-offline native storage coverage**. Debug JavaScript and the JPEG come from local Metro, so it does not establish standalone offline launch. It does not test real front-camera output, camera quality/mirroring, physical iPad layouts, Keychain/biometrics, VoiceOver speech, the public guest API or delivery. Those still need an owner Mac/iPad and the manual checklist in the app README.
+1. `start-session` opens the camera. The test accepts the real iOS camera permission when needed, starts `take-photo`, cancels the first countdown, and waits beyond the fresh-install three-second timer to check that no late original or preview appears.
+2. A new automatic run is terminated as soon as the fixture reports exactly one durable original. After relaunch, the app must restore that original and its ID, show the partial camera session, and offer Continue. This is a real termination after a completed file save, not an injected mid-write checkpoint.
+3. Continue captures the remaining four shots automatically. Review must contain five saved slots, five verified original files, no queued upload, and `Keep all 5 photos`. Paging must change the selected preview; selecting thumbnail one and retaking it must retain six physical originals while keeping five selections.
+4. `use-photo` confirms the selection. Exactly five upload jobs must be pending, with six originals still on disk; the retired shot must not become a sixth queued job. Termination/relaunch must restore the confirmed selection and queue. An offline sharing retry must preserve the jobs and show no `guest-qr`.
+5. `next-guest` must return to `start-session`, clear the active capture, and retain all six originals and all five pending uploads. Another relaunch must preserve that attract state and those counts without displaying a stale preview or QR.
+
+The guarded fixture status comes from actual Expo document files and SQLite-backed jobs. The test checks `state`, `photo`, `file`, `bytes`, `md5`, `uploads`, `pending`, `drafts`, `originals`, and `verifiedOriginals`. The active file must be nonempty and retain the committed JPEG MD5 `2619d8590042d44e0786109755db2bf5`. `verifiedOriginals` independently counts non-draft synthetic `.jpg` files with that MD5 and nonzero size; assertions require 1, then 5, then 6, including after active clearing. The count proves retained synthetic file bytes, not visual camera quality or a listing of every selected upload ID.
+
+Photos export is optional to this proof. The test preferentially denies Photos permission, or handles the available Add Photos Only / Allow Access / OK variant, while retaining originals locally. It neither opens authenticated host controls nor changes the export preference through a bypass. System prompt wording, accessibility exposure, swipe behavior, and the first-save termination timing still require real Xcode execution. Screenshot attachments, if a successful native run produces them, are labeled synthetic.
+
+This source does not provide native interrupted-rename/queue-checkpoint coverage. It also does not establish standalone offline launch, real front-camera output/mirroring, physical iPad layouts, Photos export success, Keychain/biometrics, VoiceOver speech, hosted gallery access, or SMS acceptance/delivery. Use an owner Mac/iPad and the app's manual checklist for those behaviors.
 
 ## Owner Mac reproduction
 
-Requirements: Xcode with Swift 6.2+ (CI selects Xcode 26.3), an available iPad simulator running iOS 16.4 or later, Node/npm versions from the repository, and CocoaPods 1.16.2. ExpoModulesJSI's Swift-package requirement exceeds React Native's lower declared Xcode minimum. No Apple account, signing certificate or provisioning profile is required for the unsigned simulator target. This does not produce an installable physical-iPad distribution.
+Requirements: Xcode with Swift 6.2+ (the hosted setup selects Xcode 26.3), an available iPad simulator running iOS 16.4 or later, the repository's Node/npm versions, and CocoaPods 1.16.2. ExpoModulesJSI's Swift-package requirement exceeds React Native's lower declared Xcode minimum. The generated UI-test target uses Swift language version 5. No Apple account, signing certificate, or provisioning profile is required for the unsigned simulator target. This does not produce a physical-iPad distribution build.
 
 From the repository root:
 
@@ -30,13 +40,13 @@ pod _1.16.2_ install --project-directory=apps/ipad/ios
 xcrun simctl list devices available
 ```
 
-Choose/boot a fresh iPad simulator from that list. In a separate terminal, start Metro:
+Choose and boot a fresh dedicated iPad simulator. In a separate terminal, start Metro:
 
 ```sh
 EXPO_PUBLIC_E2E_FIXTURE=1 EXPO_NO_TELEMETRY=1 npm run start --workspace @wedding-booth/ipad -- --port 8081
 ```
 
-Then replace `SIMULATOR_UUID` below with its actual identifier:
+Replace `SIMULATOR_UUID` with the actual simulator identifier:
 
 ```sh
 xcodebuild \
@@ -51,6 +61,6 @@ xcodebuild \
   test
 ```
 
-Use a new result-bundle path for repeat runs. Reset by uninstalling this test app from the dedicated simulator, not by erasing an event iPad or deleting production files. The generated native project is ignored; `prepare-ios-tests.mjs` adds an isolated UI-test target and shared scheme through the existing Xcode project API, copies the committed Swift test, and writes `apps/ipad/ios/native-test-plan.json`. Its paths are repository-relative. The setup is repeatable and does not edit the tracked Podfile or application native source.
+Use a new result-bundle path for repeat runs. Reset only by uninstalling the test app from the dedicated simulator; do not erase an event iPad or delete its files. `prepare-ios-tests.mjs` adds the isolated UI-test target/shared scheme, copies the committed Swift source, and writes `apps/ipad/ios/native-test-plan.json` in the ignored generated project. It does not modify tracked application native source or the Podfile.
 
-Linux can verify Expo prebuild, generated-project structure, TypeScript and Metro export. Only an actual macOS/Xcode run can establish whether the native target builds and these XCTest assertions pass; do not describe unrun native tests as passing.
+A macOS/Xcode run must compile the source and complete the assertions before anyone describes these native UI tests as passing. Linux source review, TypeScript tests, prebuild, and Metro export do not establish XCTest readiness or simulator behavior.

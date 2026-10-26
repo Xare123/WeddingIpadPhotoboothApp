@@ -2,7 +2,7 @@
 
 Deliver a polished, secure wedding photobooth for November 1, 2026 on the provisional M1 iPad Air: dependable capture/countdown/retake, durable offline originals and recovery, private R2-backed session viewing/download, readable QR sharing after genuine readiness, and consented SMS only after provider eligibility and owner approval.
 
-This file is durable repository guidance. No native persistent-goal API is exposed to the cloud task, so this document does **not** create an active product goal, scheduled background worker or promise of unattended execution.
+This file is durable repository guidance. File changes alone do **not** create an active product goal, scheduled background worker or promise of unattended execution. When the product supplies an external goal and continuation tools, follow that actual runtime objective and report blockers honestly.
 
 ## Completion gates
 
@@ -14,11 +14,12 @@ This file is durable repository guidance. No native persistent-goal API is expos
 
 ## Current priorities
 
-1. Close native testing gaps using the existing public GitHub repository and explicit standard-runner CI, without merging main.
-2. Keep Firebase assessment bounded. It needs a configured Google identity/project and a compatible native XCTest artifact; neither generic environment-variable presence nor JavaScript tests prove readiness. If those prerequisites are unavailable, prioritize the Mac-to-iPad handoff and real-device checklist.
-3. Verify recovery under interruption and serialize every queue operation, including manual retry/backoff reset. Keep test fixtures explicitly development-only and offline.
-4. Preserve exact-source test reports, the private-storage deployment artifact, and reusable environment configuration. Distinguish implemented, locally tested, hosted-tested, deployed and physical-device-tested status in every handoff.
+1. Resolve the owner's real-device report that photos were unavailable in both the app and Photos. Verify local save, file-journal recovery, local-library access and independent Photos export; preserve existing originals and the installed bundle identity. Prior synthetic passes do not override this evidence.
+2. Deliver the five-shot native kiosk flow: large camera/review, adjustable host countdown, durable thumbnail progress, swipe review, individual retakes, one complete-session sharing screen and Next guest privacy.
+3. Keep Firebase bounded. Without an existing authorized identity/project and compatible signed test package, continue standard-runner CI and the owner Mac/iPad route rather than provisioning new services.
+4. Review the two-key private-pairing contract with the coordinator and preserve backend-only Textbelt keys. Live SMS requires eligibility/live approval and consent; uncertain sends never auto-resend.
+5. Preserve exact-source tests, screenshots/interaction evidence, deployment artifacts and reusable environment configuration. Distinguish implemented, local/hosted-tested, deployed and physical-device-tested status.
 
-Production key approval is pending. Do not create keys, buy services, alter persistent access, enable real messaging or publish real guest photos as a way to remove that gate.
+The owner approved the two photobooth credentials and use of the existing backend-only Textbelt key. The coordinator owns secure generation/configuration, deployment and at most three approved owner test texts; this executor sends none and never fetches or prints their values. Provider/domain approval remains pending. No additional purchases, persistent grants, real guest-photo publication or expanded test recipients are authorized.
 
-Checkpoint: source 82703b6 passed Linux checks and unsigned Release compilation for the physical iOS SDK, including embedded-JavaScript/iPad metadata verification. Next acceptance work is owner-controlled signing and actual-iPad rehearsal, plus coordinated private-backend deployment after secret approval. Debug XCTest remains unrun due to hosted Metro startup; record that gap until tested. This is not a completed wedding launch.
+Historical checkpoint: source 82703b6 passed Linux checks and unsigned Release compilation, but the owner then found a saving failure and rejected the one-shot UX. That compilation does not verify this reworked source or device usability. The owner uses free Apple ID personal-team signing; preserve the existing app container, inspect profile expiry and renew/rehearse near November 1. Debug XCTest remains unrun due to its independent Metro startup gap. This is not a completed wedding launch.

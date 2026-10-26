@@ -2,18 +2,20 @@
   "expo": {
     "name": "Wedding Photobooth",
     "slug": "wedding-ipad-photobooth",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "platforms": [
       "ios"
     ],
     "orientation": "default",
     "userInterfaceStyle": "light",
     "ios": {
+      "buildNumber": "2",
       "supportsTablet": true,
       "requireFullScreen": true,
       "bundleIdentifier": "com.example.weddingphotobooth",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSPhotoLibraryAddUsageDescription": "Save your wedding photos to this iPad\u2019s Photos library."
       }
     },
     "plugins": [
@@ -31,6 +33,17 @@
         "expo-local-authentication",
         {
           "faceIDPermission": "Authenticate the booth host before changing photo sharing settings."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": false,
+          "savePhotosPermission": "Save your wedding photos to this iPad\u2019s Photos library.",
+          "granularPermissions": [
+            "photo"
+          ],
+          "isAccessMediaLocationEnabled": false
         }
       ]
     ]

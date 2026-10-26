@@ -1,0 +1,3868 @@
+{
+  "scope": "Actual five-shot App.tsx native JSX through RN-web. Generated synthetic scene, in-memory camera/files/SQLite/Photos/auth/sync. Not iOS, real durability, camera, Photos, native accessibility, phone scanning, network, or SMS verification.",
+  "timezoneId": "America/Los_Angeles",
+  "generatedAt": "2026-10-26T06:14:31.974Z",
+  "sourceSHA256": "a2d8e4f62b855c54e489d8311ba6fb794b59f3e7a71e9dd521827332ab6d5548",
+  "decoderVersions": {
+    "jsQR": "1.4.0",
+    "zxingCppWasm": "3.1.6",
+    "pngjs": "7.0.0",
+    "encoder": "1.5.4"
+  },
+  "screenshots": [
+    {
+      "file": "artifacts/visual/new-session-attract-portrait.png",
+      "state": "attract",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 729.203125,
+          "y": 54,
+          "width": 58.796875,
+          "height": 46,
+          "top": 54,
+          "right": 788,
+          "bottom": 100,
+          "left": 729.203125
+        },
+        {
+          "label": "Let’s make memories",
+          "x": 36,
+          "y": 1045,
+          "width": 748,
+          "height": 64,
+          "top": 1045,
+          "right": 784,
+          "bottom": 1109,
+          "left": 36
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-camera-portrait.png",
+      "state": "camera",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Start 5 photos",
+          "x": 190,
+          "y": 1074,
+          "width": 440,
+          "height": 64,
+          "top": 1074,
+          "right": 630,
+          "bottom": 1138,
+          "left": 190
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-camera-progress-portrait.png",
+      "state": "camera-progress",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Pause countdown",
+          "x": 190,
+          "y": 1074,
+          "width": 440,
+          "height": 64,
+          "top": 1074,
+          "right": 630,
+          "bottom": 1138,
+          "left": 190
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-paused-portrait.png",
+      "state": "paused",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Photo 1, saved on this iPad",
+          "x": 237,
+          "y": 981,
+          "width": 62,
+          "height": 76,
+          "top": 981,
+          "right": 299,
+          "bottom": 1057,
+          "left": 237
+        },
+        {
+          "label": "Continue · photo 2",
+          "x": 190,
+          "y": 1074,
+          "width": 440,
+          "height": 64,
+          "top": 1074,
+          "right": 630,
+          "bottom": 1138,
+          "left": 190
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-review-portrait.png",
+      "state": "review",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Photo 1, saved on this iPad",
+          "x": 237,
+          "y": 970,
+          "width": 62,
+          "height": 76,
+          "top": 970,
+          "right": 299,
+          "bottom": 1046,
+          "left": 237
+        },
+        {
+          "label": "Photo 2, saved on this iPad",
+          "x": 308,
+          "y": 970,
+          "width": 62,
+          "height": 76,
+          "top": 970,
+          "right": 370,
+          "bottom": 1046,
+          "left": 308
+        },
+        {
+          "label": "Photo 3, saved on this iPad",
+          "x": 379,
+          "y": 970,
+          "width": 62,
+          "height": 76,
+          "top": 970,
+          "right": 441,
+          "bottom": 1046,
+          "left": 379
+        },
+        {
+          "label": "Photo 4, saved on this iPad",
+          "x": 450,
+          "y": 970,
+          "width": 62,
+          "height": 76,
+          "top": 970,
+          "right": 512,
+          "bottom": 1046,
+          "left": 450
+        },
+        {
+          "label": "Photo 5, saved on this iPad",
+          "x": 521,
+          "y": 970,
+          "width": 62,
+          "height": 76,
+          "top": 970,
+          "right": 583,
+          "bottom": 1046,
+          "left": 521
+        },
+        {
+          "label": "Retake photo 1",
+          "x": 60,
+          "y": 1057,
+          "width": 345.546875,
+          "height": 64,
+          "top": 1057,
+          "right": 405.546875,
+          "bottom": 1121,
+          "left": 60
+        },
+        {
+          "label": "Keep all 5 photos",
+          "x": 415.546875,
+          "y": 1057,
+          "width": 344.453125,
+          "height": 64,
+          "top": 1057,
+          "right": 760,
+          "bottom": 1121,
+          "left": 415.546875
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-review-swiped-portrait.png",
+      "state": "review-swiped",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Photo 1, saved on this iPad",
+          "x": 237,
+          "y": 970,
+          "width": 62,
+          "height": 76,
+          "top": 970,
+          "right": 299,
+          "bottom": 1046,
+          "left": 237
+        },
+        {
+          "label": "Photo 2, saved on this iPad",
+          "x": 308,
+          "y": 970,
+          "width": 62,
+          "height": 76,
+          "top": 970,
+          "right": 370,
+          "bottom": 1046,
+          "left": 308
+        },
+        {
+          "label": "Photo 3, saved on this iPad",
+          "x": 379,
+          "y": 970,
+          "width": 62,
+          "height": 76,
+          "top": 970,
+          "right": 441,
+          "bottom": 1046,
+          "left": 379
+        },
+        {
+          "label": "Photo 4, saved on this iPad",
+          "x": 450,
+          "y": 970,
+          "width": 62,
+          "height": 76,
+          "top": 970,
+          "right": 512,
+          "bottom": 1046,
+          "left": 450
+        },
+        {
+          "label": "Photo 5, saved on this iPad",
+          "x": 521,
+          "y": 970,
+          "width": 62,
+          "height": 76,
+          "top": 970,
+          "right": 583,
+          "bottom": 1046,
+          "left": 521
+        },
+        {
+          "label": "Retake photo 2",
+          "x": 60,
+          "y": 1057,
+          "width": 345.546875,
+          "height": 64,
+          "top": 1057,
+          "right": 405.546875,
+          "bottom": 1121,
+          "left": 60
+        },
+        {
+          "label": "Keep all 5 photos",
+          "x": 415.546875,
+          "y": 1057,
+          "width": 344.453125,
+          "height": 64,
+          "top": 1057,
+          "right": 760,
+          "bottom": 1121,
+          "left": 415.546875
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-review-retake-portrait.png",
+      "state": "review-retake",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Photo 1, saved on this iPad",
+          "x": 237,
+          "y": 970,
+          "width": 62,
+          "height": 76,
+          "top": 970,
+          "right": 299,
+          "bottom": 1046,
+          "left": 237
+        },
+        {
+          "label": "Photo 2, saved on this iPad",
+          "x": 308,
+          "y": 970,
+          "width": 62,
+          "height": 76,
+          "top": 970,
+          "right": 370,
+          "bottom": 1046,
+          "left": 308
+        },
+        {
+          "label": "Photo 3, saved on this iPad",
+          "x": 379,
+          "y": 970,
+          "width": 62,
+          "height": 76,
+          "top": 970,
+          "right": 441,
+          "bottom": 1046,
+          "left": 379
+        },
+        {
+          "label": "Photo 4, saved on this iPad",
+          "x": 450,
+          "y": 970,
+          "width": 62,
+          "height": 76,
+          "top": 970,
+          "right": 512,
+          "bottom": 1046,
+          "left": 450
+        },
+        {
+          "label": "Photo 5, saved on this iPad",
+          "x": 521,
+          "y": 970,
+          "width": 62,
+          "height": 76,
+          "top": 970,
+          "right": 583,
+          "bottom": 1046,
+          "left": 521
+        },
+        {
+          "label": "Retake photo 3",
+          "x": 60,
+          "y": 1057,
+          "width": 345.546875,
+          "height": 64,
+          "top": 1057,
+          "right": 405.546875,
+          "bottom": 1121,
+          "left": 60
+        },
+        {
+          "label": "Keep all 5 photos",
+          "x": 415.546875,
+          "y": 1057,
+          "width": 344.453125,
+          "height": 64,
+          "top": 1057,
+          "right": 760,
+          "bottom": 1121,
+          "left": 415.546875
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-pending-portrait.png",
+      "state": "pending",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Retry sharing",
+          "x": 257,
+          "y": 819,
+          "width": 306,
+          "height": 64,
+          "top": 819,
+          "right": 563,
+          "bottom": 883,
+          "left": 257
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 915,
+          "width": 306,
+          "height": 64,
+          "top": 915,
+          "right": 563,
+          "bottom": 979,
+          "left": 257
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-ready-portrait.png",
+      "state": "ready",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 938,
+          "width": 306,
+          "height": 64,
+          "top": 938,
+          "right": 563,
+          "bottom": 1002,
+          "left": 257
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-next-guests-portrait.png",
+      "state": "next-guests",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 729.203125,
+          "y": 54,
+          "width": 58.796875,
+          "height": 46,
+          "top": 54,
+          "right": 788,
+          "bottom": 100,
+          "left": 729.203125
+        },
+        {
+          "label": "Let’s make memories",
+          "x": 36,
+          "y": 1045,
+          "width": 748,
+          "height": 64,
+          "top": 1045,
+          "right": 784,
+          "bottom": 1109,
+          "left": 36
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-attract-landscape.png",
+      "state": "attract",
+      "orientation": "landscape",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 1089.203125,
+          "y": 54,
+          "width": 58.796875,
+          "height": 46,
+          "top": 54,
+          "right": 1148,
+          "bottom": 100,
+          "left": 1089.203125
+        },
+        {
+          "label": "Let’s make memories",
+          "x": 66,
+          "y": 655,
+          "width": 552,
+          "height": 64,
+          "top": 655,
+          "right": 618,
+          "bottom": 719,
+          "left": 66
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-camera-landscape.png",
+      "state": "camera",
+      "orientation": "landscape",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 1099.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 1152,
+          "bottom": 83,
+          "left": 1099.203125
+        },
+        {
+          "label": "Start 5 photos",
+          "x": 722,
+          "y": 714,
+          "width": 440,
+          "height": 64,
+          "top": 714,
+          "right": 1162,
+          "bottom": 778,
+          "left": 722
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-camera-progress-landscape.png",
+      "state": "camera-progress",
+      "orientation": "landscape",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Pause countdown",
+          "x": 722,
+          "y": 714,
+          "width": 440,
+          "height": 64,
+          "top": 714,
+          "right": 1162,
+          "bottom": 778,
+          "left": 722
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-paused-landscape.png",
+      "state": "paused",
+      "orientation": "landscape",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 1099.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 1152,
+          "bottom": 83,
+          "left": 1099.203125
+        },
+        {
+          "label": "Photo 1, saved on this iPad",
+          "x": 18,
+          "y": 721,
+          "width": 62,
+          "height": 76,
+          "top": 721,
+          "right": 80,
+          "bottom": 797,
+          "left": 18
+        },
+        {
+          "label": "Continue · photo 2",
+          "x": 722,
+          "y": 714,
+          "width": 440,
+          "height": 64,
+          "top": 714,
+          "right": 1162,
+          "bottom": 778,
+          "left": 722
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-review-landscape.png",
+      "state": "review",
+      "orientation": "landscape",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 1099.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 1152,
+          "bottom": 83,
+          "left": 1099.203125
+        },
+        {
+          "label": "Photo 1, saved on this iPad",
+          "x": 878,
+          "y": 373.5,
+          "width": 48,
+          "height": 62,
+          "top": 373.5,
+          "right": 926,
+          "bottom": 435.5,
+          "left": 878
+        },
+        {
+          "label": "Photo 2, saved on this iPad",
+          "x": 933,
+          "y": 373.5,
+          "width": 48,
+          "height": 62,
+          "top": 373.5,
+          "right": 981,
+          "bottom": 435.5,
+          "left": 933
+        },
+        {
+          "label": "Photo 3, saved on this iPad",
+          "x": 988,
+          "y": 373.5,
+          "width": 48,
+          "height": 62,
+          "top": 373.5,
+          "right": 1036,
+          "bottom": 435.5,
+          "left": 988
+        },
+        {
+          "label": "Photo 4, saved on this iPad",
+          "x": 1043,
+          "y": 373.5,
+          "width": 48,
+          "height": 62,
+          "top": 373.5,
+          "right": 1091,
+          "bottom": 435.5,
+          "left": 1043
+        },
+        {
+          "label": "Photo 5, saved on this iPad",
+          "x": 1098,
+          "y": 373.5,
+          "width": 48,
+          "height": 62,
+          "top": 373.5,
+          "right": 1146,
+          "bottom": 435.5,
+          "left": 1098
+        },
+        {
+          "label": "Retake photo 1",
+          "x": 862,
+          "y": 452.5,
+          "width": 300,
+          "height": 64,
+          "top": 452.5,
+          "right": 1162,
+          "bottom": 516.5,
+          "left": 862
+        },
+        {
+          "label": "Keep all 5 photos",
+          "x": 862,
+          "y": 526.5,
+          "width": 300,
+          "height": 64,
+          "top": 526.5,
+          "right": 1162,
+          "bottom": 590.5,
+          "left": 862
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-review-swiped-landscape.png",
+      "state": "review-swiped",
+      "orientation": "landscape",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 1099.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 1152,
+          "bottom": 83,
+          "left": 1099.203125
+        },
+        {
+          "label": "Photo 1, saved on this iPad",
+          "x": 878,
+          "y": 373.5,
+          "width": 48,
+          "height": 62,
+          "top": 373.5,
+          "right": 926,
+          "bottom": 435.5,
+          "left": 878
+        },
+        {
+          "label": "Photo 2, saved on this iPad",
+          "x": 933,
+          "y": 373.5,
+          "width": 48,
+          "height": 62,
+          "top": 373.5,
+          "right": 981,
+          "bottom": 435.5,
+          "left": 933
+        },
+        {
+          "label": "Photo 3, saved on this iPad",
+          "x": 988,
+          "y": 373.5,
+          "width": 48,
+          "height": 62,
+          "top": 373.5,
+          "right": 1036,
+          "bottom": 435.5,
+          "left": 988
+        },
+        {
+          "label": "Photo 4, saved on this iPad",
+          "x": 1043,
+          "y": 373.5,
+          "width": 48,
+          "height": 62,
+          "top": 373.5,
+          "right": 1091,
+          "bottom": 435.5,
+          "left": 1043
+        },
+        {
+          "label": "Photo 5, saved on this iPad",
+          "x": 1098,
+          "y": 373.5,
+          "width": 48,
+          "height": 62,
+          "top": 373.5,
+          "right": 1146,
+          "bottom": 435.5,
+          "left": 1098
+        },
+        {
+          "label": "Retake photo 2",
+          "x": 862,
+          "y": 452.5,
+          "width": 300,
+          "height": 64,
+          "top": 452.5,
+          "right": 1162,
+          "bottom": 516.5,
+          "left": 862
+        },
+        {
+          "label": "Keep all 5 photos",
+          "x": 862,
+          "y": 526.5,
+          "width": 300,
+          "height": 64,
+          "top": 526.5,
+          "right": 1162,
+          "bottom": 590.5,
+          "left": 862
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-review-retake-landscape.png",
+      "state": "review-retake",
+      "orientation": "landscape",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 1099.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 1152,
+          "bottom": 83,
+          "left": 1099.203125
+        },
+        {
+          "label": "Photo 1, saved on this iPad",
+          "x": 878,
+          "y": 373.5,
+          "width": 48,
+          "height": 62,
+          "top": 373.5,
+          "right": 926,
+          "bottom": 435.5,
+          "left": 878
+        },
+        {
+          "label": "Photo 2, saved on this iPad",
+          "x": 933,
+          "y": 373.5,
+          "width": 48,
+          "height": 62,
+          "top": 373.5,
+          "right": 981,
+          "bottom": 435.5,
+          "left": 933
+        },
+        {
+          "label": "Photo 3, saved on this iPad",
+          "x": 988,
+          "y": 373.5,
+          "width": 48,
+          "height": 62,
+          "top": 373.5,
+          "right": 1036,
+          "bottom": 435.5,
+          "left": 988
+        },
+        {
+          "label": "Photo 4, saved on this iPad",
+          "x": 1043,
+          "y": 373.5,
+          "width": 48,
+          "height": 62,
+          "top": 373.5,
+          "right": 1091,
+          "bottom": 435.5,
+          "left": 1043
+        },
+        {
+          "label": "Photo 5, saved on this iPad",
+          "x": 1098,
+          "y": 373.5,
+          "width": 48,
+          "height": 62,
+          "top": 373.5,
+          "right": 1146,
+          "bottom": 435.5,
+          "left": 1098
+        },
+        {
+          "label": "Retake photo 3",
+          "x": 862,
+          "y": 452.5,
+          "width": 300,
+          "height": 64,
+          "top": 452.5,
+          "right": 1162,
+          "bottom": 516.5,
+          "left": 862
+        },
+        {
+          "label": "Keep all 5 photos",
+          "x": 862,
+          "y": 526.5,
+          "width": 300,
+          "height": 64,
+          "top": 526.5,
+          "right": 1162,
+          "bottom": 590.5,
+          "left": 862
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-pending-landscape.png",
+      "state": "pending",
+      "orientation": "landscape",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 1099.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 1152,
+          "bottom": 83,
+          "left": 1099.203125
+        },
+        {
+          "label": "Retry sharing",
+          "x": 676,
+          "y": 467,
+          "width": 306,
+          "height": 64,
+          "top": 467,
+          "right": 982,
+          "bottom": 531,
+          "left": 676
+        },
+        {
+          "label": "Next guests",
+          "x": 676,
+          "y": 563,
+          "width": 306,
+          "height": 64,
+          "top": 563,
+          "right": 982,
+          "bottom": 627,
+          "left": 676
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-ready-landscape.png",
+      "state": "ready",
+      "orientation": "landscape",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 1099.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 1152,
+          "bottom": 83,
+          "left": 1099.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 634,
+          "y": 599,
+          "width": 306,
+          "height": 64,
+          "top": 599,
+          "right": 940,
+          "bottom": 663,
+          "left": 634
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-next-guests-landscape.png",
+      "state": "next-guests",
+      "orientation": "landscape",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 1089.203125,
+          "y": 54,
+          "width": 58.796875,
+          "height": 46,
+          "top": 54,
+          "right": 1148,
+          "bottom": 100,
+          "left": 1089.203125
+        },
+        {
+          "label": "Let’s make memories",
+          "x": 66,
+          "y": 655,
+          "width": 552,
+          "height": 64,
+          "top": 655,
+          "right": 618,
+          "bottom": 719,
+          "left": 66
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-photos-denied-portrait.png",
+      "state": "photos-denied",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Photo 1, saved on this iPad",
+          "x": 237,
+          "y": 918,
+          "width": 62,
+          "height": 76,
+          "top": 918,
+          "right": 299,
+          "bottom": 994,
+          "left": 237
+        },
+        {
+          "label": "Photo 2, saved on this iPad",
+          "x": 308,
+          "y": 918,
+          "width": 62,
+          "height": 76,
+          "top": 918,
+          "right": 370,
+          "bottom": 994,
+          "left": 308
+        },
+        {
+          "label": "Photo 3, saved on this iPad",
+          "x": 379,
+          "y": 918,
+          "width": 62,
+          "height": 76,
+          "top": 918,
+          "right": 441,
+          "bottom": 994,
+          "left": 379
+        },
+        {
+          "label": "Photo 4, saved on this iPad",
+          "x": 450,
+          "y": 918,
+          "width": 62,
+          "height": 76,
+          "top": 918,
+          "right": 512,
+          "bottom": 994,
+          "left": 450
+        },
+        {
+          "label": "Photo 5, saved on this iPad",
+          "x": 521,
+          "y": 918,
+          "width": 62,
+          "height": 76,
+          "top": 918,
+          "right": 583,
+          "bottom": 994,
+          "left": 521
+        },
+        {
+          "label": "Retake photo 1",
+          "x": 60,
+          "y": 1005,
+          "width": 345.546875,
+          "height": 64,
+          "top": 1005,
+          "right": 405.546875,
+          "bottom": 1069,
+          "left": 60
+        },
+        {
+          "label": "Keep all 5 photos",
+          "x": 415.546875,
+          "y": 1005,
+          "width": 344.453125,
+          "height": 64,
+          "top": 1005,
+          "right": 760,
+          "bottom": 1069,
+          "left": 415.546875
+        },
+        {
+          "label": "Save a copy to Photos",
+          "x": 331.953125,
+          "y": 1124,
+          "width": 156.09375,
+          "height": 44,
+          "top": 1124,
+          "right": 488.046875,
+          "bottom": 1168,
+          "left": 331.953125
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-photos-denied-landscape.png",
+      "state": "photos-denied",
+      "orientation": "landscape",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 1099.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 1152,
+          "bottom": 83,
+          "left": 1099.203125
+        },
+        {
+          "label": "Photo 1, saved on this iPad",
+          "x": 878,
+          "y": 344.5,
+          "width": 48,
+          "height": 62,
+          "top": 344.5,
+          "right": 926,
+          "bottom": 406.5,
+          "left": 878
+        },
+        {
+          "label": "Photo 2, saved on this iPad",
+          "x": 933,
+          "y": 344.5,
+          "width": 48,
+          "height": 62,
+          "top": 344.5,
+          "right": 981,
+          "bottom": 406.5,
+          "left": 933
+        },
+        {
+          "label": "Photo 3, saved on this iPad",
+          "x": 988,
+          "y": 344.5,
+          "width": 48,
+          "height": 62,
+          "top": 344.5,
+          "right": 1036,
+          "bottom": 406.5,
+          "left": 988
+        },
+        {
+          "label": "Photo 4, saved on this iPad",
+          "x": 1043,
+          "y": 344.5,
+          "width": 48,
+          "height": 62,
+          "top": 344.5,
+          "right": 1091,
+          "bottom": 406.5,
+          "left": 1043
+        },
+        {
+          "label": "Photo 5, saved on this iPad",
+          "x": 1098,
+          "y": 344.5,
+          "width": 48,
+          "height": 62,
+          "top": 344.5,
+          "right": 1146,
+          "bottom": 406.5,
+          "left": 1098
+        },
+        {
+          "label": "Retake photo 1",
+          "x": 862,
+          "y": 423.5,
+          "width": 300,
+          "height": 64,
+          "top": 423.5,
+          "right": 1162,
+          "bottom": 487.5,
+          "left": 862
+        },
+        {
+          "label": "Keep all 5 photos",
+          "x": 862,
+          "y": 497.5,
+          "width": 300,
+          "height": 64,
+          "top": 497.5,
+          "right": 1162,
+          "bottom": 561.5,
+          "left": 862
+        },
+        {
+          "label": "Save a copy to Photos",
+          "x": 933.953125,
+          "y": 634.5,
+          "width": 156.09375,
+          "height": 44,
+          "top": 634.5,
+          "right": 1090.046875,
+          "bottom": 678.5,
+          "left": 933.953125
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-photos-uncertain-portrait.png",
+      "state": "photos-uncertain",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Photo 1, saved on this iPad",
+          "x": 237,
+          "y": 970,
+          "width": 62,
+          "height": 76,
+          "top": 970,
+          "right": 299,
+          "bottom": 1046,
+          "left": 237
+        },
+        {
+          "label": "Photo 2, saved on this iPad",
+          "x": 308,
+          "y": 970,
+          "width": 62,
+          "height": 76,
+          "top": 970,
+          "right": 370,
+          "bottom": 1046,
+          "left": 308
+        },
+        {
+          "label": "Photo 3, saved on this iPad",
+          "x": 379,
+          "y": 970,
+          "width": 62,
+          "height": 76,
+          "top": 970,
+          "right": 441,
+          "bottom": 1046,
+          "left": 379
+        },
+        {
+          "label": "Photo 4, saved on this iPad",
+          "x": 450,
+          "y": 970,
+          "width": 62,
+          "height": 76,
+          "top": 970,
+          "right": 512,
+          "bottom": 1046,
+          "left": 450
+        },
+        {
+          "label": "Photo 5, saved on this iPad",
+          "x": 521,
+          "y": 970,
+          "width": 62,
+          "height": 76,
+          "top": 970,
+          "right": 583,
+          "bottom": 1046,
+          "left": 521
+        },
+        {
+          "label": "Retake photo 1",
+          "x": 60,
+          "y": 1057,
+          "width": 345.546875,
+          "height": 64,
+          "top": 1057,
+          "right": 405.546875,
+          "bottom": 1121,
+          "left": 60
+        },
+        {
+          "label": "Keep all 5 photos",
+          "x": 415.546875,
+          "y": 1057,
+          "width": 344.453125,
+          "height": 64,
+          "top": 1057,
+          "right": 760,
+          "bottom": 1121,
+          "left": 415.546875
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-reduced-motion-countdown-portrait.png",
+      "state": "reduced-motion-countdown",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Pause countdown",
+          "x": 190,
+          "y": 1074,
+          "width": 440,
+          "height": 64,
+          "top": 1074,
+          "right": 630,
+          "bottom": 1138,
+          "left": 190
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-interrupted-portrait.png",
+      "state": "interrupted",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Start 5 photos",
+          "x": 190,
+          "y": 1074,
+          "width": 440,
+          "height": 64,
+          "top": 1074,
+          "right": 630,
+          "bottom": 1138,
+          "left": 190
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-save-retry-portrait.png",
+      "state": "save-retry",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Retry saving photo 1",
+          "x": 190,
+          "y": 1008,
+          "width": 440,
+          "height": 64,
+          "top": 1008,
+          "right": 630,
+          "bottom": 1072,
+          "left": 190
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-host-controls-portrait.png",
+      "state": "host-controls",
+      "orientation": "portrait",
+      "allowVerticalScroll": true,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 938,
+          "width": 306,
+          "height": 64,
+          "top": 938,
+          "right": 563,
+          "bottom": 1002,
+          "left": 257
+        },
+        {
+          "label": "Done",
+          "x": 724.96875,
+          "y": 28,
+          "width": 67.03125,
+          "height": 45,
+          "top": 28,
+          "right": 792,
+          "bottom": 73,
+          "left": 724.96875
+        },
+        {
+          "label": "Controls",
+          "x": 28,
+          "y": 93,
+          "width": 249.328125,
+          "height": 44,
+          "top": 93,
+          "right": 277.328125,
+          "bottom": 137,
+          "left": 28
+        },
+        {
+          "label": "Saved sessions",
+          "x": 285.328125,
+          "y": 93,
+          "width": 249.34375,
+          "height": 44,
+          "top": 93,
+          "right": 534.671875,
+          "bottom": 137,
+          "left": 285.328125
+        },
+        {
+          "label": "Private setup",
+          "x": 542.671875,
+          "y": 93,
+          "width": 249.328125,
+          "height": 44,
+          "top": 93,
+          "right": 792,
+          "bottom": 137,
+          "left": 542.671875
+        },
+        {
+          "label": "2s",
+          "x": 50,
+          "y": 257,
+          "width": 136.796875,
+          "height": 61,
+          "top": 257,
+          "right": 186.796875,
+          "bottom": 318,
+          "left": 50
+        },
+        {
+          "label": "3s",
+          "x": 195.796875,
+          "y": 257,
+          "width": 136.8125,
+          "height": 61,
+          "top": 257,
+          "right": 332.609375,
+          "bottom": 318,
+          "left": 195.796875
+        },
+        {
+          "label": "5s",
+          "x": 341.609375,
+          "y": 257,
+          "width": 136.796875,
+          "height": 61,
+          "top": 257,
+          "right": 478.40625,
+          "bottom": 318,
+          "left": 341.609375
+        },
+        {
+          "label": "8s",
+          "x": 487.40625,
+          "y": 257,
+          "width": 136.796875,
+          "height": 61,
+          "top": 257,
+          "right": 624.203125,
+          "bottom": 318,
+          "left": 487.40625
+        },
+        {
+          "label": "10s",
+          "x": 633.203125,
+          "y": 257,
+          "width": 136.796875,
+          "height": 61,
+          "top": 257,
+          "right": 770,
+          "bottom": 318,
+          "left": 633.203125
+        },
+        {
+          "label": "Open iPad permission settings",
+          "x": 50,
+          "y": 488,
+          "width": 720,
+          "height": 44,
+          "top": 488,
+          "right": 770,
+          "bottom": 532,
+          "left": 50
+        },
+        {
+          "label": "Save booth settings",
+          "x": 28,
+          "y": 574,
+          "width": 764,
+          "height": 64,
+          "top": 574,
+          "right": 792,
+          "bottom": 638,
+          "left": 28
+        },
+        {
+          "label": "Retry pending sharing",
+          "x": 50,
+          "y": 758,
+          "width": 720,
+          "height": 44,
+          "top": 758,
+          "right": 770,
+          "bottom": 802,
+          "left": 50
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-host-library-portrait.png",
+      "state": "host-library",
+      "orientation": "portrait",
+      "allowVerticalScroll": true,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 938,
+          "width": 306,
+          "height": 64,
+          "top": 938,
+          "right": 563,
+          "bottom": 1002,
+          "left": 257
+        },
+        {
+          "label": "Done",
+          "x": 724.96875,
+          "y": 28,
+          "width": 67.03125,
+          "height": 45,
+          "top": 28,
+          "right": 792,
+          "bottom": 73,
+          "left": 724.96875
+        },
+        {
+          "label": "Controls",
+          "x": 28,
+          "y": 93,
+          "width": 249.328125,
+          "height": 44,
+          "top": 93,
+          "right": 277.328125,
+          "bottom": 137,
+          "left": 28
+        },
+        {
+          "label": "Saved sessions",
+          "x": 285.328125,
+          "y": 93,
+          "width": 249.34375,
+          "height": 44,
+          "top": 93,
+          "right": 534.671875,
+          "bottom": 137,
+          "left": 285.328125
+        },
+        {
+          "label": "Private setup",
+          "x": 542.671875,
+          "y": 93,
+          "width": 249.328125,
+          "height": 44,
+          "top": 93,
+          "right": 792,
+          "bottom": 137,
+          "left": 542.671875
+        },
+        {
+          "label": "Refresh local sessions",
+          "x": 28,
+          "y": 200,
+          "width": 764,
+          "height": 64,
+          "top": 200,
+          "right": 792,
+          "bottom": 264,
+          "left": 28
+        },
+        {
+          "label": "10/25/2026, 11:15:38 PM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
+          "x": 28,
+          "y": 284,
+          "width": 764,
+          "height": 230,
+          "top": 284,
+          "right": 792,
+          "bottom": 514,
+          "left": 28
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-host-library-session-portrait.png",
+      "state": "host-library-session",
+      "orientation": "portrait",
+      "allowVerticalScroll": true,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 938,
+          "width": 306,
+          "height": 64,
+          "top": 938,
+          "right": 563,
+          "bottom": 1002,
+          "left": 257
+        },
+        {
+          "label": "Done",
+          "x": 724.96875,
+          "y": 28,
+          "width": 67.03125,
+          "height": 45,
+          "top": 28,
+          "right": 792,
+          "bottom": 73,
+          "left": 724.96875
+        },
+        {
+          "label": "Controls",
+          "x": 28,
+          "y": 93,
+          "width": 249.328125,
+          "height": 44,
+          "top": 93,
+          "right": 277.328125,
+          "bottom": 137,
+          "left": 28
+        },
+        {
+          "label": "Saved sessions",
+          "x": 285.328125,
+          "y": 93,
+          "width": 249.34375,
+          "height": 44,
+          "top": 93,
+          "right": 534.671875,
+          "bottom": 137,
+          "left": 285.328125
+        },
+        {
+          "label": "Private setup",
+          "x": 542.671875,
+          "y": 93,
+          "width": 249.328125,
+          "height": 44,
+          "top": 93,
+          "right": 792,
+          "bottom": 137,
+          "left": 542.671875
+        },
+        {
+          "label": "Refresh local sessions",
+          "x": 28,
+          "y": 200,
+          "width": 764,
+          "height": 64,
+          "top": 200,
+          "right": 792,
+          "bottom": 264,
+          "left": 28
+        },
+        {
+          "label": "10/25/2026, 11:15:38 PM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
+          "x": 28,
+          "y": 926,
+          "width": 764,
+          "height": 230,
+          "top": 926,
+          "right": 792,
+          "bottom": 1156,
+          "left": 28
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-host-setup-portrait.png",
+      "state": "host-setup",
+      "orientation": "portrait",
+      "allowVerticalScroll": true,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 938,
+          "width": 306,
+          "height": 64,
+          "top": 938,
+          "right": 563,
+          "bottom": 1002,
+          "left": 257
+        },
+        {
+          "label": "Done",
+          "x": 724.96875,
+          "y": 28,
+          "width": 67.03125,
+          "height": 45,
+          "top": 28,
+          "right": 792,
+          "bottom": 73,
+          "left": 724.96875
+        },
+        {
+          "label": "Controls",
+          "x": 28,
+          "y": 93,
+          "width": 249.328125,
+          "height": 44,
+          "top": 93,
+          "right": 277.328125,
+          "bottom": 137,
+          "left": 28
+        },
+        {
+          "label": "Saved sessions",
+          "x": 285.328125,
+          "y": 93,
+          "width": 249.34375,
+          "height": 44,
+          "top": 93,
+          "right": 534.671875,
+          "bottom": 137,
+          "left": 285.328125
+        },
+        {
+          "label": "Private setup",
+          "x": 542.671875,
+          "y": 93,
+          "width": 249.328125,
+          "height": 44,
+          "top": 93,
+          "right": 792,
+          "bottom": 137,
+          "left": 542.671875
+        },
+        {
+          "label": "Scan private setup QR",
+          "x": 50,
+          "y": 257,
+          "width": 720,
+          "height": 64,
+          "top": 257,
+          "right": 770,
+          "bottom": 321,
+          "left": 50
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-reserved-1x-portrait.png",
+      "state": "qr-reserved-1x",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 938,
+          "width": 306,
+          "height": 64,
+          "top": 938,
+          "right": 563,
+          "bottom": 1002,
+          "left": 257
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-realistic-1x-portrait.png",
+      "state": "qr-realistic-1x",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 938,
+          "width": 306,
+          "height": 64,
+          "top": 938,
+          "right": 563,
+          "bottom": 1002,
+          "left": 257
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-reserved-numeric-1x-portrait.png",
+      "state": "qr-reserved-numeric-1x",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 938,
+          "width": 306,
+          "height": 64,
+          "top": 938,
+          "right": 563,
+          "bottom": 1002,
+          "left": 257
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-realistic-numeric-1x-portrait.png",
+      "state": "qr-realistic-numeric-1x",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 938,
+          "width": 306,
+          "height": 64,
+          "top": 938,
+          "right": 563,
+          "bottom": 1002,
+          "left": 257
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-short-numeric-1x-portrait.png",
+      "state": "qr-short-numeric-1x",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 938,
+          "width": 306,
+          "height": 64,
+          "top": 938,
+          "right": 563,
+          "bottom": 1002,
+          "left": 257
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-reserved-1x-landscape.png",
+      "state": "qr-reserved-1x",
+      "orientation": "landscape",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 1099.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 1152,
+          "bottom": 83,
+          "left": 1099.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 634,
+          "y": 599,
+          "width": 306,
+          "height": 64,
+          "top": 599,
+          "right": 940,
+          "bottom": 663,
+          "left": 634
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-realistic-1x-landscape.png",
+      "state": "qr-realistic-1x",
+      "orientation": "landscape",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 1099.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 1152,
+          "bottom": 83,
+          "left": 1099.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 634,
+          "y": 599,
+          "width": 306,
+          "height": 64,
+          "top": 599,
+          "right": 940,
+          "bottom": 663,
+          "left": 634
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-reserved-numeric-1x-landscape.png",
+      "state": "qr-reserved-numeric-1x",
+      "orientation": "landscape",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 1099.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 1152,
+          "bottom": 83,
+          "left": 1099.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 634,
+          "y": 599,
+          "width": 306,
+          "height": 64,
+          "top": 599,
+          "right": 940,
+          "bottom": 663,
+          "left": 634
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-realistic-numeric-1x-landscape.png",
+      "state": "qr-realistic-numeric-1x",
+      "orientation": "landscape",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 1099.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 1152,
+          "bottom": 83,
+          "left": 1099.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 634,
+          "y": 599,
+          "width": 306,
+          "height": 64,
+          "top": 599,
+          "right": 940,
+          "bottom": 663,
+          "left": 634
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-short-numeric-1x-landscape.png",
+      "state": "qr-short-numeric-1x",
+      "orientation": "landscape",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 1099.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 1152,
+          "bottom": 83,
+          "left": 1099.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 634,
+          "y": 599,
+          "width": 306,
+          "height": 64,
+          "top": 599,
+          "right": 940,
+          "bottom": 663,
+          "left": 634
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-reserved-2x-portrait.png",
+      "state": "qr-reserved-2x",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 938,
+          "width": 306,
+          "height": 64,
+          "top": 938,
+          "right": 563,
+          "bottom": 1002,
+          "left": 257
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-realistic-2x-portrait.png",
+      "state": "qr-realistic-2x",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 938,
+          "width": 306,
+          "height": 64,
+          "top": 938,
+          "right": 563,
+          "bottom": 1002,
+          "left": 257
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-reserved-numeric-2x-portrait.png",
+      "state": "qr-reserved-numeric-2x",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 938,
+          "width": 306,
+          "height": 64,
+          "top": 938,
+          "right": 563,
+          "bottom": 1002,
+          "left": 257
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-realistic-numeric-2x-portrait.png",
+      "state": "qr-realistic-numeric-2x",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 938,
+          "width": 306,
+          "height": 64,
+          "top": 938,
+          "right": 563,
+          "bottom": 1002,
+          "left": 257
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-short-numeric-2x-portrait.png",
+      "state": "qr-short-numeric-2x",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 938,
+          "width": 306,
+          "height": 64,
+          "top": 938,
+          "right": 563,
+          "bottom": 1002,
+          "left": 257
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-reserved-2x-landscape.png",
+      "state": "qr-reserved-2x",
+      "orientation": "landscape",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 1099.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 1152,
+          "bottom": 83,
+          "left": 1099.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 634,
+          "y": 599,
+          "width": 306,
+          "height": 64,
+          "top": 599,
+          "right": 940,
+          "bottom": 663,
+          "left": 634
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-realistic-2x-landscape.png",
+      "state": "qr-realistic-2x",
+      "orientation": "landscape",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 1099.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 1152,
+          "bottom": 83,
+          "left": 1099.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 634,
+          "y": 599,
+          "width": 306,
+          "height": 64,
+          "top": 599,
+          "right": 940,
+          "bottom": 663,
+          "left": 634
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-reserved-numeric-2x-landscape.png",
+      "state": "qr-reserved-numeric-2x",
+      "orientation": "landscape",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 1099.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 1152,
+          "bottom": 83,
+          "left": 1099.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 634,
+          "y": 599,
+          "width": 306,
+          "height": 64,
+          "top": 599,
+          "right": 940,
+          "bottom": 663,
+          "left": 634
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-realistic-numeric-2x-landscape.png",
+      "state": "qr-realistic-numeric-2x",
+      "orientation": "landscape",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 1099.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 1152,
+          "bottom": 83,
+          "left": 1099.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 634,
+          "y": 599,
+          "width": 306,
+          "height": 64,
+          "top": 599,
+          "right": 940,
+          "bottom": 663,
+          "left": 634
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-short-numeric-2x-landscape.png",
+      "state": "qr-short-numeric-2x",
+      "orientation": "landscape",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 1099.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 1152,
+          "bottom": 83,
+          "left": 1099.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 634,
+          "y": 599,
+          "width": 306,
+          "height": 64,
+          "top": 599,
+          "right": 940,
+          "bottom": 663,
+          "left": 634
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    }
+  ],
+  "demonstrations": [
+    {
+      "orientation": "portrait",
+      "viewport": {
+        "width": 820,
+        "height": 1180
+      },
+      "video": "artifacts/visual/new-session-demo-portrait.webm",
+      "motion": "normal motion; real App animation handlers",
+      "checks": [
+        "One Start action runs the five-shot sequence; pause/continue preserves the first saved slot; five distinct IDs and no upload jobs before confirmation.",
+        "Trusted Chromium touch swipe advances actual horizontal review from photo 1 to photo 2.",
+        "Immediate thumbnail3→Retake with no actor settling wait targets photo3, replaces only its selected ID, retains four other selections and the prior in-memory original, and returns to review.",
+        "Offline confirmation queues five selected uploads; five upload acknowledgments alone show no QR before the synthetic session-ready acknowledgment.",
+        "All-five ready acknowledgment reveals one shared session QR; Next guests clears selected session, guest photos and QR while retaining the in-memory host session history."
+      ],
+      "status": "passed",
+      "cameraStage": {
+        "x": 18,
+        "y": 92,
+        "width": 784,
+        "height": 870,
+        "widthFraction": 0.9560975609756097,
+        "heightFraction": 0.7372881355932204
+      },
+      "reviewStage": {
+        "x": 18,
+        "y": 152,
+        "width": 784,
+        "height": 803,
+        "widthFraction": 0.9560975609756097,
+        "heightFraction": 0.6805084745762712
+      },
+      "fastRetake": {
+        "intendedSlot": 3,
+        "labelImmediatelyAfterThumbnail": "Retake photo 3",
+        "disabledImmediatelyAfterThumbnail": null,
+        "actorSleepBeforeRetake": false,
+        "cameraAction": "Retake photo 3"
+      },
+      "events": [
+        {
+          "kind": "synthetic-recovery-noop",
+          "at": 1792995272900
+        },
+        {
+          "kind": "session-created",
+          "id": "dcf39d2d-f962-489c-9395-6e9b42fd37b5",
+          "at": 1792995273839
+        },
+        {
+          "kind": "synthetic-camera-exposure",
+          "slot": 0,
+          "at": 1792995277505
+        },
+        {
+          "kind": "private-save-started",
+          "id": "a8f3f9f7-78df-4708-9741-c598546a5cf1",
+          "slot": 0,
+          "at": 1792995277506
+        },
+        {
+          "kind": "private-save-resolved",
+          "id": "a8f3f9f7-78df-4708-9741-c598546a5cf1",
+          "slot": 0,
+          "at": 1792995277506
+        },
+        {
+          "kind": "synthetic-camera-exposure",
+          "slot": 1,
+          "at": 1792995281869
+        },
+        {
+          "kind": "private-save-started",
+          "id": "f105d8d1-5746-413b-ba46-a80c892b68ea",
+          "slot": 1,
+          "at": 1792995281869
+        },
+        {
+          "kind": "private-save-resolved",
+          "id": "f105d8d1-5746-413b-ba46-a80c892b68ea",
+          "slot": 1,
+          "at": 1792995281870
+        },
+        {
+          "kind": "synthetic-camera-exposure",
+          "slot": 2,
+          "at": 1792995285171
+        },
+        {
+          "kind": "private-save-started",
+          "id": "c246f4ab-dfdf-4c8d-aced-3286301c3c7c",
+          "slot": 2,
+          "at": 1792995285172
+        },
+        {
+          "kind": "private-save-resolved",
+          "id": "c246f4ab-dfdf-4c8d-aced-3286301c3c7c",
+          "slot": 2,
+          "at": 1792995285172
+        },
+        {
+          "kind": "synthetic-camera-exposure",
+          "slot": 3,
+          "at": 1792995288473
+        },
+        {
+          "kind": "private-save-started",
+          "id": "4a52a06f-b95e-4795-84e6-d52399bccfd2",
+          "slot": 3,
+          "at": 1792995288473
+        },
+        {
+          "kind": "private-save-resolved",
+          "id": "4a52a06f-b95e-4795-84e6-d52399bccfd2",
+          "slot": 3,
+          "at": 1792995288474
+        },
+        {
+          "kind": "synthetic-camera-exposure",
+          "slot": 4,
+          "at": 1792995291775
+        },
+        {
+          "kind": "private-save-started",
+          "id": "a48ecd0f-1a48-4295-9da7-0f94c3182084",
+          "slot": 4,
+          "at": 1792995291775
+        },
+        {
+          "kind": "private-save-resolved",
+          "id": "a48ecd0f-1a48-4295-9da7-0f94c3182084",
+          "slot": 4,
+          "at": 1792995291775
+        },
+        {
+          "kind": "synthetic-photos-export",
+          "id": "dcf39d2d-f962-489c-9395-6e9b42fd37b5",
+          "at": 1792995291776
+        },
+        {
+          "kind": "synthetic-camera-exposure",
+          "slot": 5,
+          "at": 1792995296756
+        },
+        {
+          "kind": "private-save-started",
+          "id": "8535ae94-daed-4a88-8688-ec9e3a8b5a47",
+          "slot": 2,
+          "at": 1792995296756
+        },
+        {
+          "kind": "private-save-resolved",
+          "id": "8535ae94-daed-4a88-8688-ec9e3a8b5a47",
+          "slot": 2,
+          "at": 1792995296756
+        },
+        {
+          "kind": "synthetic-photos-export",
+          "id": "dcf39d2d-f962-489c-9395-6e9b42fd37b5",
+          "at": 1792995296756
+        },
+        {
+          "kind": "session-confirmed",
+          "id": "dcf39d2d-f962-489c-9395-6e9b42fd37b5",
+          "at": 1792995297648
+        },
+        {
+          "kind": "synthetic-all-five-ready-ack",
+          "id": "dcf39d2d-f962-489c-9395-6e9b42fd37b5",
+          "at": 1792995297950
+        },
+        {
+          "kind": "active-session-cleared",
+          "id": "dcf39d2d-f962-489c-9395-6e9b42fd37b5",
+          "at": 1792995298586
+        }
+      ]
+    },
+    {
+      "orientation": "landscape",
+      "viewport": {
+        "width": 1180,
+        "height": 820
+      },
+      "video": "artifacts/visual/new-session-demo-landscape.webm",
+      "motion": "normal motion; real App animation handlers",
+      "checks": [
+        "One Start action runs the five-shot sequence; pause/continue preserves the first saved slot; five distinct IDs and no upload jobs before confirmation.",
+        "Trusted Chromium touch swipe advances actual horizontal review from photo 1 to photo 2.",
+        "Immediate thumbnail3→Retake with no actor settling wait targets photo3, replaces only its selected ID, retains four other selections and the prior in-memory original, and returns to review.",
+        "Offline confirmation queues five selected uploads; five upload acknowledgments alone show no QR before the synthetic session-ready acknowledgment.",
+        "All-five ready acknowledgment reveals one shared session QR; Next guests clears selected session, guest photos and QR while retaining the in-memory host session history."
+      ],
+      "status": "passed",
+      "cameraStage": {
+        "x": 18,
+        "y": 92,
+        "width": 1144,
+        "height": 606,
+        "widthFraction": 0.9694915254237289,
+        "heightFraction": 0.7390243902439024
+      },
+      "reviewStage": {
+        "x": 18,
+        "y": 92,
+        "width": 820,
+        "height": 716,
+        "widthFraction": 0.6949152542372882,
+        "heightFraction": 0.8731707317073171
+      },
+      "fastRetake": {
+        "intendedSlot": 3,
+        "labelImmediatelyAfterThumbnail": "Retake photo 3",
+        "disabledImmediatelyAfterThumbnail": null,
+        "actorSleepBeforeRetake": false,
+        "cameraAction": "Retake photo 3"
+      },
+      "events": [
+        {
+          "kind": "synthetic-recovery-noop",
+          "at": 1792995300340
+        },
+        {
+          "kind": "session-created",
+          "id": "a55052a1-80cb-45a2-8cc9-1da844bc0171",
+          "at": 1792995301270
+        },
+        {
+          "kind": "synthetic-camera-exposure",
+          "slot": 0,
+          "at": 1792995304919
+        },
+        {
+          "kind": "private-save-started",
+          "id": "1d7ac1df-d105-4f96-8a4c-f4f97d54585b",
+          "slot": 0,
+          "at": 1792995304920
+        },
+        {
+          "kind": "private-save-resolved",
+          "id": "1d7ac1df-d105-4f96-8a4c-f4f97d54585b",
+          "slot": 0,
+          "at": 1792995304920
+        },
+        {
+          "kind": "synthetic-camera-exposure",
+          "slot": 1,
+          "at": 1792995309252
+        },
+        {
+          "kind": "private-save-started",
+          "id": "b7a4ab0f-2a35-48d4-ae8a-c2dd2eabbf85",
+          "slot": 1,
+          "at": 1792995309252
+        },
+        {
+          "kind": "private-save-resolved",
+          "id": "b7a4ab0f-2a35-48d4-ae8a-c2dd2eabbf85",
+          "slot": 1,
+          "at": 1792995309252
+        },
+        {
+          "kind": "synthetic-camera-exposure",
+          "slot": 2,
+          "at": 1792995312554
+        },
+        {
+          "kind": "private-save-started",
+          "id": "674ba6df-85b1-4b55-b2a3-71523c1ab317",
+          "slot": 2,
+          "at": 1792995312554
+        },
+        {
+          "kind": "private-save-resolved",
+          "id": "674ba6df-85b1-4b55-b2a3-71523c1ab317",
+          "slot": 2,
+          "at": 1792995312554
+        },
+        {
+          "kind": "synthetic-camera-exposure",
+          "slot": 3,
+          "at": 1792995315856
+        },
+        {
+          "kind": "private-save-started",
+          "id": "379ac977-197e-41a2-8a27-f544e69b8192",
+          "slot": 3,
+          "at": 1792995315856
+        },
+        {
+          "kind": "private-save-resolved",
+          "id": "379ac977-197e-41a2-8a27-f544e69b8192",
+          "slot": 3,
+          "at": 1792995315856
+        },
+        {
+          "kind": "synthetic-camera-exposure",
+          "slot": 4,
+          "at": 1792995319157
+        },
+        {
+          "kind": "private-save-started",
+          "id": "f8714087-5b13-493d-90dc-8690f47a8c19",
+          "slot": 4,
+          "at": 1792995319157
+        },
+        {
+          "kind": "private-save-resolved",
+          "id": "f8714087-5b13-493d-90dc-8690f47a8c19",
+          "slot": 4,
+          "at": 1792995319157
+        },
+        {
+          "kind": "synthetic-photos-export",
+          "id": "a55052a1-80cb-45a2-8cc9-1da844bc0171",
+          "at": 1792995319158
+        },
+        {
+          "kind": "synthetic-camera-exposure",
+          "slot": 5,
+          "at": 1792995324030
+        },
+        {
+          "kind": "private-save-started",
+          "id": "3b0798f6-944d-466f-8f8e-74e9fa886e56",
+          "slot": 2,
+          "at": 1792995324030
+        },
+        {
+          "kind": "private-save-resolved",
+          "id": "3b0798f6-944d-466f-8f8e-74e9fa886e56",
+          "slot": 2,
+          "at": 1792995324030
+        },
+        {
+          "kind": "synthetic-photos-export",
+          "id": "a55052a1-80cb-45a2-8cc9-1da844bc0171",
+          "at": 1792995324030
+        },
+        {
+          "kind": "session-confirmed",
+          "id": "a55052a1-80cb-45a2-8cc9-1da844bc0171",
+          "at": 1792995324847
+        },
+        {
+          "kind": "synthetic-all-five-ready-ack",
+          "id": "a55052a1-80cb-45a2-8cc9-1da844bc0171",
+          "at": 1792995325083
+        },
+        {
+          "kind": "active-session-cleared",
+          "id": "a55052a1-80cb-45a2-8cc9-1da844bc0171",
+          "at": 1792995325635
+        }
+      ]
+    }
+  ],
+  "boundedChecks": [
+    "Synthetic denied Photos export is reported separately from five private originals; retrying the mocked permission request keeps all five IDs. No OS Photos export is verified.",
+    "All-uncertain Photos results display a check-Photos notice and omit the no-op guest export retry.",
+    "Denied camera permission grants through a synthetic request; blocked permission invokes only the explicit mocked settings marker.",
+    {
+      "check": "Reduced-motion digits remain at scale/opacity1; synthetic background interruption cancels the sequence before exposure and returns paused on foreground.",
+      "digits": {
+        "opacity": "1",
+        "transform": "matrix(1, 0, 0, 1, 0, 0)",
+        "prefersReducedMotion": true
+      },
+      "cameraAdapterCallsAfterInterrupt": 0
+    },
+    "Synthetic private-save failure shows retry; retry saves the same exposure without a second camera-adapter call. Native journal/filesystem guarantees are not verified.",
+    "Host controls, local-session library and private setup render through synthetic authentication; the pairing field stays blank and no provisioning request is made. Host ScrollViews may require vertical scrolling."
+  ],
+  "contrastChecks": [
+    {
+      "label": "portrait: attract eyebrow over white image",
+      "requiredRatio": 4.5,
+      "foregroundCSS": "rgb(240, 216, 176)",
+      "backgroundLayers": [
+        "rgba(16, 27, 19, 0.85)"
+      ],
+      "backgroundRGB": [
+        51.85000000000001,
+        61.2,
+        54.400000000000006
+      ],
+      "model": "Actual nearest overlay over hypothetical white image",
+      "ratio": 8.09950764865719
+    },
+    {
+      "label": "portrait: countdown over worst white frame",
+      "requiredRatio": 4.5,
+      "foregroundCSS": "rgb(255, 255, 255)",
+      "backgroundLayers": [
+        "rgba(16, 33, 23, 0.7)"
+      ],
+      "backgroundRGB": [
+        87.70000000000002,
+        99.60000000000001,
+        92.60000000000001
+      ],
+      "model": "Actual nearest overlay over hypothetical white image",
+      "ratio": 6.219961097800414
+    },
+    {
+      "label": "portrait: photo progress above countdown shade",
+      "requiredRatio": 4.5,
+      "foregroundCSS": "rgb(255, 255, 255)",
+      "backgroundLayers": [
+        "rgba(16, 21, 18, 0.85)"
+      ],
+      "backgroundRGB": [
+        51.85000000000001,
+        56.10000000000001,
+        53.550000000000004
+      ],
+      "model": "Actual nearest overlay over hypothetical white image",
+      "ratio": 11.896301043025618
+    },
+    {
+      "label": "portrait: QR caption",
+      "requiredRatio": 4.5,
+      "foregroundCSS": "rgb(57, 79, 53)",
+      "backgroundLayers": [
+        "rgba(0, 0, 0, 0)",
+        "rgb(246, 239, 228)",
+        "rgba(0, 0, 0, 0)",
+        "rgb(245, 240, 232)",
+        "rgba(0, 0, 0, 0)",
+        "rgba(0, 0, 0, 0)",
+        "rgba(0, 0, 0, 0)",
+        "rgb(255, 255, 255)",
+        "rgba(0, 0, 0, 0)",
+        "rgba(0, 0, 0, 0)"
+      ],
+      "backgroundRGB": [
+        255,
+        255,
+        255
+      ],
+      "model": "Actual rendered ancestor background layers",
+      "ratio": 8.959913612368899
+    },
+    {
+      "label": "landscape: attract eyebrow over white image",
+      "requiredRatio": 4.5,
+      "foregroundCSS": "rgb(240, 216, 176)",
+      "backgroundLayers": [
+        "rgba(16, 27, 19, 0.85)"
+      ],
+      "backgroundRGB": [
+        51.85000000000001,
+        61.2,
+        54.400000000000006
+      ],
+      "model": "Actual nearest overlay over hypothetical white image",
+      "ratio": 8.09950764865719
+    },
+    {
+      "label": "landscape: countdown over worst white frame",
+      "requiredRatio": 4.5,
+      "foregroundCSS": "rgb(255, 255, 255)",
+      "backgroundLayers": [
+        "rgba(16, 33, 23, 0.7)"
+      ],
+      "backgroundRGB": [
+        87.70000000000002,
+        99.60000000000001,
+        92.60000000000001
+      ],
+      "model": "Actual nearest overlay over hypothetical white image",
+      "ratio": 6.219961097800414
+    },
+    {
+      "label": "landscape: photo progress above countdown shade",
+      "requiredRatio": 4.5,
+      "foregroundCSS": "rgb(255, 255, 255)",
+      "backgroundLayers": [
+        "rgba(16, 21, 18, 0.85)"
+      ],
+      "backgroundRGB": [
+        51.85000000000001,
+        56.10000000000001,
+        53.550000000000004
+      ],
+      "model": "Actual nearest overlay over hypothetical white image",
+      "ratio": 11.896301043025618
+    },
+    {
+      "label": "landscape: QR caption",
+      "requiredRatio": 4.5,
+      "foregroundCSS": "rgb(57, 79, 53)",
+      "backgroundLayers": [
+        "rgba(0, 0, 0, 0)",
+        "rgb(246, 239, 228)",
+        "rgba(0, 0, 0, 0)",
+        "rgb(245, 240, 232)",
+        "rgba(0, 0, 0, 0)",
+        "rgba(0, 0, 0, 0)",
+        "rgba(0, 0, 0, 0)",
+        "rgb(255, 255, 255)",
+        "rgba(0, 0, 0, 0)",
+        "rgba(0, 0, 0, 0)"
+      ],
+      "backgroundRGB": [
+        255,
+        255,
+        255
+      ],
+      "model": "Actual rendered ancestor background layers",
+      "ratio": 8.959913612368899
+    }
+  ],
+  "qrChecks": [
+    {
+      "file": "artifacts/visual/new-session-ready-portrait.png",
+      "orientation": "portrait",
+      "dpr": 1,
+      "origin": "full demonstrated session",
+      "width": 820,
+      "height": 1180,
+      "expectedURL": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "jsQR": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+          "error": ""
+        }
+      ],
+      "matrixModules": 41,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 298,
+          "y": 588,
+          "width": 224,
+          "height": 224,
+          "top": 588,
+          "right": 522,
+          "bottom": 812,
+          "left": 298
+        }
+      },
+      "quietModules": 5.857142857142857
+    },
+    {
+      "file": "artifacts/visual/new-session-ready-landscape.png",
+      "orientation": "landscape",
+      "dpr": 1,
+      "origin": "full demonstrated session",
+      "width": 1180,
+      "height": 820,
+      "expectedURL": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "jsQR": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+          "error": ""
+        }
+      ],
+      "matrixModules": 41,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 675,
+          "y": 249,
+          "width": 224,
+          "height": 224,
+          "top": 249,
+          "right": 899,
+          "bottom": 473,
+          "left": 675
+        }
+      },
+      "quietModules": 5.857142857142857
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-reserved-1x-portrait.png",
+      "orientation": "portrait",
+      "dpr": 1,
+      "payload": "reserved",
+      "width": 820,
+      "height": 1180,
+      "expectedURL": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "jsQR": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+          "error": ""
+        }
+      ],
+      "matrixModules": 41,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 298,
+          "y": 588,
+          "width": 224,
+          "height": 224,
+          "top": 588,
+          "right": 522,
+          "bottom": 812,
+          "left": 298
+        }
+      },
+      "quietModules": 5.857142857142857
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-realistic-1x-portrait.png",
+      "orientation": "portrait",
+      "dpr": 1,
+      "payload": "realistic",
+      "width": 820,
+      "height": 1180,
+      "expectedURL": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+      "jsQR": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+      "zxingCpp": [
+        {
+          "text": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+          "error": ""
+        }
+      ],
+      "matrixModules": 41,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 298,
+          "y": 588,
+          "width": 224,
+          "height": 224,
+          "top": 588,
+          "right": 522,
+          "bottom": 812,
+          "left": 298
+        }
+      },
+      "quietModules": 5.857142857142857
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-reserved-numeric-1x-portrait.png",
+      "orientation": "portrait",
+      "dpr": 1,
+      "payload": "reserved-numeric",
+      "width": 820,
+      "height": 1180,
+      "expectedURL": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "jsQR": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "matrixModules": 33,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 298,
+          "y": 588,
+          "width": 224,
+          "height": 224,
+          "top": 588,
+          "right": 522,
+          "bottom": 812,
+          "left": 298
+        }
+      },
+      "quietModules": 4.714285714285714
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-realistic-numeric-1x-portrait.png",
+      "orientation": "portrait",
+      "dpr": 1,
+      "payload": "realistic-numeric",
+      "width": 820,
+      "height": 1180,
+      "expectedURL": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "jsQR": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "matrixModules": 37,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 298,
+          "y": 588,
+          "width": 224,
+          "height": 224,
+          "top": 588,
+          "right": 522,
+          "bottom": 812,
+          "left": 298
+        }
+      },
+      "quietModules": 5.285714285714286
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-short-numeric-1x-portrait.png",
+      "orientation": "portrait",
+      "dpr": 1,
+      "payload": "short-numeric",
+      "width": 820,
+      "height": 1180,
+      "expectedURL": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "jsQR": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "matrixModules": 33,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 298,
+          "y": 588,
+          "width": 224,
+          "height": 224,
+          "top": 588,
+          "right": 522,
+          "bottom": 812,
+          "left": 298
+        }
+      },
+      "quietModules": 4.714285714285714
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-reserved-1x-landscape.png",
+      "orientation": "landscape",
+      "dpr": 1,
+      "payload": "reserved",
+      "width": 1180,
+      "height": 820,
+      "expectedURL": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "jsQR": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+          "error": ""
+        }
+      ],
+      "matrixModules": 41,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 675,
+          "y": 249,
+          "width": 224,
+          "height": 224,
+          "top": 249,
+          "right": 899,
+          "bottom": 473,
+          "left": 675
+        }
+      },
+      "quietModules": 5.857142857142857
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-realistic-1x-landscape.png",
+      "orientation": "landscape",
+      "dpr": 1,
+      "payload": "realistic",
+      "width": 1180,
+      "height": 820,
+      "expectedURL": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+      "jsQR": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+      "zxingCpp": [
+        {
+          "text": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+          "error": ""
+        }
+      ],
+      "matrixModules": 41,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 675,
+          "y": 249,
+          "width": 224,
+          "height": 224,
+          "top": 249,
+          "right": 899,
+          "bottom": 473,
+          "left": 675
+        }
+      },
+      "quietModules": 5.857142857142857
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-reserved-numeric-1x-landscape.png",
+      "orientation": "landscape",
+      "dpr": 1,
+      "payload": "reserved-numeric",
+      "width": 1180,
+      "height": 820,
+      "expectedURL": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "jsQR": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "matrixModules": 33,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 675,
+          "y": 249,
+          "width": 224,
+          "height": 224,
+          "top": 249,
+          "right": 899,
+          "bottom": 473,
+          "left": 675
+        }
+      },
+      "quietModules": 4.714285714285714
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-realistic-numeric-1x-landscape.png",
+      "orientation": "landscape",
+      "dpr": 1,
+      "payload": "realistic-numeric",
+      "width": 1180,
+      "height": 820,
+      "expectedURL": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "jsQR": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "matrixModules": 37,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 675,
+          "y": 249,
+          "width": 224,
+          "height": 224,
+          "top": 249,
+          "right": 899,
+          "bottom": 473,
+          "left": 675
+        }
+      },
+      "quietModules": 5.285714285714286
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-short-numeric-1x-landscape.png",
+      "orientation": "landscape",
+      "dpr": 1,
+      "payload": "short-numeric",
+      "width": 1180,
+      "height": 820,
+      "expectedURL": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "jsQR": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "matrixModules": 33,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 675,
+          "y": 249,
+          "width": 224,
+          "height": 224,
+          "top": 249,
+          "right": 899,
+          "bottom": 473,
+          "left": 675
+        }
+      },
+      "quietModules": 4.714285714285714
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-reserved-2x-portrait.png",
+      "orientation": "portrait",
+      "dpr": 2,
+      "payload": "reserved",
+      "width": 1640,
+      "height": 2360,
+      "expectedURL": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "jsQR": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+          "error": ""
+        }
+      ],
+      "matrixModules": 41,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 298,
+          "y": 588,
+          "width": 224,
+          "height": 224,
+          "top": 588,
+          "right": 522,
+          "bottom": 812,
+          "left": 298
+        }
+      },
+      "quietModules": 5.857142857142857
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-realistic-2x-portrait.png",
+      "orientation": "portrait",
+      "dpr": 2,
+      "payload": "realistic",
+      "width": 1640,
+      "height": 2360,
+      "expectedURL": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+      "jsQR": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+      "zxingCpp": [
+        {
+          "text": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+          "error": ""
+        }
+      ],
+      "matrixModules": 41,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 298,
+          "y": 588,
+          "width": 224,
+          "height": 224,
+          "top": 588,
+          "right": 522,
+          "bottom": 812,
+          "left": 298
+        }
+      },
+      "quietModules": 5.857142857142857
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-reserved-numeric-2x-portrait.png",
+      "orientation": "portrait",
+      "dpr": 2,
+      "payload": "reserved-numeric",
+      "width": 1640,
+      "height": 2360,
+      "expectedURL": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "jsQR": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "matrixModules": 33,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 298,
+          "y": 588,
+          "width": 224,
+          "height": 224,
+          "top": 588,
+          "right": 522,
+          "bottom": 812,
+          "left": 298
+        }
+      },
+      "quietModules": 4.714285714285714
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-realistic-numeric-2x-portrait.png",
+      "orientation": "portrait",
+      "dpr": 2,
+      "payload": "realistic-numeric",
+      "width": 1640,
+      "height": 2360,
+      "expectedURL": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "jsQR": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "matrixModules": 37,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 298,
+          "y": 588,
+          "width": 224,
+          "height": 224,
+          "top": 588,
+          "right": 522,
+          "bottom": 812,
+          "left": 298
+        }
+      },
+      "quietModules": 5.285714285714286
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-short-numeric-2x-portrait.png",
+      "orientation": "portrait",
+      "dpr": 2,
+      "payload": "short-numeric",
+      "width": 1640,
+      "height": 2360,
+      "expectedURL": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "jsQR": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "matrixModules": 33,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 298,
+          "y": 588,
+          "width": 224,
+          "height": 224,
+          "top": 588,
+          "right": 522,
+          "bottom": 812,
+          "left": 298
+        }
+      },
+      "quietModules": 4.714285714285714
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-reserved-2x-landscape.png",
+      "orientation": "landscape",
+      "dpr": 2,
+      "payload": "reserved",
+      "width": 2360,
+      "height": 1640,
+      "expectedURL": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "jsQR": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+          "error": ""
+        }
+      ],
+      "matrixModules": 41,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 675,
+          "y": 249,
+          "width": 224,
+          "height": 224,
+          "top": 249,
+          "right": 899,
+          "bottom": 473,
+          "left": 675
+        }
+      },
+      "quietModules": 5.857142857142857
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-realistic-2x-landscape.png",
+      "orientation": "landscape",
+      "dpr": 2,
+      "payload": "realistic",
+      "width": 2360,
+      "height": 1640,
+      "expectedURL": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+      "jsQR": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+      "zxingCpp": [
+        {
+          "text": "https://photos.gizelleandrami.com/g/d948b21e9fbc4a03952beed701f680cf09e8d382f5c421a9f7da6034cbb16e52",
+          "error": ""
+        }
+      ],
+      "matrixModules": 41,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 675,
+          "y": 249,
+          "width": 224,
+          "height": 224,
+          "top": 249,
+          "right": 899,
+          "bottom": 473,
+          "left": 675
+        }
+      },
+      "quietModules": 5.857142857142857
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-reserved-numeric-2x-landscape.png",
+      "orientation": "landscape",
+      "dpr": 2,
+      "payload": "reserved-numeric",
+      "width": 2360,
+      "height": 1640,
+      "expectedURL": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "jsQR": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "matrixModules": 33,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 675,
+          "y": 249,
+          "width": 224,
+          "height": 224,
+          "top": 249,
+          "right": 899,
+          "bottom": 473,
+          "left": 675
+        }
+      },
+      "quietModules": 4.714285714285714
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-realistic-numeric-2x-landscape.png",
+      "orientation": "landscape",
+      "dpr": 2,
+      "payload": "realistic-numeric",
+      "width": 2360,
+      "height": 1640,
+      "expectedURL": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "jsQR": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://photos.gizelleandrami.com/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "matrixModules": 37,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 675,
+          "y": 249,
+          "width": 224,
+          "height": 224,
+          "top": 249,
+          "right": 899,
+          "bottom": 473,
+          "left": 675
+        }
+      },
+      "quietModules": 5.285714285714286
+    },
+    {
+      "file": "artifacts/visual/new-session-qr-short-numeric-2x-landscape.png",
+      "orientation": "landscape",
+      "dpr": 2,
+      "payload": "short-numeric",
+      "width": 2360,
+      "height": 1640,
+      "expectedURL": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "jsQR": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+      "zxingCpp": [
+        {
+          "text": "https://a.example/g/1111111111111111111111111111111111111111111111111111111111111111",
+          "error": ""
+        }
+      ],
+      "matrixModules": 33,
+      "svg": {
+        "width": 224,
+        "viewBox": "-32 -32 288 288",
+        "box": {
+          "x": 675,
+          "y": 249,
+          "width": 224,
+          "height": 224,
+          "top": 249,
+          "right": 899,
+          "bottom": 473,
+          "left": 675
+        }
+      },
+      "quietModules": 4.714285714285714
+    }
+  ],
+  "errors": [],
+  "failures": [],
+  "mockedHealthRequests": [
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health"
+  ],
+  "unexpectedExternalRequests": [],
+  "sourceHashes": {
+    "apps/ipad/App.tsx": "a2d8e4f62b855c54e489d8311ba6fb794b59f3e7a71e9dd521827332ab6d5548",
+    "apps/ipad/src/session-capture.ts": "b41f7ee98282fe5661e080a6b4e0b88b17c56e3c1e5908adebbe020ed6323e24",
+    "apps/ipad/src/review-selection.ts": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
+    "apps/ipad/src/sharing.ts": "fc0579c2c93a04707a437b995554b3abb3430062a695bbfdc1b08064b281d755",
+    "apps/ipad/src/SmsShare.tsx": "ee2740889c602683049dae6b599bbdd9886fef271bf30df4f18e50dbc6e6b8c2",
+    "apps/ipad/src/sms-state.ts": "4c7125d4f710c97848b6690196fa328edc83e85488ce3626dd7e843e2e99497a",
+    "apps/ipad/assets/attract-scene.png": "6ca6274beba9483104f19fb35d1ef9b8bfaae458208025e8fb4e8d4890f45cdf"
+  },
+  "status": "passed"
+}

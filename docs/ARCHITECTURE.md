@@ -4,7 +4,9 @@
 
 The M1 iPad has ample capability for a digital-only booth. Expo / React Native was chosen to keep a real native iOS camera and persistent filesystem while allowing the cloud host to test shared TypeScript and produce an iOS JavaScript bundle. SwiftUI is a valid alternative, but this Linux host cannot validate Apple frameworks. The starter contains no web-app substitute.
 
-One confirmed photo forms a guest session in this MVP. Capture uses the front camera, a countdown, preview and retake. Retakes remain local drafts; confirmation durably preserves the original and enqueues an upload. The SQLite queue uses stable photo/session IDs. Photo files are staged and renamed; confirmed files can rebuild a missing queue entry after termination. Originals are not automatically deleted.
+Five photos form one guest session. A host-adjustable countdown drives capture, with a nearly full-screen preview, durable thumbnail progress, swipe review and individual retakes. Every shot is verified locally immediately; confirmation freezes the five selected IDs/order and enqueues their uploads. Retake originals are preserved. File journals reconstruct the local session independently of SQLite, and document-relative paths survive a changed iOS container prefix. The upload index is repairable rather than a prerequisite for saving. Originals are never automatically deleted.
+
+The OS-authenticated local library exposes saved sessions without a network. A separate add-only Photos export stores additional copies when permission permits; denied/failed export does not invalidate the app's original. Generated attract imagery is fixed promotional art, never a slideshow of previous guests. Actual camera, filesystem protection and Photos permission behavior still require physical-device validation.
 
 The foreground consumer retries with capped exponential backoff, resumes on app activation, and preserves pending work across process restarts. It does not promise background execution after iOS suspends or force-quits the app. A booth host should reopen the app and verify the pending count after any interruption.
 
@@ -32,19 +34,21 @@ If upload or finalization fails, the app keeps the same IDs and retries; it does
 
 ## Backend contract
 
-All `/v1` endpoints require the device bearer token, compared through fixed-length SHA-256 digests with Workers' timing-safe equality. IDs are UUIDs. The token is operator-entered and held in the iOS Keychain; it is not an Expo public environment variable. Production requires distinct high-entropy server secrets and a configured HTTPS public origin. Device tokens are narrowly for booth upload/sharing; host administration and multi-device enrollment are future hardening work. Rotate a lost device's token immediately.
+Booth `/v1` endpoints require the device bearer, compared through fixed-length SHA-256 digests with Workers' timing-safe equality. The one-use pairing consume endpoint instead requires a short-lived high-entropy private code; issuing that code requires the existing booth bearer. The app prefills its HTTPS origin and stores the paired credential in device-only Keychain after local host authentication. It contains no master/account/SMS/signing secret. Pairing transfers the same shared booth authority, not separate device administration. Rotate a lost device's token to revoke all paired copies. See [the protocol](BACKEND_PROTOCOL.md).
 
 | Endpoint | Purpose |
 | --- | --- |
 | `GET /health` | Runtime health and mode |
+| `POST /v1/pairing/codes` | Authenticated, short-lived private setup-code issuance |
+| `POST /v1/pairing/consume` | Atomic one-use private-code exchange |
 | `PUT /v1/sessions/:sessionId/photos/:photoId` | Private idempotent JPEG upload, bounded to 10 MiB |
 | `POST /v1/sessions/:sessionId/ready` | Finalize an immutable uploaded photo list; return ready URL |
 | `GET /g/:token` | Guest HTML gallery for one session |
 | `GET /g/:token/photos/:photoId?download=1` | Full-resolution scoped download |
 | `DELETE /v1/sessions/:sessionId/gallery` | Permanently revoke that gallery |
-| `POST /v1/shares` | Consented provider boundary; mock only at present |
+| `POST /v1/shares` | Consented mock/test/live provider boundary, live approval-gated |
 
-R2 contains private JPEGs and manifests. Public R2 bucket access and `r2.dev` must remain disabled. Random-looking HMAC capabilities map to hashed-token manifests; there is no browse-all or public listing endpoint. Download responses use private/no-store, no-referrer, noindex and content-type protections. Avoid analytics on capability URLs and redact them from infrastructure logs. Server mocks do not retain raw phone numbers or send network requests to an SMS provider. Share IDs protect retries; mock failure remains a failure rather than a sent state.
+R2 contains private JPEGs and manifests. Public bucket access and `r2.dev` remain disabled. HMAC capabilities map to hashed manifests; no browse-all/listing endpoint exists. Downloads use private/no-store, no-referrer, noindex and content-type protections. Disable logging of capability paths and request bodies. The Textbelt adapter uses a backend-only key, explicit eligibility/live approval and consent, with a durable session-level send fence. Uncertain outcomes never resend automatically, and provider acceptance never claims delivery. Tests intercept all provider traffic; mocks send nothing. The protocol records retry, retention and rotation limits.
 
 The production example recommends seven days of guest access (`LINK_TTL_SECONDS=604800`), configurable between 60 seconds and 30 days; the local/default value remains 24 hours. The iPad displays the acknowledged expiry in device-local date/time/timezone, and the gallery displays an exact UTC expiry. Expiring or revoking a link does not delete the couple's original. Before launch, choose original retention, host export/backup procedure, and deletion timing. Possession of the bearer link permits viewing/downloading its session; it can be forwarded and does not establish guest identity.
 

@@ -1,7 +1,12 @@
 import * as SecureStore from 'expo-secure-store';
 import { validateOrigin, type ConnectionConfig } from './sharing';
+import { authenticateHost } from './host-auth';
+import { DEFAULT_API_ORIGIN, hostPreferences, pairBooth, type HostPreferences } from './provisioning';
+
+export { DEFAULT_API_ORIGIN, COUNTDOWN_OPTIONS, type HostPreferences } from './provisioning';
 
 const CONNECTION_KEY = 'wedding-photobooth.connection.v1';
+const PREFERENCES_KEY = 'wedding-photobooth.preferences.v1';
 
 export async function loadConnection(): Promise<ConnectionConfig | null> {
   const raw = await SecureStore.getItemAsync(CONNECTION_KEY);
@@ -23,4 +28,37 @@ export async function saveConnection(origin: string, token: string): Promise<voi
 
 export async function clearConnection(): Promise<void> {
   await SecureStore.deleteItemAsync(CONNECTION_KEY);
+}
+
+export async function loadHostPreferences(): Promise<HostPreferences> {
+  const raw = await SecureStore.getItemAsync(PREFERENCES_KEY);
+  try { return hostPreferences(raw ? JSON.parse(raw) : null); }
+  catch { return hostPreferences(null); }
+}
+
+export async function saveHostPreferences(update: Partial<HostPreferences>): Promise<HostPreferences> {
+  const next = hostPreferences({ ...await loadHostPreferences(), ...update });
+  await SecureStore.setItemAsync(PREFERENCES_KEY, JSON.stringify(next), {
+    keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
+  });
+  return next;
+}
+
+export async function provisionBooth(code: string): Promise<void> {
+  await pairBooth(code, {
+    authenticate: authenticateHost,
+    async request(privateCode) {
+      const response = await fetch(`${DEFAULT_API_ORIGIN}/v1/pairing/consume`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: privateCode }), signal: AbortSignal.timeout(20_000),
+      });
+      if (!response.ok) throw new Error('Private setup was not acknowledged');
+      return response.json();
+    },
+    async persist(origin, token) {
+      await saveConnection(origin, token);
+      const saved = await loadConnection();
+      if (!saved || saved.origin !== origin || saved.token !== token) throw new Error('Secure storage verification failed');
+    },
+  });
 }

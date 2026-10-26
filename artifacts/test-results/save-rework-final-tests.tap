@@ -1,0 +1,169 @@
+
+> wedding-ipad-photobooth@0.1.0 check
+> npm run typecheck && npm test && npm run bundle:ios
+
+
+> wedding-ipad-photobooth@0.1.0 typecheck
+> npm run typecheck --workspaces --if-present
+
+
+> @wedding-booth/ipad@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @wedding-booth/core@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @wedding-booth/api@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> wedding-ipad-photobooth@0.1.0 test
+> node --import tsx --test packages/core/test/*.test.ts apps/ipad/test/*.test.ts services/api/test/*.test.ts
+
+✔ an immediate retake retains thumbnail intent through intermediate animated frames (1.253602ms)
+✔ a second thumbnail overrides the first target while old animation frames arrive (0.148574ms)
+✔ a real user drag cancels programmatic intent and follows the visible page (0.223858ms)
+✔ layout realignment preserves intended slot with the new page width (0.147453ms)
+✔ a real drag or newer thumbnail invalidates deferred programmatic scroll commands (0.143657ms)
+✔ five-shot sequence awaits durable save before thumbnail, next countdown, or completion (4.918712ms)
+✔ save failure keeps the exposed cache photo available for retry and never advances (0.593615ms)
+✔ canceled stale timer cannot capture or unlock an immediately restarted run (0.413364ms)
+✔ background interruption finishes an exposed original and resumes at the first unsaved slot (2.36567ms)
+✔ individual retake replaces only the selected slot after its durable save (0.348055ms)
+✔ resumption and completion require five unique durable selections, not five arbitrary records (0.229025ms)
+✔ the host countdown is used exactly and unsupported values cannot start capture (0.573125ms)
+✔ countdown admits one tap atomically and permits capture only after three ticks (1.030205ms)
+✔ background or cancel interrupts countdown and invalidates every stale timer/camera result (0.181865ms)
+✔ saving an original blocks reset and accepts only its matching camera attempt (0.352732ms)
+✔ confirmation is explicit and readiness cannot attach another guest link or bypass review (0.176656ms)
+✔ retake clears draft selection and begins a fresh countdown without confirming it (0.128484ms)
+✔ next guest clears the previous photo/QR and rejects its delayed readiness response (0.183346ms)
+✔ restart restores draft review or confirmed identity while requiring fresh QR validation (0.135064ms)
+✔ capture failures allow retry but a late failure cannot discard the reviewed original (0.1392ms)
+✔ timer sync cannot race a paused manual retry reset or overwrite completed readiness (1.602067ms)
+✔ retry queued during upload observes its durable completion and cannot resend it (0.637652ms)
+✔ a failed reset releases the reservation without upload or recipient cleanup (1.004716ms)
+✔ every selected shot is a verified durable document original before confirmation or any queue/cloud call (6.866863ms)
+✔ null, empty, missing and truncated camera files never acknowledge a saved shot (1.943803ms)
+✔ a database outage cannot hide a verified capture or block relaunch recovery (0.957074ms)
+✔ a journal/index interruption after copying recovers the original and selected slot (0.817604ms)
+✔ a fully copied staging file recovers after interruption before rename (0.608969ms)
+✔ retakes preserve old originals but only the latest five selections enter an immutable confirmed manifest (3.250445ms)
+✔ confirmed session journals repair queue failures without resetting completed jobs (1.413082ms)
+✔ document-relative journals survive an iOS container change without retaining old absolute URIs (1.064246ms)
+✔ Next guest clears selection durably while all saved sessions remain discoverable (1.377629ms)
+✔ steady-state shutter cost stays bounded after a hundred saved sessions (18.543382ms)
+✔ Photos permission denial makes no library writes and never discards private originals (1.257718ms)
+✔ Photos export records per-shot failures and skips already acknowledged saves on retry (1.063255ms)
+✔ an export finishing after Next guest never reactivates the old guest or overwrites the new session (0.964406ms)
+✔ export status merges by photo ID while a same-session retake remains selected (1.734287ms)
+✔ a failed confirmation journal cannot leak an uncommitted confirmed state from the cache (0.847549ms)
+✔ legacy confirmed-file interruption restores a valid preview and exactly one queue job even after index failure (0.572393ms)
+✔ passive Photos export never prompts, and explicit add-only permission is requested once before writes (0.812576ms)
+✔ Photos acknowledgment with a failed status journal is uncertain and never automatically duplicated (0.908901ms)
+✔ the Photos uncertainty marker is durable before native saving and survives relaunch (5.670216ms)
+✔ production file adapter waits for deferred native copy before resolving (5.768355ms)
+✔ production file adapter propagates rejected native copy without a detached rejection (0.786817ms)
+✔ production file adapter waits for deferred native move before resolving (1.11948ms)
+✔ production file adapter propagates rejected native move without a detached rejection (0.259221ms)
+✔ production file adapter waits for deferred native write before resolving (0.580896ms)
+✔ production file adapter propagates rejected native write without a detached rejection (0.161013ms)
+✔ production adapter also adopts directory creation/list and asynchronous text reads (1.82888ms)
+✔ repository cannot acknowledge or read back a capture ahead of deferred production-native writes (2.388974ms)
+✔ same-photo retry replaces only its truncated native staging file and commits the complete original (1.464009ms)
+✔ native copy retains no-overwrite behavior for originals, drafts and non-owned staging paths (0.371521ms)
+✔ Release stays disabled even when the public test flag is set (20.841519ms)
+✔ Debug stays disabled without explicit native-test opt-in (8.54182ms)
+✔ private provisioning authenticates the host before exchange and saves only the fixed origin/booth token (2.387663ms)
+✔ cancelled host authentication and invalid private codes never reach provisioning transport (0.704123ms)
+✔ pairing rejects another origin, incomplete replies and weak tokens without saving (1.197878ms)
+✔ lost exchange and Keychain failure do not retry or expose a private code/token in errors (0.884515ms)
+✔ host timer preferences use bounded choices and survive malformed legacy preference data safely (0.301055ms)
+✔ durable capture records session identity and rejects temporary network paths (1.028913ms)
+✔ offline failure preserves durable file and secure recipient reference, with share blocked (0.690252ms)
+✔ restart restores pending state, respects exact backoff boundary, and uploads before sharing (1.402476ms)
+✔ repeated offline attempts use exponential backoff capped at one hour (1.112409ms)
+✔ lost acknowledgement replays the same identity and keeps the capture until acceptance (0.500295ms)
+✔ an older completed upload unblocks a newly queued share after restart (0.323568ms)
+✔ failed upload blocks only its dependent share while unrelated jobs still progress (0.418842ms)
+✔ SMS transport failures remain pending and never persist provider errors or phone numbers (0.345261ms)
+✔ missing explicit consent or secure recipient reference never reaches SMS transport (0.366503ms)
+✔ completed and explicitly mocked shares cannot replay as sent (0.290608ms)
+✔ uncertain, rejected and provider-test outcomes are durable terminal states and never automatic resends (0.597892ms)
+✔ a failed local completion write keeps sharing blocked until upload acknowledgement is durable (0.461146ms)
+✔ a five-shot session has no QR until every selected upload and the complete gallery are acknowledged (2.919475ms)
+✔ unconfirmed, incomplete, duplicate and still-pending selected sessions cannot finalize (0.442457ms)
+✔ retake selection and session identity exclude acknowledged old shots and another session (0.299291ms)
+✔ failed readiness preserves all originals/upload acknowledgements, then idempotently resumes after restart (0.617632ms)
+✔ interrupted readiness index writes keep QR hidden and a retry repairs the exact same manifest (0.627677ms)
+✔ mixed, expired, local or partially acknowledged gallery identities never produce a session QR (0.352492ms)
+✔ production API settings require an origin over HTTPS; development permits only HTTP loopback (1.356958ms)
+✔ native transport accepts a guest page only after explicit server readiness and future expiry (1.084246ms)
+✔ QR helper never exposes an upload URL before completion, after expiry or from a share outcome (0.501326ms)
+✔ phone opt-in normalizes formatting while requiring explicit international E.164 boundaries (0.292992ms)
+✔ guest QR requires a public HTTPS gallery and never offers an emulator or local-network address (0.230237ms)
+✔ visible expiry formats the acknowledged instant in local time across midnight and daylight-saving changes (13.860595ms)
+✔ invalid server expiry or formatting options cannot produce a misleading availability label (0.559203ms)
+✔ guest phone collection stays disabled until the backend explicitly confirms approved live SMS (0.812846ms)
+✔ SMS UI distinguishes provider acceptance, unknown delivery, test mode, rejection and uncertainty (0.623561ms)
+✔ a lost text response can expire locally without provider calls or continued phone retention (0.250388ms)
+(node:53923) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ local health is explicit about mock SMS; every write requires a bearer (3259.710065ms)
+✔ known local credentials fail closed on a public hostname (4.724089ms)
+✔ upload retries are idempotent and conflicting bytes cannot overwrite an original (212.286049ms)
+✔ concurrent upload replay stores one immutable object (29.745596ms)
+✔ photo IDs are session scoped and object paths/listing cannot bypass authorization (25.71906ms)
+✔ JPEG content type, markers, IDs, and streamed 10 MiB limit are enforced (106.424323ms)
+✔ new five-photo gallery stays unavailable until every original is durable (95.764688ms)
+✔ ready requires a nonempty unique UUID list and valid JSON (18.484543ms)
+✔ readiness replay preserves link expiry and forbids mutating a published manifest (55.245075ms)
+✔ opaque gallery renders only its own photos and offers private downloads (93.176944ms)
+✔ expired galleries deny both page and download without extending expiry on retry (69.643872ms)
+✔ authenticated revocation permanently closes page, download, readiness and sharing (41.459012ms)
+✔ SMS requires explicit consent and E.164 and reports mocked without storing recipients or raw tokens (345.635416ms)
+✔ mock failure is an explicit retryable result and live SMS modes fail closed (6221.579156ms)
+✔ production mode rejects missing, weak, reused secrets, insecure origins and invalid TTL (18688.224044ms)
+✔ production configuration uses an HTTPS canonical origin and a distinct device bearer (3177.403929ms)
+✔ signing-key rotation rejects existing gallery tokens while retaining stored originals and allowing a fresh token (3449.106238ms)
+✔ session revocation under a rotated key survives further rotations and restoration of the previous key (12751.271994ms)
+✔ actual Worker bearer comparison rejects malformed and varied-length credentials and preserves valid upload/readiness (337.90579ms)
+✔ native Worker rate-limit binding enforces its budget before repeated gallery lookup (3124.752704ms)
+✔ legacy manifest replay remains immutable without allowing new partial galleries (66.357924ms)
+(node:53929) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ pairing defaults disabled and unauthenticated callers cannot issue codes (3690.955221ms)
+✔ issued codes are purpose-separated, short-lived, hashed at rest and issuance replay never extends expiry (299.058338ms)
+✔ one-use CAS permits exactly one concurrent claim and never replays credentials after response loss (3130.910395ms)
+✔ expired code cannot consume or be reissued with a refreshed lifetime (3236.941677ms)
+✔ rotating either approved server credential revokes pending pairing codes (12539.584806ms)
+✔ an uncertain consume write never releases credentials or rearms a consumed code (3280.407989ms)
+✔ production requires every limiter binding before lookup, including health configuration checks (38.019641ms)
+✔ throwing or malformed limiter responses fail closed before R2 at every protection stage (24.603117ms)
+✔ denied global, IP or gallery budgets stop immediately with retry guidance and zero storage operations (2.508154ms)
+✔ gallery, photo, API and share routes consume their own policy before auth, body parsing or lookup (5.007556ms)
+✔ untrusted IP headers cannot rotate anonymous budgets; only platform CF identity selects a client bucket (17.365304ms)
+✔ rotating gallery tokens preserves route/IP budgets while gallery keys remain opaque (1.484289ms)
+✔ loopback-only tests can omit all limiters, while a partially configured local policy fails closed (0.72255ms)
+✔ bearer verification passes fixed-width digests to native equality for missing, malformed and valid headers (6.452086ms)
+(node:53949) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ injected Textbelt test adapter uses only the fixed endpoint and no-charge suffix, with truthful outcomes (3.841156ms)
+✔ provider acceptance is never called delivery, explicit rejection requires an operator, ambiguous outcomes cannot retry (2.097475ms)
+✔ SMS capability stays hidden for mock/test/missing approvals, and no provider request occurs without consent or full approval (19057.991982ms)
+✔ durable Textbelt claim fences concurrent callers and new IDs, persists no phone or raw gallery token (3542.920732ms)
+✔ unknown outcomes never resend even with new IDs or operator retry; only explicit rejection can be manually retried (6360.703094ms)
+✔ approved no-charge mode always suffixes the key and reports test_accepted without enabling phone capability (3172.971952ms)
+✔ a persisted sending claim left by a crash never triggers a new provider request (3303.70725ms)
+✔ legacy one-photo galleries remain readable but cannot create any Textbelt share (3297.646657ms)
+ℹ tests 130
+ℹ suites 0
+ℹ pass 130
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 55163.640061
+

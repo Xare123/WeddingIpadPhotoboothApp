@@ -151,6 +151,18 @@ test('completed and explicitly mocked shares cannot replay as sent', async () =>
   assert.deepEqual((await store.list()).map(job => job.state), ['complete', 'mocked', 'complete']);
 });
 
+test('uncertain, rejected and provider-test outcomes are durable terminal states and never automatic resends', async () => {
+  for (const outcome of ['uncertain', 'rejected', 'test_accepted', 'expired'] as const) {
+    const store = memoryStore([{ ...upload, state: 'complete' }, share]); let calls = 0;
+    const transport: QueueTransport = { async upload() {}, async share() { calls++; return outcome; } };
+    await drainQueue(store, transport, 101);
+    assert.equal((await store.list())[1]?.state, outcome);
+    await drainQueue(store, transport, 999999);
+    assert.equal(calls, 1);
+    assert(!JSON.stringify(await store.list()).includes('+12025550123'));
+  }
+});
+
 test('a failed local completion write keeps sharing blocked until upload acknowledgement is durable', async () => {
   const durable = memoryStore([upload, share]);
   let failed = false, shares = 0;
