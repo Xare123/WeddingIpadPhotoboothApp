@@ -18,7 +18,9 @@ jobs:
       github.repository == 'Xare123/WeddingIpadPhotoboothApp' &&
       github.event.repository.private == false &&
       contains(github.event.head_commit.message, '[native-pixels-ci]')
-    runs-on: macos-15-intel
+    # Fresh standard ARM host after the Intel simctl inventory service stalled.
+    # Official runner inventory includes the pinned Xcode 26.3 installation.
+    runs-on: macos-15
     timeout-minutes: 60
     defaults:
       run:

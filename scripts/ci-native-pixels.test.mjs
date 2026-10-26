@@ -159,7 +159,7 @@ test('hosted application, device SDK or wrong build target cannot satisfy the un
 test('independent workflow uses no package/Expo/Pods install and retains finite budgets and explicit nineteen-only scope', () => {
   const workflow = readFileSync(join(root, '.github/workflows/ios-native-pixels.yml'), 'utf8');
   const runner = readFileSync(join(root, 'scripts/ci-native-pixels.mjs'), 'utf8');
-  assert.ok(workflow.includes("'[native-pixels-ci]'")); assert.ok(workflow.includes('runs-on: macos-15-intel'));
+  assert.ok(workflow.includes("'[native-pixels-ci]'")); assert.match(workflow, /runs-on: macos-15\s*\n/);
   assert.equal(/npm ci|npx |pod install|expo prebuild/.test(workflow), false);
   assert.equal(/resolveExpoEntry|prepare-ios-tests|pod.*install|expo.*prebuild/.test(runner), false);
   const native = Number(workflow.match(/Execute nineteen[^\n]*\n\s*timeout-minutes:\s*(\d+)/)?.[1]);
