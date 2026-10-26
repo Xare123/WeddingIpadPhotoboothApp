@@ -38,9 +38,27 @@ export function diagnosticLines(logs, stages = [], limit = 3) {
   const names = [...new Set([...preferred, ...Object.keys(logs).sort()])];
   const selected = [], seen = new Set(), records = [];
   // Select error records, never a dump of build commands or exported variables.
-  const errorRecord = /^\s*(?:.*?:\d+(?::\d+)?:\s*)?(?:fatal\s+)?error:\s|^\s*(?:npm (?:ERR!|error)\b|Error:|fatal:|xcodebuild:\s*error:|Traceback\b|Could not\b|Cannot\b|Unable to\b)|\((?:LoadError|RuntimeError)\)|:\s*(?:command not found|Permission denied|No such file or directory)\s*$/i;
+  const errorRecord = /^\s*(?:.*?:\d+(?::\d+)?:\s*)?(?:fatal\s+)?error:\s|^\s*(?:npm (?:ERR!|error)\b|(?:Error(?: \[[A-Z0-9_]+\])?|SyntaxError|TypeError|ReferenceError|RangeError):|fatal:|xcodebuild:\s*error:|Traceback\b|Could not\b|Cannot\b|Unable to\b)|\((?:LoadError|RuntimeError)\)|:\s*(?:command not found|Permission denied|No such file or directory)\s*$/i;
   for (const name of names) {
-    for (const line of bounded(logs[name] ?? '', 400, 96_000).split('\n')) {
+    const lines = bounded(logs[name] ?? '', 400, 96_000).split('\n');
+    for (let index = 0; index < lines.length; index++) {
+      const line = lines[index];
+      if (name === 'ci-contracts.log') {
+        if (/^\s*(?:error|message):\s*[|>][+-]?\s*$/.test(line)) {
+          const indent = line.search(/\S/), details = [];
+          for (const next of lines.slice(index + 1, index + 5)) {
+            if (next.trim() && next.search(/\S/) <= indent) break;
+            if (next.trim()) details.push(next.trim());
+            if (details.length === 2) break;
+          }
+          if (details.length) records.push({ name, line: 'error: ' + details.join(' '), rank: 0 });
+          continue;
+        }
+        if (/^\s*(?:not ok \d+\b|failureType:\s*\S|message:\s*\S)/.test(line)) {
+          records.push({ name, line, rank: 0 });
+          continue;
+        }
+      }
       const cocoa = /^\s*\[!\]/.test(line);
       if (cocoa && /(?:\bwarn(?:ing)?\b|\b(?:has|have) added \d+ script phase|please inspect before executing|please close any current xcode sessions)/i.test(line)) continue;
       const explicit = errorRecord.test(line) || /^\s*(?:ERROR\s|CommandError:)/.test(line) || (cocoa && /\b(?:error|failed|failure|could not|cannot|unable|invalid|incompatible|not found|requires)\b/i.test(line));
@@ -63,12 +81,15 @@ export function diagnosticLines(logs, stages = [], limit = 3) {
   return selected;
 }
 
-export function publicAnnotations({ kind = 'native', jobStatus, status, sha, logs = {} }) {
+const workflowSteps = new Set(['checkout', 'node-setup', 'bootstrap', 'ci-contracts', 'npm-ci', 'typecheck', 'cocoapods-install', 'native-invocation']);
+export function publicAnnotations({ kind = 'native', jobStatus, status, sha, logs = {}, failedStep }) {
   const exactSha = /^[a-f0-9]{40}$/i.test(sha ?? '') ? sha : 'unavailable';
   const title = kind === 'native' ? 'Native simulator diagnostics' : 'Linux verification diagnostics';
   const failed = ['failure', 'failed'].includes(jobStatus) || status?.result === 'failed';
   if (failed) {
-    const stages = status?.stages ?? [];
+    const safeStep = workflowSteps.has(failedStep) ? failedStep : undefined;
+    const stages = [...(status?.stages ?? [])];
+    if (safeStep && !stages.some(stage => stage.result === 'failed')) stages.push({ name: safeStep, result: 'failed' });
     const failures = stages.filter(stage => stage.result === 'failed')
       .map(stage => annotationText(stage.name, 80) + ': failed').slice(0, 3);
     const context = [
@@ -110,6 +131,7 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(new URL(import.meta.
     '', `Commit: \`${process.env.GITHUB_SHA ?? 'local-validation'}\``,
     `Job result: **${process.env.WEDDING_JOB_STATUS ?? status?.result ?? 'unknown'}**`, '',
   ];
+  if (workflowSteps.has(process.env.WEDDING_FAILED_STEP)) summary.push('Failed workflow step: **' + process.env.WEDDING_FAILED_STEP + '**', '');
   if (status) {
     summary.push('| Stage | Result | Seconds |', '| --- | --- | ---: |');
     for (const stage of status.stages ?? []) summary.push(`| ${stage.name} | ${stage.result} | ${stage.seconds ?? ''} |`);
@@ -130,7 +152,7 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(new URL(import.meta.
   if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary.join('\n'));
   else process.stdout.write(summary.join('\n'));
   const logs = Object.fromEntries(files.map(name => [name, readFileSync(join(directory, name), 'utf8')]));
-  for (const annotation of publicAnnotations({ kind, jobStatus: process.env.WEDDING_JOB_STATUS, status, sha: process.env.GITHUB_SHA, logs })) {
+  for (const annotation of publicAnnotations({ kind, jobStatus: process.env.WEDDING_JOB_STATUS, failedStep: process.env.WEDDING_FAILED_STEP, status, sha: process.env.GITHUB_SHA, logs })) {
     process.stdout.write(annotation + '\n');
   }
 }

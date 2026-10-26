@@ -31,15 +31,18 @@ jobs:
       EXPO_PUBLIC_E2E_FIXTURE: '1'
       COCOAPODS_DISABLE_STATS: 'true'
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - id: checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
           ref: ${{ github.sha }}
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - id: setup_node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: .nvmrc
           cache: npm
       - name: Initialize bounded diagnostic files
+        id: bootstrap
         run: |
           mkdir -p "$RUNNER_TEMP/wedding-native-diagnostics"
           {
@@ -48,14 +51,18 @@ jobs:
             xcodebuild -version
           } 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/runner-tools.log"
       - name: Verify native CI parsing and diagnostic contracts
-        run: node --test scripts/ci-native.test.mjs 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/ci-contracts.log"
+        id: contracts
+        run: node --test --test-reporter=tap scripts/ci-native.test.mjs 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/ci-contracts.log"
       - name: Frozen dependency installation
+        id: npmci
         timeout-minutes: 10
         run: npm ci --no-audit --no-fund 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/npm-ci.log"
       - name: Typecheck application and tests
+        id: typecheck
         timeout-minutes: 3
         run: npm run typecheck 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/typecheck.log"
       - name: Install pinned CocoaPods
+        id: cocoapods
         timeout-minutes: 5
         run: |
           {
@@ -65,12 +72,22 @@ jobs:
             fi
           } 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/cocoapods-install.log"
       - name: Build and run actual simulator XCTest suite
+        id: native
         timeout-minutes: 35
-        run: node scripts/ci-native.mjs
+        run: node scripts/ci-native.mjs 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/native-invocation.log"
       - name: Publish bounded redacted diagnostics in the public job summary
         if: always()
         env:
           WEDDING_JOB_STATUS: ${{ job.status }}
+          WEDDING_FAILED_STEP: >-
+            ${{ steps.checkout.outcome == 'failure' && 'checkout' ||
+                steps.setup_node.outcome == 'failure' && 'node-setup' ||
+                steps.bootstrap.outcome == 'failure' && 'bootstrap' ||
+                steps.contracts.outcome == 'failure' && 'ci-contracts' ||
+                steps.npmci.outcome == 'failure' && 'npm-ci' ||
+                steps.typecheck.outcome == 'failure' && 'typecheck' ||
+                steps.cocoapods.outcome == 'failure' && 'cocoapods-install' ||
+                steps.native.outcome == 'failure' && 'native-invocation' || '' }}
         run: node scripts/ci-summary.mjs native
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()

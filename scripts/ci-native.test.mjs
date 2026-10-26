@@ -1,8 +1,11 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { createServer } from 'node:http';
-import { commandStreams, MAX_MACHINE_STDOUT, metroErrorCodes, parseNamedJSON, passingXCTestCounts, selectIpadSimulator, waitForMetro } from './ci-native-contract.mjs';
+import { commandStreams, MAX_MACHINE_STDOUT, metroErrorCodes, metroHTTPStatus, parseNamedJSON, passingXCTestCounts, selectIpadSimulator, waitForMetro } from './ci-native-contract.mjs';
 import { annotationText, bounded, diagnosticLines, publicAnnotations, redact, workflowData } from './ci-summary.mjs';
 
 const ipad = { udid: '11111111-1111-4111-8111-111111111111', name: 'iPad Pro 13-inch (M4)',
@@ -194,8 +197,8 @@ test('normal CocoaPods script-phase warnings never drown a later explicit error'
   assert.deepEqual(diagnosticLines({ 'pods.log': '[!] hermes-engine has added 1 script phase. Please inspect before executing a build.' }), []);
 });
 
-async function statusFixture(t, host, body = 'packager-status:running') {
-  const server = createServer((_request, response) => response.end(body));
+async function statusFixture(t, host, body = 'packager-status:running', status = 200) {
+  const server = createServer((_request, response) => { response.writeHead(status); response.end(body); });
   await new Promise((resolveListen, reject) => { server.once('error', reject); server.listen(0, host, resolveListen); });
   t.after(() => new Promise(resolveClose => { server.closeAllConnections(); server.close(resolveClose); }));
   return server.address().port;
@@ -227,7 +230,7 @@ test('HTTP success with a non-Metro body fails on the same bounded deadline with
 test('Metro premature exit, signal or spawn failure is reported before waiting for HTTP readiness', async () => {
   for (const state of [{ exitCode: 7 }, { signal: 'SIGTERM' }, { spawnError: 'ENOENT' }]) {
     let fetches = 0;
-    await assert.rejects(waitForMetro({ childState: () => state, fetchImpl: async () => { fetches++; throw new Error('must not fetch'); } }),
+    await assert.rejects(waitForMetro({ childState: () => state, requestImpl: () => { fetches++; throw new Error('must not request'); } }),
       error => error.message.includes('Expo CLI exited or could not spawn') &&
         (state.exitCode ? error.message.includes('exit 7') : state.signal ? error.message.includes('SIGTERM') : error.message.includes('ENOENT')));
     assert.equal(fetches, 0);
@@ -258,6 +261,91 @@ test('failed Metro readiness surfaces its meaningful redacted output instead of 
 
 test('Metro readiness rejects non-loopback probes before any network request', async () => {
   let fetches = 0;
-  await assert.rejects(waitForMetro({ origins: ['https://production.example'], fetchImpl: async () => { fetches++; } }), /only HTTP loopback/);
+  await assert.rejects(waitForMetro({ origins: ['https://production.example'], requestImpl: () => { fetches++; } }), /only HTTP loopback/);
   assert.equal(fetches, 0);
+});
+
+test('a real failed TAP contract retains its pipeline exit and public failure records without native status', t => {
+  const directory = mkdtempSync(join(tmpdir(), 'wedding-contract-failure-'));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const source = join(directory, 'fixture.test.mjs'), log = join(directory, 'ci-contracts.log');
+  writeFileSync(source, "import {test} from 'node:test'; import assert from 'node:assert/strict'; test('synthetic contract failure',()=>assert.equal(1,2,'fixture-public-failure ENV_FLAG=never-publish'));\n");
+  const fixtureEnv = { ...process.env };
+  delete fixtureEnv.NODE_TEST_CONTEXT; // Run an independent CLI fixture, not a recursive test-runner child.
+  const result = spawnSync('bash', ['-o', 'pipefail', '-c',
+    'node --test --test-reporter=tap "$1" 2>&1 | tee "$2"', 'contract-fixture', source, log], { encoding: 'utf8', env: fixtureEnv });
+  assert.equal(result.status, 1, 'tee must not hide the failed Node test');
+  const [annotation] = publicAnnotations({ jobStatus: 'failure', failedStep: 'ci-contracts',
+    logs: { 'ci-contracts.log': readFileSync(log, 'utf8') } });
+  assert.ok(annotation.includes('Failed stage: ci-contracts: failed'));
+  assert.ok(annotation.includes('not ok 1'));
+  assert.ok(annotation.includes('testCodeFailure'));
+  assert.ok(annotation.includes('fixture-public-failure'));
+  assert.ok(!annotation.includes('never-publish'));
+  assert.ok(!annotation.includes('\n'));
+});
+
+test('native module-load errors remain visible when no runner status file was created', () => {
+  const [annotation] = publicAnnotations({ jobStatus: 'failure', failedStep: 'native-invocation', logs: {
+    'native-invocation.log': 'file:///private/native.mjs:1\nSyntaxError: fixture module failed to load ENV_FLAG=never-publish\n',
+  } });
+  assert.ok(annotation.includes('Failed stage: native-invocation: failed'));
+  assert.ok(annotation.includes('SyntaxError: fixture module failed to load'));
+  assert.ok(!annotation.includes('file://'));
+  assert.ok(!annotation.includes('never-publish'));
+});
+
+test('workflow failure fallback accepts only known step names and retains a more precise native stage', () => {
+  const [fallback] = publicAnnotations({ jobStatus: 'failure', failedStep: 'npm-ci' });
+  assert.ok(fallback.includes('Failed stage: npm-ci: failed'));
+  const [untrusted] = publicAnnotations({ jobStatus: 'failure', failedStep: 'ENV_FLAG=never-publish\n::error::bad' });
+  assert.ok(!untrusted.includes('never-publish'));
+  const [precise] = publicAnnotations({ jobStatus: 'failure', failedStep: 'native-invocation',
+    status: { result: 'failed', stages: [{ name: 'metro-ready', result: 'failed' }] } });
+  assert.ok(precise.includes('Failed stage: metro-ready: failed'));
+});
+
+test('default Metro transport never invokes global fetch or Undici', async t => {
+  const port = await statusFixture(t, '127.0.0.1');
+  const original = globalThis.fetch;
+  let calls = 0;
+  globalThis.fetch = () => { calls++; throw new Error('Undici must not run'); };
+  try {
+    const ready = await waitForMetro({ origins: ['http://127.0.0.1:' + port], timeoutMs: 1000 });
+    assert.equal(ready.family, 'ipv4');
+    assert.equal(calls, 0);
+  } finally { globalThis.fetch = original; }
+});
+
+test('Node HTTP Metro probe rejects non-2xx status even when its body contains the ready marker', async t => {
+  const port = await statusFixture(t, '127.0.0.1', 'packager-status:running', 503);
+  const result = await metroHTTPStatus('http://127.0.0.1:' + port);
+  assert.equal(result.status, 503);
+  assert.equal(result.result, 'http-error');
+});
+
+test('Node HTTP Metro response capture stops at 256 bytes and cannot accept a marker beyond the cap', async t => {
+  const port = await statusFixture(t, '127.0.0.1', 'x'.repeat(256) + 'packager-status:running' + 'x'.repeat(1_000_000));
+  const result = await metroHTTPStatus('http://127.0.0.1:' + port);
+  assert.equal(result.bytesRead, 256);
+  assert.equal(result.result, 'unexpected-status-body');
+});
+
+test('Node HTTP Metro timeout rejects with a safe code and closes its active socket', { timeout: 2000 }, async t => {
+  let resolveClosed;
+  const closed = new Promise(resolve => { resolveClosed = resolve; });
+  const server = createServer(() => { /* Deliberately never reply. */ });
+  server.once('connection', socket => socket.once('close', resolveClosed));
+  await new Promise((resolve, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', resolve); });
+  t.after(() => new Promise(resolve => { server.closeAllConnections(); server.close(resolve); }));
+  await assert.rejects(metroHTTPStatus('http://127.0.0.1:' + server.address().port, { timeoutMs: 40 }), error => error.code === 'ETIMEDOUT');
+  await closed;
+});
+
+test('Node HTTP Metro connection failures retain their safe network code', async () => {
+  const server = createServer();
+  await new Promise((resolve, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', resolve); });
+  const port = server.address().port;
+  await new Promise(resolve => server.close(resolve));
+  await assert.rejects(metroHTTPStatus('http://127.0.0.1:' + port), error => error.code === 'ECONNREFUSED');
 });

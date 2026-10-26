@@ -4,7 +4,7 @@
     "command": "bash scripts/setup-cloud.sh",
     "passed": true,
     "packages": 587,
-    "hosted_run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40248391461"
+    "hosted_run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40249710316"
   },
   "tests": {
     "command": "npm test",
@@ -48,7 +48,7 @@
   "gallery_worker_source_sha256": "4801a7cfcc475da2fa2d180b1a01dc5d98b996cf1dd830cf31f66f7dfb9f42b9",
   "ci_contract_tests": {
     "command": "node --test scripts/ci-native.test.mjs",
-    "passed": 26,
+    "passed": 34,
     "failed": 0,
     "skipped": 0
   },
@@ -91,6 +91,19 @@
       "commit": "2b4f4912202e9c44f2a48f76b2ae0a2bac442b63",
       "result": "failed",
       "diagnosis": "Project/dependency setup and simulator boot completed; Metro readiness failed before xcodebuild. Mac-specific cause unconfirmed; additional startup diagnostics pending."
+    },
+    {
+      "lane": "linux",
+      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40249710316",
+      "commit": "ed78989d0f9ae8c1b67587224d0e29eb69d6a5d2",
+      "result": "passed"
+    },
+    {
+      "lane": "native",
+      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40249710331",
+      "commit": "ed78989d0f9ae8c1b67587224d0e29eb69d6a5d2",
+      "result": "failed",
+      "diagnosis": "Coordinator retrieved actual logs: Node24.19.0 Undici setTypeOfService EINVAL during Metro status request; CocoaPods and simulator boot completed. No native compile/XCTest. Targeted node:http repair locally verified; hosted rerun required."
     }
   ],
   "firebase": {
@@ -98,7 +111,7 @@
     "reason": "No usable configured Google identity or signed iOS XCTest package; bounded assessment completed and Firebase deferred"
   },
   "native_xctest_passed": false,
-  "last_successful_hosted_linux_commit": "2b4f4912202e9c44f2a48f76b2ae0a2bac442b63",
+  "last_successful_hosted_linux_commit": "ed78989d0f9ae8c1b67587224d0e29eb69d6a5d2",
   "metro_entry_checks": {
     "passed": true,
     "native_test_flag": true,

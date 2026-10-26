@@ -1,5 +1,7 @@
 // These parsers consume output from the installed Xcode tools. They are shared
 // with executable fixtures so hosted CI cannot mistake zero tests for a pass.
+import { request as httpRequest } from 'node:http';
+
 export const MAX_MACHINE_STDOUT = 4 * 1024 * 1024;
 
 export function commandStreams(name, { captureStdout = false, stdoutLimit = MAX_MACHINE_STDOUT, onLog = () => {} } = {}) {
@@ -52,10 +54,62 @@ export function metroErrorCodes(error) {
   return [...found].slice(0, 4).join(',') || 'FETCH_ERROR';
 }
 
+export function metroHTTPStatus(origin, { timeoutMs = 1000, requestImpl = httpRequest } = {}) {
+  const url = new URL(origin);
+  if (url.protocol !== 'http:' || !['localhost', '127.0.0.1', '[::1]'].includes(url.hostname) ||
+    url.username || url.password || url.search || url.hash || url.pathname !== '/') throw new Error('Metro readiness permits only HTTP loopback origins');
+  if (!(timeoutMs > 0 && timeoutMs <= 1000)) throw new Error('Invalid Metro HTTP request timeout');
+  url.pathname = '/status';
+  return new Promise((resolveStatus, reject) => {
+    let request, response, finished = false, bytes = 0;
+    const chunks = [];
+    const finish = (error, result) => {
+      if (finished) return;
+      finished = true;
+      clearTimeout(timer);
+      response?.destroy();
+      request?.destroy();
+      if (error) reject(error); else resolveStatus(result);
+    };
+    const timer = setTimeout(() => {
+      const error = new Error('Metro HTTP probe timed out');
+      error.code = 'ETIMEDOUT';
+      finish(error);
+    }, timeoutMs);
+    try {
+      // node:http avoids Undici's socket quality-of-service path on macOS.
+      // Disable pooling so every completed/failed/timed-out probe closes its socket.
+      request = requestImpl(url, { method: 'GET', agent: false, headers: { Connection: 'close' } }, incoming => {
+        response = incoming;
+        const complete = () => {
+          if (finished) return;
+          const status = incoming.statusCode ?? 0, ok = status >= 200 && status < 300;
+          const ready = ok && Buffer.concat(chunks, bytes).toString('utf8').includes('packager-status:running');
+          finish(undefined, { status, bytesRead: bytes, result: ready ? 'ready' : ok ? 'unexpected-status-body' : 'http-error' });
+        };
+        incoming.on('data', chunk => {
+          if (finished) return;
+          const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+          const part = buffer.subarray(0, 256 - bytes);
+          chunks.push(Buffer.from(part)); bytes += part.byteLength;
+          if (bytes >= 256) complete();
+        });
+        incoming.once('end', complete);
+        incoming.once('error', error => finish(error));
+        incoming.once('aborted', () => {
+          const error = new Error('Metro HTTP response was aborted'); error.code = 'ECONNRESET'; finish(error);
+        });
+      });
+      request.once('error', error => finish(error));
+      request.end();
+    } catch (error) { finish(error); }
+  });
+}
+
 export async function waitForMetro({
   origins = ['http://localhost:8081', 'http://127.0.0.1:8081', 'http://[::1]:8081'],
   timeoutMs = 60_000, pollIntervalMs = 1000, requestTimeoutMs = 1000,
-  childState = () => ({}), fetchImpl = fetch, onObservation = () => {},
+  childState = () => ({}), requestImpl = httpRequest, onObservation = () => {},
 } = {}) {
   if (!(timeoutMs > 0 && timeoutMs <= 60_000) || !(requestTimeoutMs > 0 && requestTimeoutMs <= 1000)) throw new Error('Invalid Metro readiness deadline');
   const targets = origins.map(origin => {
@@ -89,21 +143,10 @@ export async function waitForMetro({
   }
   async function probe(target, remaining) {
     try {
-      const response = await fetchImpl(target.origin + '/status', { signal: AbortSignal.timeout(Math.max(1, Math.floor(Math.min(requestTimeoutMs, remaining)))) });
-      let body = '', bytes = 0;
-      const reader = response.body?.getReader();
-      if (reader) {
-        try {
-          while (bytes < 256) {
-            const chunk = await reader.read();
-            if (chunk.done) break;
-            bytes += chunk.value.byteLength;
-            body += new TextDecoder().decode(chunk.value.subarray(0, Math.max(0, 256 - body.length)));
-          }
-        } finally { await reader.cancel().catch(() => {}); }
-      }
-      const ready = response.ok && body.includes('packager-status:running');
-      return { family: target.family, status: response.status, result: ready ? 'ready' : response.ok ? 'unexpected-status-body' : 'http-error' };
+      const response = await metroHTTPStatus(target.origin, {
+        timeoutMs: Math.max(1, Math.floor(Math.min(requestTimeoutMs, remaining))), requestImpl,
+      });
+      return { family: target.family, ...response };
     } catch (error) { return { family: target.family, result: 'fetch-error', code: metroErrorCodes(error) }; }
   }
   while (performance.now() < deadline) {
