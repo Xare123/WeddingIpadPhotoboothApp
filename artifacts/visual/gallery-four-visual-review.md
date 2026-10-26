@@ -1,0 +1,17 @@
+# Four-photo gallery visual review
+
+All 15 actual Chromium PNGs from this run were inspected: Strip/classic and Grid/botanical at 390 × 844, 820 × 1180, and 1440 × 1000, each as a viewport and full page, plus missing, revoked, and naturally expired phone pages.
+
+The compact wedding identity and short intro fit the phone viewport. Each keepsake has a clearly named download above the composite, so the long strip does not hide its main action below the image. Both composite layouts preserve their aspect ratio and show four distinct colored fixture markers in the expected order. Individual selected photos follow the keepsake; all four camera-original downloads appear in their own labeled section. Controls, privacy text, exact UTC expiry, and the statement that expiry does not delete originals are visible and unobstructed. The error states show their intended message without photo or download controls.
+
+The tablet displays the four individual photos in two columns. The current desktop CSS displays three photos in the first row and the fourth in the next row. This is a non-blocking presentation choice; no image is missing, clipped, or inaccessible. No product-source change was made for this review.
+
+The scene is fictional and the colored FIXTURE markers are deliberate test overlays, not proposed wedding artwork or actual guest photography. The files came from the existing local browser template harness. This proves browser/Canvas JPEG handling and Worker/gallery behavior; native CoreImage rendering, iOS/Safari behavior, camera output, Photos export, native QR scanning, and SMS delivery remain outside this run.
+
+## Local diagnostic retention and cleanup
+
+The repository's Wrangler configuration disables observability logs, invocation logs, traces, persistence, and sampling. Nevertheless, this **local Miniflare development runtime** created diagnostic SQLite records: 123 log rows and 878 span rows, with 89 rows in each containing the synthetic capability path. Only aggregate counts were inspected or reported; no capability value was printed or copied into these repository proof files. This finding does not establish production Worker logging or retention behavior.
+
+Both synthetic galleries were revoked after the checks. The owned Worker on loopback port 8790 was stopped, and only its generated local observability SQLite database and sidecars were removed. The local R2 photo objects and revocation markers were preserved. A read-only metadata check confirmed 12 JPEG objects, two gallery manifests, two permanent session-revocation markers and two hashed-token revocation markers; no pairing, share, or SMS-delivery records existed. No observability table remained in that owned persistence directory after cleanup. No root/peer process or baseline visual artifact was changed.
+
+The final public-artifact scan checks report text and PNG non-image metadata for capability paths, UUID identifiers, phone-number patterns, bearer/authorization assignments, and the known local development credential strings. Complete PNG bytes are additionally checked for capability, UUID, bearer and known-credential patterns; phone text is checked in metadata and by visual review rather than interpreting compressed image bytes as text. These proof files contain fake fixture names, image dimensions, byte hashes, timestamps, source hashes and screenshots only. No real secret was read or used by this run.

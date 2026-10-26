@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { bounded, redact } from './ci-summary.mjs';
-import { nativeModeSettings, requireNativeTestPlan, commandStreams, parseNamedJSON, passingXCTestCounts, selectIpadSimulator, waitForMetro, metroErrorCodes, resolveExpoEntry, ownedProcessTree, verifyReleaseApp, requireSwiftTools62 } from './ci-native-contract.mjs';
+import { nativeModeSettings, requireNativeTestPlan, verifyNativeRuntimeSources, passingExpectedXCTestCounts, commandStreams, parseNamedJSON, passingXCTestCounts, selectIpadSimulator, waitForMetro, metroErrorCodes, resolveExpoEntry, ownedProcessTree, verifyReleaseApp, requireSwiftTools62 } from './ci-native-contract.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const diagnostics = process.env.WEDDING_DIAGNOSTICS_DIR ?? join(process.env.RUNNER_TEMP ?? '/tmp', 'wedding-native-diagnostics');
@@ -132,6 +132,12 @@ async function main() {
     if (!existsSync(planPath)) throw new Error('Native UI test plan was not generated');
     const plan = parseNamedJSON('native-test-plan', readFileSync(planPath, 'utf8'));
     requireNativeTestPlan(plan, mode);
+    if (mode === 'release-runtime') {
+      const evidence = verifyNativeRuntimeSources(plan, root);
+      status.expectedTestCount = evidence.expectedTestCount;
+      status.runtimeSources = evidence.runtimeSources;
+      writeFileSync(join(diagnostics, 'runtime-sources.json'), JSON.stringify(evidence, null, 2) + '\n');
+    }
     const workspace = isAbsolute(plan.workspace) ? plan.workspace : resolve(root, plan.workspace);
     if (!workspace.startsWith(join(root, 'apps/ipad/ios/')) || !existsSync(workspace)) throw new Error('Native test workspace is outside the generated project or missing');
     const project = typeof plan.project === 'string' ? resolve(root, plan.project) : '';
@@ -234,8 +240,8 @@ async function main() {
     '-test-timeouts-enabled', 'YES', '-default-test-execution-time-allowance', '180',
     '-maximum-test-execution-time-allowance', '300', 'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO', 'test',
   ], { timeout: 1_500_000 });
-  status.tests = passingXCTestCounts(test.output);
-  if (mode === 'release-runtime') status.runtimeEvidence = { configuration: 'Release', sdk: 'iphonesimulator', fixture: 'disabled', metroServer: false, scope: 'attract-ui-launch-relaunch-orientation' };
+  status.tests = mode === 'release-runtime' ? passingExpectedXCTestCounts(test.output, status.expectedTestCount) : passingXCTestCounts(test.output);
+  if (mode === 'release-runtime') status.runtimeEvidence = { configuration: 'Release', sdk: 'iphonesimulator', fixture: 'disabled', metroServer: false, scope: 'coreimage-effects-and-template-pixel-tests-plus-attract-ui', expectedTestCount: status.expectedTestCount };
   status.result = 'passed';
 }
 try { await main(); }

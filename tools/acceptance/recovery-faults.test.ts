@@ -52,7 +52,7 @@ async function diskFixture(t: { after(fn: () => Promise<void>): void }) {
   return { sql, db, uri, files, faults, make, source, payload };
 }
 async function complete(f: Awaited<ReturnType<typeof diskFixture>>, id = 'session') {
-  const repository = f.make(); let session = await repository.createSession(id);
+  const repository = f.make(); let session = await repository.createSession(id, 5);
   for (let i = 0; i < 5; i++) session = await repository.saveShot(session, `${id}-photo-${i}`, f.source, i);
   return { repository, session };
 }
@@ -66,7 +66,7 @@ async function rows(f: Awaited<ReturnType<typeof diskFixture>>, repo?: LocalRepo
  repo?.reportQueueIndexIssues(result.invalidRows); return result;
 }
 test('independent 1: one-shot failed move, fallback refuses partial, finish and repeat confirmation/recovery preserve five readable JPEG jobs', async t => {
- const f=await diskFixture(t), r=f.make(); let s=await r.createSession('independent-one');
+ const f=await diskFixture(t), r=f.make(); let s=await r.createSession('independent-one', 5);
  // Boundary copy succeeds; the first rename alone fails.
  const move=f.files.move; let failures=1; f.files.move=async(a,b)=>{if(failures-- > 0) throw Error('one-shot move'); await move(a,b);};
  await assert.rejects(r.saveShot(s,'independent-one-p0',f.source,0));

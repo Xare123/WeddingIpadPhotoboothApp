@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { AppState, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import type { QueueJob } from '@wedding-booth/core';
 import { loadConnection } from './config';
 import { queueSessionShare } from './recipients';
@@ -20,7 +20,14 @@ export function SmsShare({ session, jobs, onChanged }: {
   const mounted = useRef(true);
   const share = jobs.find(job => job.kind === 'share' && job.sessionId === session.id);
   const outcome = smsOutcome(share);
-  const ready = session.shots.length === 5 && !!sessionGuestPage(session, jobs);
+  const ready = [4, 5].includes(session.targetCount) && session.shots.length === session.targetCount && !!sessionGuestPage(session, jobs);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', state => {
+      if (state !== 'active') { setVisible(false); setPhone(''); setConsent(false); setError(''); }
+    });
+    return () => subscription.remove();
+  }, []);
 
   useEffect(() => {
     mounted.current = true;
@@ -59,7 +66,7 @@ export function SmsShare({ session, jobs, onChanged }: {
   if (outcome) return <Text accessibilityLiveRegion="polite" style={styles.outcome}>{outcome}</Text>;
   if (!available || !ready) return null;
   return <>
-    <Pressable accessibilityRole="button" accessibilityLabel="Text a link to these five photos" style={styles.button} onPress={() => setVisible(true)}>
+    <Pressable accessibilityRole="button" accessibilityLabel={`Text a link to these ${session.shots.length} photos`} style={styles.button} onPress={() => setVisible(true)}>
       <Text style={styles.buttonText}>Text me the link</Text>
     </Pressable>
     <Modal visible={visible} transparent animationType="none" onRequestClose={dismiss}>

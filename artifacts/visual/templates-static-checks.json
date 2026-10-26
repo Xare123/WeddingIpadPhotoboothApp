@@ -1,0 +1,70 @@
+{
+  "scope": "Additional full-frame static browser fixtures. Aligns the complete Adjust photos row after the identical swap/fill/pan/zoom actions; no image crop, no App change, no retake actor changes. Starts from four-photo review fixture; full capture movies are in templates-checks.json.",
+  "sourceSHA256": "71d7007cd4c903938ee60703f4811b7e3ac47dabc1c2088b6e8b925c21b4072c",
+  "checks": [
+    {
+      "orientation": "portrait",
+      "file": "artifacts/visual/templates-crop-pan-clean-portrait.png",
+      "settlement": {
+        "requested": 257,
+        "actual": 257,
+        "maximum": 284,
+        "stableFrames": 4,
+        "target": {
+          "x": 20,
+          "y": 640.125,
+          "width": 780,
+          "height": 44,
+          "top": 640.125,
+          "right": 800,
+          "bottom": 684.125,
+          "left": 20
+        },
+        "viewport": {
+          "x": 20,
+          "y": 640.125,
+          "width": 780,
+          "height": 527.875,
+          "top": 640.125,
+          "right": 800,
+          "bottom": 1168,
+          "left": 20
+        }
+      }
+    },
+    {
+      "orientation": "landscape",
+      "file": "artifacts/visual/templates-crop-pan-clean-landscape.png",
+      "settlement": {
+        "requested": 257,
+        "actual": 193,
+        "maximum": 193,
+        "stableFrames": 4,
+        "target": {
+          "x": 804,
+          "y": 236,
+          "width": 356,
+          "height": 44,
+          "top": 236,
+          "right": 1160,
+          "bottom": 280,
+          "left": 804
+        },
+        "viewport": {
+          "x": 804,
+          "y": 172,
+          "width": 356,
+          "height": 636,
+          "top": 172,
+          "right": 1160,
+          "bottom": 808,
+          "left": 804
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "mockedHealthRequests": [],
+  "unexpectedExternalRequests": [],
+  "status": "passed"
+}

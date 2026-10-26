@@ -1,7 +1,7 @@
 {
   "scope": "Current Linux release-mode iOS source map only; no native-binary security audit",
-  "app_source_sha256": "ab233727e41a6ba19e386f485af6ef0dc24373b2518e0da87942bf647669ac99",
-  "source_module_count": 1025,
+  "app_source_sha256": "71d7007cd4c903938ee60703f4811b7e3ac47dabc1c2088b6e8b925c21b4072c",
+  "source_module_count": 1030,
   "appSourceContentMatched": true,
   "affectedDependencyRuntimeFindings": {
     "node-forge": [],
@@ -13,9 +13,9 @@
     "wrangler": []
   },
   "source_map_sha256": [
-    "83b7d4b18e5a7cd8e7f835b7b10de962fd5d84d9032bd5cc986cf146c2937cd9"
+    "0f6c391b0f44936bc0e601a45b9adb648181fbabe2c97672c4f095e80fcd65dc"
   ],
-  "native_js_bundle_sha256": "887095d64bf819259778244b4061cb97839a976a7f53718c3af6606b31969d33",
+  "native_js_bundle_sha256": "cbc501d443b85797949c126f4f5f0df8d48b637486660366460bb910a87ca477",
   "auditCounts": {
     "info": 0,
     "low": 0,
@@ -36,8 +36,8 @@
     "wrangler",
     "zod"
   ],
-  "exposure": "Expo certificate/validation CLI plus local Wrangler/Miniflare image/network tooling. Expo Metro require loader is present; do not equate all @expo/cli modules with affected code. No affected library above appears in this inspected app graph. Worker source/bundle unchanged.",
-  "safeFixStatus": "Further bounded compatibility assessment required; do not force Expo downgrade or major dependency overrides. Native CI proceeds on this frozen candidate; findings are not suppressed.",
+  "exposure": "Expo certificate/validation CLI plus local Wrangler/Miniflare image/network tooling. Expo Metro require loader is present; do not equate all @expo/cli modules with affected code. None of the affected libraries above appears in this inspected app graph. The newly rebuilt Worker bundle is separately hashed and locally tested; this is not a native-binary or production audit.",
+  "safeFixStatus": "Bounded exact-version/range/registry assessment complete: see studio-advisory-assessment.json. Wrangler4.153.0 is an upstream-supported tooling follow-up; directMiniflare4 has no patched release and child overrides require testing. Forge has no published fixed version; fixed Zod requires incompatible major substitution. Frozen candidate retains explicit findings; no audit suppression/forced downgrade.",
   "native_release_build": {
     "current_source_passed": false,
     "status": "pending exact-commit hosted verification"

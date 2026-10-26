@@ -7,6 +7,16 @@ const insetValues = (parameters.get('insets') ?? '24,0,20,0').split(',').map(Num
 export const fixtureInsets = { top: insetValues[0] || 0, right: insetValues[1] || 0, bottom: insetValues[2] || 0, left: insetValues[3] || 0 };
 export const fixtureState = parameters.get('state') ?? 'attract';
 export const fixtureControls = {
+  imageFaults: [] as { testID: string; prefix: string; remaining: number }[],
+  imageCallbacks: new Map<string, { testID: string; uri: string; onError: (event: unknown) => void }>(),
+  imageEvents: [] as { kind: string; testID: string; uri: string }[],
+  failNextImage(testID: string, prefix = '') { this.imageFaults.push({ testID, prefix, remaining: 1 }); },
+  replayImageError(testID: string, uri: string) {
+    const callback = this.imageCallbacks.get(testID + ':' + uri);
+    if (!callback) throw new Error('No captured SDK Image callback for ' + testID);
+    this.imageEvents.push({ kind: 'synthetic-sdk-error-replay', testID, uri });
+    callback.onError({ nativeEvent: { error: 'Synthetic late SDK Image error' } });
+  },
   appState: 'active' as AppStatus,
   glassAvailable: parameters.get('glass') === 'available',
   preferences: {
@@ -21,6 +31,18 @@ export const fixtureControls = {
   },
   online: !['pending', 'offline'].includes(fixtureState),
   readyAcknowledged: fixtureState !== 'partial-ready',
+  templatesAvailable: parameters.get('templates') === 'available',
+  templateDelayMs: 0,
+  templatesIgnoreCancellation: false,
+  templateRenders: [] as { requestID: string; recipeJSON: string; preview: boolean; status: string; uri: string; sourceHashes: Record<string, string> }[],
+  templateCancellations: [] as string[],
+  templateReleases: [] as string[],
+  effectsAvailable: parameters.get('effects') === 'available',
+  effectDelayMs: 0,
+  effectsIgnoreCancellation: false,
+  effectRenders: [] as { requestID: string; sourceUri: string; preset: string; intensity: number; preview: boolean; status: string; uri: string }[],
+  effectCancellations: [] as string[],
+  effectReleases: [] as string[],
   cameraCalls: 0,
   cameraPermissionRequests: 0,
   openSettingsCalls: 0,

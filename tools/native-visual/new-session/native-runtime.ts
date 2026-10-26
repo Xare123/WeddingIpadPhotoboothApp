@@ -3,15 +3,41 @@ export * from 'react-native-web';
 export { AppState } from './fixture-controls';
 import { Linking as WebLinking } from 'react-native-web';
 import { Image as WebImage, Animated as WebAnimated, View as WebView } from 'react-native-web';
-import { createElement, forwardRef } from 'react';
+import { createElement, forwardRef, useEffect, useRef } from 'react';
 import { fixtureControls } from './fixture-controls';
 export const Linking = { ...WebLinking, async openSettings() { fixtureControls.openSettingsCalls++; } };
+import { durableRenderedImages, renderedImages, originalImageVariants, browserImageURI } from './effects-stub';
 function browserSource(source: any): any {
   if (Array.isArray(source)) return source.map(browserSource);
+  if (source?.uri && renderedImages.has(source.uri)) return { ...source, uri: renderedImages.get(source.uri) };
+  if (source?.uri && durableRenderedImages.has(source.uri)) return { ...source, uri: durableRenderedImages.get(source.uri) };
+  if (source?.uri && originalImageVariants.has(source.uri)) return { ...source, uri: browserImageURI(source.uri) };
   const match = source?.uri && /^file:\/\/\/synthetic\/([a-zA-Z0-9-]+)\.jpg$/.exec(source.uri);
   return match ? { ...source, uri: `/synthetic/shot/${match[1]}.png` } : source;
 }
-export const Image = Object.assign(forwardRef<any, any>((props, ref) => createElement(WebImage, { ...props, source: browserSource(props.source), ref })), {
+// Faults simulate SDK callback delivery, not a browser network/decode failure.
+// They execute the actual App Image onError callback and withhold onLoad.
+export const Image = Object.assign(forwardRef<any, any>((props, ref) => {
+  const uri = props.source?.uri ?? '', testID = props.testID ?? '';
+  const fault = useRef<boolean | null>(null);
+  if (fault.current === null) {
+    const request = fixtureControls.imageFaults.find(value => value.remaining > 0 && value.testID === testID && uri.startsWith(value.prefix));
+    fault.current = !!request;
+    if (request) request.remaining--;
+  }
+  useEffect(() => {
+    if (props.onError) fixtureControls.imageCallbacks.set(testID + ':' + uri, { testID, uri, onError: props.onError });
+    if (fault.current) {
+      const timer = setTimeout(() => {
+        fixtureControls.imageEvents.push({ kind: 'synthetic-sdk-error', testID, uri });
+        props.onError?.({ nativeEvent: { error: 'Synthetic SDK Image load failure; native decoding unverified' } });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [uri, testID]);
+  return createElement(WebImage, { ...props, source: browserSource(props.source), ref,
+    onLoad: fault.current ? undefined : (event: unknown) => { if (props.onLoad) fixtureControls.imageEvents.push({ kind: 'sdk-load', testID, uri }); props.onLoad?.(event); } });
+}), {
   getSize: WebImage.getSize, prefetch: WebImage.prefetch, resolveAssetSource: WebImage.resolveAssetSource,
 });
 export const Animated = { ...WebAnimated, Image: WebAnimated.createAnimatedComponent(Image) };

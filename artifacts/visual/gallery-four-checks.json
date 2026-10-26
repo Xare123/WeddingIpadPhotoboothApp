@@ -1,0 +1,331 @@
+{
+  "generatedAt": "2026-10-26T16:54:42.219Z",
+  "status": "passed",
+  "workerSource": {
+    "path": "services/api/src/index.ts",
+    "sha256": "377618a384ffecc2452518d85d7fbff4b6a00c0a4eaeb27721735426fa245dfa",
+    "unchangedDuringCapture": true
+  },
+  "browser": "Chromium 154.0.8037.57",
+  "originScope": "Owned loopback HTTP8790 only; no live origin, publication, push, deployment or external upload",
+  "fixtures": {
+    "scope": "Four labeled variants of the same owned fictional generated scene; Canvas JPEGs, not actual guest photos or native CoreImage proof. No session IDs, capabilities or phone data.",
+    "generatedBy": "Existing local template browser/Canvas harness; no native CoreImage or camera claim",
+    "files": [
+      {
+        "file": "raw-1.jpg",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 393345,
+        "sha256": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d"
+      },
+      {
+        "file": "raw-2.jpg",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 392758,
+        "sha256": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6"
+      },
+      {
+        "file": "raw-3.jpg",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 395379,
+        "sha256": "30ef2d60c4ef7e3e77b5c3e82ba45b275a2e69b46900eea25a820c8dd1ab0a0f"
+      },
+      {
+        "file": "raw-4.jpg",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 393345,
+        "sha256": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+      },
+      {
+        "file": "selected-warm.jpg",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 396366,
+        "sha256": "dce05443a030ba0450755c941bc4c6f0968006ead4dcc9f1966cc83f580a7ce0"
+      },
+      {
+        "file": "strip-classic.jpg",
+        "width": 1200,
+        "height": 3600,
+        "bytes": 701635,
+        "sha256": "92c7f041daf664413b7c3615c0b7ac7b6cbe3c2e2f5e52de682eeb185fcb091c"
+      },
+      {
+        "file": "grid-botanical.jpg",
+        "width": 2400,
+        "height": 2100,
+        "bytes": 704103,
+        "sha256": "afaaa7b5622a6715240d4f8bfb34f7c4d3032242607ab96fdfc2825f830bd58e"
+      }
+    ]
+  },
+  "publication": {
+    "layouts": [
+      "strip/classic",
+      "grid/botanical"
+    ],
+    "selectedPositions": 4,
+    "cameraOriginals": 4,
+    "composite": 1,
+    "distinctRequiredObjectsPerSession": 6,
+    "exactAcknowledgementVerified": true,
+    "localTtlSeconds": 60
+  },
+  "capabilityHandling": "All capability URLs, session IDs and photo IDs stayed in process memory; no phone data or messaging request. Both synthetic galleries revoked after proof; local emulator bytes retained. Repo proof files contain only fake fixture names, hashes and screenshots.",
+  "scope": "Actual local Worker HTTP and responsive desktop Chromium proof. This is not native iOS/Safari/camera/CoreImage/Photos/QR-scan/SMS-delivery or deployed-Worker proof.",
+  "screenshots": [
+    {
+      "file": "gallery-four-strip-phone.png",
+      "layout": "strip",
+      "viewport": "390 \u00d7 844",
+      "kind": "Actual browser full page"
+    },
+    {
+      "file": "gallery-four-strip-phone-viewport.png",
+      "layout": "strip",
+      "viewport": "390 \u00d7 844",
+      "kind": "Actual browser viewport"
+    },
+    {
+      "file": "gallery-four-strip-tablet.png",
+      "layout": "strip",
+      "viewport": "820 \u00d7 1180",
+      "kind": "Actual browser full page"
+    },
+    {
+      "file": "gallery-four-strip-tablet-viewport.png",
+      "layout": "strip",
+      "viewport": "820 \u00d7 1180",
+      "kind": "Actual browser viewport"
+    },
+    {
+      "file": "gallery-four-strip-desktop.png",
+      "layout": "strip",
+      "viewport": "1440 \u00d7 1000",
+      "kind": "Actual browser full page"
+    },
+    {
+      "file": "gallery-four-strip-desktop-viewport.png",
+      "layout": "strip",
+      "viewport": "1440 \u00d7 1000",
+      "kind": "Actual browser viewport"
+    },
+    {
+      "file": "gallery-four-grid-phone.png",
+      "layout": "grid",
+      "viewport": "390 \u00d7 844",
+      "kind": "Actual browser full page"
+    },
+    {
+      "file": "gallery-four-grid-phone-viewport.png",
+      "layout": "grid",
+      "viewport": "390 \u00d7 844",
+      "kind": "Actual browser viewport"
+    },
+    {
+      "file": "gallery-four-grid-tablet.png",
+      "layout": "grid",
+      "viewport": "820 \u00d7 1180",
+      "kind": "Actual browser full page"
+    },
+    {
+      "file": "gallery-four-grid-tablet-viewport.png",
+      "layout": "grid",
+      "viewport": "820 \u00d7 1180",
+      "kind": "Actual browser viewport"
+    },
+    {
+      "file": "gallery-four-grid-desktop.png",
+      "layout": "grid",
+      "viewport": "1440 \u00d7 1000",
+      "kind": "Actual browser full page"
+    },
+    {
+      "file": "gallery-four-grid-desktop-viewport.png",
+      "layout": "grid",
+      "viewport": "1440 \u00d7 1000",
+      "kind": "Actual browser viewport"
+    },
+    {
+      "file": "gallery-four-revoked-phone.png",
+      "layout": "revoked",
+      "viewport": "390 \u00d7 844",
+      "kind": "Actual HTTP 410 state"
+    },
+    {
+      "file": "gallery-four-expired-phone.png",
+      "layout": "expired",
+      "viewport": "390 \u00d7 844",
+      "kind": "Actual HTTP 410 state"
+    },
+    {
+      "file": "gallery-four-missing-phone.png",
+      "layout": "missing",
+      "viewport": "390 \u00d7 844",
+      "kind": "Actual HTTP 404 state"
+    }
+  ],
+  "downloads": [
+    {
+      "layout": "strip",
+      "role": "composite",
+      "fixture": "strip-classic.jpg",
+      "bytes": 701635,
+      "sha256": "92c7f041daf664413b7c3615c0b7ac7b6cbe3c2e2f5e52de682eeb185fcb091c",
+      "suggestedFilename": "wedding-keepsake-strip.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "strip",
+      "role": "selected-warm",
+      "fixture": "selected-warm.jpg",
+      "bytes": 396366,
+      "sha256": "dce05443a030ba0450755c941bc4c6f0968006ead4dcc9f1966cc83f580a7ce0",
+      "suggestedFilename": "wedding-photo-1.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "strip",
+      "role": "raw-1",
+      "fixture": "raw-1.jpg",
+      "bytes": 393345,
+      "sha256": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+      "suggestedFilename": "wedding-original-1.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "strip",
+      "role": "raw-2",
+      "fixture": "raw-2.jpg",
+      "bytes": 392758,
+      "sha256": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+      "suggestedFilename": "wedding-photo-2.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "strip",
+      "role": "raw-3",
+      "fixture": "raw-3.jpg",
+      "bytes": 395379,
+      "sha256": "30ef2d60c4ef7e3e77b5c3e82ba45b275a2e69b46900eea25a820c8dd1ab0a0f",
+      "suggestedFilename": "wedding-photo-3.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "strip",
+      "role": "raw-4",
+      "fixture": "raw-4.jpg",
+      "bytes": 393345,
+      "sha256": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203",
+      "suggestedFilename": "wedding-photo-4.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "grid",
+      "role": "composite",
+      "fixture": "grid-botanical.jpg",
+      "bytes": 704103,
+      "sha256": "afaaa7b5622a6715240d4f8bfb34f7c4d3032242607ab96fdfc2825f830bd58e",
+      "suggestedFilename": "wedding-keepsake-grid.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "grid",
+      "role": "selected-warm",
+      "fixture": "selected-warm.jpg",
+      "bytes": 396366,
+      "sha256": "dce05443a030ba0450755c941bc4c6f0968006ead4dcc9f1966cc83f580a7ce0",
+      "suggestedFilename": "wedding-photo-1.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "grid",
+      "role": "raw-1",
+      "fixture": "raw-1.jpg",
+      "bytes": 393345,
+      "sha256": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+      "suggestedFilename": "wedding-original-1.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "grid",
+      "role": "raw-2",
+      "fixture": "raw-2.jpg",
+      "bytes": 392758,
+      "sha256": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+      "suggestedFilename": "wedding-photo-2.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "grid",
+      "role": "raw-3",
+      "fixture": "raw-3.jpg",
+      "bytes": 395379,
+      "sha256": "30ef2d60c4ef7e3e77b5c3e82ba45b275a2e69b46900eea25a820c8dd1ab0a0f",
+      "suggestedFilename": "wedding-photo-3.jpg",
+      "method": "Actual Chromium link click/download event"
+    },
+    {
+      "layout": "grid",
+      "role": "raw-4",
+      "fixture": "raw-4.jpg",
+      "bytes": 393345,
+      "sha256": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203",
+      "suggestedFilename": "wedding-photo-4.jpg",
+      "method": "Actual Chromium link click/download event"
+    }
+  ],
+  "checks": [
+    "Actual owned loopback Worker health returned local-r2, mock SMS and smsAvailable:false. No shares, pairing, provider or remote request was made.",
+    "Actual HTTP: each layout uploaded six distinct JPEGs for four selected positions, four camera originals and one composite. Missing raw original or composite prevented publication and the predicted guest page remained404. Complete acknowledgement echoed exact ordered recipe; identical replay preserved URL/expiry; changed theme returned409. Ready URLs stayed on loopback.",
+    "strip 390\u00d7844: actual HTTP200; composite and all selected images decoded at exact JPEG dimensions; four raw originals accessible; nine named >=44px download controls; no horizontal overflow; visible keyboard focus; reduced motion; exact UTC expiry; private retention copy; zero page errors/external requests/referrer headers.",
+    "strip 820\u00d71180: actual HTTP200; composite and all selected images decoded at exact JPEG dimensions; four raw originals accessible; nine named >=44px download controls; no horizontal overflow; visible keyboard focus; reduced motion; exact UTC expiry; private retention copy; zero page errors/external requests/referrer headers.",
+    "strip 1440\u00d71000: actual HTTP200; composite and all selected images decoded at exact JPEG dimensions; four raw originals accessible; nine named >=44px download controls; no horizontal overflow; visible keyboard focus; reduced motion; exact UTC expiry; private retention copy; zero page errors/external requests/referrer headers.",
+    "grid 390\u00d7844: actual HTTP200; composite and all selected images decoded at exact JPEG dimensions; four raw originals accessible; nine named >=44px download controls; no horizontal overflow; visible keyboard focus; reduced motion; exact UTC expiry; private retention copy; zero page errors/external requests/referrer headers.",
+    "grid 820\u00d71180: actual HTTP200; composite and all selected images decoded at exact JPEG dimensions; four raw originals accessible; nine named >=44px download controls; no horizontal overflow; visible keyboard focus; reduced motion; exact UTC expiry; private retention copy; zero page errors/external requests/referrer headers.",
+    "grid 1440\u00d71000: actual HTTP200; composite and all selected images decoded at exact JPEG dimensions; four raw originals accessible; nine named >=44px download controls; no horizontal overflow; visible keyboard focus; reduced motion; exact UTC expiry; private retention copy; zero page errors/external requests/referrer headers.",
+    "Twelve actual Chromium download clicks (composite, Warm-selected first photo, and all four raw originals for both layouts) matched uploaded JPEG SHA256. Actual HTTP downloads of all six distinct assets per session also retained exact bytes, length and private headers. Cross-session IDs/raw storage paths/listing paths were unavailable. No messaging endpoint was called.",
+    "Actual session revocation returned HTTP410 in Chromium and every selected/original/composite download and readiness replay returned410.",
+    "A real60second local TTL elapsed without editing R2 state. Chromium then received the designed expired HTTP410 page; all role downloads and readiness replay also returned410. Expiry closes access, not original-byte deletion.",
+    "Missing capability navigation returned the designed real HTTP404 browser state with no image/download controls or horizontal overflow."
+  ],
+  "localStorageCountsAfterCleanup": {
+    "photoObjects": 12,
+    "galleryManifests": 2,
+    "sessionRevocations": 2,
+    "hashRevocations": 2,
+    "pairingObjects": 0,
+    "shareObjects": 0,
+    "smsDeliveryObjects": 0,
+    "remainingDiagnosticTables": 0
+  },
+  "localDiagnosticPrivacy": {
+    "scope": "Local Miniflare developer diagnostics only; production logging behavior was not tested",
+    "logRowsBeforeCleanup": 123,
+    "spanRowsBeforeCleanup": 878,
+    "capabilityPathLogRowsBeforeCleanup": 89,
+    "capabilityPathSpanRowsBeforeCleanup": 89,
+    "removedDiagnosticFiles": 3,
+    "removedOwnedWranglerLogFiles": 0,
+    "cleanupComplete": true
+  },
+  "visualInspection": {
+    "all15PngsInspected": true,
+    "notes": "gallery-four-visual-review.md",
+    "blockingVisualIssues": false,
+    "desktopNote": "Four individual photos currently flow as three cards followed by one; no clipping or missing content."
+  },
+  "ownedWorkerStopped": true,
+  "publicArtifactScan": {
+    "capabilityPaths": false,
+    "uuidIdentifiers": false,
+    "phonePatterns": false,
+    "bearerAssignments": false,
+    "knownLocalCredentialStrings": false,
+    "scope": "Text reports and PNG non-image metadata; images also reviewed visually. Capability/UUID/bearer/known-credential patterns additionally checked across complete PNG bytes."
+  }
+}

@@ -25,7 +25,7 @@ npx expo run:ios --device
 
 These commands generate ignored native files. They do not create an Apple account, accept terms, buy membership or submit an app automatically. Use the existing personal-team signing identity. If an app is already installed, preserve its bundle identifier and team: changing identity creates a different photo container. Never uninstall or clear an installation containing originals. Do not put certificates or profiles in Git.
 
-Expo Go can run supported native modules only when its SDK matches this app. It depends on a development server; its caching, permissions and data lifetime do not establish wedding readiness. A development build can also depend on Metro. The wedding needs a release build whose JavaScript is embedded and that opens after a cold reboot without a laptop or development server.
+The current local Core Image module requires a rebuilt native app and is unavailable in Expo Go. A development build can depend on Metro. The wedding needs a Release build whose JavaScript and assets are embedded and that opens after a cold reboot without a laptop or development server.
 
 ## Distribution decision (owner action)
 
@@ -33,7 +33,7 @@ The owner confirmed a MacBook, Xcode, the wedding iPad and a **free Apple ID per
 
 The macOS workflow uses an explicitly marked `[native-ci]` push to build an **unsigned Release app for the physical iOS SDK**, without Metro or simulator startup. It checks the executable, embedded `main.jsbundle`, bundle identifier and iPad device family, and records small hash/metadata evidence. Compilation does not run XCTest or install the app.
 
-The separate `[native-ui]` mode builds the Debug XCTest target for synthetic capture with real native files/SQLite and process restarts. It requires nonzero passing test execution; its hosted Metro startup remains unresolved. See [native test instructions](../apps/ipad/native-tests/README.md) and exact outcomes in [validation](VALIDATION.md). Neither mode establishes real-iPad signing, camera, storage protection, image orientation or standalone offline launch. Firebase iOS testing requires a signed XCTest/XCUITest package, not a Metro bundle or a JavaScript test report; the bounded [Firebase assessment](FIREBASE_ASSESSMENT.md) records why it is deferred here.
+The separate `[native-runtime-ci]` lane builds a standalone Release simulator app without Metro and requires 15 XCTest methods: 8 actual Core Image effects checks, 6 native template checks and 1 app launch/relaunch/rotation smoke. The preceding full-bleed commit passed the one-method launch smoke; the expanded feature lane requires a fresh exact-commit run. The optional `[native-ui]` Debug fixture remains unrun because its hosted Metro startup was unresolved. See [native test instructions](../apps/ipad/native-tests/README.md) and [exact outcomes](VALIDATION.md). Simulator tests do not establish real-iPad signing, camera, Photos, Keychain or booth image quality. The owner chose to leave [Firebase deferred](FIREBASE_CURRENT_ASSESSMENT.md).
 
 ## Operator configuration
 
@@ -42,9 +42,9 @@ The intended HTTPS origin is prefilled. Use [private one-time pairing](PRIVATE_P
 ## Required physical-device rehearsal
 
 - Install the intended standalone release build, check its provisioning expiry beyond November 1, and restart the iPad with no development server.
-- Allow camera permission; deny it once and verify recovery. Verify full-screen framing in both orientations, host timer choices, all five countdowns, thumbnail progress, swipe review, individual retakes and Next guest.
+- Allow camera permission; deny it once and verify recovery. Verify full-bleed framing in both orientations, host timer choices, all four countdowns, thumbnail progress, swipe review, individual retakes and Next guest.
 - Use a card with readable text to confirm the final JPEG is not unintentionally mirrored or rotated. Front-camera preview and final capture can differ; inspect the downloaded original.
-- Capture five photos with Wi-Fi disabled. Check the host's local library, force-quit/reopen and reboot; verify originals, selected order and pending IDs persist. Restore Wi-Fi and confirm one guest page for all five selected photos, no duplicate uploads, and no QR before complete readiness.
+- Capture four photos with Wi-Fi disabled. Apply a look, compare Original, switch all three themes and both layouts, then save a keepsake. Check the host library, force-quit/reopen and reboot; verify untouched originals, selected derivatives, order/recipe and pending IDs persist. Restore Wi-Fi and confirm one guest page with the keepsake and all required individual files, no duplicate uploads, and no QR before complete readiness. Reopen a retained five-photo session separately to verify compatibility.
 - Grant Photos add-only access and inspect the actual Photos app. Deny access once, verify the app still retains originals, then allow/retry without overwriting originals. Distinguish confirmed Photos copies from failed/unconfirmed exports. Test low storage with synthetic cards; never erase existing originals to create space.
 - Scan each QR from a second phone on cellular data. Check that it opens the right session, downloads the original and cannot open another guest's image. Test expiry and revocation without real guest photos.
 - Test venue Wi-Fi, access-point isolation, captive portals and cellular backup. A guest phone can scan a QR offline but cannot load a website without connectivity. Never present a local-development URL as a working guest link.

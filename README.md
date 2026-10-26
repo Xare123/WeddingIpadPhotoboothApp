@@ -1,10 +1,10 @@
 # Wedding iPad Photobooth
 
-The latest revision adds independently reviewed recovery repairs and visual refinements. See [the refinement and publication status](docs/LOCAL_REFINEMENTS.md). Hosted Release results apply only to their exact commit; physical-iPad saving and Photos behavior still require the owner's rehearsal.
+The current studio defaults to **four photos**, post-capture looks and a strip/grid keepsake in three wedding themes. Existing five-photo sessions are preserved. See [the four-photo workflow and boundaries](docs/FOUR_PHOTO_STUDIO.md). Hosted results apply only to their exact commit; physical-iPad saving and Photos behavior still require the owner's rehearsal.
 
 The current full-bleed candidate removes the camera's inset stage and fixed header/footer. It adds a single floating native-glass control island with an opaque accessibility fallback, explicit uncropped-camera-file preservation, host relocking and bounded recipient cleanup. See [the design and framing contract](docs/FULL_BLEED_CAMERA.md). Earlier hosted results do not verify later working-tree changes; fresh exact-commit results are recorded in the validation report.
 
-A native iOS photobooth for a personal wedding on November 1, 2026: five front-camera photos at a physical backdrop, a private guest page, original downloads, and one QR code when the complete session is ready. Digital photos only. The provisional device is an M1 iPad Air (5th generation); confirm its model, iPadOS version, and stand fit before rehearsal.
+A native iOS photobooth for a personal wedding on November 1, 2026: four front-camera photos at a physical backdrop, an optional look, a curated keepsake, a private guest page with original downloads, and one QR when the complete session is ready. Digital photos only. The provisional device is an M1 iPad Air (5th generation); confirm its model, iPadOS version, and stand fit before rehearsal.
 
 The owner reported a saving failure in the earlier build. This revision fixes SDK 58 native file-awaiting, replaces local recovery and the single-shot interface, and is **not yet verified on the wedding iPad**. Earlier synthetic checks and unsigned compilation did not establish device usability. A preceding backend was reported deployed fail-closed; the regenerated current handoff awaits coordinator deployment review and initial secure device provisioning. Production storage, installation, camera/Photos behavior and venue sharing remain gates in [the launch checklist](docs/LAUNCH.md).
 
@@ -33,19 +33,19 @@ The API binds to loopback port 8787, uses local disk-backed R2, and never sends 
 
 | Path | Purpose |
 | --- | --- |
-| `apps/ipad` | Native five-photo capture/review/retakes, file-backed local library/recovery, optional Photos copies, queue and QR |
+| `apps/ipad` | Native four-photo capture/review/retakes, local looks/keepsakes, durable library/recovery, optional Photos copies, queue and QR |
 | `packages/core` | Persistable upload/share queue, dependency ordering, retries |
 | `services/api` | Cloudflare Worker, private R2 galleries, one-use pairing and approval-gated Textbelt adapter |
-| `.github/workflows` | Automated Linux checks, unsigned iOS Release build and separate Debug UI test mode |
+| `.github/workflows` | Linux checks, unsigned physical-SDK Release build, standalone Release simulator tests and optional Debug UI mode |
 | `docs` | Architecture, native installation, SMS decision, launch gates, validation evidence |
 
 ## Use on a Mac / iPad
 
-Follow [native setup](docs/IOS.md). This is an iOS app, not a web replacement. Expo Go can help with early development when its SDK matches, but a standalone signed installation and a real-device offline test are required for the wedding. Do not rely on a development server or an expiring installation.
+Follow [native setup](docs/IOS.md). This is an iOS app, not a web replacement. Its local Core Image module requires a rebuilt native app; Expo Go cannot run the current filter/template workflow. A standalone signed installation and a real-device offline test are required for the wedding. Inspect the free personal-team profile's expiry and refresh it near the event.
 
 ## Guest privacy and storage
 
-Each confirmed session has a hard-to-guess, expiring guest-page capability. There is no public event gallery or raw bucket access. Guests can view and download only their session's five selected photos. Links can be forwarded, so treat them as bearer access. SMS is optional, requires consent and an approved provider, and remains mocked/disabled until live approval. The iPad collects no names or email addresses and hides phone collection unless the backend explicitly advertises approved live SMS.
+Each confirmed session has a hard-to-guess, expiring guest-page capability. There is no public event gallery or raw bucket access. A new session offers its keepsake, four selected photos and their untouched originals; existing five-photo galleries remain supported. Other retained takes stay private to the host. Links can be forwarded, so treat them as bearer access. SMS is optional, requires consent and an approved provider, and remains mocked/disabled until live approval. The iPad collects no names or email addresses and hides phone collection unless the backend explicitly advertises approved live SMS.
 
 Each exposed photo is copied and verified in the app's documents directory before its saved thumbnail appears or capture advances. File journals retain local sessions and retakes even if the SQLite upload index fails. Host controls include an offline local library and separate permission-aware Photos export. Originals remain after upload and Next guest. Local preservation does not cover app deletion, a lost iPad or device failure; verify a second copy before cleanup. Cloud retention is separate from link expiry; no automatic public website import is enabled.
 

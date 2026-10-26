@@ -36,14 +36,14 @@ function fixture() {
   return { disk, metadata, jobs, source, files, counts, faults, make, relocate() { container = 'container-b'; } };
 }
 async function five(f: ReturnType<typeof fixture>, repository = f.make(), id = 'session-one') {
-  let session = await repository.createSession(id);
+  let session = await repository.createSession(id, 5);
   for (let index = 0; index < 5; index++) session = await repository.saveShot(session, `${id}-photo-${index}`, f.source, index);
   return { repository, session };
 }
 
 test('every selected shot is a verified durable document original before confirmation or any queue/cloud call', async () => {
   const f = fixture(), repository = f.make();
-  let session = await repository.createSession('five');
+  let session = await repository.createSession('five', 5);
   for (let index = 0; index < 5; index++) {
     session = await repository.saveShot(session, `photo-${index}`, f.source, index);
     assert.equal(session.shots.length, index + 1);
@@ -60,7 +60,7 @@ test('every selected shot is a verified durable document original before confirm
 
 test('null, empty, missing and truncated camera files never acknowledge a saved shot', async () => {
   for (const mode of ['null', 'empty', 'missing', 'truncated', 'disk-full']) {
-    const f = fixture(), repository = f.make(), session = await repository.createSession('failure');
+    const f = fixture(), repository = f.make(), session = await repository.createSession('failure', 5);
     if (mode === 'null') f.faults.nullSize = true;
     if (mode === 'empty') f.disk.set(f.source, new Uint8Array());
     if (mode === 'missing') f.disk.delete(f.source);
@@ -75,7 +75,7 @@ test('null, empty, missing and truncated camera files never acknowledge a saved 
 
 test('a database outage cannot hide a verified capture or block relaunch recovery', async () => {
   const f = fixture(), repository = f.make(); f.faults.index = true;
-  const session = await repository.createSession('offline-index');
+  const session = await repository.createSession('offline-index', 5);
   const saved = await repository.saveShot(session, 'photo', f.source, 0);
   assert.equal(saved.shots.length, 1);
   assert.equal(saved.storageWarning, 'index-repair-pending');
@@ -85,7 +85,7 @@ test('a database outage cannot hide a verified capture or block relaunch recover
 });
 
 test('a journal/index interruption after copying recovers the original and selected slot', async () => {
-  const f = fixture(), repository = f.make(), session = await repository.createSession('interrupted');
+  const f = fixture(), repository = f.make(), session = await repository.createSession('interrupted', 5);
   let failed = false;
   f.faults.journal = (_path, text) => { const value = JSON.parse(text); if (!failed && value.kind === 'session' && value.session.selected?.length) { failed = true; return true; } return false; };
   await assert.rejects(repository.saveShot(session, 'photo', f.source, 0), /journal-write/);
@@ -96,7 +96,7 @@ test('a journal/index interruption after copying recovers the original and selec
 });
 
 test('a fully copied staging file recovers after interruption before rename', async () => {
-  const f = fixture(), repository = f.make(), session = await repository.createSession('stage');
+  const f = fixture(), repository = f.make(), session = await repository.createSession('stage', 5);
   f.faults.move = true;
   await assert.rejects(repository.saveShot(session, 'photo', f.source, 0), /original-commit/);
   assert.ok(f.disk.has('photobooth/photo.partial'));
@@ -161,10 +161,10 @@ test('Next guest clears selection durably while all saved sessions remain discov
 test('steady-state shutter cost stays bounded after a hundred saved sessions', async () => {
   const f = fixture(), repository = f.make();
   for (let index = 0; index < 100; index++) {
-    const session = await repository.createSession(`history-${index}`);
+    const session = await repository.createSession(`history-${index}`, 5);
     await repository.saveShot(session, `history-photo-${index}`, f.source, 0);
   }
-  const current = await repository.createSession('current');
+  const current = await repository.createSession('current', 5);
   const before = { ...f.counts };
   await repository.saveShot(current, 'current-photo', f.source, 0);
   assert.equal(f.counts.list - before.list, 0);
@@ -206,7 +206,7 @@ test('an export finishing after Next guest never reactivates the old guest or ov
     async save() { started(); await blocked; } }, exportPorts(repository));
   const exporting = exporter.exportSession(session); await entered;
   await repository.clearActiveSession();
-  const next = await repository.createSession('new-guest');
+  const next = await repository.createSession('new-guest', 5);
   finish(); await exporting;
   assert.equal((await repository.getActiveSession())?.id, next.id);
   assert.equal((await repository.getSession(session.id))?.shots[0]?.exportStatus, 'saved');

@@ -15,3 +15,5 @@ const exporter = createPhotoExporter({ capability: () => capability(), requestAd
   save: uri => MediaLibrary.saveToLibraryAsync(uri) }, { get: getLocalSession, update: updatePhotoExport });
 export const getPhotoLibraryCapability = () => exporter.capability();
 export const exportSessionPhotos = (session: ActiveSession, options: PhotoExportOptions = {}) => exporter.exportSession(session, options);
+
+export { compositeExportCapture } from './photo-export';

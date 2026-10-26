@@ -18,6 +18,48 @@ export function nativeModeSettings(mode) {
   });
 }
 
+const runtimeSourceSpecs = [
+  ['apps/ipad/native-tests/WeddingPhotoboothReleaseSmokeTests.swift', 1],
+  ['apps/ipad/modules/wedding-photo-effects/ios/PhotoEffectsEngine.swift', 0],
+  ['apps/ipad/modules/wedding-photo-effects/tests/PhotoEffectsEngineTests.swift', 8],
+  ['apps/ipad/modules/wedding-photo-effects/ios/PhotoTemplateEngine.swift', 0],
+  ['apps/ipad/modules/wedding-photo-effects/tests/PhotoTemplateEngineTests.swift', 6],
+];
+
+// Discover actual named XCTest methods from required, reviewed Swift sources.
+// Missing suites and fewer than the known filter/smoke cases fail preparation.
+export function nativeRuntimeSources(root) {
+  return runtimeSourceSpecs.map(([source, minimumTests]) => {
+    const bytes = readFileSync(resolve(root, source));
+    const text = bytes.toString('utf8');
+    if (/^\s*(?:@testable\s+)?import\s+Expo\w*/m.test(text)) throw new Error('Native pixel sources must be independent of Expo: ' + source);
+    const testMethods = [...text.matchAll(/^\s*func\s+(test\w+)\s*\(\s*\)/gm)].map(match => match[1]);
+    if (testMethods.length < minimumTests || new Set(testMethods).size !== testMethods.length ||
+      (minimumTests === 0 && testMethods.length !== 0)) throw new Error('Unexpected native test method inventory: ' + source);
+    return { source, generatedSource: 'NativeTests/' + basename(source),
+      sha256: createHash('sha256').update(bytes).digest('hex'), testMethods };
+  });
+}
+
+export function verifyNativeRuntimeSources(plan, root) {
+  const actual = nativeRuntimeSources(root);
+  if (JSON.stringify(plan?.runtimeSources) !== JSON.stringify(actual)) throw new Error('Native runtime source/hash manifest changed');
+  const expected = actual.reduce((count, source) => count + source.testMethods.length, 0);
+  if (plan.expectedTestCount !== expected) throw new Error('Native runtime expected test count changed');
+  for (const source of actual) {
+    const copy = readFileSync(resolve(root, 'apps/ipad/ios', source.generatedSource));
+    if (createHash('sha256').update(copy).digest('hex') !== source.sha256) throw new Error('Generated native source hash mismatch: ' + source.generatedSource);
+  }
+  return { expectedTestCount: expected, runtimeSources: actual };
+}
+
+export function passingExpectedXCTestCounts(output, expected) {
+  if (!Number.isSafeInteger(expected) || expected < 1) throw new Error('Invalid expected XCTest count');
+  const counts = passingXCTestCounts(output);
+  if (counts.executed < expected) throw new Error('XCTest executed ' + counts.executed + ' tests; expected at least ' + expected);
+  return counts;
+}
+
 export function requireNativeTestPlan(plan, mode) {
   const expected = nativeModeSettings(mode);
   if (plan?.scheme !== expected.scheme || plan.configuration !== expected.configuration ||

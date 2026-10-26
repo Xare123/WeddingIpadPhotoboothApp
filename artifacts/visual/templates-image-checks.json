@@ -1,0 +1,142 @@
+{
+  "scope": "Browser fixture SDK boundary simulation: the Image adapter delivers controlled onError callbacks and withholds onLoad. Actual App/TemplateStudio callbacks, controller failure handling and retry actors execute. This is not a failed browser network/decode request or native iOS Image/CoreImage proof.",
+  "status": "passed",
+  "sourceSHA256": "71d7007cd4c903938ee60703f4811b7e3ac47dabc1c2088b6e8b925c21b4072c",
+  "checks": [
+    {
+      "check": "Original SDK Image error disables Apply; explicit Retry remounts same immutable original URI and recovers on actual onLoad.",
+      "failure": {
+        "kind": "synthetic-sdk-error",
+        "testID": "look-preview",
+        "uri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg"
+      },
+      "originalLoads": 1
+    },
+    {
+      "check": "Processed SDK Image error goes through Root/controller, disables Apply, preserves originals; same-preset Retry yields fresh file URI; stale old onError is ignored.",
+      "failedURI": "file:///synthetic-effects/0477580e-a1fa-4335-9bbc-b00f6064ea05.jpg",
+      "recoveredURI": "file:///synthetic-effects/1db71bbc-67b1-468a-82ea-3b94e66fe415.jpg"
+    },
+    {
+      "check": "Main template SDK Image error clears receipt and disables Save; explicit Retry yields a fresh same-theme file URI; stale old callback is ignored.",
+      "failedURI": "file:///synthetic-templates/f0c5f874-fbd2-411f-b4e0-fb0ab3b6116e.jpg",
+      "recoveredURI": "file:///synthetic-templates/850a3d8d-fa38-4c71-b041-9c18814882bf.jpg"
+    },
+    {
+      "check": "Theme-thumbnail SDK Image error invalidates Save; explicit Retry regenerates card at fresh URI, stale card error ignored, recovered Coastal can be selected; originals and queue untouched.",
+      "failedURI": "file:///synthetic-templates/2b3849a3-1f41-4deb-94ea-5d2ed672be10.jpg",
+      "recoveredURI": "file:///synthetic-templates/a61c93a1-74f4-4e7a-a4d6-322622b9c311.jpg"
+    }
+  ],
+  "screenshots": [
+    "artifacts/visual/templates-image-look-original-error.png",
+    "artifacts/visual/templates-image-look-warm-error.png",
+    "artifacts/visual/templates-image-look-warm-recovered.png",
+    "artifacts/visual/templates-image-template-main-error.png",
+    "artifacts/visual/templates-image-template-theme-error.png",
+    "artifacts/visual/templates-image-template-theme-recovered.png"
+  ],
+  "errors": [],
+  "mockedHealthRequests": [],
+  "unexpectedExternalRequests": [],
+  "sdkImageEvents": [
+    {
+      "kind": "synthetic-sdk-error",
+      "testID": "look-preview",
+      "uri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg"
+    },
+    {
+      "kind": "sdk-load",
+      "testID": "look-preview",
+      "uri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg"
+    },
+    {
+      "kind": "synthetic-sdk-error",
+      "testID": "look-preview",
+      "uri": "file:///synthetic-effects/0477580e-a1fa-4335-9bbc-b00f6064ea05.jpg"
+    },
+    {
+      "kind": "sdk-load",
+      "testID": "look-preview",
+      "uri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg"
+    },
+    {
+      "kind": "sdk-load",
+      "testID": "look-preview",
+      "uri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg"
+    },
+    {
+      "kind": "sdk-load",
+      "testID": "look-preview",
+      "uri": "file:///synthetic-effects/1db71bbc-67b1-468a-82ea-3b94e66fe415.jpg"
+    },
+    {
+      "kind": "synthetic-sdk-error-replay",
+      "testID": "look-preview",
+      "uri": "file:///synthetic-effects/0477580e-a1fa-4335-9bbc-b00f6064ea05.jpg"
+    },
+    {
+      "kind": "synthetic-sdk-error",
+      "testID": "template-preview",
+      "uri": "file:///synthetic-templates/f0c5f874-fbd2-411f-b4e0-fb0ab3b6116e.jpg"
+    },
+    {
+      "kind": "sdk-load",
+      "testID": "template-preview",
+      "uri": "file:///synthetic-templates/850a3d8d-fa38-4c71-b041-9c18814882bf.jpg"
+    },
+    {
+      "kind": "synthetic-sdk-error-replay",
+      "testID": "template-preview",
+      "uri": "file:///synthetic-templates/f0c5f874-fbd2-411f-b4e0-fb0ab3b6116e.jpg"
+    },
+    {
+      "kind": "sdk-load",
+      "testID": "template-preview",
+      "uri": "file:///synthetic-templates/28954aa4-4f95-4c1d-8cfa-34ebd02da9f8.jpg"
+    },
+    {
+      "kind": "synthetic-sdk-error",
+      "testID": "template-theme-preview-coastal",
+      "uri": "file:///synthetic-templates/2b3849a3-1f41-4deb-94ea-5d2ed672be10.jpg"
+    },
+    {
+      "kind": "sdk-load",
+      "testID": "template-preview",
+      "uri": "file:///synthetic-templates/711c127f-3ece-469f-9811-62b109745d72.jpg"
+    },
+    {
+      "kind": "synthetic-sdk-error-replay",
+      "testID": "template-theme-preview-coastal",
+      "uri": "file:///synthetic-templates/2b3849a3-1f41-4deb-94ea-5d2ed672be10.jpg"
+    },
+    {
+      "kind": "sdk-load",
+      "testID": "template-preview",
+      "uri": "file:///synthetic-templates/a61c93a1-74f4-4e7a-a4d6-322622b9c311.jpg"
+    }
+  ],
+  "sourceHashes": {
+    "apps/ipad/App.tsx": "71d7007cd4c903938ee60703f4811b7e3ac47dabc1c2088b6e8b925c21b4072c",
+    "apps/ipad/src/GlassSurface.tsx": "ace64a22e740d69040689495c0aa7147f7456038bbd0ee9aba6f2d52b58af972",
+    "apps/ipad/src/glass-policy.ts": "d3e33995484239887dde90f2743919c17bb2e8ff23093ceb45a804e530499e9e",
+    "apps/ipad/src/host-visibility.ts": "9b8033279a1249c59cd04e3f185792fa2a61c14f892f2cb9cf98953ceab02014",
+    "apps/ipad/src/photo-look-editor.ts": "38d6dc47fb34d9d9da58cf96a7daa6102d9616c7f54720c0406c1962548f817b",
+    "apps/ipad/src/native-photo-effects.ts": "3270927da45a191721aaf4b07a5ce1d02d247d4481cb4c85a216788d12fab782",
+    "apps/ipad/src/local-types.ts": "f5e5039245f9d85e34338d5c3ffbe517264f5b4bbc03c9751510be15cec613fb",
+    "apps/ipad/src/template-editor.ts": "11fb2edcf547077b16700b64f5601606398da0d3a90ab56f5214c09c18138d43",
+    "apps/ipad/src/TemplateStudio.tsx": "a0bb9f3c4f2cc292092db7dcbe775e379c719328f42c5c2430dfc3a60e96850a",
+    "apps/ipad/src/publication.ts": "e2c4e2501275de85d966c0fd80bbebef960e994920eb60ce62578a1f0bac3f45",
+    "apps/ipad/src/session-capture.ts": "b41f7ee98282fe5661e080a6b4e0b88b17c56e3c1e5908adebbe020ed6323e24",
+    "apps/ipad/src/review-selection.ts": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
+    "apps/ipad/src/sharing.ts": "5312a241a0073a79fff33409795bee5d05e3d1b39dc6587c2ed791982d269628",
+    "apps/ipad/src/SmsShare.tsx": "79464043a0e40a6cc7850c0e46cacfab33b3b19e477fee87192c0b38195d7541",
+    "apps/ipad/src/sms-state.ts": "4c7125d4f710c97848b6690196fa328edc83e85488ce3626dd7e843e2e99497a",
+    "apps/ipad/src/booth-presentation.ts": "b6f720f7d9133a0603f847efd0646a9a23f40d409018e9eb757d5326bc43e935",
+    "apps/ipad/src/host-originals.ts": "938e564eb50d984754abf5ec2d07a4671faa2110bb01ad4394f5377f4d271c1e",
+    "apps/ipad/src/photo-export.ts": "8ba8baae4fe425bd0f99079619e0a693f5c3fcf83ee73a93e167c7c93f7fb633",
+    "apps/ipad/src/photo-library.ts": "800b9dd768d660c16720fda134fe33a1a14db1061f7f31531063b136b670b6a8",
+    "packages/core/src/index.ts": "945d97743a621558369c7029acbc5b61daae85d2c08156368c188aedbbb9a991",
+    "apps/ipad/assets/attract-scene.png": "6ca6274beba9483104f19fb35d1ef9b8bfaae458208025e8fb4e8d4890f45cdf"
+  }
+}

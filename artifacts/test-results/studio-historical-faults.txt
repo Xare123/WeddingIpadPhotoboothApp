@@ -1,0 +1,12 @@
+✔ independent 1: one-shot failed move, fallback refuses partial, finish and repeat confirmation/recovery preserve five readable JPEG jobs (56.897556ms)
+✔ independent 2: transient ensure failure repaired by same-process retry predrain and five uploads plus ready (27.524521ms)
+✔ independent 3: automatic uncertain export stays inert, host authorization retries one photo, acknowledge inert, retained exports excluded (37.366867ms)
+✔ independent 4: invalid JSON quarantines same-ID repair, warnings clear and exact completion/backoff survives repeated repair and CAS (21.042261ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 267.889421

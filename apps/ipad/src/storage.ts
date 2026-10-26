@@ -5,9 +5,9 @@ import { type QueueJob, type QueueStore } from '@wedding-booth/core';
 import { ensureUploadJob, usableQueueRows } from './queue-index';
 import { relativeDocumentPhotoPath, uploadDocumentPhotoPath } from './local-paths';
 import { createNativeFilePorts } from './native-file-ports';
-import { LocalRepository, type LocalIndex } from './local-persistence';
-import type { ActiveCapture, ActiveSession, PhotoExportStatus } from './local-types';
-export type { ActiveCapture, ActiveSession, PhotoExportStatus } from './local-types';
+import { LocalRepository, type LocalIndex, type RenderedPhotoInput, type CompositeInput } from './local-persistence';
+import type { ActiveCapture, ActiveSession, PhotoExportStatus, PhotoLook, PhotoCrop, CompositeRecipe, SessionComposite, SessionPublicationAssets } from './local-types';
+export type { ActiveCapture, ActiveSession, PhotoExportStatus, PhotoLook, PhotoCrop, CompositeRecipe, SessionComposite, SessionPublicationAssets } from './local-types';
 
 const photos = new Directory(Paths.document, 'photobooth');
 let opening: Promise<SQLite.SQLiteDatabase> | undefined;
@@ -70,15 +70,20 @@ const index: LocalIndex = {
   },
 };
 const repository = new LocalRepository(files, index, randomUUID);
-export const createSession = (id?: string) => repository.createSession(id);
+export const createSession = (id?: string, targetCount = 4) => repository.createSession(id, targetCount);
 export const getActiveSession = () => repository.getActiveSession();
 export const getLocalSession = (id: string) => repository.getSession(id);
 export const saveShot = (session: ActiveSession | string, photoId: string, temporaryUri: string, index?: number) => repository.saveShot(session, photoId, temporaryUri, index);
+export const saveRenderedPhoto = (sessionId: string, input: RenderedPhotoInput) => repository.saveRenderedPhoto(sessionId, input);
+export const selectSavedPhoto = (sessionId: string, photoId: string, slot: number, expectedSelectedPhotoId: string) => repository.selectSavedPhoto(sessionId, photoId, slot, expectedSelectedPhotoId);
+export const saveComposite = (sessionId: string, input: CompositeInput) => repository.saveComposite(sessionId, input);
+export const getSessionPublicationAssets = (sessionId: string) => repository.getSessionPublicationAssets(sessionId);
 export const confirmSession = (session: ActiveSession | string) => repository.confirmSession(session);
 export const clearActiveSession = () => repository.clearActiveSession();
 export const getQueueIndexDiagnostics = () => repository.queueIndexDiagnostics();
 export const listLocalSessions = () => repository.listLocalSessions();
 export const updatePhotoExport = (sessionId: string, photoId: string, status: PhotoExportStatus) => repository.updateExport(sessionId, photoId, status);
+export const retryStagedComposites = (sessionId: string) => repository.retryStagedComposites(sessionId);
 export const retryStagedPhotos = (sessionId: string) => repository.retryStagedPhotos(sessionId);
 export const reconcileConfirmedPhotos = (): Promise<void> => repository.reconcileConfirmedPhotos();
 export const recoverPreservedPhotos = () => repository.recover();

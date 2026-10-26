@@ -1,9 +1,9 @@
 export type HostOriginal = { id: string; exportStatus?: string };
-export type HostOriginalSession = { id: string; shots: HostOriginal[]; retakes?: HostOriginal[]; stagedOriginals?: HostOriginal[]; storageWarning?: string };
+export type HostOriginalSession = { id: string; shots: HostOriginal[]; retakes?: HostOriginal[]; composite?: HostOriginal; stagedOriginals?: HostOriginal[]; storageWarning?: string };
 export type HostOriginalRequest =
   | { kind: 'acknowledge' | 'export'; sessionId: string; photoId: string; retained: boolean; duplicateRiskAccepted?: boolean }
   | { kind: 'finish-save'; sessionId: string };
-export type HostExportOptions = { photoIds: string[]; includeRetakes: boolean; requestPermission: true; retryUncertain: boolean };
+export type HostExportOptions = { includeComposite?: boolean; photoIds: string[]; includeRetakes: boolean; requestPermission: true; retryUncertain: boolean };
 export type HostOriginalResult<S> = { kind: 'updated' | 'already-saved'; session: S } | { kind: 'busy' } | { kind: 'confirm-duplicate'; request: HostOriginalRequest };
 
 export const INDEX_REPAIR_DIAGNOSTIC = 'Originals and the recovery journal are saved. The sharing index is waiting for repair.';
@@ -41,7 +41,7 @@ export function createHostOriginalActions<S extends HostOriginalSession>(depende
   let running = false;
   function photoFor(session: S, request: Exclude<HostOriginalRequest, { kind: 'finish-save' }>) {
     const collection = request.retained ? session.retakes ?? [] : session.shots;
-    const photo = collection.find(value => value.id === request.photoId);
+    const photo = collection.find(value => value.id === request.photoId) ?? (!request.retained && session.composite?.id === request.photoId ? session.composite : undefined);
     if (!photo) throw new Error('This original is not available in the selected host collection.');
     return photo;
   }
@@ -82,6 +82,7 @@ export function createHostOriginalActions<S extends HostOriginalSession>(depende
         if (photo.exportStatus === 'uncertain' && !request.duplicateRiskAccepted) return { kind: 'confirm-duplicate', request };
         return { kind: 'updated', session: await dependencies.export(current, {
           photoIds: [photo.id], includeRetakes: request.retained, requestPermission: true,
+          ...(!request.retained && current.composite?.id === photo.id ? { includeComposite: true } : {}),
           retryUncertain: photo.exportStatus === 'uncertain' && request.duplicateRiskAccepted === true,
         }) };
       } finally { running = false; }

@@ -18,9 +18,9 @@ import { loadConnection, loadHostPreferences, provisionBooth, saveHostPreference
 import { formatGuestExpiry, sessionGuestPage } from './src/sharing';
 import {
   clearActiveSession, confirmSession, createSession, getActiveCapture, getActiveSession, getLocalSession, getQueueIndexDiagnostics,
-  listLocalSessions, recoverPreservedPhotos, retryStagedPhotos, saveShot, store, updatePhotoExport, type ActiveCapture, type ActiveSession,
+  listLocalSessions, recoverPreservedPhotos, retryStagedPhotos, retryStagedComposites, saveShot, saveRenderedPhoto, saveComposite, selectSavedPhoto, store, updatePhotoExport, type ActiveCapture, type ActiveSession,
 } from './src/storage';
-import { exportSessionPhotos, getPhotoLibraryCapability } from './src/photo-library';
+import { compositeExportCapture, exportSessionPhotos, getPhotoLibraryCapability } from './src/photo-library';
 import { retryPendingNow, syncPending } from './src/sync';
 import { nativeFixtureEnabled, nativeFixtureImage, nativeFixturePhotoId, nativeFixtureStorageStatus, takeNativeFixturePhoto } from './src/native-fixture';
 import { captureErrorMessage, captureSaveStatus, WEDDING_DATE, WEDDING_IDENTITY, WEDDING_NAMES } from './src/booth-presentation';
@@ -29,21 +29,28 @@ import { createReviewSelection } from './src/review-selection';
 import { createSessionCaptureRunner, nextPhotoSlot, screenForSession, sessionIsComplete, type PendingPhoto } from './src/session-capture';
 import { GlassSurface } from './src/GlassSurface';
 import { createHostVisibility } from './src/host-visibility';
+import { createPhotoLookEditor, type PhotoLookEditorState, type PhotoLookPreset } from './src/photo-look-editor';
+import { loadPhotoEffects, loadTemplateEffects } from './src/native-photo-effects';
+import { createTemplateEditor, type TemplateEditorState } from './src/template-editor';
+import { TemplateStudio } from './src/TemplateStudio';
 
 const pause = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
 const TIMERS = [2, 3, 5, 8, 10] as const;
+const LOOKS: { preset: PhotoLookPreset; title: string }[] = [{ preset: 'original', title: 'Original' }, { preset: 'warm', title: 'Warm' }, { preset: 'bw', title: 'B&W' }, { preset: 'film', title: 'Film' }];
+const STRENGTHS = [0, 0.25, 0.5, 0.75, 1] as const;
 type Seconds = typeof TIMERS[number];
-type Screen = 'attract' | 'camera' | 'review' | 'share';
+type Screen = 'attract' | 'camera' | 'review' | 'template' | 'share';
 type HostPage = 'controls' | 'library' | 'setup';
 
 function photoSlot(photo: ActiveCapture, index: number) { return photo.shotIndex ?? index; }
 function needsPhotosExport(session: ActiveSession): boolean {
-  return session.shots.some(photo => photo.exportStatus !== 'saved' && String(photo.exportStatus) !== 'uncertain');
+  return session.shots.some(photo => photo.exportStatus !== 'saved' && String(photo.exportStatus) !== 'uncertain') ||
+    !!(session.composite && session.composite.exportStatus !== 'saved' && session.composite.exportStatus !== 'uncertain');
 }
 function photosExportTitle(session: ActiveSession): string {
   if (!session.shots.length) return 'No photos to export';
   if (needsPhotosExport(session)) return 'Export copies to Photos';
-  if (session.shots.some(photo => String(photo.exportStatus) === 'uncertain')) return 'Check Photos for unconfirmed copies';
+  if (session.shots.some(photo => String(photo.exportStatus) === 'uncertain') || session.composite?.exportStatus === 'uncertain') return 'Check Photos for unconfirmed copies';
   return 'All copies are saved in Photos';
 }
 function photosStatus(session: ActiveSession | null): string {
@@ -117,6 +124,10 @@ function Photobooth() {
   const hostOriginalLock = useRef(false);
   const hostVisibleRef = useRef(false);
   const hostVisibility = useRef(createHostVisibility());
+  const lookActive = useRef(false);
+  const lookSaving = useRef(false);
+  const templateActive = useRef(false);
+  const templateSaving = useRef(false);
   const librarySessionRef = useRef<ActiveSession | null>(null);
   const screenFade = useRef(new Animated.Value(1)).current;
   const countdownReveal = useRef(new Animated.Value(1)).current;
@@ -158,6 +169,46 @@ function Photobooth() {
   const [exporting, setExporting] = useState(false);
   const [libraryPermission, setLibraryPermission] = useState('undetermined');
   const [fixtureStatus, setFixtureStatus] = useState('');
+  const [photoEffects] = useState(loadPhotoEffects);
+  const [lookState, setLookState] = useState<PhotoLookEditorState | null>(null);
+  const [lookPreviewPresented, setLookPreviewPresented] = useState<string | null>(null);
+  const [lookImageFailed, setLookImageFailed] = useState(false);
+  const [lookImageEpoch, setLookImageEpoch] = useState(0);
+  const lookPreviewRef = useRef<string | null>(null);
+  const [lookApplying, setLookApplying] = useState(false);
+  const [templateEffects] = useState(loadTemplateEffects);
+  const [templateState, setTemplateState] = useState<TemplateEditorState | null>(null);
+  const [templateApplying, setTemplateApplying] = useState(false);
+  const [templatePreviewPresented, setTemplatePreviewPresented] = useState<string | null>(null);
+  const templatePreviewRef = useRef<string | null>(null);
+  const templateEditor = useRef<ReturnType<typeof createTemplateEditor> | null>(null);
+  if (!templateEditor.current && templateEffects) templateEditor.current = createTemplateEditor({
+    ...templateEffects, id: randomUUID, loadSession: getLocalSession, saveComposite,
+    onState(value) {
+      templateActive.current = !!value;
+      if (mounted.current) {
+        const uri = value?.previewUri ?? null;
+        if (templatePreviewRef.current !== uri) { templatePreviewRef.current = uri; setTemplatePreviewPresented(null); }
+        setTemplateState(value); if (value?.error) setHostDiagnostic(value.error);
+      }
+    },
+    onSession(value) { if (sessionRef.current?.id === value.id && mounted.current) { adoptSession(value); void refreshQueue(); } },
+  });
+  const lookEditor = useRef<ReturnType<typeof createPhotoLookEditor> | null>(null);
+  if (!lookEditor.current && photoEffects) lookEditor.current = createPhotoLookEditor({
+    ...photoEffects, id: randomUUID, loadSession: getLocalSession, saveRenderedPhoto, selectSavedPhoto,
+    onState(value) {
+      lookActive.current = !!value;
+      if (mounted.current) {
+        const uri = value?.previewUri ?? null;
+        if (lookPreviewRef.current !== uri) { lookPreviewRef.current = uri; setLookPreviewPresented(null); setLookImageFailed(false); }
+        setLookState(value); if (value?.error) setHostDiagnostic(value.error);
+      }
+    },
+    onSession(value) {
+      if (sessionRef.current?.id === value.id && mounted.current) { adoptSession(value); void refreshQueue(); }
+    },
+  });
   const [fullPhotoSupported, setFullPhotoSupported] = useState(() => {
     try { return Platform.OS === 'ios' && requireOptionalNativeModule<{ preserveFullPhotoAvailable?: boolean }>('ExpoCamera')?.preserveFullPhotoAvailable === true; } catch { return false; }
   });
@@ -220,12 +271,13 @@ function Photobooth() {
     try { await refreshDisplayedSessions(); if (hostVisibleRef.current) await refreshLibrary(); }
     catch (error) { diagnose(error); }
   }
-  async function exportPhotos(value: ActiveSession, requestPermission: boolean) {
+  async function exportPhotos(value: ActiveSession, requestPermission: boolean, includeKeepsake = !!value.composite) {
     if (exportLock.current) return;
     exportLock.current = true;
     setExporting(true);
     try {
-      const updated = await exportSessionPhotos(value, { requestPermission });
+      let updated = await exportSessionPhotos(value, { requestPermission });
+      if (includeKeepsake && compositeExportCapture(updated)) updated = await exportSessionPhotos(updated, { requestPermission, includeComposite: true, photoIds: [updated.composite!.id] });
       if (sessionRef.current?.id === updated.id) adoptSession(updated);
       if (librarySessionRef.current?.id === updated.id) adoptLibrarySession(updated);
       await refreshLibrary();
@@ -259,7 +311,7 @@ function Photobooth() {
       if (librarySessionRef.current?.id === updated.id) adoptLibrarySession(updated);
       await refreshLibrary(); await refreshCapability();
       if (request.kind === 'finish-save') {
-        const remaining = updated.stagedOriginals?.length ?? 0;
+        const remaining = (updated.stagedOriginals?.length ?? 0) + (updated.stagedComposites?.length ?? 0);
         setHostMessage(remaining ? `Local save retried. ${remaining} captured originals still need completion.` : 'Local save completed. The original is now available on this iPad.');
       } else if (result.kind === 'already-saved') setHostMessage('This original is already marked as saved in Photos.');
       else if (request.kind === 'acknowledge') setHostMessage('Marked as saved in Photos based on your check.');
@@ -278,11 +330,12 @@ function Photobooth() {
     if (kind === 'acknowledge' || photo.exportStatus === 'uncertain') setHostDecision(request);
     else void runHostOriginalAction(request);
   }
-  function hostPhotoCard(photo: ActiveCapture, retained: boolean) {
+  function hostPhotoCard(photo: ActiveCapture, retained: boolean, keepsake = false) {
+    const sourceOriginal = retained && librarySessionRef.current?.composite?.originalPhotoIds.includes(photo.id);
     return <View key={photo.id} testID={`host-original-${photo.id}`} style={styles.hostOriginalCard}>
-      <Text style={styles.hostSectionTitle}>{retained ? 'Retained take' : 'Selected photo'}{photo.shotIndex !== undefined ? ` · Photo ${photo.shotIndex + 1}` : ''}</Text>
-      {retained && <Text style={styles.hostSmall}>Not in the guest gallery. This earlier original remains on this iPad.</Text>}
-      <Image source={{ uri: photo.fileUri }} style={styles.hostOriginalPreview} resizeMode="contain" accessibilityLabel={retained ? 'Retained original, not in the guest gallery' : 'Original with an uncertain Photos result'} />
+      <Text style={styles.hostSectionTitle}>{keepsake ? 'Saved keepsake' : sourceOriginal ? 'Source original' : retained ? 'Retained take' : 'Selected photo'}{photo.shotIndex !== undefined ? ` · Photo ${photo.shotIndex + 1}` : ''}</Text>
+      {retained && <Text style={styles.hostSmall}>{sourceOriginal ? 'Included with this keepsake as an untouched original.' : 'Not in the guest gallery. This earlier original remains on this iPad.'}</Text>}
+      <Image source={{ uri: photo.fileUri }} style={styles.hostOriginalPreview} resizeMode="contain" accessibilityLabel={keepsake ? 'Saved keepsake' : sourceOriginal ? 'Untouched source original included with the keepsake' : retained ? 'Retained original, not in the guest gallery' : 'Original with an uncertain Photos result'} />
       <Text style={styles.hostBody}>{hostOriginalStatus(photo)}</Text>
       {photo.exportStatus === 'uncertain' ? <>
         <Button title="Already in Photos" testID={`host-photo-ack-${photo.id}`} light secondary disabled={hostBusy || exporting} onPress={() => requestHostPhoto('acknowledge', photo, retained)} />
@@ -371,6 +424,9 @@ function Photobooth() {
     const lifecycle = AppState.addEventListener('change', state => {
       setForeground(state === 'active');
       if (state !== 'active') {
+        const wasTemplate = templateActive.current;
+        templateEditor.current?.close(); if (wasTemplate) setScreen('review');
+        lookEditor.current?.close();
         hostVisibility.current.suspend(state);
         hostVisibleRef.current = false; setHostVisible(false); setHostDecision(null);
         librarySessionRef.current = null; setLibrarySession(null); setSavedSessions([]); setLibraryMode('selected'); setHostPage('controls'); setHostMessage('');
@@ -381,7 +437,7 @@ function Photobooth() {
     const timer = setInterval(() => {
       if (AppState.currentState === 'active') { setNow(Date.now()); void retrySharing(); }
     }, 15_000);
-    return () => { mounted.current = false; alive = false; runner.current?.interrupt(); screenFade.stopAnimation(); countdownReveal.stopAnimation(); exposureFlash.stopAnimation(); motion.remove(); lifecycle.remove(); clearInterval(timer); };
+    return () => { mounted.current = false; alive = false; lookEditor.current?.close(); templateEditor.current?.close(); runner.current?.interrupt(); screenFade.stopAnimation(); countdownReveal.stopAnimation(); exposureFlash.stopAnimation(); motion.remove(); lifecycle.remove(); clearInterval(timer); };
   }, []);
 
   useEffect(() => { reduceMotionRef.current = reduceMotion; if (reduceMotion) { exposureFlash.stopAnimation(); exposureFlash.setValue(0); } }, [reduceMotion, exposureFlash]);
@@ -458,7 +514,7 @@ function Photobooth() {
   }
   function retakePhoto() {
     const value = sessionRef.current;
-    if (!value || value.confirmed || busy || exporting) return;
+    if (!value || value.confirmed || busy || exporting || lookActive.current || lookSaving.current || templateActive.current || templateSaving.current) return;
     // Read synchronous intent, never a potentially stale React render closure.
     const slot = reviewSelection.current.current();
     if (!value.shots.some((photo, index) => photoSlot(photo, index) === slot)) return;
@@ -470,7 +526,11 @@ function Photobooth() {
   }
   async function keepSession() {
     const value = sessionRef.current;
-    if (!value || !sessionIsComplete(value) || actionLock.current || runner.current?.isBusy()) return;
+    if (!value || !sessionIsComplete(value) || actionLock.current || runner.current?.isBusy() || lookActive.current || lookSaving.current || templateActive.current || templateSaving.current) return;
+    if (value.targetCount === 4) {
+      if (!templateEffects || !templateEditor.current) { setMessage('Your four photos are saved. Keepsake templates need the latest native iPad build; please ask the host.'); return; }
+      templateEditor.current.open(value); setScreen('template'); return;
+    }
     actionLock.current = true; setBusy(true); setMessage('');
     try {
       const updated = await confirmSession(value);
@@ -479,7 +539,7 @@ function Photobooth() {
     finally { actionLock.current = false; setBusy(false); }
   }
   async function nextGuests() {
-    if (actionLock.current || runner.current?.isBusy()) return;
+    if (actionLock.current || runner.current?.isBusy() || lookActive.current || lookSaving.current || templateActive.current || templateSaving.current) return;
     actionLock.current = true; setBusy(true);
     try {
       await clearActiveSession(); adoptSession(null); setJobs([]); setScreen('attract'); focusReview(0); setActiveSlot(0); setRetakeSlot(undefined); setFailedPhoto(undefined); setMessage(''); setCameraReady(false);
@@ -488,7 +548,7 @@ function Photobooth() {
     finally { actionLock.current = false; setBusy(false); }
   }
   async function openHost() {
-    if (hostBusy || busy || saving) return;
+    if (hostBusy || busy || saving || lookActive.current || lookSaving.current || templateActive.current || templateSaving.current) return;
     const ticket = hostVisibility.current.begin();
     if (ticket === null) return;
     setHostBusy(true);
@@ -530,13 +590,64 @@ function Photobooth() {
     setPairingCode(''); setScanningSetup(true);
   }
 
+  function openLookEditor() {
+    const value = sessionRef.current;
+    if (!value || value.confirmed || !photoEffects || busy || exporting || lookSaving.current || lookActive.current) return;
+    lookEditor.current?.open(value, reviewSelection.current.current());
+  }
+  async function applyLook() {
+    if (lookSaving.current || !lookState || lookState.phase !== 'ready' || lookPreviewPresented !== lookState.previewUri || lookImageFailed) return;
+    const slot = lookState.slot;
+    lookSaving.current = true; setLookApplying(true);
+    try {
+      if (await lookEditor.current?.apply()) {
+        focusReview(slot);
+        const current = sessionRef.current;
+        if (current && preferencesRef.current.photosExportEnabled) void exportPhotos(current, true);
+      }
+    } finally { lookSaving.current = false; if (mounted.current) setLookApplying(false); }
+  }
+
+  async function saveKeepsake() {
+    if (templateSaving.current || !templateState || templateState.phase !== 'ready' || templatePreviewPresented !== templateState.previewUri) return;
+    const sessionId = templateState.sessionId;
+    templateSaving.current = true; setTemplateApplying(true);
+    try {
+      if (!await templateEditor.current?.save()) return;
+      const current = await getLocalSession(sessionId);
+      if (!current || sessionRef.current?.id !== sessionId) return;
+      if (AppState.currentState !== 'active') { adoptSession(current); setScreen('review'); return; }
+      actionLock.current = true; setBusy(true); setMessage('');
+      const updated = await confirmSession(current);
+      adoptSession(updated); setScreen('share'); setCameraReady(false);
+      await refreshQueue(); void retrySharing(true);
+      if (preferencesRef.current.photosExportEnabled) void exportPhotos(updated, true, true);
+    } catch (error) { diagnose(error); setScreen('review'); setMessage('Your photos remain saved. The keepsake needs a retry before sharing.'); }
+    finally { actionLock.current = false; templateSaving.current = false; if (mounted.current) { setBusy(false); setTemplateApplying(false); } }
+  }
+  async function finishKeepsakeSave(sessionId: string) {
+    if (hostBusy || hostOriginalLock.current) return;
+    hostOriginalLock.current = true; setHostBusy(true);
+    try {
+      await authenticateHost();
+      const updated = await retryStagedComposites(sessionId);
+      if (updated) {
+        if (sessionRef.current?.id === updated.id) adoptSession(updated);
+        if (librarySessionRef.current?.id === updated.id) adoptLibrarySession(updated);
+        setHostMessage(updated.stagedComposites?.length ? 'The keepsake still needs its local save completed.' : 'Keepsake save checked. Your originals are retained.');
+      }
+      await refreshLibrary();
+    } catch (error) { diagnose(error); setHostMessage('The keepsake save needs another retry. Your originals remain saved.'); }
+    finally { hostOriginalLock.current = false; setHostBusy(false); }
+  }
+
   const selectedPhoto = session?.shots.find((photo, index) => photoSlot(photo, index) === focusedSlot);
-  const total = session?.targetCount ?? 5;
+  const total = session?.targetCount ?? 4;
   const pendingRepairs = indexRepairSessions([session, librarySession, ...savedSessions]);
   const queueRepairStatus = queueIndexStatus(pendingRepairs.length, invalidQueueRows);
   const decisionSession = hostDecision ? [librarySession, ...savedSessions].find(value => value?.id === hostDecision.sessionId) : null;
-  const decisionPhoto = hostDecision && decisionSession ? (hostDecision.retained ? decisionSession.retakes ?? [] : decisionSession.shots).find(photo => photo.id === hostDecision.photoId) : null;
-  const lightScreen = screen === 'attract' || screen === 'share';
+  const decisionPhoto = hostDecision && decisionSession ? (hostDecision.retained ? decisionSession.retakes ?? [] : [...decisionSession.shots, ...(compositeExportCapture(decisionSession) ? [compositeExportCapture(decisionSession)!] : [])]).find(photo => photo.id === hostDecision.photoId) : null;
+  const lightScreen = screen === 'attract' || screen === 'share' || screen === 'template';
   return <SafeAreaView edges={screen === 'camera' ? [] : ['top', 'right', 'bottom', 'left']} style={[styles.page, lightScreen && styles.lightPage]}>
     <StatusBar hidden={screen === 'camera'} barStyle={lightScreen ? 'dark-content' : 'light-content'} />
     <Animated.View style={[styles.app, { opacity: screen === 'camera' ? 1 : screenFade }]}>
@@ -544,15 +655,15 @@ function Photobooth() {
         <View style={styles.attractShade} />
         <View style={styles.attractTop}><Text testID="wedding-identity" style={[styles.brand, styles.weddingIdentity]}>{WEDDING_IDENTITY}</Text><Pressable accessibilityRole="button" accessibilityLabel="Open host controls" onPress={() => void openHost()} disabled={hostBusy}><Text style={styles.attractHost}>Host</Text></Pressable></View>
         <View style={[styles.attractContent, landscape && styles.attractContentWide]}>
-          <Text style={styles.attractEyebrow}>FIVE FRAMES. ALL YOURS.</Text>
+          <Text style={styles.attractEyebrow}>FOUR FRAMES. ALL YOURS.</Text>
           <Text style={[styles.attractTitle, landscape && styles.attractTitleWide]}>Come{`\n`}closer.</Text>
           <Text style={styles.attractSubtitle}>A little flash. A lot of feeling.</Text>
           <Button title={busy ? 'Opening the booth…' : 'Let’s make memories'} testID="start-session" light disabled={!initialized || busy} onPress={() => void startSession()} />
-          <Text style={styles.attractFootnote}>Five photos, one moment together.</Text>
+          <Text style={styles.attractFootnote}>Four photos. A keepsake that feels like you.</Text>
         </View>
       </ImageBackground> : <>
         {screen !== 'camera' && <View style={[styles.topbar, lightScreen && styles.topbarLight]}>
-          <>{screen === 'share' ? <Text testID="wedding-share-identity" style={[styles.brand, styles.weddingIdentity, styles.brandDark]}>{WEDDING_IDENTITY}</Text> : <View accessible accessibilityLabel={WEDDING_IDENTITY} testID="wedding-identity-compact" style={styles.compactIdentity}><Text style={styles.brand}>{WEDDING_NAMES}</Text><Text style={styles.compactDate}>{WEDDING_DATE}</Text></View>}</>
+          <>{screen === 'share' || screen === 'template' ? <Text testID={screen === 'share' ? 'wedding-share-identity' : 'wedding-template-identity'} style={[styles.brand, styles.weddingIdentity, styles.brandDark]}>{WEDDING_IDENTITY}</Text> : <View accessible accessibilityLabel={WEDDING_IDENTITY} testID="wedding-identity-compact" style={styles.compactIdentity}><Text style={styles.brand}>{WEDDING_NAMES}</Text><Text style={styles.compactDate}>{WEDDING_DATE}</Text></View>}</>
           <Pressable accessibilityRole="button" accessibilityLabel="Open host controls" disabled={busy || hostBusy} onPress={() => void openHost()}><Text style={[styles.hostLink, lightScreen && styles.hostLinkDark]}>Host</Text></Pressable>
         </View>}
         {screen === 'camera' && session && <View style={styles.capturePage}>
@@ -595,16 +706,19 @@ function Photobooth() {
           <View style={[styles.reviewBottom, landscape && styles.reviewSideRail]}>
             {landscape && <View style={styles.reviewRailHeading}><Text testID="review-navigation-hint" style={styles.reviewEyebrow}>Swipe photos · tap a thumbnail</Text><Text style={styles.reviewTitle}>{sessionIsComplete(session) ? (total === 5 ? 'Five worth keeping.' : 'Worth keeping.') : 'Looking good so far.'}</Text><Text style={styles.reviewCount}>Photo {focusedSlot + 1} of {total}</Text></View>}
             <Thumbnails compact={landscape} reduceMotion={reduceMotion || !foreground} session={session} active={focusedSlot} onSelect={selectReview} />
-            <View style={[styles.reviewActions, landscape && styles.reviewActionsWide]}><Button title={`Retake photo ${focusedSlot + 1}`} testID="retake-photo" secondary disabled={busy || exporting} onPress={retakePhoto} />
-              <Button title={busy ? 'Preparing your session…' : sessionIsComplete(session) ? `Keep all ${total} photos` : 'Finish the session'} testID="use-photo" disabled={busy} onPress={sessionIsComplete(session) ? () => void keepSession() : () => { setRetakeSlot(undefined); setActiveSlot(nextPhotoSlot(session) ?? 0); setCameraReady(false); setScreen('camera'); }} /></View>
+            <View style={[styles.reviewActions, landscape && styles.reviewActionsWide]}><Button title={`Retake photo ${focusedSlot + 1}`} testID="retake-photo" secondary disabled={busy || exporting || lookApplying || !!lookState} onPress={retakePhoto} />
+              <Button title={lookApplying ? 'Finishing this photo…' : busy ? 'Preparing your session…' : sessionIsComplete(session) ? total === 4 ? 'Make my keepsake' : `Keep all ${total} photos` : 'Finish the session'} testID="use-photo" disabled={busy || lookApplying || !!lookState || templateApplying} onPress={sessionIsComplete(session) ? () => void keepSession() : () => { setRetakeSlot(undefined); setActiveSlot(nextPhotoSlot(session) ?? 0); setCameraReady(false); setScreen('camera'); }} /></View>
+            {photoEffects && <Pressable accessibilityRole="button" testID="choose-look" disabled={busy || exporting || lookApplying || !!lookState} onPress={openLookEditor} style={styles.lookEntry}><Text style={styles.lookEntryText}>Choose a look{selectedPhoto?.look ? ` · ${LOOKS.find(value => value.preset === selectedPhoto.look?.preset)?.title}` : ''}</Text></Pressable>}
             <Text style={styles.localSaved}>{session.shots.length} originals saved on this iPad</Text><Text style={styles.libraryStatus}>{photosStatus(session)}</Text>
             {needsPhotosExport(session) && <Pressable accessibilityRole="button" disabled={exporting} style={styles.textAction} onPress={() => void exportPhotos(session, true)}><Text style={styles.mutedButtonText}>{exporting ? 'Exporting to Photos…' : 'Save a copy to Photos'}</Text></Pressable>}
           </View>
         </View>}
-        {screen === 'share' && session && <ScrollView contentContainerStyle={[styles.sharePage, landscape && styles.sharePageWide]}>
-          <View style={styles.shareStory}><Text style={styles.shareEyebrow}>{total === 5 ? 'FIVE FRAMES. ALL YOURS.' : 'YOUR MOMENT. ALL YOURS.'}</Text><Text style={styles.shareTitle}>Yours to keep.</Text><Text style={styles.shareBody}>{guestPage ? `Scan once. Take all ${session.shots.length} home.` : `Your ${session.shots.length} originals are safe on this iPad.`}</Text><Thumbnails reduceMotion={reduceMotion || !foreground} session={session} active={-1} dark={false} />
+        {screen === 'template' && session && (templateState ? <TemplateStudio state={templateState} session={session} landscape={landscape} saving={templateApplying} previewPresented={templatePreviewPresented === templateState.previewUri} onPreviewLoaded={uri => { if (templatePreviewRef.current === uri) setTemplatePreviewPresented(uri); }} onPreviewError={uri => templateEditor.current?.previewFailed(uri)} onLayout={value => templateEditor.current?.chooseLayout(value)} onTheme={value => templateEditor.current?.chooseTheme(value)} onSwap={(a, b) => templateEditor.current?.swapPhotos(a, b)} onCrop={(id, crop) => templateEditor.current?.setCrop(id, crop)} onSave={() => void saveKeepsake()} onBack={() => { if (!templateSaving.current) { templateEditor.current?.close(); setScreen('review'); } }} /> : <View style={styles.permission}><Text style={[styles.permissionTitle, styles.brandDark]}>Finishing your keepsake…</Text></View>)}
+        {screen === 'share' && session && <ScrollView contentContainerStyle={[styles.sharePage, (landscape || width >= 760) && styles.sharePageWide]}>
+          <View style={styles.shareStory}><Text style={styles.shareEyebrow}>{total === 4 ? 'FOUR FRAMES. ALL YOURS.' : total === 5 ? 'FIVE FRAMES. ALL YOURS.' : 'YOUR MOMENT. ALL YOURS.'}</Text><Text style={styles.shareTitle}>Yours to keep.</Text><Text style={styles.shareBody}>{guestPage ? session.composite ? 'Your keepsake and all four originals, in one private page.' : `Scan once. Take all ${session.shots.length} home.` : `Your ${session.shots.length} originals are safe on this iPad.`}</Text>{session.composite && <Image testID="saved-keepsake-preview" source={{ uri: session.composite.fileUri }} style={styles.keepsakePreview} resizeMode="contain" accessibilityLabel="Saved full-resolution keepsake" />}<Thumbnails reduceMotion={reduceMotion || !foreground} session={session} active={-1} dark={false} />
             <SmsShare key={session.id} session={session} jobs={jobs} onChanged={async () => { await retrySharing(); }} />
             <Text style={styles.shareLocal}>{session.shots.length} originals saved on this iPad</Text><Text style={styles.shareLibrary}>{photosStatus(session)}</Text>
+            {session.composite && <Text testID="keepsake-photos-status" style={styles.shareLibrary}>{session.composite.exportStatus === 'saved' ? 'Your keepsake is also saved in Photos' : session.composite.exportStatus === 'uncertain' ? 'Keepsake Photos result unconfirmed · ask the host to check' : 'Keepsake saved here · Photos copy is separate'}</Text>}
             {needsPhotosExport(session) && <Pressable accessibilityRole="button" disabled={exporting} style={styles.textAction} onPress={() => void exportPhotos(session, true)}><Text style={styles.lightTextAction}>{exporting ? 'Exporting to Photos…' : 'Save a copy to Photos'}</Text></Pressable>}
           </View>
           <View style={styles.shareCard}>{guestPage ? <View testID="guest-qr" style={styles.qrContent}><QRCode value={guestPage.url} size={224} quietZone={32} ecl="M" backgroundColor="#ffffff" color="#1e2723" /><Text style={styles.qrCaption}>YOUR PRIVATE PHOTO PAGE</Text><Text style={styles.expiry} accessibilityLabel={`Photo link expires ${expiry}`}>Available until {expiry}</Text><Text style={styles.sharePrivacy}>Anyone with the link can open your photos until then. Your originals stay private with the host afterward.</Text></View>
@@ -641,8 +755,9 @@ function Photobooth() {
               <Text style={styles.hostBody}>{librarySession.stagedOriginals.length} captured {librarySession.stagedOriginals.length === 1 ? 'original still needs its' : 'originals still need their'} local save completed. These are not counted in the guest gallery and cannot be exported to Photos yet.</Text>
               <Button title="Finish local save" testID="host-finish-local-save" disabled={hostBusy || exporting} onPress={() => void runHostOriginalAction({ kind: 'finish-save', sessionId: librarySession.id })} />
             </View>}
+            {!!librarySession.stagedComposites?.length && <View style={styles.hostOriginalCard}><Text style={styles.hostSectionTitle}>Kept photos · keepsake save pending</Text><Text style={styles.hostBody}>Your originals are saved. A rendered keepsake still needs its local save finished before it can be shared.</Text><Button title="Finish keepsake save" testID="host-finish-keepsake-save" disabled={hostBusy || exporting} onPress={() => void finishKeepsakeSave(librarySession.id)} /></View>}
             {libraryMode === 'retained' ? <>
-              <Text style={styles.hostBody}>Earlier takes are retained privately on this iPad. Exporting one here does not add it to the guest photo page.</Text>
+              <Text style={styles.hostBody}>Earlier takes remain on this iPad. Source originals named by the current keepsake are included with it; other retakes remain private. Exporting a copy here does not change the guest page.</Text>
               {!librarySession.retakes?.length && <Text style={styles.hostSmall}>No earlier takes in this session.</Text>}
               {(librarySession.retakes ?? []).map(photo => hostPhotoCard(photo, true))}
             </> : <>
@@ -651,6 +766,7 @@ function Photobooth() {
               <Button title={exporting ? 'Exporting copies…' : photosExportTitle(librarySession)} disabled={exporting || !needsPhotosExport(librarySession)} onPress={() => void exportPhotos(librarySession, true)} />
               {librarySession.shots.some(photo => photo.exportStatus === 'uncertain') && <Text style={styles.hostWarning}>Check each uncertain original in the Photos app before choosing an action below. No uncertain copy is retried automatically.</Text>}
               {librarySession.shots.filter(photo => photo.exportStatus === 'uncertain').map(photo => hostPhotoCard(photo, false))}
+              {compositeExportCapture(librarySession) && hostPhotoCard(compositeExportCapture(librarySession)!, false, true)}
             </>}
           </View>}
           {!savedSessions.length && <Text style={styles.hostBody}>No saved sessions yet.</Text>}
@@ -679,6 +795,24 @@ function Photobooth() {
           </View>
         </View>}
       </SafeAreaView>
+    </Modal>
+    <Modal visible={!!lookState && foreground} animationType={reduceMotion || !foreground ? 'none' : 'fade'} onRequestClose={() => lookEditor.current?.close()}>
+      {lookState && <SafeAreaView testID="look-editor" style={styles.lookPage}>
+        <View style={styles.lookHeader}><View><Text style={styles.reviewEyebrow}>PHOTO {lookState.slot + 1} OF {total}</Text><Text style={styles.reviewTitle}>Make it yours.</Text></View><Pressable accessibilityRole="button" testID="look-cancel" onPress={() => lookEditor.current?.close()} style={styles.lookCancel}><Text style={styles.lookEntryText}>Cancel</Text></Pressable></View>
+        <View style={[styles.lookBody, landscape && styles.lookBodyWide]}>
+          <View style={styles.lookStage}><Image key={`${lookState.previewUri}:${lookImageEpoch}`} testID="look-preview" source={{ uri: lookState.previewUri }} resizeMode="contain" style={StyleSheet.absoluteFill} onLoad={() => { if (lookPreviewRef.current === lookState.previewUri) { setLookImageFailed(false); setLookPreviewPresented(lookState.previewUri); } }} onError={() => { if (lookPreviewRef.current === lookState.previewUri) { setLookImageFailed(true); lookEditor.current?.previewFailed(lookState.previewUri); } }} accessibilityLabel={`${lookState.phase === 'error' || lookState.intensity === 0 ? 'Original' : LOOKS.find(value => value.preset === lookState.preset)?.title ?? 'Original'} photo preview`} />
+            {lookState.phase === 'previewing' && <View style={styles.lookRenderBadge}><Text style={styles.savingLookText}>Preparing preview…</Text></View>}
+          </View>
+          <View style={[styles.lookControls, landscape && styles.lookControlsWide]}>
+            <Text style={styles.lookNote}>Looks apply after capture.{`\n`}Your untouched original stays on this iPad.</Text>
+            <View style={styles.lookOptions}>{LOOKS.map(look => <Pressable key={look.preset} testID={`look-preset-${look.preset}`} accessibilityRole="button" accessibilityState={{ selected: lookState.preset === look.preset, disabled: lookApplying }} disabled={lookApplying} onPress={() => lookEditor.current?.choose(look.preset, look.preset === 'original' ? 0 : lookState.intensity || 0.75)} style={[styles.lookOption, lookState.preset === look.preset && styles.lookOptionSelected]}><Text style={[styles.lookOptionText, lookState.preset === look.preset && styles.lookOptionTextSelected]}>{look.title}</Text></Pressable>)}</View>
+            <View style={styles.lookStrength}><Text style={styles.lookNote}>Strength</Text><View style={styles.lookOptions}>{STRENGTHS.map(intensity => <Pressable key={intensity} testID={`look-intensity-${intensity * 100}`} accessibilityRole="button" accessibilityLabel={`Look strength ${intensity * 100} percent`} accessibilityState={{ selected: lookState.intensity === intensity, disabled: lookApplying || lookState.preset === 'original' }} disabled={lookApplying || lookState.preset === 'original'} onPress={() => lookEditor.current?.choose(lookState.preset, intensity)} style={[styles.lookOption, lookState.intensity === intensity && styles.lookOptionSelected]}><Text style={[styles.lookOptionText, lookState.intensity === intensity && styles.lookOptionTextSelected]}>{intensity * 100}%</Text></Pressable>)}</View></View>
+            <Text testID="look-status" accessibilityLiveRegion="polite" style={styles.lookStatus}>{lookImageFailed ? 'This preview could not open. The original is retained.' : lookState.phase === 'ready' && lookPreviewPresented === lookState.previewUri ? 'Preview ready' : lookState.phase === 'previewing' || lookState.phase === 'ready' ? 'Preparing preview…' : lookState.phase === 'saving' ? 'Saving your full-size look…' : 'Original kept. This preview needs a retry.'}</Text>
+            {(lookImageFailed || lookState.phase === 'error') && <Button testID="look-retry" title="Retry preview" secondary onPress={() => { setLookImageFailed(false); setLookImageEpoch(value => value + 1); lookEditor.current?.choose(lookState.preset, lookState.intensity); }} />}
+            <Button testID="look-apply" title={lookApplying ? 'Saving your look…' : lookState.preset === 'original' || lookState.intensity === 0 ? 'Use original' : `Use ${LOOKS.find(value => value.preset === lookState.preset)?.title}`} disabled={lookState.phase !== 'ready' || lookPreviewPresented !== lookState.previewUri || lookApplying || lookImageFailed} onPress={() => void applyLook()} />
+          </View>
+        </View>
+      </SafeAreaView>}
     </Modal>
   </SafeAreaView>;
 }
@@ -710,4 +844,9 @@ const styles = StyleSheet.create({
   hostWarning: { color: '#713D20', fontSize: 14, lineHeight: 22 }, hostOriginalCard: { borderWidth: 1, borderColor: '#C8D0BF', borderRadius: 16, padding: 16, gap: 14, backgroundColor: '#F8FAF3' }, hostOriginalPreview: { width: '100%', height: 260, borderRadius: 10, backgroundColor: '#172219' }, hostDecisionOverlay: { ...StyleSheet.absoluteFill, backgroundColor: '#102117D9', zIndex: 5, alignItems: 'center', justifyContent: 'center', padding: 24 }, hostDecisionCard: { width: '100%', maxWidth: 540, borderRadius: 22, padding: 24, gap: 18, backgroundColor: '#fff' }, hostDecisionPreview: { width: '100%', height: 170, backgroundColor: '#172219', borderRadius: 10 },
   setupScanner: { height: 330, backgroundColor: '#172219', borderRadius: 18, overflow: 'hidden' },
   fixture: { backgroundColor: '#fff7df', padding: 7 }, fixtureText: { color: '#47391C', fontSize: 10 },
+  lookEntry: { minHeight: 48, paddingVertical: 12, paddingHorizontal: 18, alignItems: 'center', justifyContent: 'center' }, lookEntryText: { color: '#E6DEC6', fontSize: 16, fontWeight: '600' },
+  keepsakePreview: { width: '100%', maxWidth: 320, height: 300, backgroundColor: '#E9E3D7', borderRadius: 14 },
+  lookPage: { flex: 1, backgroundColor: '#101512' }, lookHeader: { minHeight: 76, paddingHorizontal: 26, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }, lookCancel: { minWidth: 64, minHeight: 48, alignItems: 'center', justifyContent: 'center', padding: 12 },
+  lookBody: { flex: 1, padding: 18, gap: 18 }, lookBodyWide: { flexDirection: 'row' }, lookStage: { flex: 1, minHeight: 200, backgroundColor: '#070D09', borderRadius: 16, overflow: 'hidden' }, lookControls: { gap: 14, width: '100%', maxWidth: 740, alignSelf: 'center' }, lookControlsWide: { width: 322, alignSelf: 'center' },
+  lookOptions: { flexDirection: 'row', gap: 6 }, lookOption: { minHeight: 48, flex: 1, borderRadius: 13, borderWidth: 1, borderColor: '#879580', justifyContent: 'center', alignItems: 'center', paddingVertical: 11 }, lookOptionSelected: { backgroundColor: '#E8D7B6', borderColor: '#E8D7B6' }, lookOptionText: { color: '#D7E1CD', fontSize: 13, fontWeight: '600' }, lookOptionTextSelected: { color: '#203423' }, lookNote: { color: '#D0D9C7', fontSize: 13, lineHeight: 21, textAlign: 'center' }, lookStrength: { gap: 8 }, lookStatus: { color: '#E4E8D8', fontSize: 13, lineHeight: 21, textAlign: 'center', minHeight: 24 }, lookRenderBadge: { position: 'absolute', alignSelf: 'center', bottom: 18, paddingHorizontal: 18, paddingVertical: 12, backgroundColor: '#102219', borderRadius: 20 }, savingLookText: { color: '#fff', fontSize: 14 },
 });

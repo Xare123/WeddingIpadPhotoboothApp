@@ -5,7 +5,7 @@ import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createServer } from 'node:http';
-import { nativeModeSettings, requireNativeTestPlan, commandStreams, MAX_MACHINE_STDOUT, metroErrorCodes, metroHTTPStatus, ownedProcessTree, parseNamedJSON, passingXCTestCounts, requireSwiftTools62, resolveExpoEntry, selectIpadSimulator, verifyReleaseApp, waitForMetro } from './ci-native-contract.mjs';
+import { nativeModeSettings, requireNativeTestPlan, nativeRuntimeSources, verifyNativeRuntimeSources, passingExpectedXCTestCounts, commandStreams, MAX_MACHINE_STDOUT, metroErrorCodes, metroHTTPStatus, ownedProcessTree, parseNamedJSON, passingXCTestCounts, requireSwiftTools62, resolveExpoEntry, selectIpadSimulator, verifyReleaseApp, waitForMetro } from './ci-native-contract.mjs';
 import { annotationText, bounded, diagnosticLines, publicAnnotations, redact, workflowData } from './ci-summary.mjs';
 
 const ipad = { udid: '11111111-1111-4111-8111-111111111111', name: 'iPad Pro 13-inch (M4)',
@@ -520,14 +520,73 @@ test('Release runtime rejects Debug, fixture and Metro-contaminated generated pl
 });
 
 test('Release runtime notice requires executed passing XCTest and never claims camera/storage or Metro coverage', () => {
-  const status = { mode: 'release-runtime', result: 'passed', fixture: 'disabled', tests: { executed: 1, failures: 0, skipped: 0 } };
+  const status = { mode: 'release-runtime', result: 'passed', fixture: 'disabled', expectedTestCount: 15, tests: { executed: 15, failures: 0, skipped: 0 } };
   const [notice] = publicAnnotations({ status, jobStatus: 'success' });
   assert.ok(notice.includes('Release simulator runtime evidence'));
   assert.ok(notice.includes('embedded JavaScript without Metro'));
+  assert.ok(notice.includes('Core Image effects/template pixel tests'));
   assert.ok(notice.includes('Camera, saving, Photos, signing and physical devices untested'));
   assert.ok(!notice.includes('Synthetic camera') && !notice.includes('Debug JavaScript'));
   for (const invalid of [{ ...status, fixture: 'enabled' }, { ...status, tests: { executed: 0, failures: 0 } },
     { ...status, tests: { executed: 1, failures: 0, skipped: 1 } }, { ...status, tests: undefined }]) {
     assert.deepEqual(publicAnnotations({ status: invalid, jobStatus: 'success' }), []);
   }
+});
+
+
+function runtimeSourceFixture(t) {
+  const root = mkdtempSync(join(tmpdir(), 'wedding-runtime-sources-'));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const specs = [
+    ['apps/ipad/native-tests/WeddingPhotoboothReleaseSmokeTests.swift', 1],
+    ['apps/ipad/modules/wedding-photo-effects/ios/PhotoEffectsEngine.swift', 0],
+    ['apps/ipad/modules/wedding-photo-effects/tests/PhotoEffectsEngineTests.swift', 8],
+    ['apps/ipad/modules/wedding-photo-effects/ios/PhotoTemplateEngine.swift', 0],
+    ['apps/ipad/modules/wedding-photo-effects/tests/PhotoTemplateEngineTests.swift', 6],
+  ];
+  for (const [source, count] of specs) {
+    mkdirSync(join(root, source, '..'), { recursive: true });
+    writeFileSync(join(root, source), 'import Foundation\n' + Array.from({ length: count }, (_, i) => '  func testCase' + i + '() throws {}').join('\n'));
+  }
+  const runtimeSources = nativeRuntimeSources(root);
+  for (const source of runtimeSources) {
+    const target = join(root, 'apps/ipad/ios', source.generatedSource);
+    mkdirSync(join(target, '..'), { recursive: true });
+    writeFileSync(target, readFileSync(join(root, source.source)));
+  }
+  return { root, plan: { runtimeSources, expectedTestCount: 15 } };
+}
+
+test('native source manifest hashes exact required production/test bytes and counts all methods', t => {
+  const { root, plan } = runtimeSourceFixture(t);
+  const result = verifyNativeRuntimeSources(plan, root);
+  assert.equal(result.expectedTestCount, 15);
+  assert.equal(result.runtimeSources.length, 5);
+  assert.equal(result.runtimeSources[2].testMethods.length, 8);
+  for (const source of result.runtimeSources) assert.match(source.sha256, /^[a-f0-9]{64}$/);
+});
+
+test('native source manifest rejects source drift, copy drift, missing template suites and false expected totals', t => {
+  for (const mutate of [
+    ({ root, plan }) => writeFileSync(join(root, plan.runtimeSources[1].source), '// changed production engine'),
+    ({ root, plan }) => writeFileSync(join(root, 'apps/ipad/ios', plan.runtimeSources[1].generatedSource), '// changed generated engine'),
+    ({ root, plan }) => rmSync(join(root, plan.runtimeSources[4].source)),
+    ({ plan }) => { plan.expectedTestCount = 9; },
+    ({ plan }) => { plan.runtimeSources[1].sha256 = '0'.repeat(64); },
+    ({ root, plan }) => writeFileSync(join(root, plan.runtimeSources[2].source), 'func testOnlyOne() {}'),
+    ({ root, plan }) => writeFileSync(join(root, plan.runtimeSources[1].source), 'import ExpoModulesCore'),
+  ]) {
+    const fixture = runtimeSourceFixture(t);
+    mutate(fixture);
+    assert.throws(() => verifyNativeRuntimeSources(fixture.plan, fixture.root));
+  }
+});
+
+test('native runtime refuses incomplete execution, missing totals, any skipped tests and any failures', () => {
+  assert.equal(passingExpectedXCTestCounts('Executed 15 tests, with 0 failures', 15).executed, 15);
+  for (const output of ['Executed 9 tests, with 0 failures', 'Executed 15 tests, with 1 test skipped and 0 failures',
+    'Executed 15 tests, with 1 failure', '** BUILD SUCCEEDED **']) {
+    assert.throws(() => passingExpectedXCTestCounts(output, 15));
+  }
+  for (const expected of [0, undefined, NaN, 1.5]) assert.throws(() => passingExpectedXCTestCounts('Executed 15 tests, with 0 failures', expected));
 });

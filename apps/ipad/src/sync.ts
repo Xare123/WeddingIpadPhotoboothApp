@@ -1,9 +1,9 @@
 import { File } from 'expo-file-system';
 import { createQueueConsumer, type QueueTransport } from '@wedding-booth/core';
 import { loadConnection } from './config';
-import { sessionGuestPage } from './sharing';
+import { sessionGuestPage, validateReadyPublication } from './sharing';
 import { removeCompletedRecipients, resolveRecipient } from './recipients';
-import { listLocalSessions, reconcileConfirmedPhotos, store } from './storage';
+import { getSessionPublicationAssets, listLocalSessions, reconcileConfirmedPhotos, store } from './storage';
 import { nativeFixtureEnabled } from './native-fixture';
 import { finalizeReadySessions } from './session-sync';
 import { smsRequestExpired } from './sms-state';
@@ -37,7 +37,7 @@ const transport: QueueTransport = {
     const config = await loadConnection();
     if (!config?.token) throw new Error('Offline: API is not configured');
     const session = (await listLocalSessions()).find(value => value.id === job.sessionId);
-    if (session?.shots.length !== 5 || !sessionGuestPage(session, jobs)) throw new Error('Five-photo session page is not ready');
+    if (!sessionGuestPage(session, jobs)) throw new Error('Session page is not ready');
     const phone = await resolveRecipient(job.recipientRef);
     const response = await fetch(`${config.origin}/v1/shares`, {
       method: 'POST',
@@ -56,16 +56,18 @@ const transport: QueueTransport = {
 
 const consumer = createQueueConsumer(store, transport, async () => {
   if (!nativeFixtureEnabled) await finalizeReadySessions({
-    store, sessions: listLocalSessions,
-    async ready(sessionId, photoIds) {
+    store, sessions: listLocalSessions, publicationAssets: getSessionPublicationAssets,
+    async ready(sessionId, photoIds, descriptor) {
       const config = await loadConnection();
       if (!config?.token) throw new Error('Offline: booth is not paired');
       const response = await fetch(`${config.origin}/v1/sessions/${encodeURIComponent(sessionId)}/ready`, {
         method: 'POST', headers: { Authorization: `Bearer ${config.token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ photoIds }), signal: AbortSignal.timeout(30_000),
+        body: JSON.stringify(descriptor ?? { photoIds }), signal: AbortSignal.timeout(30_000),
       });
       if (!response.ok) throw new Error('Session page was not acknowledged');
-      return { value: await response.json(), origin: config.origin };
+      const value: unknown = await response.json();
+      validateReadyPublication(value, descriptor ?? { photoIds });
+      return { value, origin: config.origin };
     },
   });
   await removeCompletedRecipients();

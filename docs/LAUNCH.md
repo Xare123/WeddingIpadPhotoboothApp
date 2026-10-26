@@ -1,6 +1,6 @@
 # Wedding launch gates
 
-Target event: **November 1, 2026**. This is a release checklist, not a statement that launch has completed. Deliver five reliably saved photos per session, large review/individual retakes, a private guest page and one QR. SMS remains optional while eligibility is unresolved.
+Target event: **November 1, 2026**. This is a release checklist, not a statement that launch has completed. Deliver four reliably saved photos per new session, large review/individual retakes, optional postcapture looks, a strip/grid keepsake in three themes, a private guest page and one QR. Preserve existing five-photo sessions. SMS remains optional while eligibility is unresolved.
 
 ## Immediate owner decisions
 

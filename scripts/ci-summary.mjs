@@ -110,9 +110,9 @@ export function publicAnnotations({ kind = 'native', jobStatus, status, sha, log
       'Commit: ' + exactSha + '; unsigned Release iPhoneOS app compiled; embedded JavaScript and iPad bundle metadata verified. No XCTest executed; no signing, installation or device testing.')];
   }
   if (succeeded && kind === 'native' && status?.result === 'passed' && status.mode === 'release-runtime' &&
-    status.fixture === 'disabled' && status.tests?.executed > 0 && status.tests.failures === 0 && (status.tests.skipped ?? 0) === 0) {
+    status.fixture === 'disabled' && Number.isSafeInteger(status.expectedTestCount) && status.expectedTestCount >= 15 && status.tests?.executed >= status.expectedTestCount && status.tests.failures === 0 && (status.tests.skipped ?? 0) === 0) {
     return ['::notice title=Release simulator runtime evidence::' + workflowData(
-      'Commit: ' + exactSha + '; executed XCTest tests: ' + status.tests.executed + '; failures: 0; skipped: 0. Release attract UI launched and relaunched from embedded JavaScript without Metro; fixture disabled. Camera, saving, Photos, signing and physical devices untested.')];
+      'Commit: ' + exactSha + '; executed XCTest tests: ' + status.tests.executed + '; failures: 0; skipped: 0. Core Image effects/template pixel tests and Release attract launch/relaunch/orientation passed; embedded JavaScript without Metro; fixture disabled. Camera, saving, Photos, signing and physical devices untested.')];
   }
   if (succeeded && kind === 'native' && status?.result === 'passed' && (status.mode === 'ui-tests' || status.mode === undefined) &&
     status.tests?.executed > 0 && status.tests.failures === 0 && (status.tests.skipped ?? 0) === 0) {
@@ -151,6 +151,7 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(new URL(import.meta.
     for (const stage of status.stages ?? []) summary.push(`| ${stage.name} | ${stage.result} | ${stage.seconds ?? ''} |`);
     summary.push('');
     if (status.simulator) summary.push(`Simulator: ${status.simulator.name}; runtime ${status.simulator.runtime}.`, '');
+    if (status.expectedTestCount) summary.push('Required XCTest methods: **' + status.expectedTestCount + '**; exact production engine/test source SHA-256 manifest: `runtime-sources.json`.', '');
     if (status.tests) summary.push(`Executed XCTest tests: **${status.tests.executed}**; failures: **${status.tests.failures}**; skipped: **${status.tests.skipped ?? 0}**.`, '');
     if (status.releaseEvidence) summary.push('Release build: **' + status.nativeBuild + '**; SDK: **iphoneos**; embedded JavaScript: **' + status.releaseEvidence.bundleBytes + ' bytes**; SHA-256: ' + status.releaseEvidence.bundleSha256 + '.', '');
     if (status.error) summary.push(`Failure: ${bounded(status.error, 8, 2000).replaceAll('`', "'")}`, '');
@@ -161,7 +162,7 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(new URL(import.meta.
   );
   else if (kind === 'native' && nativeMode === 'release-runtime') summary.push(
     'Genuine unsigned Release simulator app; embedded JavaScript; fixture explicitly disabled; no Metro development server.',
-    'XCTest covers fresh attract UI, enabled accessible primary controls, portrait/landscape and app relaunch. Camera capture, photo saving, Photos export, signing and physical iPads remain unverified.', '',
+    'XCTest compiles exact production engines into its own runner namespace and covers Core Image effects/template pixels, fresh attract UI, enabled accessible primary controls, portrait/landscape and app relaunch. Camera capture, photo saving, Photos export, signing and physical iPads remain unverified.', '',
   );
   else if (kind === 'native') summary.push(
     'This unsigned Debug build uses a synthetic camera fixture and real native storage. Metro supplies JavaScript on loopback.',

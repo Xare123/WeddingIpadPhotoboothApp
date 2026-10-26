@@ -52,13 +52,13 @@ async function diskFixture(t: { after(fn: () => Promise<void>): void }) {
   return { sql, db, uri, files, faults, make, source, payload };
 }
 async function complete(f: Awaited<ReturnType<typeof diskFixture>>, id = 'session') {
-  const repository = f.make(); let session = await repository.createSession(id);
+  const repository = f.make(); let session = await repository.createSession(id, 5);
   for (let i = 0; i < 5; i++) session = await repository.saveShot(session, `${id}-photo-${i}`, f.source, i);
   return { repository, session };
 }
 
 test('real disk: verified partial stays staged until JPEG normalization succeeds; retry needs no camera cache', async t => {
-  const f = await diskFixture(t), repository = f.make(), session = await repository.createSession('stage');
+  const f = await diskFixture(t), repository = f.make(), session = await repository.createSession('stage', 5);
   f.faults.move = true;
   await assert.rejects(repository.saveShot(session, 'photo', f.source, 0), /original-commit/);
   let current = await repository.getActiveSession();
@@ -151,7 +151,7 @@ test('targeted uncertain and retained-original exports never publish retakes or 
   const confirmed = await repository.confirmSession(current);
   assert.equal(f.sql.prepare('SELECT id FROM jobs WHERE id=?').get(oldId), undefined);
   assert.equal(confirmed.shots[0]?.id, 'retake');
-  await repository.clearActiveSession(); const next = await repository.createSession('next');
+  await repository.clearActiveSession(); const next = await repository.createSession('next', 5);
   await repository.updateExport(session.id, oldId, 'saved');
   assert.equal((await repository.getActiveSession())?.id, next.id);
 });
@@ -285,4 +285,276 @@ test('upload identity mismatch is quarantined while own-file legacy suffixes reb
   assert.equal(uploadDocumentPhotoPath('a', 'file:///old/Documents/photobooth/a.partial'), 'photobooth/a.jpg');
   assert.equal(uploadDocumentPhotoPath('a', 'photobooth/a.draft.jpg'), 'photobooth/a.draft.jpg');
   assert.throws(() => uploadDocumentPhotoPath('a', 'photobooth/b.jpg'), /identity mismatch/);
+});
+
+const warmLook = { preset: 'warm', intensity: 0.65, version: 'wedding-ci-srgb-v1' } as const;
+
+test('real disk and SQLite: looks retain original bytes, restore Original, survive restart, and upload only the selected derivative', async t => {
+  const f = await diskFixture(t), { repository, session } = await complete(f, 'looks');
+  const original = session.shots[2]!;
+  const originalBytes = await readFile(fileURLToPath(original.fileUri));
+  const renderedBytes = Buffer.from([255, 216, 9, 8, 7, 255, 217]);
+  const renderedURI = f.uri('render-cache.jpg');
+  await writeFile(fileURLToPath(renderedURI), renderedBytes);
+  let current = await repository.saveRenderedPhoto(session.id, { id: 'warm-render', newRenderedURI: renderedURI,
+    sourcePhotoId: original.id, look: warmLook, expectedSelectedPhotoId: original.id, slot: 2 });
+  assert.deepEqual(current.shots.map(photo => photo.id), session.shots.map((photo, slot) => slot === 2 ? 'warm-render' : photo.id));
+  assert.deepEqual(await readFile(fileURLToPath(original.fileUri)), originalBytes);
+  assert.deepEqual(await readFile(fileURLToPath(current.shots[2]!.fileUri)), renderedBytes);
+  assert.equal(current.retakes?.find(photo => photo.id === original.id)?.sourcePhotoId, undefined);
+  assert.equal(f.sql.prepare('SELECT count(*) AS n FROM jobs').get()?.n, 0);
+  await rm(fileURLToPath(renderedURI));
+  const restored = f.make(); await restored.recover();
+  current = (await restored.getSession(session.id))!;
+  assert.deepEqual(current.shots[2]?.look, warmLook);
+  assert.equal(current.shots[2]?.sourcePhotoId, original.id);
+  const before = (await f.files.list()).filter(name => /\.jpg$/.test(name));
+  current = await restored.selectSavedPhoto(session.id, original.id, 2, 'warm-render');
+  assert.equal(current.shots[2]?.id, original.id);
+  assert.equal(current.shots[2]?.look, undefined);
+  current = await restored.selectSavedPhoto(session.id, 'warm-render', 2, original.id);
+  assert.deepEqual((await f.files.list()).filter(name => /\.jpg$/.test(name)), before);
+  await restored.confirmSession(current);
+  assert.equal(f.sql.prepare('SELECT count(*) AS n FROM jobs').get()?.n, 5);
+  assert.equal(f.sql.prepare('SELECT id FROM jobs WHERE id=?').get(original.id), undefined);
+  const renderedJob = f.payload('warm-render');
+  assert.ok(renderedJob.kind === 'upload');
+  assert.equal(renderedJob.fileUri, 'photobooth/warm-render.jpg');
+  const uploaded: { photoId: string; bytes: Buffer }[] = [];
+  await drainQueue({
+    async list() { return (f.sql.prepare('SELECT payload FROM jobs').all() as {payload:string}[]).map(row => {
+      const job = JSON.parse(row.payload) as QueueJob;
+      return job.kind === 'upload' ? { ...job, fileUri: f.uri(job.fileUri) } : job;
+    }); },
+    async save(job) { f.sql.prepare('UPDATE jobs SET payload=? WHERE id=?').run(JSON.stringify(job), job.id); },
+  }, { async upload(job) { uploaded.push({ photoId: job.photoId, bytes: await readFile(fileURLToPath(job.fileUri)) }); },
+    async share() { throw new Error('No shares'); } }, 2000);
+  assert.deepEqual(uploaded.find(photo => photo.photoId === 'warm-render')?.bytes, renderedBytes);
+  const completed = f.payload('warm-render');
+  await restored.reconcileConfirmedPhotos(); await restored.recover(); await restored.reconcileConfirmedPhotos();
+  assert.deepEqual(f.payload('warm-render'), { ...completed, fileUri: 'photobooth/warm-render.jpg' });
+  assert.deepEqual(await readFile(fileURLToPath(original.fileUri)), originalBytes);
+  await assert.rejects(restored.selectSavedPhoto(session.id, original.id, 2, 'warm-render'));
+  await assert.rejects(restored.saveRenderedPhoto(session.id, { id: 'late-render', newRenderedURI: f.source,
+    sourcePhotoId: original.id, look: warmLook, expectedSelectedPhotoId: 'warm-render', slot: 2 }));
+});
+
+test('real disk: staged derivative retains lineage through rename recovery and a newer retake resets the source', async t => {
+  const f = await diskFixture(t), { repository, session } = await complete(f, 'staged-look');
+  const source = session.shots[0]!;
+  f.faults.move = true;
+  await assert.rejects(repository.saveRenderedPhoto(session.id, { id: 'staged-render', newRenderedURI: f.source,
+    sourcePhotoId: source.id, look: warmLook, expectedSelectedPhotoId: source.id, slot: 0 }), /original-commit/);
+  assert.equal((await repository.getSession(session.id))?.shots[0]?.id, source.id);
+  assert.equal((await repository.getSession(session.id))?.stagedOriginals?.[0]?.sourcePhotoId, source.id);
+  f.faults.move = false;
+  const restored = f.make(); await restored.recover();
+  assert.equal((await restored.getSession(session.id))?.shots[0]?.id, 'staged-render');
+  assert.deepEqual((await restored.getSession(session.id))?.shots[0]?.look, warmLook);
+  let current = await restored.saveShot(session.id, 'fresh-camera', f.source, 0);
+  assert.equal(current.shots[0]?.look, undefined); assert.equal(current.shots[0]?.sourcePhotoId, undefined);
+  await assert.rejects(restored.selectSavedPhoto(session.id, 'staged-render', 0, 'fresh-camera'), /render-source/);
+  await assert.rejects(restored.saveRenderedPhoto(session.id, { id: 'old-source', newRenderedURI: f.source,
+    sourcePhotoId: source.id, look: warmLook, expectedSelectedPhotoId: 'fresh-camera', slot: 0 }), /render-source/);
+  current = await restored.saveRenderedPhoto(session.id, { id: 'fresh-render', newRenderedURI: f.source,
+    sourcePhotoId: 'fresh-camera', look: warmLook, expectedSelectedPhotoId: 'fresh-camera', slot: 0 });
+  assert.equal(current.shots[0]?.sourcePhotoId, 'fresh-camera');
+  assert.ok(current.retakes?.some(photo => photo.id === source.id));
+});
+
+test('real disk: stale selection, another guest or slot, missing original, and derived sources cannot create a look', async t => {
+  const f = await diskFixture(t), { repository, session } = await complete(f, 'validations');
+  const other = await repository.createSession('other-guest', 5); await repository.saveShot(other, 'foreign', f.source, 0);
+  const input = { id: 'render', newRenderedURI: f.source, sourcePhotoId: session.shots[0]!.id,
+    look: warmLook, expectedSelectedPhotoId: session.shots[0]!.id, slot: 0 };
+  for (const patch of [{ expectedSelectedPhotoId: 'stale' }, { sourcePhotoId: 'foreign' },
+    { sourcePhotoId: session.shots[1]!.id }, { sourcePhotoId: 'missing' },
+    { look: { ...warmLook, intensity: NaN } }, { look: { ...warmLook, intensity: 1.01 } }]) {
+    await assert.rejects(repository.saveRenderedPhoto(session.id, { ...input, ...patch }));
+  }
+  await repository.saveRenderedPhoto(session.id, input);
+  await assert.rejects(repository.saveRenderedPhoto(session.id, { ...input, id: 'nested', sourcePhotoId: 'render', expectedSelectedPhotoId: 'render' }), /render-source/);
+  await assert.rejects(repository.selectSavedPhoto(session.id, session.shots[0]!.id, 0, session.shots[0]!.id), /stale-selection/);
+  await rm(fileURLToPath(session.shots[0]!.fileUri));
+  await assert.rejects(repository.saveRenderedPhoto(session.id, { ...input, id: 'missing-source-render', expectedSelectedPhotoId: 'render' }), /render-source/);
+  assert.equal(f.sql.prepare('SELECT count(*) AS n FROM jobs').get()?.n, 0);
+  assert.ok(!(await f.files.list()).includes('nested.jpg'));
+});
+
+test('real disk: restoring Original supersedes an older staged derivative across retry and relaunch', async t => {
+  const f = await diskFixture(t), { repository, session } = await complete(f, 'restore-order');
+  const original = session.shots[0]!;
+  await repository.saveRenderedPhoto(session.id, { id: 'first-look', newRenderedURI: f.source,
+    sourcePhotoId: original.id, look: warmLook, expectedSelectedPhotoId: original.id, slot: 0 });
+  f.faults.move = true;
+  await assert.rejects(repository.saveRenderedPhoto(session.id, { id: 'older-staged-look', newRenderedURI: f.source,
+    sourcePhotoId: original.id, look: { ...warmLook, intensity: 0.8 }, expectedSelectedPhotoId: 'first-look', slot: 0 }));
+  await repository.selectSavedPhoto(session.id, original.id, 0, 'first-look');
+  f.faults.move = false;
+  assert.equal((await repository.retryStagedPhotos(session.id))?.shots[0]?.id, original.id);
+  const restored = f.make(); await restored.recover();
+  const current = (await restored.getSession(session.id))!;
+  assert.equal(current.shots[0]?.id, original.id);
+  assert.equal(current.retakes?.find(photo => photo.id === 'older-staged-look')?.sourcePhotoId, original.id);
+  const before = (await f.files.list()).filter(name => name.endsWith('.jpg'));
+  const reused = await restored.saveRenderedPhoto(session.id, { id: 'first-look', newRenderedURI: 'file:///missing-cache.jpg',
+    sourcePhotoId: original.id, look: { version: warmLook.version, intensity: warmLook.intensity, preset: warmLook.preset },
+    expectedSelectedPhotoId: original.id, slot: 0 });
+  assert.equal(reused.shots[0]?.id, 'first-look');
+  assert.deepEqual((await f.files.list()).filter(name => name.endsWith('.jpg')), before);
+});
+
+async function four(f: Awaited<ReturnType<typeof diskFixture>>, id = 'four') {
+  const repository = f.make(); let session = await repository.createSession(id);
+  assert.equal(session.targetCount, 4);
+  for (let i = 0; i < 4; i++) session = await repository.saveShot(session, `${id}-photo-${i}`, f.source, i);
+  return { repository, session };
+}
+function templateRecipe(photoIds: string[]) {
+  return { version: 'wedding-template-v1' as const, layout: 'strip' as const, theme: 'botanical' as const,
+    photoIds, cropsByPhotoId: Object.fromEntries(photoIds.map((id, index) => [id,
+      index === 1 ? { mode: 'fill' as const, x: 0.2, y: -0.3, zoom: 1.2 } : { mode: 'fit' as const, x: 0, y: 0, zoom: 1 }])) };
+}
+
+test('four photos: filtered selection, raw sources and reordered composite publish exact immutable assets', async t => {
+  const f = await diskFixture(t), { repository, session } = await four(f);
+  await assert.rejects(repository.confirmSession(session), /composite-required/);
+  const discarded = session.shots[0]!.id;
+  let current = await repository.saveShot(session, 'new-source', f.source, 0);
+  current = await repository.saveRenderedPhoto(session.id, { id: 'chosen-look', newRenderedURI: f.source,
+    sourcePhotoId: 'new-source', look: warmLook, expectedSelectedPhotoId: 'new-source', slot: 0 });
+  const selected = current.shots.map(photo => photo.id), ordered = [selected[2]!, selected[0]!, selected[3]!, selected[1]!];
+  const recipe = templateRecipe(ordered);
+  const compositeURI = f.uri('composite-cache.jpg'), bytes = Buffer.from([255, 216, 42, 43, 255, 217]);
+  await writeFile(fileURLToPath(compositeURI), bytes);
+  current = await repository.saveComposite(session.id, { id: 'composite-one', newRenderedURI: compositeURI, recipe, expectedSelectedPhotoIds: selected });
+  assert.deepEqual(current.shots.map(photo => photo.id), selected);
+  assert.equal(current.retakes?.some(photo => photo.id === 'composite-one'), false);
+  assert.equal(current.shots.some(photo => photo.id === 'composite-one'), false);
+  assert.deepEqual(current.composite?.recipe, recipe);
+  assert.deepEqual(current.composite?.originalPhotoIds, [selected[2], 'new-source', selected[3], selected[1]]);
+  const assets = await repository.getSessionPublicationAssets(session.id);
+  assert.deepEqual(assets, { photoIds: ordered, originalPhotoIds: [selected[2], 'new-source', selected[3], selected[1]],
+    composite: { photoId: 'composite-one', layout: 'strip', theme: 'botanical', version: 'wedding-template-v1' } });
+  await repository.confirmSession(session.id);
+  const ids = (f.sql.prepare('SELECT id FROM jobs').all() as {id:string}[]).map(row => row.id).sort();
+  assert.deepEqual(ids, [...new Set([...selected, 'new-source', 'composite-one'])].sort());
+  assert.ok(!ids.includes(discarded));
+  assert.deepEqual(await readFile(fileURLToPath(f.uri('photobooth/composite-one.jpg'))), bytes);
+  const completed = { ...f.payload('composite-one'), state: 'complete', attempts: 3, guestUrl: 'https://photos.example/g/composite', guestExpiresAt: 99999 };
+  f.sql.prepare('UPDATE jobs SET payload=? WHERE id=?').run(JSON.stringify(completed), 'composite-one');
+  const restored = f.make(); await restored.recover(); await restored.reconcileConfirmedPhotos(); await restored.recover();
+  assert.deepEqual(f.payload('composite-one'), completed);
+  assert.deepEqual((await restored.getSession(session.id))?.composite?.recipe, recipe);
+  assert.deepEqual(await restored.getSessionPublicationAssets(session.id), assets);
+  await assert.rejects(restored.saveComposite(session.id, { id: 'late', newRenderedURI: compositeURI, recipe, expectedSelectedPhotoIds: selected }));
+});
+
+test('four photos: composite rename recovery retains crop by photo ID and never imports a composite as a capture', async t => {
+  const f = await diskFixture(t), { repository, session } = await four(f, 'composite-stage');
+  const selected = session.shots.map(photo => photo.id), recipe = templateRecipe([...selected].reverse());
+  f.faults.move = true;
+  await assert.rejects(repository.saveComposite(session.id, { id: 'staged-template', newRenderedURI: f.source, recipe, expectedSelectedPhotoIds: selected }), /composite-commit/);
+  const staged = (await repository.getSession(session.id))!;
+  assert.equal(staged.composite, undefined);
+  assert.equal(staged.storageWarning, 'composite-commit-pending');
+  assert.deepEqual(staged.stagedComposites?.[0]?.recipe, recipe);
+  assert.equal(staged.shots.length, 4); assert.equal(staged.retakes?.length, 0);
+  await assert.rejects(repository.confirmSession(session.id), /composite-required/);
+  f.faults.move = false;
+  const restored = f.make(); await restored.recover();
+  const current = (await restored.getSession(session.id))!;
+  assert.deepEqual(current.composite?.recipe, recipe);
+  assert.equal(current.shots.length, 4); assert.equal(current.retakes?.length, 0);
+  assert.equal((await restored.listLocalSessions()).length, 1);
+  assert.equal(current.stagedComposites, undefined);
+  await restored.confirmSession(session.id);
+  assert.equal(f.sql.prepare('SELECT count(*) AS n FROM jobs').get()?.n, 5);
+});
+
+test('four photos: filter, Original restoration and retake invalidate a stale template; invalid crops and foreign sets reject', async t => {
+  const f = await diskFixture(t), { repository, session } = await four(f, 'invalidations');
+  const selected = session.shots.map(photo => photo.id), recipe = templateRecipe(selected);
+  await repository.saveComposite(session.id, { id: 'old-composite', newRenderedURI: f.source, recipe, expectedSelectedPhotoIds: selected });
+  let current = await repository.saveRenderedPhoto(session.id, { id: 'look', newRenderedURI: f.source,
+    sourcePhotoId: selected[0]!, look: warmLook, expectedSelectedPhotoId: selected[0]!, slot: 0 });
+  assert.equal(current.composite, undefined);
+  await assert.rejects(repository.confirmSession(session.id), /composite-required/);
+  await assert.rejects(repository.saveComposite(session.id, { id: 'stale-composite', newRenderedURI: f.source, recipe, expectedSelectedPhotoIds: selected }), /composite-selection/);
+  const lookedIds = current.shots.map(photo => photo.id), lookedRecipe = templateRecipe(lookedIds);
+  for (const crop of [{ mode: 'fill', x: 2, y: 0, zoom: 1 }, { mode: 'fill', x: 0, y: 0, zoom: 2 },
+    { mode: 'fit', x: 0, y: 0, zoom: 1.2 }, { mode: 'fill', x: 0, y: NaN, zoom: 1 }]) {
+    await assert.rejects(repository.saveComposite(session.id, { id: 'bad-crop', newRenderedURI: f.source,
+      recipe: { ...lookedRecipe, cropsByPhotoId: { ...lookedRecipe.cropsByPhotoId, look: crop as typeof lookedRecipe.cropsByPhotoId[string] } }, expectedSelectedPhotoIds: lookedIds }));
+  }
+  await repository.saveComposite(session.id, { id: 'look-composite', newRenderedURI: f.source, recipe: lookedRecipe, expectedSelectedPhotoIds: lookedIds });
+  current = await repository.selectSavedPhoto(session.id, selected[0]!, 0, 'look');
+  assert.notEqual(current.composite?.id, 'look-composite');
+  current = await repository.saveShot(session.id, 'retake', f.source, 0);
+  assert.equal(current.composite, undefined);
+  await assert.rejects(repository.getSessionPublicationAssets(session.id), /composite-required/);
+  await assert.rejects(repository.confirmSession(session.id), /composite-required/);
+  assert.ok((await f.files.list()).includes('old-composite.jpg'));
+  assert.ok((await f.files.list()).includes('look-composite.jpg'));
+  assert.equal(f.sql.prepare('SELECT count(*) AS n FROM jobs').get()?.n, 0);
+});
+
+test('four photos: late recovery of a newer staged composite cannot replace the confirmed composite', async t => {
+  const f = await diskFixture(t), { repository, session } = await four(f, 'frozen-composite');
+  const selected = session.shots.map(photo => photo.id), recipe = templateRecipe(selected);
+  await repository.saveComposite(session.id, { id: 'confirmed-composite', newRenderedURI: f.source, recipe, expectedSelectedPhotoIds: selected });
+  f.faults.move = true;
+  await assert.rejects(repository.saveComposite(session.id, { id: 'newer-stage', newRenderedURI: f.source,
+    recipe: { ...recipe, theme: 'coastal' }, expectedSelectedPhotoIds: selected }));
+  await repository.confirmSession(session.id);
+  f.faults.move = false;
+  const restored = f.make(); await restored.recover(); await restored.reconcileConfirmedPhotos();
+  assert.equal((await restored.getSession(session.id))?.composite?.id, 'confirmed-composite');
+  assert.equal(f.sql.prepare('SELECT id FROM jobs WHERE id=?').get('newer-stage'), undefined);
+  assert.equal(f.sql.prepare('SELECT count(*) AS n FROM jobs').get()?.n, 5);
+  assert.ok((await f.files.list()).includes('newer-stage.jpg'));
+});
+
+test('composite Photos uncertainty and acknowledgment survive recovery without becoming captures or extra jobs', async t => {
+  const f = await diskFixture(t), { repository, session } = await four(f, 'composite-export');
+  const selected = session.shots.map(photo => photo.id), recipe = templateRecipe(selected);
+  await repository.saveComposite(session.id, { id: 'export-template', newRenderedURI: f.source, recipe, expectedSelectedPhotoIds: selected });
+  await repository.updateExport(session.id, 'export-template', 'uncertain');
+  let restored = f.make(); await restored.recover();
+  let current = (await restored.getSession(session.id))!;
+  assert.equal(current.composite?.exportStatus, 'uncertain');
+  assert.equal(current.shots.length, 4); assert.equal(current.retakes?.length, 0);
+  assert.equal(f.sql.prepare('SELECT count(*) AS n FROM jobs').get()?.n, 0);
+  await assert.rejects(restored.updateExport('another-guest', 'export-template', 'saved'), /export-photo/);
+  await restored.confirmSession(session.id);
+  const completed = { ...f.payload('export-template'), state: 'complete', attempts: 2, guestUrl: 'https://photos.example/g/export', guestExpiresAt: 99999 };
+  f.sql.prepare('UPDATE jobs SET payload=? WHERE id=?').run(JSON.stringify(completed), 'export-template');
+  await restored.updateExport(session.id, 'export-template', 'saved');
+  restored = f.make(); await restored.recover(); await restored.reconcileConfirmedPhotos();
+  current = (await restored.getSession(session.id))!;
+  assert.equal(current.composite?.exportStatus, 'saved');
+  assert.equal(current.shots.some(photo => photo.id === 'export-template'), false);
+  assert.equal(current.retakes?.some(photo => photo.id === 'export-template'), false);
+  assert.equal(f.sql.prepare('SELECT count(*) AS n FROM jobs').get()?.n, 5);
+  assert.deepEqual(f.payload('export-template'), completed);
+});
+
+test('dedicated composite retry finishes bytes without retrying shots or changing a frozen manifest', async t => {
+  const f = await diskFixture(t), { repository, session } = await four(f, 'retry-composite-only');
+  const selected = session.shots.map(photo => photo.id), recipe = templateRecipe(selected);
+  await repository.saveComposite(session.id, { id: 'frozen-template', newRenderedURI: f.source, recipe, expectedSelectedPhotoIds: selected });
+  f.faults.move = true;
+  await assert.rejects(repository.saveComposite(session.id, { id: 'retained-template', newRenderedURI: f.source,
+    recipe: { ...recipe, theme: 'coastal' }, expectedSelectedPhotoIds: selected }));
+  await assert.rejects(repository.updateExport(session.id, 'retained-template', 'saved'), /export-photo/);
+  await repository.confirmSession(session.id);
+  f.faults.move = false;
+  const current = (await repository.retryStagedComposites(session.id))!;
+  assert.equal(current.composite?.id, 'frozen-template');
+  assert.deepEqual(current.shots.map(photo => photo.id), selected);
+  assert.equal(current.stagedComposites, undefined);
+  assert.equal(current.retakes?.length, 0);
+  assert.ok((await f.files.list()).includes('retained-template.jpg'));
+  assert.equal(f.sql.prepare('SELECT id FROM jobs WHERE id=?').get('retained-template'), undefined);
+  assert.equal(await repository.retryStagedComposites('missing-session'), null);
 });

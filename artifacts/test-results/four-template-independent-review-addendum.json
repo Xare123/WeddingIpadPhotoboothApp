@@ -1,0 +1,40 @@
+{
+  "timestampUTC": "2026-10-26T16:35:05.424890+00:00",
+  "addendumTo": "artifacts/test-results/four-template-independent-review.json",
+  "finding": "PREVIEW-LOAD-FAILURE",
+  "status": "Resolved within independently executed Linux/controller/actual TemplateStudio JSX boundary scope",
+  "chronology": "Prior original report and failing-behavior reproduction retained unchanged. Parent implemented fix; this reviewer made no production or existing test edits. This new addendum validates the changed candidate.",
+  "command": "node --import tsx --test .cache/four-template-review/ui-fix.test.ts apps/ipad/test/photo-look-editor.test.ts apps/ipad/test/template-editor.test.ts .cache/four-template-review/independent.test.ts",
+  "results": {
+    "tests": 43,
+    "passed": 43,
+    "failed": 0,
+    "skipped": 0,
+    "existingControllerTests": 41,
+    "independentUIFaultAcceptance": 1,
+    "independentRealFileSQLiteAcceptance": 1
+  },
+  "verified": [
+    "Actual current TemplateStudio JSX compiled with local React useState/react-native boundaries; current production template controller receives onPreviewError exactly as actual App wiring does.",
+    "Invoked actual emitted preview Image onError; state transitioned to error, URI and theme receipts cleared, all three owned outputs released, actual error text/retry control appeared and Save remained disabled.",
+    "Invoked actual Retry control; render count rose from 3 to 6 and current URI changed. Stale old-URI error was ignored. Save stayed disabled until actual new Image onLoad callback; then Ready to keep and enabled Save.",
+    "Session/raw metadata remained byte-for-byte unchanged in UI fault harness. Independent real-file/SQLite marker test reran successfully after fix: raw bytes preserved, Original restoration and retake invalidated old composites, frozen descriptor and completed-row metadata survived repeated recovery/corrupt-row repair.",
+    "Current photo-look controller existing test freshly passed URI-scoped load-error recovery and same-preset fresh render; source confirms App onError routes to previewFailed, URI/epoch key remounts original retry, explicit retry control, and Apply remains onLoad-gated."
+  ],
+  "limitations": [
+    "No physical iPad, Apple Core Image/ImageIO, native Image decoder/cache event execution or native XCTest execution.",
+    "This addendum claims only 43 freshly executed tests; full new 266-test suite not rerun by this reviewer.",
+    "App original-image fallback flag/key and look JSX reviewed by source; actual TemplateStudio JSX and both production controller test suites executed."
+  ],
+  "transcript": ".cache/four-template-review/fix-validation.tap",
+  "sourceSHA256": {
+    "apps/ipad/App.tsx": "ccb637ffa9f63065bfcb9e56057b4c766d4d34904ba4de6934bf46b027f8f711",
+    "apps/ipad/src/TemplateStudio.tsx": "a0bb9f3c4f2cc292092db7dcbe775e379c719328f42c5c2430dfc3a60e96850a",
+    "apps/ipad/src/photo-look-editor.ts": "38d6dc47fb34d9d9da58cf96a7daa6102d9616c7f54720c0406c1962548f817b",
+    "apps/ipad/src/template-editor.ts": "11fb2edcf547077b16700b64f5601606398da0d3a90ab56f5214c09c18138d43",
+    "apps/ipad/src/local-persistence.ts": "9c306f982c7d74405d310f872d113df499c95a1cfdaff59d3b0929bd4d81d1cb",
+    ".cache/four-template-review/ui-fix.test.ts": "6bef5a3a20ef3f7a0ad3062848d9e787761b7be647d6bfd81e46e15b842275a2",
+    ".cache/four-template-review/studio-fixed.mjs": "cdfe8d566d6ae14ffa9b4604bdcbbd4c65af3ccf0e19acc928dbb30f1904378f"
+  },
+  "localOnly": true
+}

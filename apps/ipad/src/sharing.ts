@@ -1,3 +1,5 @@
+import type { SessionPublicationAssets } from './local-types';
+import { publicationAssets, publicationAssetIds, type PublicationSession } from './publication';
 // Pure validation shared by native transport and readiness display.
 export type ConnectionConfig = { origin: string; token: string };
 
@@ -32,6 +34,22 @@ export function readyGuestPage(value: unknown, origin: string, now = Date.now())
   return { guestUrl: url.href, guestExpiresAt: result.expiresAt };
 }
 
+// A four-photo success must acknowledge the complete recipe sent by this
+// client. Older servers can upload safely but cannot publish a template QR.
+export function validateReadyPublication(value: unknown, expected: SessionPublicationAssets): void {
+  if (!expected.composite) return;
+  if (!value || typeof value !== 'object') throw new Error('Publication was not acknowledged');
+  const result = value as Record<string, unknown>;
+  const sameIds = (actual: unknown, ids: string[] | undefined) => Array.isArray(actual) && !!ids &&
+    actual.length === ids.length && actual.every((id, index) => id === ids[index]);
+  const composite = result.composite as Record<string, unknown> | null | undefined;
+  if (!sameIds(result.photoIds, expected.photoIds) || !sameIds(result.originalPhotoIds, expected.originalPhotoIds) ||
+    !composite || typeof composite !== 'object' || Array.isArray(composite) ||
+    Object.keys(composite).length !== 4 || composite.photoId !== expected.composite.photoId ||
+    composite.layout !== expected.composite.layout || composite.theme !== expected.composite.theme ||
+    composite.version !== expected.composite.version) throw new Error('Publication was not acknowledged');
+}
+
 export function qrForJob(job: {
   kind: string; state: string; guestUrl?: string; guestExpiresAt?: number;
 } | undefined, now = Date.now()): string | undefined {
@@ -61,13 +79,14 @@ export function normalizePhone(input: string): string {
 }
 
 export function sessionGuestPage(
-  session: { id: string; confirmed: boolean; targetCount?: number; shots: { id: string }[] } | null | undefined,
+  session: PublicationSession | null | undefined,
   jobs: { kind: string; state: string; sessionId: string; photoId: string; guestUrl?: string; guestExpiresAt?: number }[],
   now = Date.now(),
 ): { url: string; expiresAt: number } | null {
-  if (!session?.confirmed || !session.shots.length || new Set(session.shots.map(s => s.id)).size !== session.shots.length) return null;
-  if (session.targetCount !== undefined && session.shots.length !== session.targetCount) return null;
-  const selected = session.shots.map(shot => jobs.find(job => job.kind === 'upload' && job.sessionId === session.id && job.photoId === shot.id));
+  if (!session) return null;
+  const assets = publicationAssets(session);
+  if (!assets) return null;
+  const selected = publicationAssetIds(assets).map(photoId => jobs.find(job => job.kind === 'upload' && job.sessionId === session.id && job.photoId === photoId));
   const first = selected[0];
   const url = qrForJob(first, now);
   if (!url || !first?.guestExpiresAt || selected.some(job =>

@@ -1,0 +1,4561 @@
+{
+  "scope": "LOCAL UNPUBLISHED browser fixtures. Actual four-photo capture/template/filter controllers. Canvas JPEG approximation, in-memory persistence/Photos/publication acknowledgements. Native CoreImage/CoreText, EXIF/color management, filesystem durability, real upload/R2/download/QR scanning/SMS UNVERIFIED. Four marker-labeled JPEG variants derive from the same owned fictional generated scene, not real distinct poses.",
+  "status": "passed",
+  "staticChecks": [
+    {
+      "orientation": "portrait",
+      "state": "crop-pan",
+      "scrollable": true,
+      "requested": 314,
+      "actual": 284,
+      "maximum": 284,
+      "stableFrames": 4
+    },
+    {
+      "orientation": "landscape",
+      "state": "crop-pan",
+      "scrollable": true,
+      "requested": 314,
+      "actual": 193,
+      "maximum": 193,
+      "stableFrames": 4
+    }
+  ],
+  "checks": [
+    {
+      "orientation": "portrait",
+      "initialNextGuest": {
+        "x": 421.5,
+        "y": 740.5,
+        "width": 306,
+        "height": 64
+      },
+      "initialQR": {
+        "x": 446,
+        "y": 429,
+        "width": 306,
+        "height": 330
+      },
+      "readyNextGuest": {
+        "x": 446,
+        "y": 779,
+        "width": 306,
+        "height": 64
+      },
+      "fastRetake": {
+        "intendedSlot": 3,
+        "labelImmediatelyAfterThumbnail": "Retake photo 3",
+        "actorSleepBeforeRetake": false,
+        "cameraAction": "Retake photo 3"
+      },
+      "rawOriginals": [
+        {
+          "id": "6366a93f-ad99-4926-9266-0fedae7d4ae8",
+          "fileUri": "file:///synthetic/6366a93f-ad99-4926-9266-0fedae7d4ae8.jpg",
+          "createdAt": 1793033892251,
+          "confirmed": false,
+          "sessionId": "5d35367d-d409-48d4-9ee7-ed94bdc8f25d",
+          "shotIndex": 0,
+          "exportStatus": "saved"
+        },
+        {
+          "id": "604c8fbb-8b6e-417d-b0e7-7677a2aff92b",
+          "fileUri": "file:///synthetic/604c8fbb-8b6e-417d-b0e7-7677a2aff92b.jpg",
+          "createdAt": 1793033895553,
+          "confirmed": false,
+          "sessionId": "5d35367d-d409-48d4-9ee7-ed94bdc8f25d",
+          "shotIndex": 1,
+          "exportStatus": "saved"
+        },
+        {
+          "id": "7398e33b-4ca6-4bb3-9341-ae6fa0446539",
+          "fileUri": "file:///synthetic/7398e33b-4ca6-4bb3-9341-ae6fa0446539.jpg",
+          "createdAt": 1793033905460,
+          "confirmed": false,
+          "sessionId": "5d35367d-d409-48d4-9ee7-ed94bdc8f25d",
+          "shotIndex": 2,
+          "exportStatus": "saved"
+        },
+        {
+          "id": "1f3993ea-93af-4671-801c-cb9f00157bd5",
+          "fileUri": "file:///synthetic/1f3993ea-93af-4671-801c-cb9f00157bd5.jpg",
+          "createdAt": 1793033902157,
+          "confirmed": false,
+          "sessionId": "5d35367d-d409-48d4-9ee7-ed94bdc8f25d",
+          "shotIndex": 3,
+          "exportStatus": "saved"
+        }
+      ],
+      "selected": [
+        {
+          "id": "6366a93f-ad99-4926-9266-0fedae7d4ae8",
+          "fileUri": "file:///synthetic/6366a93f-ad99-4926-9266-0fedae7d4ae8.jpg",
+          "createdAt": 1793033892251,
+          "confirmed": false,
+          "sessionId": "5d35367d-d409-48d4-9ee7-ed94bdc8f25d",
+          "shotIndex": 0,
+          "exportStatus": "saved"
+        },
+        {
+          "id": "604c8fbb-8b6e-417d-b0e7-7677a2aff92b",
+          "fileUri": "file:///synthetic/604c8fbb-8b6e-417d-b0e7-7677a2aff92b.jpg",
+          "createdAt": 1793033895553,
+          "confirmed": false,
+          "sessionId": "5d35367d-d409-48d4-9ee7-ed94bdc8f25d",
+          "shotIndex": 1,
+          "exportStatus": "saved"
+        },
+        {
+          "id": "820cebbc-e751-42ec-92f2-5c80fe83a64c",
+          "fileUri": "file:///synthetic/820cebbc-e751-42ec-92f2-5c80fe83a64c.jpg",
+          "createdAt": 1793033907945,
+          "confirmed": false,
+          "sourcePhotoId": "7398e33b-4ca6-4bb3-9341-ae6fa0446539",
+          "look": {
+            "preset": "warm",
+            "intensity": 0.75,
+            "version": "wedding-ci-srgb-v1"
+          },
+          "sessionId": "5d35367d-d409-48d4-9ee7-ed94bdc8f25d",
+          "shotIndex": 2,
+          "exportStatus": "saved"
+        },
+        {
+          "id": "1f3993ea-93af-4671-801c-cb9f00157bd5",
+          "fileUri": "file:///synthetic/1f3993ea-93af-4671-801c-cb9f00157bd5.jpg",
+          "createdAt": 1793033902157,
+          "confirmed": false,
+          "sessionId": "5d35367d-d409-48d4-9ee7-ed94bdc8f25d",
+          "shotIndex": 3,
+          "exportStatus": "saved"
+        }
+      ],
+      "combinations": [
+        {
+          "layout": "strip",
+          "theme": "classic",
+          "uri": "blob:http://127.0.0.1:8791/8c1b4a90-c329-4268-b189-0c5ee7cb29ad",
+          "width": 480,
+          "height": 1440,
+          "jpeg": true,
+          "byteLength": 163173,
+          "sha256": "087fda3378b8cca812401443aae370013275d2508c95ee29d984a13a777f9d01",
+          "paperRGB": [
+            245,
+            241,
+            230
+          ],
+          "tileMarkers": [
+            [
+              202,
+              53,
+              46
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              41,
+              108,
+              195
+            ],
+            [
+              173,
+              70,
+              175
+            ]
+          ],
+          "tileEdges": [
+            [
+              [
+                206,
+                53,
+                48
+              ],
+              [
+                202,
+                53,
+                46
+              ],
+              [
+                200,
+                51,
+                45
+              ],
+              [
+                204,
+                53,
+                46
+              ]
+            ],
+            [
+              [
+                35,
+                141,
+                67
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                34,
+                140,
+                66
+              ]
+            ],
+            [
+              [
+                40,
+                107,
+                198
+              ],
+              [
+                41,
+                108,
+                195
+              ],
+              [
+                41,
+                108,
+                197
+              ],
+              [
+                40,
+                109,
+                200
+              ]
+            ],
+            [
+              [
+                171,
+                70,
+                176
+              ],
+              [
+                173,
+                70,
+                175
+              ],
+              [
+                172,
+                71,
+                177
+              ],
+              [
+                174,
+                71,
+                178
+              ]
+            ]
+          ],
+          "cssFilter": "none"
+        },
+        {
+          "layout": "strip",
+          "theme": "botanical",
+          "uri": "blob:http://127.0.0.1:8791/eb367bed-4b15-4499-a596-5fb544f06ba8",
+          "width": 480,
+          "height": 1440,
+          "jpeg": true,
+          "byteLength": 163453,
+          "sha256": "ad3d496596bb2210f150baa3e61cb54f612b13424f99ea221ca5ff5f1dd58f93",
+          "paperRGB": [
+            238,
+            241,
+            232
+          ],
+          "tileMarkers": [
+            [
+              202,
+              53,
+              46
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              41,
+              108,
+              195
+            ],
+            [
+              173,
+              70,
+              175
+            ]
+          ],
+          "tileEdges": [
+            [
+              [
+                205,
+                54,
+                47
+              ],
+              [
+                202,
+                53,
+                46
+              ],
+              [
+                200,
+                51,
+                45
+              ],
+              [
+                202,
+                53,
+                46
+              ]
+            ],
+            [
+              [
+                32,
+                143,
+                67
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                34,
+                140,
+                68
+              ]
+            ],
+            [
+              [
+                39,
+                108,
+                199
+              ],
+              [
+                41,
+                108,
+                195
+              ],
+              [
+                41,
+                108,
+                197
+              ],
+              [
+                39,
+                108,
+                199
+              ]
+            ],
+            [
+              [
+                169,
+                70,
+                176
+              ],
+              [
+                173,
+                70,
+                175
+              ],
+              [
+                172,
+                71,
+                177
+              ],
+              [
+                173,
+                72,
+                178
+              ]
+            ]
+          ],
+          "cssFilter": "none"
+        },
+        {
+          "layout": "strip",
+          "theme": "coastal",
+          "uri": "blob:http://127.0.0.1:8791/e5396cb8-b229-4a74-b139-e76d1628a06f",
+          "width": 480,
+          "height": 1440,
+          "jpeg": true,
+          "byteLength": 164099,
+          "sha256": "b88ba884ce3773adba953f9bc1e3c6d58aeef3f4b60c2f5e34348309e933d1b3",
+          "paperRGB": [
+            238,
+            244,
+            242
+          ],
+          "tileMarkers": [
+            [
+              202,
+              53,
+              46
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              41,
+              108,
+              195
+            ],
+            [
+              173,
+              70,
+              175
+            ]
+          ],
+          "tileEdges": [
+            [
+              [
+                205,
+                54,
+                47
+              ],
+              [
+                202,
+                53,
+                46
+              ],
+              [
+                200,
+                51,
+                45
+              ],
+              [
+                204,
+                52,
+                47
+              ]
+            ],
+            [
+              [
+                34,
+                142,
+                67
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                34,
+                140,
+                66
+              ]
+            ],
+            [
+              [
+                38,
+                109,
+                199
+              ],
+              [
+                41,
+                108,
+                195
+              ],
+              [
+                41,
+                108,
+                197
+              ],
+              [
+                40,
+                109,
+                202
+              ]
+            ],
+            [
+              [
+                173,
+                70,
+                177
+              ],
+              [
+                173,
+                70,
+                175
+              ],
+              [
+                172,
+                71,
+                177
+              ],
+              [
+                175,
+                69,
+                177
+              ]
+            ]
+          ],
+          "cssFilter": "none"
+        },
+        {
+          "layout": "grid",
+          "theme": "classic",
+          "uri": "blob:http://127.0.0.1:8791/3f7a7559-bba0-43ad-803d-2f369700b5b4",
+          "width": 1440,
+          "height": 1260,
+          "jpeg": true,
+          "byteLength": 301036,
+          "sha256": "c4850dba784101f91d949049e9923408f5a1bb094583780c81791dab7e6d3a0e",
+          "paperRGB": [
+            245,
+            241,
+            230
+          ],
+          "tileMarkers": [
+            [
+              202,
+              53,
+              46
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              39,
+              108,
+              199
+            ],
+            [
+              172,
+              70,
+              179
+            ]
+          ],
+          "tileEdges": [
+            [
+              [
+                205,
+                52,
+                46
+              ],
+              [
+                202,
+                53,
+                46
+              ],
+              [
+                202,
+                54,
+                44
+              ],
+              [
+                204,
+                52,
+                47
+              ]
+            ],
+            [
+              [
+                31,
+                141,
+                68
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                34,
+                140,
+                68
+              ],
+              [
+                32,
+                140,
+                65
+              ]
+            ],
+            [
+              [
+                38,
+                109,
+                199
+              ],
+              [
+                39,
+                108,
+                199
+              ],
+              [
+                38,
+                109,
+                201
+              ],
+              [
+                39,
+                108,
+                199
+              ]
+            ],
+            [
+              [
+                172,
+                71,
+                177
+              ],
+              [
+                172,
+                70,
+                179
+              ],
+              [
+                173,
+                70,
+                179
+              ],
+              [
+                173,
+                70,
+                177
+              ]
+            ]
+          ],
+          "cssFilter": "none"
+        },
+        {
+          "layout": "grid",
+          "theme": "botanical",
+          "uri": "blob:http://127.0.0.1:8791/c9e1e17b-8efc-450e-ab6c-3a07cdd3c552",
+          "width": 1440,
+          "height": 1260,
+          "jpeg": true,
+          "byteLength": 301918,
+          "sha256": "afe1331a852a9bee338338db92a9f13941acb9298194fa7b7b31eec84cf296b2",
+          "paperRGB": [
+            238,
+            241,
+            232
+          ],
+          "tileMarkers": [
+            [
+              202,
+              53,
+              46
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              39,
+              108,
+              199
+            ],
+            [
+              172,
+              70,
+              179
+            ]
+          ],
+          "tileEdges": [
+            [
+              [
+                203,
+                52,
+                45
+              ],
+              [
+                202,
+                53,
+                46
+              ],
+              [
+                202,
+                54,
+                44
+              ],
+              [
+                204,
+                52,
+                47
+              ]
+            ],
+            [
+              [
+                31,
+                142,
+                66
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                33,
+                141,
+                66
+              ]
+            ],
+            [
+              [
+                38,
+                109,
+                199
+              ],
+              [
+                39,
+                108,
+                199
+              ],
+              [
+                38,
+                109,
+                201
+              ],
+              [
+                39,
+                108,
+                199
+              ]
+            ],
+            [
+              [
+                172,
+                71,
+                177
+              ],
+              [
+                172,
+                70,
+                179
+              ],
+              [
+                173,
+                70,
+                177
+              ],
+              [
+                173,
+                70,
+                177
+              ]
+            ]
+          ],
+          "cssFilter": "none"
+        },
+        {
+          "layout": "grid",
+          "theme": "coastal",
+          "uri": "blob:http://127.0.0.1:8791/af5ede50-7a43-4345-8f52-817b9eba21ac",
+          "width": 1440,
+          "height": 1260,
+          "jpeg": true,
+          "byteLength": 302676,
+          "sha256": "8bb71eec2fe36b8c5cd0f10e559e5894d5abded158597c1332178a202141cb07",
+          "paperRGB": [
+            238,
+            244,
+            242
+          ],
+          "tileMarkers": [
+            [
+              204,
+              53,
+              44
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              41,
+              108,
+              197
+            ],
+            [
+              172,
+              70,
+              179
+            ]
+          ],
+          "tileEdges": [
+            [
+              [
+                202,
+                53,
+                46
+              ],
+              [
+                204,
+                53,
+                44
+              ],
+              [
+                202,
+                54,
+                44
+              ],
+              [
+                202,
+                53,
+                47
+              ]
+            ],
+            [
+              [
+                31,
+                141,
+                68
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                32,
+                140,
+                65
+              ]
+            ],
+            [
+              [
+                38,
+                109,
+                199
+              ],
+              [
+                41,
+                108,
+                197
+              ],
+              [
+                38,
+                109,
+                201
+              ],
+              [
+                39,
+                108,
+                199
+              ]
+            ],
+            [
+              [
+                172,
+                71,
+                177
+              ],
+              [
+                172,
+                70,
+                179
+              ],
+              [
+                173,
+                70,
+                177
+              ],
+              [
+                173,
+                70,
+                177
+              ]
+            ]
+          ],
+          "cssFilter": "none"
+        }
+      ],
+      "beforeSwap": {
+        "uri": "blob:http://127.0.0.1:8791/af5ede50-7a43-4345-8f52-817b9eba21ac",
+        "width": 1440,
+        "height": 1260,
+        "jpeg": true,
+        "byteLength": 302676,
+        "sha256": "8bb71eec2fe36b8c5cd0f10e559e5894d5abded158597c1332178a202141cb07",
+        "paperRGB": [
+          238,
+          244,
+          242
+        ],
+        "tileMarkers": [
+          [
+            204,
+            53,
+            44
+          ],
+          [
+            33,
+            141,
+            66
+          ],
+          [
+            41,
+            108,
+            197
+          ],
+          [
+            172,
+            70,
+            179
+          ]
+        ],
+        "tileEdges": [
+          [
+            [
+              202,
+              53,
+              46
+            ],
+            [
+              204,
+              53,
+              44
+            ],
+            [
+              202,
+              54,
+              44
+            ],
+            [
+              202,
+              53,
+              47
+            ]
+          ],
+          [
+            [
+              31,
+              141,
+              68
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              32,
+              140,
+              65
+            ]
+          ],
+          [
+            [
+              38,
+              109,
+              199
+            ],
+            [
+              41,
+              108,
+              197
+            ],
+            [
+              38,
+              109,
+              201
+            ],
+            [
+              39,
+              108,
+              199
+            ]
+          ],
+          [
+            [
+              172,
+              71,
+              177
+            ],
+            [
+              172,
+              70,
+              179
+            ],
+            [
+              173,
+              70,
+              177
+            ],
+            [
+              173,
+              70,
+              177
+            ]
+          ]
+        ],
+        "cssFilter": "none"
+      },
+      "afterSwap": {
+        "uri": "blob:http://127.0.0.1:8791/31d4db0a-048b-4b7b-bca6-aae0b2ee0fa1",
+        "width": 1440,
+        "height": 1260,
+        "jpeg": true,
+        "byteLength": 302604,
+        "sha256": "ac2d2cebaace811fffe600e69d4f8c3f5571a9a72fdf18081e01852549b33679",
+        "paperRGB": [
+          238,
+          244,
+          242
+        ],
+        "tileMarkers": [
+          [
+            33,
+            141,
+            66
+          ],
+          [
+            202,
+            54,
+            44
+          ],
+          [
+            41,
+            108,
+            197
+          ],
+          [
+            172,
+            70,
+            179
+          ]
+        ],
+        "tileEdges": [
+          [
+            [
+              31,
+              141,
+              68
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              31,
+              141,
+              68
+            ],
+            [
+              30,
+              141,
+              64
+            ]
+          ],
+          [
+            [
+              202,
+              53,
+              46
+            ],
+            [
+              202,
+              54,
+              44
+            ],
+            [
+              204,
+              53,
+              46
+            ],
+            [
+              202,
+              53,
+              47
+            ]
+          ],
+          [
+            [
+              38,
+              109,
+              199
+            ],
+            [
+              41,
+              108,
+              197
+            ],
+            [
+              38,
+              109,
+              201
+            ],
+            [
+              39,
+              108,
+              199
+            ]
+          ],
+          [
+            [
+              172,
+              71,
+              177
+            ],
+            [
+              172,
+              70,
+              179
+            ],
+            [
+              173,
+              70,
+              177
+            ],
+            [
+              173,
+              70,
+              177
+            ]
+          ]
+        ],
+        "cssFilter": "none"
+      },
+      "fill": {
+        "uri": "blob:http://127.0.0.1:8791/cb3ec426-aa3a-4b9f-9bf7-cd402caa5738",
+        "width": 1440,
+        "height": 1260,
+        "jpeg": true,
+        "byteLength": 342833,
+        "sha256": "5d8f1f9cad24d1d333c6291ca7544acf70676184108ce56ab20911a98f0f2df7",
+        "paperRGB": [
+          238,
+          244,
+          242
+        ],
+        "tileMarkers": [
+          [
+            101,
+            93,
+            82
+          ],
+          [
+            202,
+            54,
+            44
+          ],
+          [
+            41,
+            108,
+            197
+          ],
+          [
+            172,
+            70,
+            179
+          ]
+        ],
+        "tileEdges": [
+          [
+            [
+              27,
+              24,
+              19
+            ],
+            [
+              101,
+              93,
+              82
+            ],
+            [
+              229,
+              168,
+              137
+            ],
+            [
+              20,
+              18,
+              19
+            ]
+          ],
+          [
+            [
+              202,
+              53,
+              46
+            ],
+            [
+              202,
+              54,
+              44
+            ],
+            [
+              204,
+              53,
+              46
+            ],
+            [
+              202,
+              53,
+              47
+            ]
+          ],
+          [
+            [
+              38,
+              109,
+              199
+            ],
+            [
+              41,
+              108,
+              197
+            ],
+            [
+              38,
+              109,
+              201
+            ],
+            [
+              39,
+              108,
+              199
+            ]
+          ],
+          [
+            [
+              172,
+              71,
+              177
+            ],
+            [
+              172,
+              70,
+              179
+            ],
+            [
+              173,
+              70,
+              177
+            ],
+            [
+              173,
+              70,
+              177
+            ]
+          ]
+        ],
+        "cssFilter": "none"
+      },
+      "panned": {
+        "uri": "blob:http://127.0.0.1:8791/57c4d139-da62-4f84-bfc7-53850b4283c9",
+        "width": 1440,
+        "height": 1260,
+        "jpeg": true,
+        "byteLength": 342542,
+        "sha256": "b53d5df91c62bbb557de741c279025ec4568c586209308799934dae82589050e",
+        "paperRGB": [
+          238,
+          244,
+          242
+        ],
+        "tileMarkers": [
+          [
+            11,
+            9,
+            10
+          ],
+          [
+            202,
+            54,
+            44
+          ],
+          [
+            41,
+            108,
+            197
+          ],
+          [
+            172,
+            70,
+            179
+          ]
+        ],
+        "tileEdges": [
+          [
+            [
+              192,
+              137,
+              107
+            ],
+            [
+              11,
+              9,
+              10
+            ],
+            [
+              196,
+              143,
+              109
+            ],
+            [
+              24,
+              23,
+              21
+            ]
+          ],
+          [
+            [
+              202,
+              53,
+              46
+            ],
+            [
+              202,
+              54,
+              44
+            ],
+            [
+              204,
+              53,
+              46
+            ],
+            [
+              202,
+              53,
+              47
+            ]
+          ],
+          [
+            [
+              38,
+              109,
+              199
+            ],
+            [
+              41,
+              108,
+              197
+            ],
+            [
+              38,
+              109,
+              201
+            ],
+            [
+              39,
+              108,
+              199
+            ]
+          ],
+          [
+            [
+              172,
+              71,
+              177
+            ],
+            [
+              172,
+              70,
+              179
+            ],
+            [
+              173,
+              70,
+              177
+            ],
+            [
+              173,
+              70,
+              177
+            ]
+          ]
+        ],
+        "cssFilter": "none"
+      },
+      "cropRecipe": {
+        "cropsByPhotoId": {
+          "1f3993ea-93af-4671-801c-cb9f00157bd5": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": {
+            "mode": "fill",
+            "x": 0.25,
+            "y": 0.25,
+            "zoom": 1.1
+          },
+          "6366a93f-ad99-4926-9266-0fedae7d4ae8": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "820cebbc-e751-42ec-92f2-5c80fe83a64c": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        },
+        "layout": "grid",
+        "photoIds": [
+          "604c8fbb-8b6e-417d-b0e7-7677a2aff92b",
+          "6366a93f-ad99-4926-9266-0fedae7d4ae8",
+          "820cebbc-e751-42ec-92f2-5c80fe83a64c",
+          "1f3993ea-93af-4671-801c-cb9f00157bd5"
+        ],
+        "theme": "coastal",
+        "version": "wedding-template-v1"
+      },
+      "finalPreview": {
+        "uri": "blob:http://127.0.0.1:8791/d79ae994-2a62-4249-be28-2c367a9f9f7d",
+        "width": 1440,
+        "height": 1260,
+        "jpeg": true,
+        "byteLength": 301918,
+        "sha256": "afe1331a852a9bee338338db92a9f13941acb9298194fa7b7b31eec84cf296b2",
+        "paperRGB": [
+          238,
+          241,
+          232
+        ],
+        "tileMarkers": [
+          [
+            202,
+            53,
+            46
+          ],
+          [
+            33,
+            141,
+            66
+          ],
+          [
+            39,
+            108,
+            199
+          ],
+          [
+            172,
+            70,
+            179
+          ]
+        ],
+        "tileEdges": [
+          [
+            [
+              203,
+              52,
+              45
+            ],
+            [
+              202,
+              53,
+              46
+            ],
+            [
+              202,
+              54,
+              44
+            ],
+            [
+              204,
+              52,
+              47
+            ]
+          ],
+          [
+            [
+              31,
+              142,
+              66
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              33,
+              141,
+              66
+            ]
+          ],
+          [
+            [
+              38,
+              109,
+              199
+            ],
+            [
+              39,
+              108,
+              199
+            ],
+            [
+              38,
+              109,
+              201
+            ],
+            [
+              39,
+              108,
+              199
+            ]
+          ],
+          [
+            [
+              172,
+              71,
+              177
+            ],
+            [
+              172,
+              70,
+              179
+            ],
+            [
+              173,
+              70,
+              177
+            ],
+            [
+              173,
+              70,
+              177
+            ]
+          ]
+        ],
+        "cssFilter": "none"
+      },
+      "saved": {
+        "uri": "blob:http://127.0.0.1:8791/d36e2380-8ee9-46a3-a998-e12b4f49712a",
+        "width": 2400,
+        "height": 2100,
+        "jpeg": true,
+        "byteLength": 704210,
+        "sha256": "8f41536ca41564c56cf0e64f622f7d6c041329b947294d90423acb6ec035934f",
+        "paperRGB": [
+          238,
+          241,
+          232
+        ],
+        "tileMarkers": [
+          [
+            204,
+            53,
+            46
+          ],
+          [
+            34,
+            140,
+            65
+          ],
+          [
+            39,
+            108,
+            199
+          ],
+          [
+            173,
+            70,
+            177
+          ]
+        ],
+        "tileEdges": [
+          [
+            [
+              204,
+              53,
+              46
+            ],
+            [
+              204,
+              53,
+              46
+            ],
+            [
+              204,
+              53,
+              46
+            ],
+            [
+              204,
+              53,
+              46
+            ]
+          ],
+          [
+            [
+              34,
+              140,
+              65
+            ],
+            [
+              34,
+              140,
+              65
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              33,
+              141,
+              65
+            ]
+          ],
+          [
+            [
+              38,
+              109,
+              199
+            ],
+            [
+              39,
+              108,
+              199
+            ],
+            [
+              41,
+              108,
+              197
+            ],
+            [
+              39,
+              108,
+              201
+            ]
+          ],
+          [
+            [
+              173,
+              70,
+              177
+            ],
+            [
+              173,
+              70,
+              177
+            ],
+            [
+              173,
+              70,
+              177
+            ],
+            [
+              175,
+              69,
+              179
+            ]
+          ]
+        ],
+        "cssFilter": "none"
+      },
+      "expectedJobs": [
+        "1f3993ea-93af-4671-801c-cb9f00157bd5",
+        "604c8fbb-8b6e-417d-b0e7-7677a2aff92b",
+        "6366a93f-ad99-4926-9266-0fedae7d4ae8",
+        "7398e33b-4ca6-4bb3-9341-ae6fa0446539",
+        "820cebbc-e751-42ec-92f2-5c80fe83a64c",
+        "864bfc84-8325-417a-bf90-db7a1e29c547"
+      ],
+      "counters": {
+        "renders": [
+          {
+            "requestID": "1292fc1b-94e9-40f0-b644-566479dda67b",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/ffe214f7-a06f-4886-b60a-d2d2c166329e.jpg",
+            "sourceHashes": {
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "d069b13c-ba41-4e91-93a4-b43aef3f6836",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/ae20014c-6244-4b9e-b8f0-e2d870e58d6e.jpg",
+            "sourceHashes": {
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "dbd210b2-27ba-4ead-8a64-0dd6f1af30b9",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/25640fc6-5718-4298-97da-a40790d710dd.jpg",
+            "sourceHashes": {
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "6a261df2-d036-446f-b124-cf9f4409413e",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/2e0bd6f5-9780-44e8-9a62-da5269901d00.jpg",
+            "sourceHashes": {
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "4d993b26-5f0f-42b0-bb01-21069442e885",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/bd695d7b-b836-49dc-9d28-eecf47e94c31.jpg",
+            "sourceHashes": {
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "6b61149c-537e-41d5-8f8a-d4cfaf24dc60",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/3810a687-2e30-42d5-b5ef-d79ce15a15b2.jpg",
+            "sourceHashes": {
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "c1f3080b-4c26-4bb2-9941-4f517c16cdf1",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/32b6a967-659a-4a76-adc1-aa50f76c733e.jpg",
+            "sourceHashes": {
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "b72f78af-91e9-4d0a-b0a0-3464758404f5",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/0bc432e2-219d-4cf9-a3bf-546cb86d096f.jpg",
+            "sourceHashes": {
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "03027b65-e324-4863-a29a-0eb93a6ccdb1",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/de06f1dd-2ae4-41dc-9698-2cdecac378fc.jpg",
+            "sourceHashes": {
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "d588f867-8b7f-401c-a7b4-e9ffb5003e3c",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/35b93fa3-d65e-4418-b0dc-3ad08824cdeb.jpg",
+            "sourceHashes": {
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "e8e747bf-8ead-4d41-81bb-b40633ae1d16",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/1aa298de-1153-49f7-b1ac-5fb961beb83d.jpg",
+            "sourceHashes": {
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "10ef8424-fcb4-4f4b-bf79-7d5283acf279",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/2d3708da-d60a-4625-867b-f0a1b44323c5.jpg",
+            "sourceHashes": {
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "a40fcede-28e2-4f41-8207-ffc876157fe9",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fill\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/153bd3ce-f2e2-4dd6-9333-8d24dfd36234.jpg",
+            "sourceHashes": {
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "cd1f05ba-8b89-4add-a1b8-6ac8c7988e83",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fill\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/913d0cac-4cc5-43de-b82a-737a7e506853.jpg",
+            "sourceHashes": {
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "e74cfe86-288f-47c6-93f6-7201b239ba2c",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fill\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/9b66fc96-1203-4df2-bda3-9447c1f166c3.jpg",
+            "sourceHashes": {
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "421fdcce-2e47-4afb-8f3f-e4968d6c31be",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fill\",\"x\":0,\"y\":0,\"zoom\":1.1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/db793709-dbc7-4b88-813a-c8b3b0cbb84a.jpg",
+            "sourceHashes": {
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "8b37e8e5-3a06-4f87-8638-6073053233c1",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fill\",\"x\":0,\"y\":0,\"zoom\":1.1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/83fdc67b-0484-41e4-b9cd-25dc77a06b2e.jpg",
+            "sourceHashes": {
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "36313329-e532-4774-be57-7300ffe4521f",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fill\",\"x\":0,\"y\":0,\"zoom\":1.1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/1346adda-230c-4b66-a025-15af6d39d463.jpg",
+            "sourceHashes": {
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "3f7aa11a-ce5e-447c-b67a-dec6a9a0a107",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fill\",\"x\":0,\"y\":0.25,\"zoom\":1.1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/654a9c78-b081-47dd-ace0-385ba09f3e97.jpg",
+            "sourceHashes": {
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "2c33b323-ae04-4a65-a16e-0ff12728e0c8",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fill\",\"x\":0,\"y\":0.25,\"zoom\":1.1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/c6c4725f-1e54-4e4e-ba8d-3c9a6236ed60.jpg",
+            "sourceHashes": {
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "68ff20ee-0a4e-4408-89a9-fb29081742a6",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fill\",\"x\":0,\"y\":0.25,\"zoom\":1.1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/95e3e4e3-ee4e-427c-9de8-ddfa483db740.jpg",
+            "sourceHashes": {
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "6e26dee6-3c64-444a-82ab-f7fcafa907ab",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fill\",\"x\":0.25,\"y\":0.25,\"zoom\":1.1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/f5a77d15-5ce9-4e5c-b43e-3689decf3384.jpg",
+            "sourceHashes": {
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "3cf379b2-7bb9-49d3-9715-c38da9e570fc",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fill\",\"x\":0.25,\"y\":0.25,\"zoom\":1.1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/05dde28b-077b-4b20-a964-d566d68e2514.jpg",
+            "sourceHashes": {
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "98653363-a5d5-4a0f-8185-e705ba2328c9",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fill\",\"x\":0.25,\"y\":0.25,\"zoom\":1.1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/c6525a28-b5ee-4a74-809b-d31e16e04d39.jpg",
+            "sourceHashes": {
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "e7371151-87eb-4e86-a0f7-002bf03b397a",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/9c1e89cb-7fef-4e44-b7d9-01d0859023f2.jpg",
+            "sourceHashes": {
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "9ff91c47-1915-4163-bbb8-5691ebc6b90c",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/e1d63739-857b-4a5f-a560-72eccb3390f6.jpg",
+            "sourceHashes": {
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "53194f6c-3b3d-4b0d-a202-63de40db34b8",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/a8542242-cb5f-4302-9f47-fdf0c0f4eef9.jpg",
+            "sourceHashes": {
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "724cf0a3-b885-44e2-999e-90163a1aa778",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "cancelled",
+            "uri": "",
+            "sourceHashes": {}
+          },
+          {
+            "requestID": "60d16bcf-f2ca-4df6-aed1-a6d776d4e567",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "cancelled",
+            "uri": "",
+            "sourceHashes": {}
+          },
+          {
+            "requestID": "53dd6ef7-63a4-4ea9-8283-7aeaabe62dee",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "cancelled",
+            "uri": "",
+            "sourceHashes": {}
+          },
+          {
+            "requestID": "1be7af06-37cd-4732-abfb-0fdd203d0dea",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/288d83e6-ebc0-4843-88ce-c1ccdeda33c2.jpg",
+            "sourceHashes": {
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "b35559cb-8988-4861-a08d-765193fa5a68",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/37d7480d-a31e-4b00-b6b7-73f56977db94.jpg",
+            "sourceHashes": {
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "9dbcc0f0-9a69-4df9-9f18-d6153617480b",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/3d8c5fe0-a05a-4fe8-abb7-a422026f1f72.jpg",
+            "sourceHashes": {
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "7135dd6e-68dd-4231-bdb2-6cd9f300eb8b",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/9c8d2599-c6fc-4de1-a1e2-3ff024179818.jpg",
+            "sourceHashes": {
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "5302991a-b99d-4f79-a3ae-37c0f6419ee7",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/8a435f6a-cf7b-4227-bd08-9c1d020f413a.jpg",
+            "sourceHashes": {
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "3c630cf0-e160-4abf-a46d-051588c45ffe",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/a053fc50-f268-404f-b8d5-8906c3f4646d.jpg",
+            "sourceHashes": {
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "f545b38c-0e77-42cf-a967-157ba751ff58",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"1f3993ea-93af-4671-801c-cb9f00157bd5\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"6366a93f-ad99-4926-9266-0fedae7d4ae8\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"820cebbc-e751-42ec-92f2-5c80fe83a64c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6366a93f-ad99-4926-9266-0fedae7d4ae8\",\"604c8fbb-8b6e-417d-b0e7-7677a2aff92b\",\"820cebbc-e751-42ec-92f2-5c80fe83a64c\",\"1f3993ea-93af-4671-801c-cb9f00157bd5\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": false,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/65bd131d-6f09-4dd9-b0e1-bd5f3868f127.jpg",
+            "sourceHashes": {
+              "6366a93f-ad99-4926-9266-0fedae7d4ae8": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "604c8fbb-8b6e-417d-b0e7-7677a2aff92b": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "820cebbc-e751-42ec-92f2-5c80fe83a64c": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "1f3993ea-93af-4671-801c-cb9f00157bd5": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          }
+        ],
+        "cancellations": [
+          "36313329-e532-4774-be57-7300ffe4521f",
+          "724cf0a3-b885-44e2-999e-90163a1aa778",
+          "60d16bcf-f2ca-4df6-aed1-a6d776d4e567",
+          "53dd6ef7-63a4-4ea9-8283-7aeaabe62dee"
+        ],
+        "releases": [
+          "file:///synthetic-templates/ffe214f7-a06f-4886-b60a-d2d2c166329e.jpg",
+          "file:///synthetic-templates/ae20014c-6244-4b9e-b8f0-e2d870e58d6e.jpg",
+          "file:///synthetic-templates/25640fc6-5718-4298-97da-a40790d710dd.jpg",
+          "file:///synthetic-templates/2e0bd6f5-9780-44e8-9a62-da5269901d00.jpg",
+          "file:///synthetic-templates/bd695d7b-b836-49dc-9d28-eecf47e94c31.jpg",
+          "file:///synthetic-templates/3810a687-2e30-42d5-b5ef-d79ce15a15b2.jpg",
+          "file:///synthetic-templates/32b6a967-659a-4a76-adc1-aa50f76c733e.jpg",
+          "file:///synthetic-templates/0bc432e2-219d-4cf9-a3bf-546cb86d096f.jpg",
+          "file:///synthetic-templates/de06f1dd-2ae4-41dc-9698-2cdecac378fc.jpg",
+          "file:///synthetic-templates/35b93fa3-d65e-4418-b0dc-3ad08824cdeb.jpg",
+          "file:///synthetic-templates/1aa298de-1153-49f7-b1ac-5fb961beb83d.jpg",
+          "file:///synthetic-templates/2d3708da-d60a-4625-867b-f0a1b44323c5.jpg",
+          "file:///synthetic-templates/153bd3ce-f2e2-4dd6-9333-8d24dfd36234.jpg",
+          "file:///synthetic-templates/913d0cac-4cc5-43de-b82a-737a7e506853.jpg",
+          "file:///synthetic-templates/9b66fc96-1203-4df2-bda3-9447c1f166c3.jpg",
+          "file:///synthetic-templates/db793709-dbc7-4b88-813a-c8b3b0cbb84a.jpg",
+          "file:///synthetic-templates/83fdc67b-0484-41e4-b9cd-25dc77a06b2e.jpg",
+          "file:///synthetic-templates/1346adda-230c-4b66-a025-15af6d39d463.jpg",
+          "file:///synthetic-templates/654a9c78-b081-47dd-ace0-385ba09f3e97.jpg",
+          "file:///synthetic-templates/c6c4725f-1e54-4e4e-ba8d-3c9a6236ed60.jpg",
+          "file:///synthetic-templates/95e3e4e3-ee4e-427c-9de8-ddfa483db740.jpg",
+          "file:///synthetic-templates/f5a77d15-5ce9-4e5c-b43e-3689decf3384.jpg",
+          "file:///synthetic-templates/05dde28b-077b-4b20-a964-d566d68e2514.jpg",
+          "file:///synthetic-templates/c6525a28-b5ee-4a74-809b-d31e16e04d39.jpg",
+          "file:///synthetic-templates/9c1e89cb-7fef-4e44-b7d9-01d0859023f2.jpg",
+          "file:///synthetic-templates/e1d63739-857b-4a5f-a560-72eccb3390f6.jpg",
+          "file:///synthetic-templates/a8542242-cb5f-4302-9f47-fdf0c0f4eef9.jpg",
+          "file:///synthetic-templates/288d83e6-ebc0-4843-88ce-c1ccdeda33c2.jpg",
+          "file:///synthetic-templates/37d7480d-a31e-4b00-b6b7-73f56977db94.jpg",
+          "file:///synthetic-templates/3d8c5fe0-a05a-4fe8-abb7-a422026f1f72.jpg",
+          "file:///synthetic-templates/9c8d2599-c6fc-4de1-a1e2-3ff024179818.jpg",
+          "file:///synthetic-templates/8a435f6a-cf7b-4227-bd08-9c1d020f413a.jpg",
+          "file:///synthetic-templates/a053fc50-f268-404f-b8d5-8906c3f4646d.jpg",
+          "file:///synthetic-templates/65bd131d-6f09-4dd9-b0e1-bd5f3868f127.jpg"
+        ],
+        "photos": [
+          {
+            "uri": "file:///synthetic/6366a93f-ad99-4926-9266-0fedae7d4ae8.jpg",
+            "photoId": "6366a93f-ad99-4926-9266-0fedae7d4ae8"
+          },
+          {
+            "uri": "file:///synthetic/604c8fbb-8b6e-417d-b0e7-7677a2aff92b.jpg",
+            "photoId": "604c8fbb-8b6e-417d-b0e7-7677a2aff92b"
+          },
+          {
+            "uri": "file:///synthetic/1e5f6e17-66a1-4e0e-8f7e-c2c8c93af217.jpg",
+            "photoId": "1e5f6e17-66a1-4e0e-8f7e-c2c8c93af217"
+          },
+          {
+            "uri": "file:///synthetic/1f3993ea-93af-4671-801c-cb9f00157bd5.jpg",
+            "photoId": "1f3993ea-93af-4671-801c-cb9f00157bd5"
+          },
+          {
+            "uri": "file:///synthetic/7398e33b-4ca6-4bb3-9341-ae6fa0446539.jpg",
+            "photoId": "7398e33b-4ca6-4bb3-9341-ae6fa0446539"
+          },
+          {
+            "uri": "file:///synthetic/820cebbc-e751-42ec-92f2-5c80fe83a64c.jpg",
+            "photoId": "820cebbc-e751-42ec-92f2-5c80fe83a64c"
+          },
+          {
+            "uri": "file:///synthetic/photobooth/864bfc84-8325-417a-bf90-db7a1e29c547.jpg",
+            "photoId": "864bfc84-8325-417a-bf90-db7a1e29c547"
+          }
+        ]
+      },
+      "checks": [
+        "four-shot automatic capture",
+        "exact immediate thumbnail3 retake",
+        "filtered selected JPEG in all six templates",
+        "four distinct edge marker identities",
+        "fit preserves edges by default",
+        "two-tap swaps pixels",
+        "explicit fill/pan/zoom changes pixels",
+        "fit restores source edges",
+        "background cancels and locks host",
+        "raw/selected unchanged",
+        "full-size composite saved and Photos adapter acknowledged",
+        "selected/raw/composite queue deduplicated",
+        "no QR before complete acknowledgement",
+        "Next guests removes session images"
+      ]
+    },
+    {
+      "orientation": "landscape",
+      "initialNextGuest": {
+        "x": 601.5,
+        "y": 560.5,
+        "width": 306,
+        "height": 64
+      },
+      "initialQR": {
+        "x": 674.75,
+        "y": 249,
+        "width": 306,
+        "height": 330
+      },
+      "readyNextGuest": {
+        "x": 674.75,
+        "y": 599,
+        "width": 306,
+        "height": 64
+      },
+      "fastRetake": {
+        "intendedSlot": 3,
+        "labelImmediatelyAfterThumbnail": "Retake photo 3",
+        "actorSleepBeforeRetake": false,
+        "cameraAction": "Retake photo 3"
+      },
+      "rawOriginals": [
+        {
+          "id": "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff",
+          "fileUri": "file:///synthetic/8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff.jpg",
+          "createdAt": 1793033939610,
+          "confirmed": false,
+          "sessionId": "d7eb9273-c513-4339-9fb5-b31e02ab8839",
+          "shotIndex": 0,
+          "exportStatus": "saved"
+        },
+        {
+          "id": "6cb420e4-fa77-460f-806b-1779b06b1ba1",
+          "fileUri": "file:///synthetic/6cb420e4-fa77-460f-806b-1779b06b1ba1.jpg",
+          "createdAt": 1793033942912,
+          "confirmed": false,
+          "sessionId": "d7eb9273-c513-4339-9fb5-b31e02ab8839",
+          "shotIndex": 1,
+          "exportStatus": "saved"
+        },
+        {
+          "id": "194175e8-1051-413b-8ffb-b3c1e0050d33",
+          "fileUri": "file:///synthetic/194175e8-1051-413b-8ffb-b3c1e0050d33.jpg",
+          "createdAt": 1793033953246,
+          "confirmed": false,
+          "sessionId": "d7eb9273-c513-4339-9fb5-b31e02ab8839",
+          "shotIndex": 2,
+          "exportStatus": "saved"
+        },
+        {
+          "id": "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c",
+          "fileUri": "file:///synthetic/7a85fe96-8d9a-4ec1-9848-37b18cf73c4c.jpg",
+          "createdAt": 1793033949517,
+          "confirmed": false,
+          "sessionId": "d7eb9273-c513-4339-9fb5-b31e02ab8839",
+          "shotIndex": 3,
+          "exportStatus": "saved"
+        }
+      ],
+      "selected": [
+        {
+          "id": "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff",
+          "fileUri": "file:///synthetic/8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff.jpg",
+          "createdAt": 1793033939610,
+          "confirmed": false,
+          "sessionId": "d7eb9273-c513-4339-9fb5-b31e02ab8839",
+          "shotIndex": 0,
+          "exportStatus": "saved"
+        },
+        {
+          "id": "6cb420e4-fa77-460f-806b-1779b06b1ba1",
+          "fileUri": "file:///synthetic/6cb420e4-fa77-460f-806b-1779b06b1ba1.jpg",
+          "createdAt": 1793033942912,
+          "confirmed": false,
+          "sessionId": "d7eb9273-c513-4339-9fb5-b31e02ab8839",
+          "shotIndex": 1,
+          "exportStatus": "saved"
+        },
+        {
+          "id": "742af089-ffc7-4d99-b21a-f6ee4f4405ce",
+          "fileUri": "file:///synthetic/742af089-ffc7-4d99-b21a-f6ee4f4405ce.jpg",
+          "createdAt": 1793033955779,
+          "confirmed": false,
+          "sourcePhotoId": "194175e8-1051-413b-8ffb-b3c1e0050d33",
+          "look": {
+            "preset": "warm",
+            "intensity": 0.75,
+            "version": "wedding-ci-srgb-v1"
+          },
+          "sessionId": "d7eb9273-c513-4339-9fb5-b31e02ab8839",
+          "shotIndex": 2,
+          "exportStatus": "saved"
+        },
+        {
+          "id": "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c",
+          "fileUri": "file:///synthetic/7a85fe96-8d9a-4ec1-9848-37b18cf73c4c.jpg",
+          "createdAt": 1793033949517,
+          "confirmed": false,
+          "sessionId": "d7eb9273-c513-4339-9fb5-b31e02ab8839",
+          "shotIndex": 3,
+          "exportStatus": "saved"
+        }
+      ],
+      "combinations": [
+        {
+          "layout": "strip",
+          "theme": "classic",
+          "uri": "blob:http://127.0.0.1:8791/b2d543cc-d829-4d80-b186-e2dcc2a34aa5",
+          "width": 480,
+          "height": 1440,
+          "jpeg": true,
+          "byteLength": 163173,
+          "sha256": "087fda3378b8cca812401443aae370013275d2508c95ee29d984a13a777f9d01",
+          "paperRGB": [
+            245,
+            241,
+            230
+          ],
+          "tileMarkers": [
+            [
+              202,
+              53,
+              46
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              41,
+              108,
+              195
+            ],
+            [
+              173,
+              70,
+              175
+            ]
+          ],
+          "tileEdges": [
+            [
+              [
+                206,
+                53,
+                48
+              ],
+              [
+                202,
+                53,
+                46
+              ],
+              [
+                200,
+                51,
+                45
+              ],
+              [
+                204,
+                53,
+                46
+              ]
+            ],
+            [
+              [
+                35,
+                141,
+                67
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                34,
+                140,
+                66
+              ]
+            ],
+            [
+              [
+                40,
+                107,
+                198
+              ],
+              [
+                41,
+                108,
+                195
+              ],
+              [
+                41,
+                108,
+                197
+              ],
+              [
+                40,
+                109,
+                200
+              ]
+            ],
+            [
+              [
+                171,
+                70,
+                176
+              ],
+              [
+                173,
+                70,
+                175
+              ],
+              [
+                172,
+                71,
+                177
+              ],
+              [
+                174,
+                71,
+                178
+              ]
+            ]
+          ],
+          "cssFilter": "none"
+        },
+        {
+          "layout": "strip",
+          "theme": "botanical",
+          "uri": "blob:http://127.0.0.1:8791/554dfbca-108d-4ef4-a061-1f6c30409d3b",
+          "width": 480,
+          "height": 1440,
+          "jpeg": true,
+          "byteLength": 163453,
+          "sha256": "ad3d496596bb2210f150baa3e61cb54f612b13424f99ea221ca5ff5f1dd58f93",
+          "paperRGB": [
+            238,
+            241,
+            232
+          ],
+          "tileMarkers": [
+            [
+              202,
+              53,
+              46
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              41,
+              108,
+              195
+            ],
+            [
+              173,
+              70,
+              175
+            ]
+          ],
+          "tileEdges": [
+            [
+              [
+                205,
+                54,
+                47
+              ],
+              [
+                202,
+                53,
+                46
+              ],
+              [
+                200,
+                51,
+                45
+              ],
+              [
+                202,
+                53,
+                46
+              ]
+            ],
+            [
+              [
+                32,
+                143,
+                67
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                34,
+                140,
+                68
+              ]
+            ],
+            [
+              [
+                39,
+                108,
+                199
+              ],
+              [
+                41,
+                108,
+                195
+              ],
+              [
+                41,
+                108,
+                197
+              ],
+              [
+                39,
+                108,
+                199
+              ]
+            ],
+            [
+              [
+                169,
+                70,
+                176
+              ],
+              [
+                173,
+                70,
+                175
+              ],
+              [
+                172,
+                71,
+                177
+              ],
+              [
+                173,
+                72,
+                178
+              ]
+            ]
+          ],
+          "cssFilter": "none"
+        },
+        {
+          "layout": "strip",
+          "theme": "coastal",
+          "uri": "blob:http://127.0.0.1:8791/e3c9b82c-e0b3-43d3-a743-b01a26391425",
+          "width": 480,
+          "height": 1440,
+          "jpeg": true,
+          "byteLength": 164099,
+          "sha256": "b88ba884ce3773adba953f9bc1e3c6d58aeef3f4b60c2f5e34348309e933d1b3",
+          "paperRGB": [
+            238,
+            244,
+            242
+          ],
+          "tileMarkers": [
+            [
+              202,
+              53,
+              46
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              41,
+              108,
+              195
+            ],
+            [
+              173,
+              70,
+              175
+            ]
+          ],
+          "tileEdges": [
+            [
+              [
+                205,
+                54,
+                47
+              ],
+              [
+                202,
+                53,
+                46
+              ],
+              [
+                200,
+                51,
+                45
+              ],
+              [
+                204,
+                52,
+                47
+              ]
+            ],
+            [
+              [
+                34,
+                142,
+                67
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                34,
+                140,
+                66
+              ]
+            ],
+            [
+              [
+                38,
+                109,
+                199
+              ],
+              [
+                41,
+                108,
+                195
+              ],
+              [
+                41,
+                108,
+                197
+              ],
+              [
+                40,
+                109,
+                202
+              ]
+            ],
+            [
+              [
+                173,
+                70,
+                177
+              ],
+              [
+                173,
+                70,
+                175
+              ],
+              [
+                172,
+                71,
+                177
+              ],
+              [
+                175,
+                69,
+                177
+              ]
+            ]
+          ],
+          "cssFilter": "none"
+        },
+        {
+          "layout": "grid",
+          "theme": "classic",
+          "uri": "blob:http://127.0.0.1:8791/b1a01c42-eecc-41aa-b849-e6cdff2fa273",
+          "width": 1440,
+          "height": 1260,
+          "jpeg": true,
+          "byteLength": 301036,
+          "sha256": "c4850dba784101f91d949049e9923408f5a1bb094583780c81791dab7e6d3a0e",
+          "paperRGB": [
+            245,
+            241,
+            230
+          ],
+          "tileMarkers": [
+            [
+              202,
+              53,
+              46
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              39,
+              108,
+              199
+            ],
+            [
+              172,
+              70,
+              179
+            ]
+          ],
+          "tileEdges": [
+            [
+              [
+                205,
+                52,
+                46
+              ],
+              [
+                202,
+                53,
+                46
+              ],
+              [
+                202,
+                54,
+                44
+              ],
+              [
+                204,
+                52,
+                47
+              ]
+            ],
+            [
+              [
+                31,
+                141,
+                68
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                34,
+                140,
+                68
+              ],
+              [
+                32,
+                140,
+                65
+              ]
+            ],
+            [
+              [
+                38,
+                109,
+                199
+              ],
+              [
+                39,
+                108,
+                199
+              ],
+              [
+                38,
+                109,
+                201
+              ],
+              [
+                39,
+                108,
+                199
+              ]
+            ],
+            [
+              [
+                172,
+                71,
+                177
+              ],
+              [
+                172,
+                70,
+                179
+              ],
+              [
+                173,
+                70,
+                179
+              ],
+              [
+                173,
+                70,
+                177
+              ]
+            ]
+          ],
+          "cssFilter": "none"
+        },
+        {
+          "layout": "grid",
+          "theme": "botanical",
+          "uri": "blob:http://127.0.0.1:8791/953cf503-3935-4be0-b3db-b77f255f686e",
+          "width": 1440,
+          "height": 1260,
+          "jpeg": true,
+          "byteLength": 301918,
+          "sha256": "afe1331a852a9bee338338db92a9f13941acb9298194fa7b7b31eec84cf296b2",
+          "paperRGB": [
+            238,
+            241,
+            232
+          ],
+          "tileMarkers": [
+            [
+              202,
+              53,
+              46
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              39,
+              108,
+              199
+            ],
+            [
+              172,
+              70,
+              179
+            ]
+          ],
+          "tileEdges": [
+            [
+              [
+                203,
+                52,
+                45
+              ],
+              [
+                202,
+                53,
+                46
+              ],
+              [
+                202,
+                54,
+                44
+              ],
+              [
+                204,
+                52,
+                47
+              ]
+            ],
+            [
+              [
+                31,
+                142,
+                66
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                33,
+                141,
+                66
+              ]
+            ],
+            [
+              [
+                38,
+                109,
+                199
+              ],
+              [
+                39,
+                108,
+                199
+              ],
+              [
+                38,
+                109,
+                201
+              ],
+              [
+                39,
+                108,
+                199
+              ]
+            ],
+            [
+              [
+                172,
+                71,
+                177
+              ],
+              [
+                172,
+                70,
+                179
+              ],
+              [
+                173,
+                70,
+                177
+              ],
+              [
+                173,
+                70,
+                177
+              ]
+            ]
+          ],
+          "cssFilter": "none"
+        },
+        {
+          "layout": "grid",
+          "theme": "coastal",
+          "uri": "blob:http://127.0.0.1:8791/864bec93-807b-401a-9ab2-f65f32ee1cad",
+          "width": 1440,
+          "height": 1260,
+          "jpeg": true,
+          "byteLength": 302676,
+          "sha256": "8bb71eec2fe36b8c5cd0f10e559e5894d5abded158597c1332178a202141cb07",
+          "paperRGB": [
+            238,
+            244,
+            242
+          ],
+          "tileMarkers": [
+            [
+              204,
+              53,
+              44
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              41,
+              108,
+              197
+            ],
+            [
+              172,
+              70,
+              179
+            ]
+          ],
+          "tileEdges": [
+            [
+              [
+                202,
+                53,
+                46
+              ],
+              [
+                204,
+                53,
+                44
+              ],
+              [
+                202,
+                54,
+                44
+              ],
+              [
+                202,
+                53,
+                47
+              ]
+            ],
+            [
+              [
+                31,
+                141,
+                68
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                33,
+                141,
+                66
+              ],
+              [
+                32,
+                140,
+                65
+              ]
+            ],
+            [
+              [
+                38,
+                109,
+                199
+              ],
+              [
+                41,
+                108,
+                197
+              ],
+              [
+                38,
+                109,
+                201
+              ],
+              [
+                39,
+                108,
+                199
+              ]
+            ],
+            [
+              [
+                172,
+                71,
+                177
+              ],
+              [
+                172,
+                70,
+                179
+              ],
+              [
+                173,
+                70,
+                177
+              ],
+              [
+                173,
+                70,
+                177
+              ]
+            ]
+          ],
+          "cssFilter": "none"
+        }
+      ],
+      "beforeSwap": {
+        "uri": "blob:http://127.0.0.1:8791/864bec93-807b-401a-9ab2-f65f32ee1cad",
+        "width": 1440,
+        "height": 1260,
+        "jpeg": true,
+        "byteLength": 302676,
+        "sha256": "8bb71eec2fe36b8c5cd0f10e559e5894d5abded158597c1332178a202141cb07",
+        "paperRGB": [
+          238,
+          244,
+          242
+        ],
+        "tileMarkers": [
+          [
+            204,
+            53,
+            44
+          ],
+          [
+            33,
+            141,
+            66
+          ],
+          [
+            41,
+            108,
+            197
+          ],
+          [
+            172,
+            70,
+            179
+          ]
+        ],
+        "tileEdges": [
+          [
+            [
+              202,
+              53,
+              46
+            ],
+            [
+              204,
+              53,
+              44
+            ],
+            [
+              202,
+              54,
+              44
+            ],
+            [
+              202,
+              53,
+              47
+            ]
+          ],
+          [
+            [
+              31,
+              141,
+              68
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              32,
+              140,
+              65
+            ]
+          ],
+          [
+            [
+              38,
+              109,
+              199
+            ],
+            [
+              41,
+              108,
+              197
+            ],
+            [
+              38,
+              109,
+              201
+            ],
+            [
+              39,
+              108,
+              199
+            ]
+          ],
+          [
+            [
+              172,
+              71,
+              177
+            ],
+            [
+              172,
+              70,
+              179
+            ],
+            [
+              173,
+              70,
+              177
+            ],
+            [
+              173,
+              70,
+              177
+            ]
+          ]
+        ],
+        "cssFilter": "none"
+      },
+      "afterSwap": {
+        "uri": "blob:http://127.0.0.1:8791/ef175d30-bba3-4554-bcb7-142c79f45d51",
+        "width": 1440,
+        "height": 1260,
+        "jpeg": true,
+        "byteLength": 302604,
+        "sha256": "ac2d2cebaace811fffe600e69d4f8c3f5571a9a72fdf18081e01852549b33679",
+        "paperRGB": [
+          238,
+          244,
+          242
+        ],
+        "tileMarkers": [
+          [
+            33,
+            141,
+            66
+          ],
+          [
+            202,
+            54,
+            44
+          ],
+          [
+            41,
+            108,
+            197
+          ],
+          [
+            172,
+            70,
+            179
+          ]
+        ],
+        "tileEdges": [
+          [
+            [
+              31,
+              141,
+              68
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              31,
+              141,
+              68
+            ],
+            [
+              30,
+              141,
+              64
+            ]
+          ],
+          [
+            [
+              202,
+              53,
+              46
+            ],
+            [
+              202,
+              54,
+              44
+            ],
+            [
+              204,
+              53,
+              46
+            ],
+            [
+              202,
+              53,
+              47
+            ]
+          ],
+          [
+            [
+              38,
+              109,
+              199
+            ],
+            [
+              41,
+              108,
+              197
+            ],
+            [
+              38,
+              109,
+              201
+            ],
+            [
+              39,
+              108,
+              199
+            ]
+          ],
+          [
+            [
+              172,
+              71,
+              177
+            ],
+            [
+              172,
+              70,
+              179
+            ],
+            [
+              173,
+              70,
+              177
+            ],
+            [
+              173,
+              70,
+              177
+            ]
+          ]
+        ],
+        "cssFilter": "none"
+      },
+      "fill": {
+        "uri": "blob:http://127.0.0.1:8791/5e21889d-9fe5-42aa-adbe-480c636df2d8",
+        "width": 1440,
+        "height": 1260,
+        "jpeg": true,
+        "byteLength": 342833,
+        "sha256": "5d8f1f9cad24d1d333c6291ca7544acf70676184108ce56ab20911a98f0f2df7",
+        "paperRGB": [
+          238,
+          244,
+          242
+        ],
+        "tileMarkers": [
+          [
+            101,
+            93,
+            82
+          ],
+          [
+            202,
+            54,
+            44
+          ],
+          [
+            41,
+            108,
+            197
+          ],
+          [
+            172,
+            70,
+            179
+          ]
+        ],
+        "tileEdges": [
+          [
+            [
+              27,
+              24,
+              19
+            ],
+            [
+              101,
+              93,
+              82
+            ],
+            [
+              229,
+              168,
+              137
+            ],
+            [
+              20,
+              18,
+              19
+            ]
+          ],
+          [
+            [
+              202,
+              53,
+              46
+            ],
+            [
+              202,
+              54,
+              44
+            ],
+            [
+              204,
+              53,
+              46
+            ],
+            [
+              202,
+              53,
+              47
+            ]
+          ],
+          [
+            [
+              38,
+              109,
+              199
+            ],
+            [
+              41,
+              108,
+              197
+            ],
+            [
+              38,
+              109,
+              201
+            ],
+            [
+              39,
+              108,
+              199
+            ]
+          ],
+          [
+            [
+              172,
+              71,
+              177
+            ],
+            [
+              172,
+              70,
+              179
+            ],
+            [
+              173,
+              70,
+              177
+            ],
+            [
+              173,
+              70,
+              177
+            ]
+          ]
+        ],
+        "cssFilter": "none"
+      },
+      "panned": {
+        "uri": "blob:http://127.0.0.1:8791/bf8a3cab-9302-449f-9947-074c0943caaf",
+        "width": 1440,
+        "height": 1260,
+        "jpeg": true,
+        "byteLength": 342542,
+        "sha256": "b53d5df91c62bbb557de741c279025ec4568c586209308799934dae82589050e",
+        "paperRGB": [
+          238,
+          244,
+          242
+        ],
+        "tileMarkers": [
+          [
+            11,
+            9,
+            10
+          ],
+          [
+            202,
+            54,
+            44
+          ],
+          [
+            41,
+            108,
+            197
+          ],
+          [
+            172,
+            70,
+            179
+          ]
+        ],
+        "tileEdges": [
+          [
+            [
+              192,
+              137,
+              107
+            ],
+            [
+              11,
+              9,
+              10
+            ],
+            [
+              196,
+              143,
+              109
+            ],
+            [
+              24,
+              23,
+              21
+            ]
+          ],
+          [
+            [
+              202,
+              53,
+              46
+            ],
+            [
+              202,
+              54,
+              44
+            ],
+            [
+              204,
+              53,
+              46
+            ],
+            [
+              202,
+              53,
+              47
+            ]
+          ],
+          [
+            [
+              38,
+              109,
+              199
+            ],
+            [
+              41,
+              108,
+              197
+            ],
+            [
+              38,
+              109,
+              201
+            ],
+            [
+              39,
+              108,
+              199
+            ]
+          ],
+          [
+            [
+              172,
+              71,
+              177
+            ],
+            [
+              172,
+              70,
+              179
+            ],
+            [
+              173,
+              70,
+              177
+            ],
+            [
+              173,
+              70,
+              177
+            ]
+          ]
+        ],
+        "cssFilter": "none"
+      },
+      "cropRecipe": {
+        "cropsByPhotoId": {
+          "6cb420e4-fa77-460f-806b-1779b06b1ba1": {
+            "mode": "fill",
+            "x": 0.25,
+            "y": 0.25,
+            "zoom": 1.1
+          },
+          "742af089-ffc7-4d99-b21a-f6ee4f4405ce": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        },
+        "layout": "grid",
+        "photoIds": [
+          "6cb420e4-fa77-460f-806b-1779b06b1ba1",
+          "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff",
+          "742af089-ffc7-4d99-b21a-f6ee4f4405ce",
+          "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c"
+        ],
+        "theme": "coastal",
+        "version": "wedding-template-v1"
+      },
+      "finalPreview": {
+        "uri": "blob:http://127.0.0.1:8791/a91596a8-ec00-4d74-82d6-bdbbf26500e1",
+        "width": 1440,
+        "height": 1260,
+        "jpeg": true,
+        "byteLength": 301918,
+        "sha256": "afe1331a852a9bee338338db92a9f13941acb9298194fa7b7b31eec84cf296b2",
+        "paperRGB": [
+          238,
+          241,
+          232
+        ],
+        "tileMarkers": [
+          [
+            202,
+            53,
+            46
+          ],
+          [
+            33,
+            141,
+            66
+          ],
+          [
+            39,
+            108,
+            199
+          ],
+          [
+            172,
+            70,
+            179
+          ]
+        ],
+        "tileEdges": [
+          [
+            [
+              203,
+              52,
+              45
+            ],
+            [
+              202,
+              53,
+              46
+            ],
+            [
+              202,
+              54,
+              44
+            ],
+            [
+              204,
+              52,
+              47
+            ]
+          ],
+          [
+            [
+              31,
+              142,
+              66
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              33,
+              141,
+              66
+            ]
+          ],
+          [
+            [
+              38,
+              109,
+              199
+            ],
+            [
+              39,
+              108,
+              199
+            ],
+            [
+              38,
+              109,
+              201
+            ],
+            [
+              39,
+              108,
+              199
+            ]
+          ],
+          [
+            [
+              172,
+              71,
+              177
+            ],
+            [
+              172,
+              70,
+              179
+            ],
+            [
+              173,
+              70,
+              177
+            ],
+            [
+              173,
+              70,
+              177
+            ]
+          ]
+        ],
+        "cssFilter": "none"
+      },
+      "saved": {
+        "uri": "blob:http://127.0.0.1:8791/e5b6e6b1-ffb0-4957-8de5-9df58818f620",
+        "width": 2400,
+        "height": 2100,
+        "jpeg": true,
+        "byteLength": 704210,
+        "sha256": "8f41536ca41564c56cf0e64f622f7d6c041329b947294d90423acb6ec035934f",
+        "paperRGB": [
+          238,
+          241,
+          232
+        ],
+        "tileMarkers": [
+          [
+            204,
+            53,
+            46
+          ],
+          [
+            34,
+            140,
+            65
+          ],
+          [
+            39,
+            108,
+            199
+          ],
+          [
+            173,
+            70,
+            177
+          ]
+        ],
+        "tileEdges": [
+          [
+            [
+              204,
+              53,
+              46
+            ],
+            [
+              204,
+              53,
+              46
+            ],
+            [
+              204,
+              53,
+              46
+            ],
+            [
+              204,
+              53,
+              46
+            ]
+          ],
+          [
+            [
+              34,
+              140,
+              65
+            ],
+            [
+              34,
+              140,
+              65
+            ],
+            [
+              33,
+              141,
+              66
+            ],
+            [
+              33,
+              141,
+              65
+            ]
+          ],
+          [
+            [
+              38,
+              109,
+              199
+            ],
+            [
+              39,
+              108,
+              199
+            ],
+            [
+              41,
+              108,
+              197
+            ],
+            [
+              39,
+              108,
+              201
+            ]
+          ],
+          [
+            [
+              173,
+              70,
+              177
+            ],
+            [
+              173,
+              70,
+              177
+            ],
+            [
+              173,
+              70,
+              177
+            ],
+            [
+              175,
+              69,
+              179
+            ]
+          ]
+        ],
+        "cssFilter": "none"
+      },
+      "expectedJobs": [
+        "194175e8-1051-413b-8ffb-b3c1e0050d33",
+        "6cb420e4-fa77-460f-806b-1779b06b1ba1",
+        "742af089-ffc7-4d99-b21a-f6ee4f4405ce",
+        "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c",
+        "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff",
+        "b11cdbbb-62ce-4e09-b3c7-a0d6961987fc"
+      ],
+      "counters": {
+        "renders": [
+          {
+            "requestID": "e15ff514-b7f8-47e0-b4f8-1c40b5213674",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/4b322d60-6cd9-48d4-8737-af90777b7b7a.jpg",
+            "sourceHashes": {
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "23d8e1a3-9cee-49fa-9294-34d14e417fb5",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/0ff17b43-e5a5-4a68-a1e7-ed7730a82ecc.jpg",
+            "sourceHashes": {
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "1a450b8f-dd83-4eeb-b83c-eeafb2d4fe47",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/1bbc741c-38ff-459d-9860-6a1f20cacde0.jpg",
+            "sourceHashes": {
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "658ba671-d5be-4fb0-bdef-be23d33f8a49",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/c1b0f28c-0c95-412f-a2ae-8e865aad181f.jpg",
+            "sourceHashes": {
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "fcc3884e-1c49-4811-946a-4d648302f845",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/8d5547a2-828c-4d98-a7a4-e87e875e1c01.jpg",
+            "sourceHashes": {
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "fbe009a1-dc4b-4095-96f8-ffef50c08921",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/0b5f526f-c46e-482b-957b-68bb2965346c.jpg",
+            "sourceHashes": {
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "72644787-e6dc-4f0d-9305-6aa9575c87c0",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/86c46a77-ccda-4f30-b9de-b73c95397ed4.jpg",
+            "sourceHashes": {
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "aa137c33-c134-41e4-8a5a-7714a4c5a894",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/8733563d-b4a7-4abb-8c6c-175b1980616f.jpg",
+            "sourceHashes": {
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "19774c6f-6f9d-44bc-92ee-2d737ce6345b",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/ad65a185-83be-4cea-af12-e8ef4f23bd8f.jpg",
+            "sourceHashes": {
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "9a6c16ba-41dc-43b3-bcca-cff0351e4084",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/4f8749c1-f4c9-4ebe-8875-08e5126e53e7.jpg",
+            "sourceHashes": {
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "3b8604e2-7649-4e81-ac1e-33cf04a3ee0c",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/738ba627-e98f-4c6f-8f8e-b1db996fa31c.jpg",
+            "sourceHashes": {
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "5c8a9fc9-cdc7-4143-a8c7-f73754492341",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/042234ca-b3c0-4a9d-89ce-d4ec00e4b616.jpg",
+            "sourceHashes": {
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "d434e8e2-e189-4d75-b59a-c412b698b774",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fill\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/c6b02a7a-e6c1-453b-bb9b-60340150f89d.jpg",
+            "sourceHashes": {
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "f29447b0-794b-41a5-ac59-6831c57ee5c8",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fill\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/4cfed8aa-3b32-4408-a658-225e2d831367.jpg",
+            "sourceHashes": {
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "1eb8896b-d4e9-4c6b-a6b5-954dbe46fb2e",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fill\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/2b28f9c6-8a7d-4e48-a523-03b17d9eb26f.jpg",
+            "sourceHashes": {
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "99f5e491-916e-41b3-a8a1-43274ec12fb9",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fill\",\"x\":0,\"y\":0,\"zoom\":1.1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/0ba71c92-c34d-4132-ab38-c388fe5244f9.jpg",
+            "sourceHashes": {
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "0881a3d3-75cf-4dcb-a0cc-fe29938de47d",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fill\",\"x\":0,\"y\":0,\"zoom\":1.1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/cc4f5e28-9af6-458b-a660-befa19abcae1.jpg",
+            "sourceHashes": {
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "f6058f6e-e181-481d-8683-8a59691f0fbc",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fill\",\"x\":0,\"y\":0,\"zoom\":1.1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/c70708b4-0c15-4fa0-b342-0264b53048d9.jpg",
+            "sourceHashes": {
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "d6da7c80-0a08-4dea-8606-63fe4657fbf0",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fill\",\"x\":0,\"y\":0.25,\"zoom\":1.1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/ae796c88-c76a-48d5-8834-250a7995b138.jpg",
+            "sourceHashes": {
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "6d88281c-0da8-40ba-ad8b-160db155c780",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fill\",\"x\":0,\"y\":0.25,\"zoom\":1.1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/32c138bf-ba9c-4086-8fff-2b266ce7a01c.jpg",
+            "sourceHashes": {
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "4fa50e7d-eb45-471a-9558-e7ec8bd85532",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fill\",\"x\":0,\"y\":0.25,\"zoom\":1.1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/90438395-516c-4df6-afdb-69b3f7291c92.jpg",
+            "sourceHashes": {
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "963c4160-0847-4440-9d38-0f4810c9a233",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fill\",\"x\":0.25,\"y\":0.25,\"zoom\":1.1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/6372f1f3-daac-460c-8e83-52256d5ce217.jpg",
+            "sourceHashes": {
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "3aa4a9b5-03ce-429c-81be-d53b70a9bb2c",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fill\",\"x\":0.25,\"y\":0.25,\"zoom\":1.1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/c27c5625-093d-4f67-a05a-fb54aca758de.jpg",
+            "sourceHashes": {
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "4193b99d-cd5f-45ba-9002-14f34932520b",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fill\",\"x\":0.25,\"y\":0.25,\"zoom\":1.1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/5fe4fe04-ce49-41be-a9f9-76b202b4c482.jpg",
+            "sourceHashes": {
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "b8d35dd5-4187-4bbf-b0be-d73f3f017609",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/86066cd1-ed4f-4591-a45c-273c18db442f.jpg",
+            "sourceHashes": {
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "c0688328-28c9-4219-982a-bc167d4dd0dc",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/e97b55c1-8b1d-42c1-a7b1-a99b57d1f824.jpg",
+            "sourceHashes": {
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "f5d89c50-f0c3-4920-b9b1-820d2290c0fd",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/15960c72-1f93-4f5e-94ee-85ad77d93453.jpg",
+            "sourceHashes": {
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "d80b0bc2-74ad-4f9f-91d6-c688fbe96931",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "cancelled",
+            "uri": "",
+            "sourceHashes": {}
+          },
+          {
+            "requestID": "f72ec748-9d6b-4f02-9375-cc8afbb9d1bc",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "cancelled",
+            "uri": "",
+            "sourceHashes": {}
+          },
+          {
+            "requestID": "163632b4-327e-4c78-a39f-e970bf559dd0",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "cancelled",
+            "uri": "",
+            "sourceHashes": {}
+          },
+          {
+            "requestID": "715ea022-6c67-4576-b2e2-b69ffd5e5776",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/de36ef21-2a11-48cf-b93c-f4fe675443a3.jpg",
+            "sourceHashes": {
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "d5d992bc-8890-469f-a992-515d8dab5fb5",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/f952eaba-be99-44ee-b5ff-4c720e22a321.jpg",
+            "sourceHashes": {
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "f446484f-33fd-4d5e-b784-024148ab6a66",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"strip\",\"photoIds\":[\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/56b5d28c-c5c9-42a3-b763-cf9ce22f8a0e.jpg",
+            "sourceHashes": {
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "2415ba5e-1ba3-4b2c-b44f-f238a8ba4893",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"classic\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/377ce0a1-3061-4a04-8043-676e0d20feed.jpg",
+            "sourceHashes": {
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "5c9f44c7-df90-415e-af45-47a4e6706eed",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/98cb64d9-ec2d-4c2c-9013-a3ae2a26832c.jpg",
+            "sourceHashes": {
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "375a9a01-c4ea-4c37-a751-b3828af50c11",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v1\"}",
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/fa151896-60c4-4682-9275-5c65fdd46ef6.jpg",
+            "sourceHashes": {
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          },
+          {
+            "requestID": "040221da-bfe2-4169-b4cf-6bf55409570e",
+            "recipeJSON": "{\"cropsByPhotoId\":{\"6cb420e4-fa77-460f-806b-1779b06b1ba1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"layout\":\"grid\",\"photoIds\":[\"8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff\",\"6cb420e4-fa77-460f-806b-1779b06b1ba1\",\"742af089-ffc7-4d99-b21a-f6ee4f4405ce\",\"7a85fe96-8d9a-4ec1-9848-37b18cf73c4c\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v1\"}",
+            "preview": false,
+            "status": "complete",
+            "uri": "file:///synthetic-templates/9e601802-fec4-4bba-854c-8da3eebc2bb4.jpg",
+            "sourceHashes": {
+              "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff": "91b7ceb6ac1c53e93d75f1d615cf146ba35b48e3d1e89e1b1a341a332cdb9f0d",
+              "6cb420e4-fa77-460f-806b-1779b06b1ba1": "f245a5222d49b772c6c3bec9b2ae97577b569b9365d669dbc2253ae58069caa6",
+              "742af089-ffc7-4d99-b21a-f6ee4f4405ce": "938135adc08f88f6dea50a7cd3e2ea8c15cacacce94af7179503e964c30c708f",
+              "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c": "d8bfa632d2dbe1eba9eb1d70111a04da7153c6caa2621bac20bdfced90e43203"
+            }
+          }
+        ],
+        "cancellations": [
+          "0881a3d3-75cf-4dcb-a0cc-fe29938de47d",
+          "4fa50e7d-eb45-471a-9558-e7ec8bd85532",
+          "d80b0bc2-74ad-4f9f-91d6-c688fbe96931",
+          "f72ec748-9d6b-4f02-9375-cc8afbb9d1bc",
+          "163632b4-327e-4c78-a39f-e970bf559dd0"
+        ],
+        "releases": [
+          "file:///synthetic-templates/4b322d60-6cd9-48d4-8737-af90777b7b7a.jpg",
+          "file:///synthetic-templates/0ff17b43-e5a5-4a68-a1e7-ed7730a82ecc.jpg",
+          "file:///synthetic-templates/1bbc741c-38ff-459d-9860-6a1f20cacde0.jpg",
+          "file:///synthetic-templates/c1b0f28c-0c95-412f-a2ae-8e865aad181f.jpg",
+          "file:///synthetic-templates/8d5547a2-828c-4d98-a7a4-e87e875e1c01.jpg",
+          "file:///synthetic-templates/0b5f526f-c46e-482b-957b-68bb2965346c.jpg",
+          "file:///synthetic-templates/86c46a77-ccda-4f30-b9de-b73c95397ed4.jpg",
+          "file:///synthetic-templates/8733563d-b4a7-4abb-8c6c-175b1980616f.jpg",
+          "file:///synthetic-templates/ad65a185-83be-4cea-af12-e8ef4f23bd8f.jpg",
+          "file:///synthetic-templates/4f8749c1-f4c9-4ebe-8875-08e5126e53e7.jpg",
+          "file:///synthetic-templates/738ba627-e98f-4c6f-8f8e-b1db996fa31c.jpg",
+          "file:///synthetic-templates/042234ca-b3c0-4a9d-89ce-d4ec00e4b616.jpg",
+          "file:///synthetic-templates/c6b02a7a-e6c1-453b-bb9b-60340150f89d.jpg",
+          "file:///synthetic-templates/4cfed8aa-3b32-4408-a658-225e2d831367.jpg",
+          "file:///synthetic-templates/2b28f9c6-8a7d-4e48-a523-03b17d9eb26f.jpg",
+          "file:///synthetic-templates/0ba71c92-c34d-4132-ab38-c388fe5244f9.jpg",
+          "file:///synthetic-templates/c70708b4-0c15-4fa0-b342-0264b53048d9.jpg",
+          "file:///synthetic-templates/cc4f5e28-9af6-458b-a660-befa19abcae1.jpg",
+          "file:///synthetic-templates/ae796c88-c76a-48d5-8834-250a7995b138.jpg",
+          "file:///synthetic-templates/32c138bf-ba9c-4086-8fff-2b266ce7a01c.jpg",
+          "file:///synthetic-templates/90438395-516c-4df6-afdb-69b3f7291c92.jpg",
+          "file:///synthetic-templates/6372f1f3-daac-460c-8e83-52256d5ce217.jpg",
+          "file:///synthetic-templates/c27c5625-093d-4f67-a05a-fb54aca758de.jpg",
+          "file:///synthetic-templates/5fe4fe04-ce49-41be-a9f9-76b202b4c482.jpg",
+          "file:///synthetic-templates/86066cd1-ed4f-4591-a45c-273c18db442f.jpg",
+          "file:///synthetic-templates/e97b55c1-8b1d-42c1-a7b1-a99b57d1f824.jpg",
+          "file:///synthetic-templates/15960c72-1f93-4f5e-94ee-85ad77d93453.jpg",
+          "file:///synthetic-templates/f952eaba-be99-44ee-b5ff-4c720e22a321.jpg",
+          "file:///synthetic-templates/56b5d28c-c5c9-42a3-b763-cf9ce22f8a0e.jpg",
+          "file:///synthetic-templates/de36ef21-2a11-48cf-b93c-f4fe675443a3.jpg",
+          "file:///synthetic-templates/377ce0a1-3061-4a04-8043-676e0d20feed.jpg",
+          "file:///synthetic-templates/98cb64d9-ec2d-4c2c-9013-a3ae2a26832c.jpg",
+          "file:///synthetic-templates/fa151896-60c4-4682-9275-5c65fdd46ef6.jpg",
+          "file:///synthetic-templates/9e601802-fec4-4bba-854c-8da3eebc2bb4.jpg"
+        ],
+        "photos": [
+          {
+            "uri": "file:///synthetic/8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff.jpg",
+            "photoId": "8f1f06e7-fe0b-481d-98fb-ac79ec5f7bff"
+          },
+          {
+            "uri": "file:///synthetic/6cb420e4-fa77-460f-806b-1779b06b1ba1.jpg",
+            "photoId": "6cb420e4-fa77-460f-806b-1779b06b1ba1"
+          },
+          {
+            "uri": "file:///synthetic/9abbd444-f1b5-4557-b6aa-f587db4a91c0.jpg",
+            "photoId": "9abbd444-f1b5-4557-b6aa-f587db4a91c0"
+          },
+          {
+            "uri": "file:///synthetic/7a85fe96-8d9a-4ec1-9848-37b18cf73c4c.jpg",
+            "photoId": "7a85fe96-8d9a-4ec1-9848-37b18cf73c4c"
+          },
+          {
+            "uri": "file:///synthetic/194175e8-1051-413b-8ffb-b3c1e0050d33.jpg",
+            "photoId": "194175e8-1051-413b-8ffb-b3c1e0050d33"
+          },
+          {
+            "uri": "file:///synthetic/742af089-ffc7-4d99-b21a-f6ee4f4405ce.jpg",
+            "photoId": "742af089-ffc7-4d99-b21a-f6ee4f4405ce"
+          },
+          {
+            "uri": "file:///synthetic/photobooth/b11cdbbb-62ce-4e09-b3c7-a0d6961987fc.jpg",
+            "photoId": "b11cdbbb-62ce-4e09-b3c7-a0d6961987fc"
+          }
+        ]
+      },
+      "checks": [
+        "four-shot automatic capture",
+        "exact immediate thumbnail3 retake",
+        "filtered selected JPEG in all six templates",
+        "four distinct edge marker identities",
+        "fit preserves edges by default",
+        "two-tap swaps pixels",
+        "explicit fill/pan/zoom changes pixels",
+        "fit restores source edges",
+        "background cancels and locks host",
+        "raw/selected unchanged",
+        "full-size composite saved and Photos adapter acknowledged",
+        "selected/raw/composite queue deduplicated",
+        "no QR before complete acknowledgement",
+        "Next guests removes session images"
+      ]
+    }
+  ],
+  "screenshots": [
+    "artifacts/visual/templates-strip-classic-portrait.png",
+    "artifacts/visual/templates-strip-botanical-portrait.png",
+    "artifacts/visual/templates-strip-coastal-portrait.png",
+    "artifacts/visual/templates-grid-classic-portrait.png",
+    "artifacts/visual/templates-grid-botanical-portrait.png",
+    "artifacts/visual/templates-grid-coastal-portrait.png",
+    "artifacts/visual/templates-crop-pan-portrait.png",
+    "artifacts/visual/templates-saved-offline-portrait.png",
+    "artifacts/visual/templates-ready-portrait.png",
+    "artifacts/visual/templates-next-guests-portrait.png",
+    "artifacts/visual/templates-strip-classic-landscape.png",
+    "artifacts/visual/templates-strip-botanical-landscape.png",
+    "artifacts/visual/templates-strip-coastal-landscape.png",
+    "artifacts/visual/templates-grid-classic-landscape.png",
+    "artifacts/visual/templates-grid-botanical-landscape.png",
+    "artifacts/visual/templates-grid-coastal-landscape.png",
+    "artifacts/visual/templates-crop-pan-landscape.png",
+    "artifacts/visual/templates-saved-offline-landscape.png",
+    "artifacts/visual/templates-ready-landscape.png",
+    "artifacts/visual/templates-next-guests-landscape.png",
+    "artifacts/visual/templates-legacy-five-portrait.png"
+  ],
+  "videos": [
+    "artifacts/visual/templates-demo-portrait.webm",
+    "artifacts/visual/templates-demo-landscape.webm"
+  ],
+  "errors": [],
+  "mockedHealthRequests": [
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health"
+  ],
+  "unexpectedExternalRequests": [],
+  "sourceSHA256": "71d7007cd4c903938ee60703f4811b7e3ac47dabc1c2088b6e8b925c21b4072c",
+  "sourceHashes": {
+    "apps/ipad/App.tsx": "71d7007cd4c903938ee60703f4811b7e3ac47dabc1c2088b6e8b925c21b4072c",
+    "apps/ipad/src/GlassSurface.tsx": "ace64a22e740d69040689495c0aa7147f7456038bbd0ee9aba6f2d52b58af972",
+    "apps/ipad/src/glass-policy.ts": "d3e33995484239887dde90f2743919c17bb2e8ff23093ceb45a804e530499e9e",
+    "apps/ipad/src/host-visibility.ts": "9b8033279a1249c59cd04e3f185792fa2a61c14f892f2cb9cf98953ceab02014",
+    "apps/ipad/src/photo-look-editor.ts": "38d6dc47fb34d9d9da58cf96a7daa6102d9616c7f54720c0406c1962548f817b",
+    "apps/ipad/src/native-photo-effects.ts": "3270927da45a191721aaf4b07a5ce1d02d247d4481cb4c85a216788d12fab782",
+    "apps/ipad/src/local-types.ts": "f5e5039245f9d85e34338d5c3ffbe517264f5b4bbc03c9751510be15cec613fb",
+    "apps/ipad/src/template-editor.ts": "11fb2edcf547077b16700b64f5601606398da0d3a90ab56f5214c09c18138d43",
+    "apps/ipad/src/TemplateStudio.tsx": "a0bb9f3c4f2cc292092db7dcbe775e379c719328f42c5c2430dfc3a60e96850a",
+    "apps/ipad/src/publication.ts": "e2c4e2501275de85d966c0fd80bbebef960e994920eb60ce62578a1f0bac3f45",
+    "apps/ipad/src/session-capture.ts": "b41f7ee98282fe5661e080a6b4e0b88b17c56e3c1e5908adebbe020ed6323e24",
+    "apps/ipad/src/review-selection.ts": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
+    "apps/ipad/src/sharing.ts": "5312a241a0073a79fff33409795bee5d05e3d1b39dc6587c2ed791982d269628",
+    "apps/ipad/src/SmsShare.tsx": "79464043a0e40a6cc7850c0e46cacfab33b3b19e477fee87192c0b38195d7541",
+    "apps/ipad/src/sms-state.ts": "4c7125d4f710c97848b6690196fa328edc83e85488ce3626dd7e843e2e99497a",
+    "apps/ipad/src/booth-presentation.ts": "b6f720f7d9133a0603f847efd0646a9a23f40d409018e9eb757d5326bc43e935",
+    "apps/ipad/src/host-originals.ts": "938e564eb50d984754abf5ec2d07a4671faa2110bb01ad4394f5377f4d271c1e",
+    "apps/ipad/src/photo-export.ts": "8ba8baae4fe425bd0f99079619e0a693f5c3fcf83ee73a93e167c7c93f7fb633",
+    "apps/ipad/src/photo-library.ts": "800b9dd768d660c16720fda134fe33a1a14db1061f7f31531063b136b670b6a8",
+    "packages/core/src/index.ts": "945d97743a621558369c7029acbc5b61daae85d2c08156368c188aedbbb9a991",
+    "apps/ipad/assets/attract-scene.png": "6ca6274beba9483104f19fb35d1ef9b8bfaae458208025e8fb4e8d4890f45cdf"
+  }
+}

@@ -22,7 +22,7 @@ const browser = await launchBrowser();
 const snapshot = page => page.evaluate(() => window.__NEW_SESSION_FIXTURE__.snapshot());
 const controls = (page, expression) => page.evaluate(expression);
 async function load(page, state, extra = '') {
-  await page.goto(`http://127.0.0.1:8791/?state=${state}${extra}`);
+  await page.goto(`http://127.0.0.1:8791/?state=${state}&count=5${extra}`);
   await page.locator('[data-testid="wedding-identity"], [data-testid="wedding-identity-compact"], [data-testid="wedding-share-identity"], [data-testid="allow-camera"], [data-testid="camera-stage"]').first().waitFor();
   assert.equal(await page.getByTestId('native-fixture-enabled').count(), 0);
   await page.waitForTimeout(250);

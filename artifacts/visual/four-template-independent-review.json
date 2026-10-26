@@ -1,0 +1,184 @@
+{
+  "scope": "LOCAL UNPUBLISHED current template browser visual acceptance; actual JSX/controller flow, Canvas JPEG stand-in, synthetic persistence/Photos/publication; not native fidelity or reference approval",
+  "reviewedAt": "2026-10-26T17:02:10.827230+00:00",
+  "sourceHashChecks": {
+    "apps/ipad/App.tsx": {
+      "expected": "71d7007cd4c903938ee60703f4811b7e3ac47dabc1c2088b6e8b925c21b4072c",
+      "actual": "71d7007cd4c903938ee60703f4811b7e3ac47dabc1c2088b6e8b925c21b4072c",
+      "matches": true
+    },
+    "apps/ipad/src/GlassSurface.tsx": {
+      "expected": "ace64a22e740d69040689495c0aa7147f7456038bbd0ee9aba6f2d52b58af972",
+      "actual": "ace64a22e740d69040689495c0aa7147f7456038bbd0ee9aba6f2d52b58af972",
+      "matches": true
+    },
+    "apps/ipad/src/glass-policy.ts": {
+      "expected": "d3e33995484239887dde90f2743919c17bb2e8ff23093ceb45a804e530499e9e",
+      "actual": "d3e33995484239887dde90f2743919c17bb2e8ff23093ceb45a804e530499e9e",
+      "matches": true
+    },
+    "apps/ipad/src/host-visibility.ts": {
+      "expected": "9b8033279a1249c59cd04e3f185792fa2a61c14f892f2cb9cf98953ceab02014",
+      "actual": "9b8033279a1249c59cd04e3f185792fa2a61c14f892f2cb9cf98953ceab02014",
+      "matches": true
+    },
+    "apps/ipad/src/photo-look-editor.ts": {
+      "expected": "38d6dc47fb34d9d9da58cf96a7daa6102d9616c7f54720c0406c1962548f817b",
+      "actual": "38d6dc47fb34d9d9da58cf96a7daa6102d9616c7f54720c0406c1962548f817b",
+      "matches": true
+    },
+    "apps/ipad/src/native-photo-effects.ts": {
+      "expected": "3270927da45a191721aaf4b07a5ce1d02d247d4481cb4c85a216788d12fab782",
+      "actual": "3270927da45a191721aaf4b07a5ce1d02d247d4481cb4c85a216788d12fab782",
+      "matches": true
+    },
+    "apps/ipad/src/local-types.ts": {
+      "expected": "f5e5039245f9d85e34338d5c3ffbe517264f5b4bbc03c9751510be15cec613fb",
+      "actual": "f5e5039245f9d85e34338d5c3ffbe517264f5b4bbc03c9751510be15cec613fb",
+      "matches": true
+    },
+    "apps/ipad/src/template-editor.ts": {
+      "expected": "11fb2edcf547077b16700b64f5601606398da0d3a90ab56f5214c09c18138d43",
+      "actual": "11fb2edcf547077b16700b64f5601606398da0d3a90ab56f5214c09c18138d43",
+      "matches": true
+    },
+    "apps/ipad/src/TemplateStudio.tsx": {
+      "expected": "a0bb9f3c4f2cc292092db7dcbe775e379c719328f42c5c2430dfc3a60e96850a",
+      "actual": "a0bb9f3c4f2cc292092db7dcbe775e379c719328f42c5c2430dfc3a60e96850a",
+      "matches": true
+    },
+    "apps/ipad/src/publication.ts": {
+      "expected": "e2c4e2501275de85d966c0fd80bbebef960e994920eb60ce62578a1f0bac3f45",
+      "actual": "e2c4e2501275de85d966c0fd80bbebef960e994920eb60ce62578a1f0bac3f45",
+      "matches": true
+    },
+    "apps/ipad/src/session-capture.ts": {
+      "expected": "b41f7ee98282fe5661e080a6b4e0b88b17c56e3c1e5908adebbe020ed6323e24",
+      "actual": "b41f7ee98282fe5661e080a6b4e0b88b17c56e3c1e5908adebbe020ed6323e24",
+      "matches": true
+    },
+    "apps/ipad/src/review-selection.ts": {
+      "expected": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
+      "actual": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
+      "matches": true
+    },
+    "apps/ipad/src/sharing.ts": {
+      "expected": "5312a241a0073a79fff33409795bee5d05e3d1b39dc6587c2ed791982d269628",
+      "actual": "5312a241a0073a79fff33409795bee5d05e3d1b39dc6587c2ed791982d269628",
+      "matches": true
+    },
+    "apps/ipad/src/SmsShare.tsx": {
+      "expected": "79464043a0e40a6cc7850c0e46cacfab33b3b19e477fee87192c0b38195d7541",
+      "actual": "79464043a0e40a6cc7850c0e46cacfab33b3b19e477fee87192c0b38195d7541",
+      "matches": true
+    },
+    "apps/ipad/src/sms-state.ts": {
+      "expected": "4c7125d4f710c97848b6690196fa328edc83e85488ce3626dd7e843e2e99497a",
+      "actual": "4c7125d4f710c97848b6690196fa328edc83e85488ce3626dd7e843e2e99497a",
+      "matches": true
+    },
+    "apps/ipad/src/booth-presentation.ts": {
+      "expected": "b6f720f7d9133a0603f847efd0646a9a23f40d409018e9eb757d5326bc43e935",
+      "actual": "b6f720f7d9133a0603f847efd0646a9a23f40d409018e9eb757d5326bc43e935",
+      "matches": true
+    },
+    "apps/ipad/src/host-originals.ts": {
+      "expected": "938e564eb50d984754abf5ec2d07a4671faa2110bb01ad4394f5377f4d271c1e",
+      "actual": "938e564eb50d984754abf5ec2d07a4671faa2110bb01ad4394f5377f4d271c1e",
+      "matches": true
+    },
+    "apps/ipad/src/photo-export.ts": {
+      "expected": "8ba8baae4fe425bd0f99079619e0a693f5c3fcf83ee73a93e167c7c93f7fb633",
+      "actual": "8ba8baae4fe425bd0f99079619e0a693f5c3fcf83ee73a93e167c7c93f7fb633",
+      "matches": true
+    },
+    "apps/ipad/src/photo-library.ts": {
+      "expected": "800b9dd768d660c16720fda134fe33a1a14db1061f7f31531063b136b670b6a8",
+      "actual": "800b9dd768d660c16720fda134fe33a1a14db1061f7f31531063b136b670b6a8",
+      "matches": true
+    },
+    "packages/core/src/index.ts": {
+      "expected": "945d97743a621558369c7029acbc5b61daae85d2c08156368c188aedbbb9a991",
+      "actual": "945d97743a621558369c7029acbc5b61daae85d2c08156368c188aedbbb9a991",
+      "matches": true
+    },
+    "apps/ipad/assets/attract-scene.png": {
+      "expected": "6ca6274beba9483104f19fb35d1ef9b8bfaae458208025e8fb4e8d4890f45cdf",
+      "actual": "6ca6274beba9483104f19fb35d1ef9b8bfaae458208025e8fb4e8d4890f45cdf",
+      "matches": true
+    }
+  },
+  "evidenceSHA256": {
+    "artifacts/visual/templates-strip-classic-portrait.png": "1f4b57d16b7bbb6dea0a6be9f6a74c7957b1784e9c8887333d6035117f4990f1",
+    "artifacts/visual/templates-strip-botanical-portrait.png": "345828a4f9ba0ebf39455fd8d923d9e2702600fe35f44e600fa4c681a2e1f288",
+    "artifacts/visual/templates-strip-coastal-portrait.png": "75f147a006a698cefaa5541b6de7081e0b5e829267d53cdc083b5e898d44dd27",
+    "artifacts/visual/templates-grid-classic-portrait.png": "1630420f6db7d29cb4153722bdffbe352a59152ea02b0aa4b7d92cdd4ca947b1",
+    "artifacts/visual/templates-grid-botanical-portrait.png": "70badb200d0d557dd6181025e9e216d899b4d03f5dd3c341a5891de037b012eb",
+    "artifacts/visual/templates-grid-coastal-portrait.png": "999e340daaad7dfac725fb8f2ba32c6525cd03a1fd9ac1bca427e569be3eccb6",
+    "artifacts/visual/templates-crop-pan-portrait.png": "e2484421b1b5b30609c08fdc9facd9d771581d51e7b0d03d711afc9bbb5ba849",
+    "artifacts/visual/templates-saved-offline-portrait.png": "4ee26ea1ca6f9b81497672a8242f2cc27bbc9056c9ff536ead9a74a3844681ee",
+    "artifacts/visual/templates-ready-portrait.png": "15bfcb957623aaa6f8902657bd0f0071e494b2392395ee7f1de540175ff6e0e2",
+    "artifacts/visual/templates-next-guests-portrait.png": "4e973a3dac033b304cf85250c563e0723e9b4bc7663c0ef504db515ec10a922f",
+    "artifacts/visual/templates-strip-classic-landscape.png": "542bc6b9d7e75c2ada22a153a844d610a2b451053edb5e7d5005391e858f4d62",
+    "artifacts/visual/templates-strip-botanical-landscape.png": "7863545055f5d5fb7bf40275a7fd009c55fa62fa30ee3795b242b41aa1edcfa4",
+    "artifacts/visual/templates-strip-coastal-landscape.png": "faaadab6d31b8edbdd4b6e33ab8f3f0fef45479aca2c0e933b96396ef2b8b7bd",
+    "artifacts/visual/templates-grid-classic-landscape.png": "f2d9eeb9b2d0fe6b0c8153457de897269478eeb329d2f40c2bda1295c7f3308b",
+    "artifacts/visual/templates-grid-botanical-landscape.png": "de0d554bb7000092bb46d704392eadb3ac098960a43fe02ce3cf91171be5650c",
+    "artifacts/visual/templates-grid-coastal-landscape.png": "847aad2b7baf9887098f49d55294f6b53e6ee6f2fe7e49e783a91950ddcba5de",
+    "artifacts/visual/templates-crop-pan-landscape.png": "3bd7a2b97aaf5fd4b9bfde1fed0c8b00894d6e8044ecf843416ae5dd5d7af5cd",
+    "artifacts/visual/templates-saved-offline-landscape.png": "0064578dc572bc88318be9ee6c25dea1837efc12720c41ea323456395e24cce1",
+    "artifacts/visual/templates-ready-landscape.png": "a4222349f74a82f2f656086ecbf478a67bbc3e19247cc6c4d4a1494edd48081d",
+    "artifacts/visual/templates-next-guests-landscape.png": "4c9343db86a01e72389f053956898ae0c61105b8d737e7d741d8baf716e39fda",
+    "artifacts/visual/templates-legacy-five-portrait.png": "5ae67ee1babee6c77863aa309886aa22e924cb0add749112f11c48f5a47a2cdb",
+    "artifacts/visual/templates-demo-portrait.webm": "e0f261c34bf7ef606a32c7760ea5b4fbcf09fe5bb1bc2b6386d8631e6d7c99c2",
+    "artifacts/visual/templates-demo-landscape.webm": "bead30c598df7e1ff5c6d1b47f9e3ddcbdae135961abb71d741763816a656702",
+    "artifacts/visual/templates-image-look-warm-recovered.png": "ac4ed52edd588d4d6b399e1819340d212718994c6c139909d45159566ad54fae",
+    "artifacts/visual/templates-image-template-theme-error.png": "1806c8c8e7128918871ecf7cc930bc3c27ab91a1e8e1597dac67900b307826af",
+    "artifacts/visual/templates-image-look-warm-error.png": "b9ddcf735ff9cb53c12f781a2dc4a251e3ae559e2ebb82dcf19f1b67d378ffa4",
+    "artifacts/visual/templates-image-look-original-error.png": "0f98462011f4b7b80efaa9c427a16e43165c5307e8747c8829850b69beb7012c",
+    "artifacts/visual/templates-image-template-theme-recovered.png": "4f3046ab1abbc27e15ae22438292982fd40b68179d41c1de6cf21b21946ca967",
+    "artifacts/visual/templates-image-template-main-error.png": "1806c8c8e7128918871ecf7cc930bc3c27ab91a1e8e1597dac67900b307826af",
+    "artifacts/visual/templates-crop-pan-clean-landscape.png": "b4e338ac37fe626c7018fcd807eabb65c0a16f1173ce221e1f15af78ac2b9e56",
+    "artifacts/visual/templates-crop-pan-clean-portrait.png": "85612b689cd1462b9fbef4fc93e8002f317be5ceefcc7adbbc44909d04dbb376",
+    "artifacts/visual/templates-checks.json": "7b00f7a4cc656ee2a052b5e45ed1e5ffb3e728ee82b2407ccd4ad970ab4983eb",
+    "artifacts/visual/templates-image-checks.json": "bdb5043132662179e7b7e5ceb8c65f27fd44b9d96f7643dfac2082e94af95ce2",
+    "artifacts/visual/templates-evidence.md": "ba5910fc406ce446597740567e6ec25bfdbb7de047e2d86fec2c4b4854316f43",
+    "artifacts/visual/templates-bundle-boundary.json": "3ca34e535dc9549ba5b94ff9614d81ae087a415de558cc1a920e477d27bbc021"
+  },
+  "inspection": {
+    "currentPNGs": 29,
+    "method": "all21workflowPNGvia2contactsheets;2ready+2clean-crop+6imageerror/recoverystillsfullsize (readyalreadyincludedin21)",
+    "currentVideos": 2,
+    "sampledFrames": 32,
+    "sampling": "16framespervideo atfps1/3;first12ascontactsheets,last4individually;notcontinuousplayback",
+    "referenceLibraryImagesAvailable": false
+  },
+  "findings": [],
+  "resolvedPreviousFindings": [
+    "Initial portrait and landscape ready screens show full QR and Next guests button.",
+    "Clean crop-pan frames display full Done adjusting label and readable adjustment labels; no clipped green fragment."
+  ],
+  "verdict": "Focused current browser visual acceptance passes; no concrete visual blocker found.",
+  "limits": [
+    "Four marker variants share one fictional generated scene, not distinct real poses.",
+    "192 edge preservation checks, source-ID travel and publication gating reviewed from machine record, not independently rerun.",
+    "Six current image-error/recovery stills visually inspected; failuremessages and retry/disabledUse controls clear. Images in error states may retain previous visible photo but are explicitly markedfailed.",
+    "No real guest data, secrets, pairing, SMS, upload or native device used by reviewer."
+  ],
+  "historicalReview": {
+    "appSHA256": "d7de564d38cfdc9ea8245af6838eb4c8de163127f86de8a9286c1ecfe379d753",
+    "findings": [
+      {
+        "severity": "low",
+        "file": "artifacts/visual/templates-crop-pan-portrait.png",
+        "description": "Scroll position leaves a small clipped green fragment of preceding control text visible just below preview, before adjustment divider; cosmetic scroll-edge clipping."
+      },
+      {
+        "severity": "low",
+        "file": "artifacts/visual/templates-ready-portrait.png",
+        "description": "Next guests is below initial portrait viewport; only top of button visible. Share is ScrollView, so reachable by scrolling, but immediate reset discoverability is weaker."
+      }
+    ],
+    "status": "superseded by focused71d7007creview"
+  }
+}

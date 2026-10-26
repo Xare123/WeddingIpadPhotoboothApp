@@ -1,0 +1,415 @@
+{
+  "timestampUTC": "2026-10-26T17:03:03.788323+00:00",
+  "scope": "Read-only installed dependency/range/registry assessment; no dependency or lockfile changes, no npm audit fix, no package install or runtime validation of replacement versions",
+  "auditSource": "artifacts/security/fullbleed-audit.json",
+  "auditCounts": {
+    "info": 0,
+    "low": 0,
+    "moderate": 1,
+    "high": 8,
+    "critical": 0,
+    "total": 9
+  },
+  "installedAndRanges": [
+    {
+      "path": "node_modules/@expo/cli",
+      "installed": "58.1.15",
+      "locked": "58.1.15",
+      "declaredDependencies": {
+        "@expo/code-signing-certificates": "^0.0.7",
+        "node-forge": "^1.4.0",
+        "zod": "^3.25.76"
+      }
+    },
+    {
+      "path": "node_modules/@expo/code-signing-certificates",
+      "installed": "0.0.7",
+      "locked": "0.0.7",
+      "declaredDependencies": {
+        "node-forge": "^1.4.0"
+      }
+    },
+    {
+      "path": "node_modules/miniflare",
+      "installed": "4.20260730.0",
+      "locked": "4.20260730.0",
+      "declaredDependencies": {
+        "sharp": "0.35.2",
+        "undici": "7.28.0",
+        "workerd": "1.20260730.1"
+      }
+    },
+    {
+      "path": "node_modules/node-forge",
+      "installed": "1.4.0",
+      "locked": "1.4.0",
+      "declaredDependencies": {}
+    },
+    {
+      "path": "node_modules/sharp",
+      "installed": "0.35.2",
+      "locked": "0.35.2",
+      "declaredDependencies": {}
+    },
+    {
+      "path": "node_modules/undici",
+      "installed": "7.28.0",
+      "locked": "7.28.0",
+      "declaredDependencies": {}
+    },
+    {
+      "path": "node_modules/wrangler",
+      "installed": "4.152.0",
+      "locked": "4.152.0",
+      "declaredDependencies": {
+        "workerd": "1.20261019.1",
+        "miniflare": "5.20261019.2-beta"
+      }
+    },
+    {
+      "path": "node_modules/wrangler/node_modules/miniflare",
+      "installed": "5.20261019.2-beta",
+      "locked": "5.20261019.2-beta",
+      "declaredDependencies": {
+        "sharp": "0.35.5",
+        "undici": "7.29.1",
+        "workerd": "1.20261019.1"
+      }
+    },
+    {
+      "path": "node_modules/wrangler/node_modules/sharp",
+      "installed": "0.35.5",
+      "locked": "0.35.5",
+      "declaredDependencies": {}
+    },
+    {
+      "path": "node_modules/wrangler/node_modules/undici",
+      "installed": "7.29.1",
+      "locked": "7.29.1",
+      "declaredDependencies": {}
+    },
+    {
+      "path": "node_modules/zod",
+      "installed": "3.25.76",
+      "locked": "3.25.76",
+      "declaredDependencies": {}
+    }
+  ],
+  "advisories": [
+    {
+      "package": "node-forge",
+      "advisories": [
+        {
+          "id": "GHSA-86w9-cpqp-85rv",
+          "url": "https://github.com/advisories/GHSA-86w9-cpqp-85rv",
+          "title": "node-forge RSA PKCS#1 v1.5 signature verification accepts extra nested DigestAlgorithm elements",
+          "severity": "high",
+          "affectedRange": "<=1.4.0"
+        }
+      ]
+    },
+    {
+      "package": "zod",
+      "advisories": [
+        {
+          "id": "GHSA-mrhx-c7xc-m3w5",
+          "url": "https://github.com/advisories/GHSA-mrhx-c7xc-m3w5",
+          "title": "Zod can exhaust memory while validating oversized constrained collections",
+          "severity": "high",
+          "affectedRange": "<4.6.6"
+        }
+      ]
+    },
+    {
+      "package": "sharp",
+      "advisories": [
+        {
+          "id": "GHSA-rgj7-g3m4-5g8c",
+          "url": "https://github.com/advisories/GHSA-rgj7-g3m4-5g8c",
+          "title": "sharp: Vulnerabilities in libheif: GHSA-g89c-p67h-r497 and GHSA-2jg2-4ch7-h545",
+          "severity": "high",
+          "affectedRange": "<0.35.4"
+        },
+        {
+          "id": "GHSA-wq5f-xc86-pv6w",
+          "url": "https://github.com/advisories/GHSA-wq5f-xc86-pv6w",
+          "title": "sharp : Vulnerability in librsvg dependency CVE-2026-96889",
+          "severity": "high",
+          "affectedRange": "<0.35.5"
+        }
+      ]
+    },
+    {
+      "package": "undici",
+      "advisories": [
+        {
+          "id": "GHSA-8xcm-r25x-g524",
+          "url": "https://github.com/advisories/GHSA-8xcm-r25x-g524",
+          "title": "undici vulnerable to downstream response desynchronization via retry interceptor",
+          "severity": "moderate",
+          "affectedRange": ">=7.0.0 <7.29.0"
+        },
+        {
+          "id": "GHSA-4cwx-7wf7-3272",
+          "url": "https://github.com/advisories/GHSA-4cwx-7wf7-3272",
+          "title": "undici vulnerable to cross-user information disclosure and parse-time crash via degenerate private cache directives",
+          "severity": "high",
+          "affectedRange": ">=7.0.0 <7.29.0"
+        },
+        {
+          "id": "GHSA-m8rv-5g2x-5cg5",
+          "url": "https://github.com/advisories/GHSA-m8rv-5g2x-5cg5",
+          "title": "undici vulnerable to CRLF Injection via blob-like body 'type' property",
+          "severity": "moderate",
+          "affectedRange": ">=7.0.0 <7.29.0"
+        },
+        {
+          "id": "GHSA-jr45-8vmc-qm54",
+          "url": "https://github.com/advisories/GHSA-jr45-8vmc-qm54",
+          "title": "undici vulnerable to cross-user information disclosure via whitespace around equals in Cache-Control directives",
+          "severity": "moderate",
+          "affectedRange": ">=7.0.0 <7.29.0"
+        },
+        {
+          "id": "GHSA-v3r7-h72x-cjcm",
+          "url": "https://github.com/advisories/GHSA-v3r7-h72x-cjcm",
+          "title": "undici vulnerable to cookie attribute injection via unsanitized domain and unparsed setCookie fields",
+          "severity": "moderate",
+          "affectedRange": ">=7.0.0 <7.29.0"
+        },
+        {
+          "id": "GHSA-3wwx-pv8p-q78v",
+          "url": "https://github.com/advisories/GHSA-3wwx-pv8p-q78v",
+          "title": "undici vulnerable to Denial of Service via unhandled error in WebSocket permessage-deflate decompression",
+          "severity": "moderate",
+          "affectedRange": ">=7.28.0 <7.29.1"
+        },
+        {
+          "id": "GHSA-pmjh-fq2x-6v4x",
+          "url": "https://github.com/advisories/GHSA-pmjh-fq2x-6v4x",
+          "title": "undici vulnerable to Denial of Service via orphaned RetryHandler response body",
+          "severity": "moderate",
+          "affectedRange": ">=7.11.0 <7.29.1"
+        },
+        {
+          "id": "GHSA-r53p-7pc4-xj5r",
+          "url": "https://github.com/advisories/GHSA-r53p-7pc4-xj5r",
+          "title": "undici vulnerable to downstream response splitting via retry interceptor",
+          "severity": "low",
+          "affectedRange": ">=7.0.0 <7.29.1"
+        },
+        {
+          "id": "GHSA-rfgv-xxqx-mfg5",
+          "url": "https://github.com/advisories/GHSA-rfgv-xxqx-mfg5",
+          "title": "undici vulnerable to Denial of Service via unrequested WebSocket subprotocol",
+          "severity": "high",
+          "affectedRange": ">=7.0.0 <7.29.1"
+        },
+        {
+          "id": "GHSA-3xpg-4rpp-hhhm",
+          "url": "https://github.com/advisories/GHSA-3xpg-4rpp-hhhm",
+          "title": "undici vulnerable to Denial of Service via unbounded decompression of compressed responses",
+          "severity": "moderate",
+          "affectedRange": ">=7.15.0 <7.29.1"
+        },
+        {
+          "id": "GHSA-2jfj-6hjv-fm6j",
+          "url": "https://github.com/advisories/GHSA-2jfj-6hjv-fm6j",
+          "title": "undici vulnerable to cross-user cookie disclosure via Set-Cookie caching in shared caches",
+          "severity": "moderate",
+          "affectedRange": ">=7.0.0 <7.29.1"
+        },
+        {
+          "id": "GHSA-2gqq-gqf2-x968",
+          "url": "https://github.com/advisories/GHSA-2gqq-gqf2-x968",
+          "title": "undici vulnerable to response truncation via oversized chunked responses in the dump interceptor",
+          "severity": "low",
+          "affectedRange": ">=7.1.0 <7.29.1"
+        },
+        {
+          "id": "GHSA-w293-vg96-wgc3",
+          "url": "https://github.com/advisories/GHSA-w293-vg96-wgc3",
+          "title": "undici vulnerable to TLS certificate validation bypass via dropped connect options in BalancedPool",
+          "severity": "high",
+          "affectedRange": ">=7.24.1 <7.29.1"
+        },
+        {
+          "id": "GHSA-8436-99hf-9mmv",
+          "url": "https://github.com/advisories/GHSA-8436-99hf-9mmv",
+          "title": "undici vulnerable to caching and replay of unsafe HTTP method responses",
+          "severity": "low",
+          "affectedRange": ">=7.0.0 <7.29.1"
+        },
+        {
+          "id": "GHSA-rx4f-c7p8-82vq",
+          "url": "https://github.com/advisories/GHSA-rx4f-c7p8-82vq",
+          "title": "undici vulnerable to Denial of Service via WebSocketStream unclean close",
+          "severity": "moderate",
+          "affectedRange": ">=7.0.0 <7.29.1"
+        },
+        {
+          "id": "GHSA-4qv8-2p9j-2685",
+          "url": "https://github.com/advisories/GHSA-4qv8-2p9j-2685",
+          "title": "undici vulnerable to Denial of Service via unbounded memory in the EventSource parser",
+          "severity": "moderate",
+          "affectedRange": ">=7.0.0 <7.30.1"
+        },
+        {
+          "id": "GHSA-f72v-6w45-q472",
+          "url": "https://github.com/advisories/GHSA-f72v-6w45-q472",
+          "title": "undici vulnerable to Subresource Integrity bypass via non-lowercase algorithm tokens",
+          "severity": "moderate",
+          "affectedRange": ">=7.15.0 <7.30.1"
+        },
+        {
+          "id": "GHSA-xjj6-f33q-929c",
+          "url": "https://github.com/advisories/GHSA-xjj6-f33q-929c",
+          "title": "undici vulnerable to Denial of Service via unhandled error on excessive content-encodings",
+          "severity": "high",
+          "affectedRange": ">=7.18.0 <7.30.1"
+        }
+      ]
+    }
+  ],
+  "registryEvidence": {
+    "source": "https://registry.npmjs.org via inherited proxy and existing CA trust",
+    "latest": {
+      "node-forge": "1.4.0",
+      "zod": "4.6.7",
+      "sharp": "0.35.5",
+      "undici": "8.12.3",
+      "@expo/cli": "58.1.15",
+      "@expo/code-signing-certificates": "0.0.7",
+      "wrangler": "4.153.0",
+      "miniflare": "4.20260730.0"
+    },
+    "latestStableZod3": "3.25.76",
+    "miniflareBeta": {
+      "version": "5.20261023.0-beta",
+      "dependencies": {
+        "ws": "8.21.0",
+        "sharp": "0.35.5",
+        "youch": "4.1.0-beta.10",
+        "undici": "7.30.1",
+        "workerd": "1.20261023.1",
+        "@cspotcode/source-map-support": "0.8.1"
+      },
+      "engines": {
+        "node": ">=22.0.0"
+      },
+      "exports": null,
+      "dist": {
+        "shasum": "a1464aaf52778608fa9d1fb02fd4bc848cc5cfbc",
+        "tarball": "https://registry.npmjs.org/miniflare/-/miniflare-5.20261023.0-beta.tgz",
+        "fileCount": 160,
+        "integrity": "sha512-SHY8A98gCvmrnBLqABHRTSh3duAL1z+tHPRZu/tqxHFqVARrZ4oQis/ALYwp3XvzHvs6B/ff/CdcCafqP+cOFA==",
+        "signatures": [
+          {
+            "sig": "MEUCIHfPVwtEKfmTs1d2/tDxYhKiGDh2LJnBzH6I9jhQz2bEAiEAugcmvcDt396/x9wRytJjG8aMd5ZmPWd07sI3E9do2u0=",
+            "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+          }
+        ],
+        "attestations": {
+          "url": "https://registry.npmjs.org/-/npm/v1/attestations/miniflare@5.20261023.0-beta",
+          "provenance": {
+            "predicateType": "https://slsa.dev/provenance/v1"
+          }
+        },
+        "unpackedSize": 12095410
+      }
+    },
+    "undici7Patched": {
+      "version": "7.30.1",
+      "dependencies": null,
+      "engines": {
+        "node": ">=20.18.1"
+      },
+      "exports": null,
+      "dist": {
+        "shasum": "360b3de104b94abc52729aa1a4a07e027aa71f73",
+        "tarball": "https://registry.npmjs.org/undici/-/undici-7.30.1.tgz",
+        "fileCount": 210,
+        "integrity": "sha512-03KrMbjIFDWQR5RNPrSw3bd1r12JpyFQl9/yxjUbJtqkjmllqC5lFjZh6ujeuJCKr8EOQvRW872Oy/az+nLYxg==",
+        "signatures": [
+          {
+            "sig": "MEQCIGbwZDAY6XHGtV3F63le15RCYMcYwf3nzbaM2ztCj2DGAiAqUnBQOsztQSISAXFGwLgoGWpRj/VvzXdOFrTwdyhwuA==",
+            "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+          },
+          {
+            "sig": "MEYCIQDJSG4Aynkp2Dzgyly5TZSCJHEgJVaLYBMWDrR5E1DJbwIhAPbAsgaW/B92exUFb8F8H4/9yEObgVOBlT8Qw7P+70oC",
+            "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+          }
+        ],
+        "attestations": {
+          "url": "https://registry.npmjs.org/-/npm/v1/attestations/undici@7.30.1",
+          "provenance": {
+            "predicateType": "https://slsa.dev/provenance/v1"
+          }
+        },
+        "unpackedSize": 1670065
+      }
+    }
+  },
+  "dispositions": [
+    {
+      "component": "Expo CLI / node-forge",
+      "status": "No published fixed version compatible or otherwise available today",
+      "exactVersionsAndRanges": "Expo58.0.19 -> @expo/cli^58.1.15; installed/latest CLI58.1.15 -> node-forge^1.4.0 and code-signing-certificates^0.0.7 -> node-forge^1.4.0. Latest node-forge1.4.0 is within affected <=1.4.0.",
+      "recommendation": "Retain SDK58 and current lock; document unresolved tooling risk. Do not force the suggested Expo44.0.6 downgrade, and do not downgrade forge. Use trusted local certificate inputs; keep unsigned CI and local-only development server scope. A patched upstream forge/Expo release is the required remediation path.",
+      "exposure": "Node-based development/build certificate verification, including CLI iOS code-signing and development signing flows. No affected library in current inspected shipped JS graph. This is not evidence of vulnerability removal from the whole toolchain."
+    },
+    {
+      "component": "Expo CLI / Zod",
+      "status": "Fixed v4 exists; no compatible v3 patch or updated CLI dependency declaration",
+      "exactVersionsAndRanges": "CLI58.1.15 requires zod^3.25.76; installed3.25.76; latest stable3=3.25.76; advisory affects <4.6.6; fixed4.6.6/latest4.6.7 cannot satisfy ^3.25.76.",
+      "recommendation": "Retain declared v3 without forced major override; document unresolved CLI validation memory-exhaustion risk. Keep Expo development tooling bound to localhost and process trusted project/devtools manifests. Upstream CLI v4 migration is required for a dependency-supported fix.",
+      "exposure": "CLI devtools schemas/extensions validate metadata with Zod; oversized constrained collections can exhaust development-process memory. No Zod in current inspected shipped JS graph."
+    },
+    {
+      "component": "Wrangler transitive Miniflare / sharp / undici",
+      "status": "Available upstream-supported same-major Wrangler upgrade fixes listed transitives",
+      "exactVersionsAndRanges": "Installed wrangler4.152.0 exact-pins miniflare5.20261019.2-beta -> sharp0.35.5 (already fixed) and undici7.29.1 (still affected by newer advisories). Published wrangler4.153.0 -> miniflare5.20261023.0-beta -> sharp0.35.5 and undici7.30.1; Node>=22 remains satisfied by project Node24.",
+      "recommendation": "Use Wrangler4.153.0 as the concrete next tooling-only dependency update, preserving Wrangler major4 and using the maintainer-selected Miniflare dependency. This is the preferred compatible upstream remedy; refresh the frozen lock and run API/CLI checks in that update. No update was applied during this frozen assessment.",
+      "exposure": "Local dev/emulator image and HTTP processing, plus Wrangler Node tooling; not uploaded Worker application dependencies or current inspected iOS JS graph."
+    },
+    {
+      "component": "Direct Miniflare4 / sharp / undici",
+      "status": "No upstream v4 dependency-supported patched release; exact child pins prevent ordinary lock refresh",
+      "exactVersionsAndRanges": "Direct installed/latest stable miniflare4.20260730.0 pins sharp0.35.2 and undici7.28.0. sharp0.35.5 fixes both listed native image advisories; undici7.30.1 fixes every Undici advisory listed by this audit. Miniflare5 beta is a major change and is not a drop-in safe direct dependency update.",
+      "recommendation": "For the direct v4 test emulator, prefer a narrowly scoped Miniflare4 override to sharp0.35.5 and undici7.30.1 in the next tooling-only update rather than a Miniflare downgrade or forced major5 migration. These child upgrades stay within sharp0.35 patch / Undici7 minor API series and meet Node24 requirements, but override exact parent pins; require existing real Miniflare/API/image/network tests before treating the override as validated. If avoiding all overrides is a requirement, retain v4 only as a localhost test tool with a documented unresolved risk; there is no upstream-supported fixed v4 release today.",
+      "compatibilityBoundary": "Patched artifacts are available; semver/API-series compatibility is established, full parent runtime compatibility has not been executed or guaranteed. Do not label an untested override proven safe.",
+      "exposure": "Tests instantiate Miniflare locally; dev script binds 127.0.0.1. sharp vulnerability requires processing hostile image input; Undici advisories depend on affected network/cache/retry/WebSocket/EventSource features. Local binding lowers inbound exposure, but outbound hostile input or a malicious local project is still relevant."
+    }
+  ],
+  "overallDisposition": "Keep frozen candidate unchanged and retain the nine-entry audit failure transparently. The inspected shipped app JS graph is not blocked by these Node-tooling advisories. Apply the available Wrangler4.153.0 upstream remedy as a separate tooling update; direct Miniflare4 requires a scoped, test-validated child override or documented localhost-only retention. Expo forge has no fixed published release, and Zod fix requires unsupported major substitution, so neither has a safe range-compatible remediation today. Do not run npm audit fix --force or downgrade Expo/Miniflare to audit suggestions.",
+  "shippedGraphEvidence": {
+    "artifact": "artifacts/security/bundle-review.json",
+    "sourceModuleCount": 1030,
+    "sourceMapSHA256": [
+      "0f6c391b0f44936bc0e601a45b9adb648181fbabe2c97672c4f095e80fcd65dc"
+    ],
+    "affectedPackageMatches": {
+      "node-forge": [],
+      "@expo/code-signing-certificates": [],
+      "zod": [],
+      "miniflare": [],
+      "sharp": [],
+      "undici": [],
+      "wrangler": []
+    },
+    "scope": "Absence in inspected 1030-module source-map graph only. Metro require-loader presence is not inclusion of all Expo CLI code. No conclusion about native binary, CocoaPods, operating-system libraries, or all deployed infrastructure."
+  },
+  "nativeBinaryAudit": "Unknown/not performed; npm audit and JS source-map absence are not a native-binary security audit",
+  "verificationLimits": [
+    "Registry metadata and installed manifests/ranges read; no dependencies/lockfile changed.",
+    "No candidate dependency runtime tests run, no real private input, credentials, uploads, or deployments.",
+    "Advisory applicability uses exact snapshot ranges; unrelated/new advisories outside this snapshot not claimed cleared."
+  ],
+  "sourceSHA256": {
+    "package-lock.json": "1cdd546c539c694b6612b748cb27627aeea87e951a859f162b087dd7becdc2b6",
+    "apps/ipad/package.json": "c38c54aa8cedec22eb0e18e7abc1930f22fa59134ebd841b7346613757cb5cbe",
+    "services/api/package.json": "097cf47a38d098d89f247d0c8b62d8a43c189e87cfcc7700cd463ac57e4d477e",
+    "artifacts/security/fullbleed-audit.json": "f99b6e2f01df8ae502f5d3cd2651165a95f47e7269f679f0851f537a6ff1d38b",
+    "artifacts/security/bundle-review.json": "d4d58503d72278eed6b1a2a202b81cd8e3a512e59c1c8835da36c8c0bb38357d"
+  }
+}

@@ -142,6 +142,43 @@ async function loadGallery(env, hash) {
   return gallery;
 }
 var samePhotos = (left, right) => left.length === right.length && left.every((id, i) => id === right[i]);
+function parseGalleryRecipe(body) {
+  if (Object.keys(body).some((key) => !["photoIds", "originalPhotoIds", "composite"].includes(key)))
+    return json({ error: "Unknown gallery field" }, 400);
+  const ids = (value) => Array.isArray(value) && value.length >= 1 && value.length <= 100 && value.every((id) => typeof id === "string" && uuid.test(id)) ? value.map((id) => id.toLowerCase()) : void 0;
+  const photoIds = ids(body.photoIds);
+  if (!photoIds || new Set(photoIds).size !== photoIds.length) return json({ error: "Unique valid photo IDs required" }, 400);
+  const hasOriginals = Object.hasOwn(body, "originalPhotoIds"), hasComposite = Object.hasOwn(body, "composite");
+  if (!hasOriginals && !hasComposite) return { photoIds };
+  if (!hasOriginals || !hasComposite) return json({ error: "Original photo IDs and composite must be supplied together" }, 400);
+  const originalPhotoIds = ids(body.originalPhotoIds);
+  if (!originalPhotoIds || originalPhotoIds.length !== photoIds.length || new Set(originalPhotoIds).size !== originalPhotoIds.length)
+    return json({ error: "Unique original photo IDs must match the selected photo count and order" }, 400);
+  const candidate = body.composite;
+  if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) return json({ error: "Valid composite required" }, 400);
+  const composite = candidate;
+  if (Object.keys(composite).some((key) => !["photoId", "layout", "theme", "version"].includes(key)) || typeof composite.photoId !== "string" || !uuid.test(composite.photoId) || !["strip", "grid"].includes(composite.layout) || !["classic", "botanical", "coastal"].includes(composite.theme) || composite.version !== "wedding-template-v1") return json({ error: "Unknown or invalid composite recipe" }, 400);
+  const photoId = composite.photoId.toLowerCase();
+  if (photoIds.includes(photoId) || originalPhotoIds.includes(photoId)) return json({ error: "Composite must have a distinct photo ID" }, 400);
+  return { photoIds, originalPhotoIds, composite: { photoId, layout: composite.layout, theme: composite.theme, version: "wedding-template-v1" } };
+}
+function sameRecipe(left, right) {
+  return samePhotos(left.photoIds, right.photoIds) && (left.originalPhotoIds === void 0 && right.originalPhotoIds === void 0 || !!left.originalPhotoIds && !!right.originalPhotoIds && samePhotos(left.originalPhotoIds, right.originalPhotoIds)) && (left.composite === void 0 && right.composite === void 0 || !!left.composite && !!right.composite && left.composite.photoId === right.composite.photoId && left.composite.layout === right.composite.layout && left.composite.theme === right.composite.theme && left.composite.version === right.composite.version);
+}
+var galleryPhotoIds = (gallery) => [.../* @__PURE__ */ new Set([
+  ...gallery.photoIds,
+  ...gallery.originalPhotoIds ?? [],
+  ...gallery.composite ? [gallery.composite.photoId] : []
+])];
+var completeShareGallery = (gallery) => gallery.photoIds.length === 5 || gallery.photoIds.length === 4 && gallery.originalPhotoIds?.length === 4 && !!gallery.composite;
+function readyGallery(gallery, origin, token) {
+  return json({
+    status: "ready",
+    url: `${origin}/g/${token}`,
+    expiresAt: gallery.expiresAt,
+    ...gallery.photoIds.length === 4 ? { photoIds: gallery.photoIds, originalPhotoIds: gallery.originalPhotoIds, composite: gallery.composite } : {}
+  });
+}
 function mockProvider(mode) {
   if (mode !== "mock" && mode !== "mock-fail") return;
   return { async send() {
@@ -276,6 +313,7 @@ var galleryStyles = `
   .photo img{display:block;width:100%;height:auto;background:#ebe3d6;border-radius:1px}.photo figcaption{padding:20px 6px 22px}.photo-label{display:flex;align-items:center;justify-content:space-between;font-size:10px;letter-spacing:1.8px;color:var(--muted);text-transform:uppercase;margin-bottom:16px}.photo-label span:last-child{font:italic 18px Georgia,serif;letter-spacing:0;color:var(--ink)}
   .download{display:flex;align-items:center;justify-content:center;gap:12px;min-height:48px;padding:12px 18px;text-align:center;background:var(--forest);border:1px solid var(--forest);border-radius:30px;text-decoration:none;color:var(--white);font-size:13px;font-weight:500;transition:background .18s,transform .18s}
   .download:hover{background:#813f29;transform:translateY(-1px)}.download:active{transform:translateY(0)}.download .arrow{font-size:19px;line-height:1}.quality{margin:11px 0 0;text-align:center;font-size:10px;color:var(--muted);letter-spacing:.3px}
+  .keepsake-section{margin-bottom:48px}.keepsake{margin:0 auto;padding:18px;background:var(--white);border:1px solid #e0d5c4;border-radius:4px;max-width:820px;box-shadow:0 8px 24px #3b342b08}.keepsake-strip{max-width:390px}.keepsake img{display:block;width:100%;height:auto}.keepsake figcaption{padding:2px 0 20px}.keepsake .download{max-width:340px;margin:auto}.original-section{margin-top:48px}.original-intro{color:var(--muted);font-size:14px;margin:0 0 12px}.originals{list-style:none;margin:0;padding:0}.originals li{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}.original-name{font:400 21px Georgia,serif}.originals .download{background:transparent;color:var(--ink);border-color:#b4aa98;min-width:165px}.originals .download:hover{background:#eee5d7}
   .privacy{max-width:520px;text-align:center;margin:56px auto 48px}.privacy h2{font:400 25px Georgia,serif;margin:0 0 12px}.privacy p{color:var(--muted);font-size:13px;line-height:1.85;margin:0}.privacy .expiry{font-size:11px;margin-top:14px}
   .footer{border-top:1px solid var(--line);text-align:center;padding:25px 0 30px;color:var(--muted);font:italic 18px Georgia,serif}.reveal{animation:reveal .65s ease-out both}.photo:nth-child(2){animation-delay:.09s}.photo:nth-child(n+3){animation-delay:.18s}
   .error-page{max-width:650px;min-height:65vh;margin:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:64px 0}.error-page h1{font-size:clamp(42px,7vw,66px)}.error-page .intro{max-width:390px}.error-mark{width:52px;height:52px;border:1px solid #a9beb5;border-radius:50%;display:grid;place-items:center;margin-bottom:30px;font:italic 28px Georgia,serif;color:#3e6760}
@@ -296,9 +334,17 @@ function unavailableGallery(status, reason) {
   return guestPage(guestDocument("Your wedding photos", `<main class="error-page reveal"><div class="error-mark" aria-hidden="true">\u2727</div><p class="eyebrow">Your private gallery</p><h1>${title}</h1><p class="intro">${message}</p></main>`), status);
 }
 function galleryHtml(token, gallery) {
-  const items = gallery.photoIds.map((id, i) => `<figure class="photo reveal"><img src="/g/${token}/photos/${id}" alt="Wedding photo ${i + 1}" loading="${i === 0 ? "eager" : "lazy"}" decoding="async"><figcaption><div class="photo-label"><span>A moment to keep</span><span>${String(i + 1).padStart(2, "0")}</span></div><a class="download" href="/g/${token}/photos/${id}?download=1" download aria-label="Download photo ${i + 1} in full resolution"><span class="arrow" aria-hidden="true">\u2193</span>Save original photo</a><p class="quality">Full resolution \xB7 JPEG</p></figcaption></figure>`).join("");
+  const items = gallery.photoIds.map((id, i) => `<figure class="photo reveal"><img src="/g/${token}/photos/${id}" alt="Wedding photo ${i + 1}" loading="${i === 0 && !gallery.composite ? "eager" : "lazy"}" decoding="async"><figcaption><div class="photo-label"><span>A moment to keep</span><span>${String(i + 1).padStart(2, "0")}</span></div><a class="download" href="/g/${token}/photos/${id}?download=1" download aria-label="Download photo ${i + 1} in full resolution"><span class="arrow" aria-hidden="true">\u2193</span>${gallery.composite ? "Save individual photo" : "Save original photo"}</a><p class="quality">Full resolution \xB7 JPEG</p></figcaption></figure>`).join("");
+  let keepsake = "";
+  if (gallery.composite) {
+    const composite = gallery.composite, strip = composite.layout === "strip";
+    const layout = strip ? "photo strip" : "photo grid";
+    const theme = composite.theme === "botanical" ? "Botanical" : composite.theme === "coastal" ? "Coastal" : "Classic";
+    keepsake = `<section class="keepsake-section" aria-labelledby="keepsake-title"><div class="collection-heading"><h2 id="keepsake-title">Your wedding keepsake</h2><p>${theme} \xB7 ${strip ? "Photo strip" : "Photo grid"}</p></div><figure class="keepsake${strip ? " keepsake-strip" : ""} reveal"><figcaption><a class="download" href="/g/${token}/photos/${composite.photoId}?download=1" download aria-label="Download your ${layout} in full resolution"><span class="arrow" aria-hidden="true">\u2193</span>Save ${layout}</a><p class="quality">Full resolution \xB7 JPEG</p></figcaption><img src="/g/${token}/photos/${composite.photoId}" alt="Your ${theme.toLowerCase()} wedding ${layout}" loading="eager" decoding="async"></figure></section>`;
+  }
+  const originals = gallery.originalPhotoIds ? `<section class="original-section" aria-labelledby="originals-title"><div class="collection-heading"><h2 id="originals-title">Your camera originals</h2><p>${gallery.originalPhotoIds.length} original files</p></div><p class="original-intro">Save each camera original, in the same order as your keepsake.</p><ol class="originals">${gallery.originalPhotoIds.map((id, i) => `<li><span class="original-name">Original ${String(i + 1).padStart(2, "0")}</span><a class="download" href="/g/${token}/photos/${id}?download=1" download aria-label="Download camera original ${i + 1} in full resolution">Save original ${i + 1}</a></li>`).join("")}</ol></section>` : "";
   const expires = new Intl.DateTimeFormat("en-US", { dateStyle: "long", timeStyle: "medium", timeZone: "UTC" }).format(new Date(gallery.expiresAt));
-  return guestDocument("Your wedding photos", `<main><section class="hero reveal" aria-labelledby="gallery-title"><p class="eyebrow">A keepsake from the celebration</p><h1 id="gallery-title">Your night,<span>beautifully captured.</span></h1><p class="intro">A little joy to take home.</p></section><section aria-label="Your photos"><div class="collection-heading"><h2>Your wedding photos</h2><p>${gallery.photoIds.length} ${gallery.photoIds.length === 1 ? "memory" : "memories"} \xB7 original quality</p></div><div class="photos">${items}</div></section><aside class="privacy"><h2>A private keepsake.</h2><p>Anyone with this link can view and download these photos.<br>Save your favorites, and forward this link only with care.</p><p class="expiry">Available until <time datetime="${new Date(gallery.expiresAt).toISOString()}">${expires} UTC</time>.<br>Link expiry closes access; it does not delete the original photos.</p></aside></main>`);
+  return guestDocument("Your wedding photos", `<main><section class="hero reveal" aria-labelledby="gallery-title"><p class="eyebrow">A keepsake from the celebration</p><h1 id="gallery-title">Your night,<span>beautifully captured.</span></h1><p class="intro">A little joy to take home.</p></section>${keepsake}<section aria-label="Your photos"><div class="collection-heading"><h2>${gallery.composite ? "Your individual photos" : "Your wedding photos"}</h2><p>${gallery.photoIds.length} ${gallery.photoIds.length === 1 ? "memory" : "memories"} \xB7 original quality</p></div><div class="photos">${items}</div></section>${originals}<aside class="privacy"><h2>A private keepsake.</h2><p>Anyone with this link can view and download these photos.<br>Save your favorites, and forward this link only with care.</p><p class="expiry">Available until <time datetime="${new Date(gallery.expiresAt).toISOString()}">${expires} UTC</time>.<br>Link expiry closes access; it does not delete the original photos.</p></aside></main>`);
 }
 async function handle(request, env) {
   const url = new URL(request.url);
@@ -322,14 +368,16 @@ async function handle(request, env) {
       return guest[2] ? json({ error: "Link revoked" }, 410) : unavailableGallery(410, "Link revoked");
     if (!guest[2]) return guestPage(galleryHtml(token, gallery));
     const photoId = guest[2].toLowerCase();
-    if (!uuid.test(photoId) || !gallery.photoIds.includes(photoId)) return json({ error: "Photo unavailable" }, 404);
+    if (!uuid.test(photoId) || !galleryPhotoIds(gallery).includes(photoId)) return json({ error: "Photo unavailable" }, 404);
     const photo = await env.PHOTOS.get(photoKey(gallery.sessionId, photoId));
     if (!photo) return json({ error: "Photo unavailable" }, 404);
+    const selectedIndex = gallery.photoIds.indexOf(photoId);
+    const filename = gallery.composite?.photoId === photoId ? `wedding-keepsake-${gallery.composite.layout === "strip" ? "strip" : "grid"}.jpg` : selectedIndex >= 0 ? `wedding-photo-${selectedIndex + 1}.jpg` : `wedding-original-${gallery.originalPhotoIds.indexOf(photoId) + 1}.jpg`;
     return new Response(photo.body, { headers: {
       ...privateHeaders,
       "Content-Type": "image/jpeg",
       "Content-Length": String(photo.size),
-      "Content-Disposition": `${url.searchParams.get("download") === "1" ? "attachment" : "inline"}; filename="wedding-photo-${gallery.photoIds.indexOf(photoId) + 1}.jpg"`
+      "Content-Disposition": `${url.searchParams.get("download") === "1" ? "attachment" : "inline"}; filename="${filename}"`
     } });
   }
   if (!url.pathname.startsWith("/v1/")) return request.method === "GET" && url.pathname.startsWith("/g/") ? unavailableGallery(404) : json({ error: "Not found" }, 404);
@@ -373,27 +421,28 @@ async function handle(request, env) {
     if (sessionRoute[2] === "ready" && request.method === "POST") {
       const body = await readJson(request);
       if (body instanceof Response) return body;
-      if (!Array.isArray(body.photoIds) || body.photoIds.length < 1 || body.photoIds.length > 100 || !body.photoIds.every((id) => typeof id === "string" && uuid.test(id))) return json({ error: "1\u2013100 valid photo IDs required" }, 400);
-      const photoIds = body.photoIds.map((id) => id.toLowerCase());
-      if (new Set(photoIds).size !== photoIds.length) return json({ error: "Duplicate photo IDs" }, 400);
+      const recipe = parseGalleryRecipe(body);
+      if (recipe instanceof Response) return recipe;
       if (await env.PHOTOS.head(sessionRevokedKey(sessionId)) || await env.PHOTOS.head(revokedKey(hash)))
         return json({ error: "Link revoked" }, 410);
       const existing = await env.PHOTOS.head(galleryKey(hash));
       if (existing) {
         const saved2 = await loadGallery(env, hash);
         if (saved2 instanceof Response) return saved2;
-        if (!samePhotos(saved2.photoIds, photoIds)) return json({ error: "Ready gallery photo list is immutable" }, 409);
-        return json({ status: "ready", url: `${config.origin}/g/${token}`, expiresAt: saved2.expiresAt });
+        if (!sameRecipe(saved2, recipe)) return json({ error: "Ready gallery recipe is immutable" }, 409);
+        return readyGallery(saved2, config.origin, token);
       }
-      if (photoIds.length !== 5) return json({ error: "Exactly five photo IDs are required for a new gallery" }, 400);
-      const uploaded = await Promise.all(photoIds.map((id) => env.PHOTOS.head(photoKey(sessionId, id))));
+      if (recipe.photoIds.length !== 4 && recipe.photoIds.length !== 5) return json({ error: "Four template photos or five legacy photos are required for a new gallery" }, 400);
+      if (recipe.photoIds.length === 4 && (!recipe.originalPhotoIds || !recipe.composite))
+        return json({ error: "Four-photo galleries require corresponding originals and a composite" }, 400);
+      const uploaded = await Promise.all(galleryPhotoIds(recipe).map((id) => env.PHOTOS.head(photoKey(sessionId, id))));
       if (uploaded.some((photo) => !photo?.customMetadata?.sha256)) return json({ error: "All photos must finish uploading before gallery is ready" }, 409);
-      const manifest = { version: 1, sessionId, photoIds, expiresAt: Date.now() + config.ttlMs };
+      const manifest = { version: 1, sessionId, ...recipe, expiresAt: Date.now() + config.ttlMs };
       await env.PHOTOS.put(galleryKey(hash), JSON.stringify(manifest), { onlyIf: { etagDoesNotMatch: "*" } });
       const saved = await loadGallery(env, hash);
       if (saved instanceof Response) return saved;
-      if (!samePhotos(saved.photoIds, photoIds)) return json({ error: "Ready gallery photo list is immutable" }, 409);
-      return json({ status: "ready", url: `${config.origin}/g/${token}`, expiresAt: saved.expiresAt });
+      if (!sameRecipe(saved, recipe)) return json({ error: "Ready gallery recipe is immutable" }, 409);
+      return readyGallery(saved, config.origin, token);
     }
   }
   if (url.pathname === "/v1/shares" && request.method === "POST") {
@@ -409,7 +458,7 @@ async function handle(request, env) {
     const hash = await digest(encoder.encode(token));
     const gallery = await loadGallery(env, hash);
     if (gallery instanceof Response) return gallery.status === 404 ? json({ error: "Gallery must be ready before sharing" }, 409) : gallery;
-    if (gallery.photoIds.length !== 5) return json({ error: "A complete five-photo gallery is required before sharing", retryable: false }, 409);
+    if (!completeShareGallery(gallery)) return json({ error: "A complete four-photo template or five-photo legacy gallery is required before sharing", retryable: false }, 409);
     const key = `shares/${body.id.toLowerCase()}.json`;
     const fingerprint = await signed(`recipient:v1:${body.phone}`, config.signingKey);
     const fresh = { sessionId, recipientFingerprint: fingerprint, status: "pending" };

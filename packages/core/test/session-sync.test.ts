@@ -76,3 +76,75 @@ test('a missing or staged selected original cannot silently turn a five-photo se
   assert.equal(sessionGuestPage({ ...session, targetCount: 5, shots: session.shots.slice(0, 4) }, complete, 1000), null);
   assert.deepEqual(sessionGuestPage({ ...session, targetCount: 1, shots: session.shots.slice(0, 1) }, complete, 1000), { url, expiresAt: 2000 });
 });
+
+const four: ShareableSession = {
+  id: 'four', confirmed: true, targetCount: 4,
+  shots: Array.from({ length: 4 }, (_, i) => ({ id: `filtered-${i}`, sourcePhotoId: `raw-${i}`, sessionId: 'four' })),
+  composite: { id: 'template', fileUri: 'file:///template.jpg', originalPhotoIds: ['raw-3', 'raw-1', 'raw-0', 'raw-2'],
+    recipe: { version: 'wedding-template-v1', layout: 'strip', theme: 'botanical', photoIds: ['filtered-3', 'filtered-1', 'filtered-0', 'filtered-2'],
+      cropsByPhotoId: Object.fromEntries(Array.from({ length: 4 }, (_, i) => [`filtered-${i}`, { mode: 'fit' as const, x: 0, y: 0, zoom: 1 }])) } },
+};
+const fourJobs = (): QueueJob[] => [...four.shots.map(s => s.id), ...four.composite!.originalPhotoIds, four.composite!.id].map(id => ({
+  ...uploadJob(id, `file:///${id}.jpg`, 1, four.id), state: 'complete',
+}));
+
+test('four-photo filtered template acknowledges every selected, raw and composite upload in template order', async () => {
+  const queue = store(fourJobs());
+  await finalizeReadySessions({ store: queue, async sessions() { return [four]; }, async ready(id, ids, descriptor) {
+    assert.equal(id, four.id); assert.deepEqual(ids, four.composite!.recipe.photoIds);
+    assert.deepEqual(descriptor, { photoIds: ids, originalPhotoIds: four.composite!.originalPhotoIds,
+      composite: { photoId: 'template', layout: 'strip', theme: 'botanical', version: 'wedding-template-v1' } });
+    return { value: ready, origin };
+  } }, 1000);
+  assert.deepEqual(sessionGuestPage(four, await queue.list(), 1000), { url, expiresAt: 2000 });
+});
+
+test('four-photo readiness requires raw and composite completion, matching selection and lineage', async () => {
+  for (const missing of ['raw-0', 'template']) {
+    for (const state of ['missing', 'pending']) {
+      const rows = fourJobs().flatMap(job => job.photoId !== missing ? [job] : state === 'missing' ? [] : [{ ...job, state: 'pending' as const }]);
+      const queue = store(rows);
+      await finalizeReadySessions({ store: queue, async sessions() { return [four]; }, async ready() { assert.fail('premature ready'); } }, 1000);
+      assert.equal(sessionGuestPage(four, rows, 1000), null);
+    }
+  }
+  const candidates = [ { ...four, composite: undefined },
+    { ...four, shots: [{ ...four.shots[0]!, id: 'retake' }, ...four.shots.slice(1)] },
+    { ...four, composite: { ...four.composite!, originalPhotoIds: ['raw-0', 'raw-1', 'raw-2', 'raw-3'] } },
+    { ...four, composite: { ...four.composite!, recipe: { ...four.composite!.recipe, photoIds: [...four.composite!.recipe.photoIds, 'extra'] } } },
+    { ...four, shots: [{ ...four.shots[0]!, sessionId: 'other' }, ...four.shots.slice(1)] } ];
+  for (const candidate of candidates) {
+    const queue = store(fourJobs());
+    await finalizeReadySessions({ store: queue, async sessions() { return [candidate]; }, async ready() { assert.fail('stale template'); } }, 1000);
+    assert.equal(sessionGuestPage(candidate, await queue.list(), 1000), null);
+  }
+});
+
+test('selected acknowledgements alone cannot expose a four-photo QR; all asset acknowledgements agree', () => {
+  const rows = fourJobs().map(job => ({ ...job, guestUrl: url, guestExpiresAt: 2000 }));
+  for (const change of [{ guestUrl: undefined }, { guestUrl: `${origin}/g/other` }, { guestExpiresAt: 3000 }, { state: 'pending' as const }]) {
+    const altered = rows.map(job => job.photoId === 'raw-0' ? { ...job, ...change } : job);
+    assert.equal(sessionGuestPage(four, altered, 1000), null);
+  }
+});
+
+test('native finalization rechecks durable publication assets and rejects a changed manifest', async () => {
+  const queue = store(fourJobs());
+  await finalizeReadySessions({ store: queue, async sessions() { return [four]; },
+    async publicationAssets() { return { photoIds: four.shots.map(shot => shot.id) }; },
+    async ready() { assert.fail('durable manifest differs'); } }, 1000);
+  assert.equal(sessionGuestPage(four, await queue.list(), 1000), null);
+});
+
+test('plain four-photo originals share one deduplicated acknowledgement with their template', async () => {
+  const plain = { ...four, shots: four.shots.map(shot => ({ ...shot, sourcePhotoId: undefined })),
+    composite: { ...four.composite!, originalPhotoIds: [...four.composite!.recipe.photoIds] } };
+  const rows = [...plain.shots.map(shot => shot.id), 'template'].map(id => ({
+    ...uploadJob(id, `file:///${id}.jpg`, 1, plain.id), state: 'complete' as const,
+  }));
+  const queue = store(rows);
+  await finalizeReadySessions({ store: queue, async sessions() { return [plain]; },
+    async ready() { return { value: ready, origin }; } }, 1000);
+  assert.equal((await queue.list()).length, 5);
+  assert.deepEqual(sessionGuestPage(plain, await queue.list(), 1000), { url, expiresAt: 2000 });
+});

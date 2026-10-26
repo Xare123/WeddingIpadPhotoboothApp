@@ -1,0 +1,13 @@
+{
+  "scope": "Prepublication tracked/unignored text-file pattern scan; not a comprehensive secret detector or OCR review",
+  "filesScanned": 413,
+  "credentialPatternFindings": [],
+  "historicalQrFixtureFiles": [
+    "artifacts/visual/new-session-checks.json",
+    "artifacts/visual/qr-rendered-checks.json",
+    "artifacts/visual/qr-review.md"
+  ],
+  "historicalQrDisposition": "Only documented deterministic fabricated QR payloads; no request to real hostname; fixtures predate current change. Empty comment-only .env.example allowed.",
+  "privateReferenceScreenshotsIncluded": false,
+  "guestPhotosIncluded": false
+}

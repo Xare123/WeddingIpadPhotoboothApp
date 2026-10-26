@@ -1,0 +1,90 @@
+{
+  "review": "Fresh independent review of local four-photo/filter/template candidate; reviewer did not implement candidate",
+  "timestampUTC": "2026-10-26T16:27:41.808474+00:00",
+  "baselineHEAD": "0dc4385217678f56e8b7ad2d38f9398fc7dcc31f",
+  "decision": "One confirmed P2 usability finding; no data-preservation, selection-identity, publication or duplicate-Photos blocker reproduced in executed scope. Parent notified before any fix.",
+  "findings": [
+    {
+      "id": "PREVIEW-LOAD-FAILURE",
+      "priority": "P2",
+      "status": "reproduced locally",
+      "files": [
+        "apps/ipad/src/TemplateStudio.tsx:32",
+        "apps/ipad/src/TemplateStudio.tsx:58",
+        "apps/ipad/src/template-editor.ts:133",
+        "apps/ipad/App.tsx:801",
+        "apps/ipad/App.tsx:809"
+      ],
+      "trigger": "Native render returns valid JPEG receipt URI, but native Image subsequently fails to load/decode it (e.g. cache file unavailable).",
+      "actual": "Template preview has no onError handler. Controller stays ready; actual TemplateStudio status remains Preparing your preview\u2026 and Save disabled because no onLoad acknowledgement occurs. Same-theme tap reuses cached receipt and failed URI, so does not rerender or clear failure.",
+      "repro": "node --import tsx --test .cache/four-template-review/ui-failure.test.ts. Bundles actual TemplateStudio JSX with minimal useState/react-native component boundary substitutes, runs actual createTemplateEditor, supplies a receipt whose URI is unavailable, inspects the emitted Image error handler/actual disabled Save/status, simulates error callback delivery (handler absent), and repeats same-theme selection. Render count remains 3.",
+      "scope": "Template path runtime boundary reproduced; equivalent look Image lacks onError and Apply is gated on URI onLoad by source review. Back/layout/theme/preset changes can provide an indirect escape, so this is a stuck/error-feedback usability defect rather than original-data loss. No physical Image decoder execution claimed.",
+      "suggestion": "Add URI/generation-scoped preview load-error handling that invalidates affected receipt, exposes an error/retry action, and regenerates a fresh preview URI. Ignore stale URI errors."
+    }
+  ],
+  "executedChecks": [
+    {
+      "command": "node --import tsx --test packages/core/test/local-disk-sqlite.test.ts apps/ipad/test/photo-look-editor.test.ts apps/ipad/test/template-editor.test.ts apps/ipad/test/composite-export.test.ts packages/core/test/session-sync.test.ts apps/ipad/test/host-originals.test.ts services/api/test/template-gallery.test.ts",
+      "passed": 109,
+      "failed": 0,
+      "skipped": 0,
+      "transcript": ".cache/four-template-acceptance-targeted.tap"
+    },
+    {
+      "command": "node --import tsx --test .cache/four-template-review/independent.test.ts",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "transcript": ".cache/four-template-review/independent.tap",
+      "evidence": "Actual temporary Linux files + node:sqlite; six distinct valid 32x24 JPEG marker fixtures generated with Pillow, no private photos. Four raw JPEG bytes preserved across derivative creation, Original restore, stale stage completion, retake, confirm, recover twice. Old/derived composites invalidated. New frozen composite publication descriptor stayed exact. Completed composite attempts/backoff/guest URL/expiry preserved while corrupt other selected row repaired and quarantined. Jobs exactly current selected IDs plus frozen composite, excluded old staged/derivative/retake originals."
+    },
+    {
+      "command": "node --import tsx --test .cache/four-template-review/ui-failure.test.ts",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "transcript": ".cache/four-template-review/ui-failure.tap",
+      "evidence": "Passing diagnostic assertion reproduces confirmed usability defect; not a claim that error recovery is correct."
+    }
+  ],
+  "checksTotal": {
+    "tests": 111,
+    "passed": 111,
+    "failed": 0,
+    "skipped": 0,
+    "diagnosticReproductions": 1
+  },
+  "sourceReview": [
+    "LocalRepository journals derivative lineage and composite recipe/crop by photo ID; currentComposite matches exact selection and freezes compositeId on confirmation; publication assets contain current selected/raw/composite IDs; old stage recovery cannot replace frozen ID.",
+    "PhotoLook controller validates source lineage, selected identity, version/preset/intensity, preview/full original hash and dimensions, owns temporary output, cancels stale generations; Original restores existing source without encoding.",
+    "Template controller validates exact canonical recipe, four hashes, dimensions, current selection before and after full render; scopes temporary outputs and durable-copy lifetime.",
+    "Photos exporter journals uncertainty before save, suppresses automatic uncertain retry, and requires explicit composite ID; host actions authenticate and reload current composite; targeted tests cover exactly-one deliberate retry and zero-copy acknowledge.",
+    "Actual sync.ts validates ready Worker response echo with validateReadyPublication before finalization acknowledges guest URL. Publication/finalization requires every unique selected/raw/composite upload complete. Targeted Worker tests execute exact byte/private-role gallery behavior and immutable recipe race.",
+    "Swift engines use one shared serial queue and autorelease pools, 24MP/64MB input caps, bounded cache/requests, streamed SHA256, single-image JPEG decoder and orientation checks, explicit sRGB CI rendering, fresh JPEG destinations, cooperative cancellation checkpoints, owned cache release. Module constrains source document directory and template source ID filename. These are source-reviewed protections, not executed Apple validation."
+  ],
+  "limitations": [
+    "No Xcode/Apple Core Image/ImageIO execution or physical iPad. Fourteen native-engine XCTest cases remain UNRUN in this Linux review.",
+    "Native render quality/color/crop appearance, actual iOS Image cache/onError event delivery, memory pressure and system Photos/authentication were not physically verified.",
+    "The 264 Node tests and 49 CI contracts reported by parent were not rerun in full; this reviewer freshly executed the 111 tests specified here.",
+    "No production or existing test edits. All reviewer writes are new local .cache harnesses, synthetic fixtures, transcripts, and this new report. No commits, pushes, deploys, credentials, pairing, real SMS, external uploads or remote CI."
+  ],
+  "sourceSHA256": {
+    "apps/ipad/App.tsx": "d7de564d38cfdc9ea8245af6838eb4c8de163127f86de8a9286c1ecfe379d753",
+    "apps/ipad/src/TemplateStudio.tsx": "4e1d536f449aceada56598ed511065f57a49bf730d6467a07f15d1e78cbb9da9",
+    "apps/ipad/src/photo-look-editor.ts": "a5fd1060b3749d736894e5ddb8565539ad3ae13f245edfb5ced7c7a887884481",
+    "apps/ipad/src/template-editor.ts": "b24bf2536902cb2116eaf909abcb22d4cb8b3f4b8f9c414285eecbc43e4ee0fe",
+    "apps/ipad/src/local-persistence.ts": "9c306f982c7d74405d310f872d113df499c95a1cfdaff59d3b0929bd4d81d1cb",
+    "apps/ipad/src/photo-export.ts": "8ba8baae4fe425bd0f99079619e0a693f5c3fcf83ee73a93e167c7c93f7fb633",
+    "apps/ipad/src/photo-library.ts": "800b9dd768d660c16720fda134fe33a1a14db1061f7f31531063b136b670b6a8",
+    "apps/ipad/src/publication.ts": "e2c4e2501275de85d966c0fd80bbebef960e994920eb60ce62578a1f0bac3f45",
+    "apps/ipad/src/session-sync.ts": "c7679e96e9816bb15a3591c7206db7725e96e9d1838ce6f089bf8dc9788870ba",
+    "apps/ipad/src/sync.ts": "9c113f3d6a2a9434f90d3e67cc676f8676cc0c096f00a36a18b49013af830038",
+    "apps/ipad/src/sharing.ts": "5312a241a0073a79fff33409795bee5d05e3d1b39dc6587c2ed791982d269628",
+    "apps/ipad/src/queue-index.ts": "02d23ad2dadeb024cfb9f0eb8ce8d6f908b35a4f447f01d9a17d854a93708623",
+    "apps/ipad/modules/wedding-photo-effects/ios/PhotoEffectsEngine.swift": "c7d921b35c64df606fcb2eb34c7d240385b240c2629684a4b0d2a42e1fc0a775",
+    "apps/ipad/modules/wedding-photo-effects/ios/PhotoTemplateEngine.swift": "96bb8e5d086c1212c372c1e7dc085efc1569c66c587d66ca5fee741d8accd730",
+    "apps/ipad/modules/wedding-photo-effects/ios/WeddingPhotoEffectsModule.swift": "09b81ee124af9b14af0e983160cbd08f16801a34eaff4d4bfb0acd88ea491483",
+    ".cache/four-template-review/independent.test.ts": "cd45d64a29960a537721952a3110282497eb1a922c45ae33cb2f3f8bbd757ccd",
+    ".cache/four-template-review/ui-failure.test.ts": "36c0ee126fe936e5d41ccca28d71943ddc8eae5f89d1a05fb5839e21b7936ce1"
+  }
+}

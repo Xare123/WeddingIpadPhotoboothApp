@@ -32,7 +32,7 @@ export async function queueMockShare(capture: ActiveCapture, input: string, cons
 
 export async function queueSessionShare(session: ActiveSession, input: string, consent: boolean): Promise<void> {
   const guest = sessionGuestPage(session, await store.list());
-  if (!consent || session.shots.length !== 5 || !guest) throw new Error('A ready five-photo session and explicit consent are required.');
+  if (!consent || ![4, 5].includes(session.targetCount) || session.shots.length !== session.targetCount || !guest) throw new Error('A complete ready photo session and explicit consent are required.');
   const phone = normalizePhone(input);
   const jobs = await store.list();
   if (jobs.some(job => job.kind === 'share' && job.sessionId === session.id && job.state !== 'rejected')) {

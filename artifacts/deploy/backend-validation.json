@@ -1,25 +1,24 @@
 {
-  "scope": "Backend-only five-photo/pairing/Textbelt handoff; native app acceptance still in progress",
-  "generatedAt": "2026-10-26T06:08:49.226632+00:00",
+  "scope": "Four-photo/original/keepsake backend candidate, preserving legacy five-photo/pairing/Textbelt behavior",
+  "generatedAt": "2026-10-26T17:04:18.887567+00:00",
   "apiTests": {
-    "passed": 43,
+    "passed": 51,
     "failed": 0,
     "skipped": 0,
-    "evidence": "Included in integrated local suite:115/115 passing; dedicated backend suite42 then added legacy denial case verified and integrated"
+    "evidence": "Dedicated current backend suite:51tests/51pass/0fail/0skip; also included in integrated266suite"
   },
   "typecheck": "passed",
-  "localHttpFivePhotoSmoke": "passed",
-  "productionWranglerDryRun": "passed after sourcing repository cloud-env helper",
-  "independentSecurityReview": "two-key pairing and Textbelt fences reviewed; identified five-shot and expired-recipient gaps corrected",
-  "workerSha256": "5cc1e7390ecebc05d7815bf0b7819c5aca2478f6db105adac81d10cd9f3672c9",
-  "workerBytes": 33225,
-  "workerSourceSha256": "3578656e2ce56933da398a0179c664c77fa788e5c99e267b5d5e0b10ce94cbe1",
+  "localHttpFourPhotoBrowser": "12groups passed; actual Worker localHTTP/Chromium,12 clicked exact-byte downloads, privacy404, revoke410,natural expiry410",
+  "evidence": "../visual/gallery-four-checks.json",
+  "workerSha256": "f9b8391e82f7eea41022f6cdef1a7c2e063f0c32781ba6068be947674b18fb1a",
+  "workerBytes": 39479,
+  "workerSourceSha256": "377618a384ffecc2452518d85d7fbff4b6a00c0a4eaeb27721735426fa245dfa",
   "actualSmsRequests": 0,
   "deployedByThisExecutor": false,
   "productionGates": [
-    "Coordinator review/deploy preserving existing secret_text bindings",
-    "PAIRING_ENABLED explicitly approved only after both booth credentials configured",
-    "Provider eligibility/live approval remains pending; SMS default mock",
-    "Synthetic live R2/pairing/storage checks not executed here"
+    "Coordinator deployment preserving private R2/secret_text bindings and all privacy/rate policies",
+    "Private pairing only when owneriPadready",
+    "Live syntheticR2upload/download/expiry/revoke acceptance separate fromlocal",
+    "SMSeligibility/liveapproval and coordinator-owned cappedtest only"
   ]
 }

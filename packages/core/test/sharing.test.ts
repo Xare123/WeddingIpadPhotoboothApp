@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { formatGuestExpiry, normalizePhone, qrForJob, readyGuestPage, validateOrigin } from '../../../apps/ipad/src/sharing';
+import { formatGuestExpiry, normalizePhone, qrForJob, readyGuestPage, validateOrigin, validateReadyPublication } from '../../../apps/ipad/src/sharing';
 
 const origin = 'https://gallery.example';
 const guestUrl = `${origin}/g/${'a'.repeat(64)}`;
@@ -89,4 +89,22 @@ test('invalid server expiry or formatting options cannot produce a misleading av
   }
   assert.equal(formatGuestExpiry(2000, 'not_a_locale', 'UTC'), undefined);
   assert.equal(formatGuestExpiry(2000, 'en-US', 'Not/A_Timezone'), undefined);
+});
+
+
+test('four-photo readiness requires the exact selected/raw roles, order and complete template metadata echo', () => {
+  const expected = { photoIds: ['selected-1', 'selected-2', 'selected-3', 'selected-4'],
+    originalPhotoIds: ['raw-1', 'raw-2', 'raw-3', 'raw-4'],
+    composite: { photoId: 'template', layout: 'strip' as const, theme: 'coastal' as const, version: 'wedding-template-v1' as const } };
+  const good = { ...ready, ...expected };
+  assert.doesNotThrow(() => validateReadyPublication(good, expected));
+  const invalid = [ready, { ...good, photoIds: undefined }, { ...good, originalPhotoIds: undefined },
+    { ...good, composite: undefined }, { ...good, photoIds: expected.originalPhotoIds, originalPhotoIds: expected.photoIds },
+    { ...good, photoIds: [...expected.photoIds].reverse() }, { ...good, originalPhotoIds: [...expected.originalPhotoIds].reverse() },
+    { ...good, photoIds: [...expected.photoIds, 'extra'] },
+    ...[{ layout: 'grid' }, { version: 'other' }, { photoId: 'other' }, { theme: 'classic' }, { extra: true }]
+      .map(change => ({ ...good, composite: { ...expected.composite, ...change } }))];
+  for (const value of invalid) assert.throws(() => validateReadyPublication(value, expected));
+  // Five-photo servers retain their established generic readiness response.
+  assert.doesNotThrow(() => validateReadyPublication(ready, { photoIds: ['a', 'b', 'c', 'd', 'e'] }));
 });

@@ -1,0 +1,628 @@
+{
+  "scope": "LOCAL UNPUBLISHED browser fixtures. Actual editor/controller; Canvas recipe approximation, in-memory originals/derivatives, no CoreImage, native file durability, Photos, R2, downloads or SMS verification.",
+  "status": "passed",
+  "checks": [
+    {
+      "orientation": "portrait",
+      "originalPixels": {
+        "uri": "http://127.0.0.1:8791/synthetic/shot/10000000-0000-4000-8000-000000000001.png",
+        "width": 1122,
+        "height": 1402,
+        "byteLength": 2229439,
+        "jpeg": false,
+        "sha256": "6ca6274beba9483104f19fb35d1ef9b8bfaae458208025e8fb4e8d4890f45cdf",
+        "meanRGB": [
+          152.42506757598642,
+          130.9857728073722,
+          113.58985826207022
+        ],
+        "meanChroma": 38.84487337925703,
+        "cssFilter": "none"
+      },
+      "rendered": {
+        "warm": {
+          "uri": "blob:http://127.0.0.1:8791/37196cb1-f056-48a3-80f2-ec62a2ce5022",
+          "width": 1122,
+          "height": 1402,
+          "byteLength": 403443,
+          "jpeg": true,
+          "sha256": "b9ec906ee1b0fb6f836e64c8f6066fdc108e2d41f79c7de0f8ff9ce2522bf3cb",
+          "meanRGB": [
+            159.20214692023873,
+            132.10245485822392,
+            108.36497834771309
+          ],
+          "meanChroma": 50.84212965435169,
+          "cssFilter": "none"
+        },
+        "bw": {
+          "uri": "blob:http://127.0.0.1:8791/dbaba4b7-fce7-493e-af33-c7be6131a0b6",
+          "width": 1122,
+          "height": 1402,
+          "byteLength": 370725,
+          "jpeg": true,
+          "sha256": "51efd0abe136316145976aca55b9aa501cbd8eb184c2fa7312c5675f9a6432bb",
+          "meanRGB": [
+            134.50437368566932,
+            134.50437368566932,
+            134.50437368566932
+          ],
+          "meanChroma": 0,
+          "cssFilter": "none"
+        },
+        "film": {
+          "uri": "blob:http://127.0.0.1:8791/65ebe2fe-fd14-4826-b36a-b0594587d00f",
+          "width": 1122,
+          "height": 1402,
+          "byteLength": 384729,
+          "jpeg": true,
+          "sha256": "4cc01340640bb60adb25cb1cdb8d8e977edf1bf80268aaecaf9248fe3fe7fe0f",
+          "meanRGB": [
+            153.16504306300396,
+            134.18690004856825,
+            118.3619485532509
+          ],
+          "meanChroma": 34.80420954531469,
+          "cssFilter": "none"
+        }
+      },
+      "quarter": {
+        "uri": "blob:http://127.0.0.1:8791/52d027e5-cf82-4541-87ef-3f8211988eb4",
+        "width": 1122,
+        "height": 1402,
+        "byteLength": 396117,
+        "jpeg": true,
+        "sha256": "49d1c8b3ad43d6f445020f8b2063a76715b402f77f26a60fd55085f579489e2b",
+        "meanRGB": [
+          152.48249254312023,
+          131.69745665092648,
+          114.74710815463521
+        ],
+        "meanChroma": 37.746811913716336,
+        "cssFilter": "none"
+      },
+      "savedPixels": {
+        "uri": "blob:http://127.0.0.1:8791/0c95ed4f-dd2a-48e9-b49f-56fcd191a992",
+        "width": 1122,
+        "height": 1402,
+        "byteLength": 402912,
+        "jpeg": true,
+        "sha256": "a514f441565201bb937951155d3b37f536a87d6e98aa148fbd43905f683ca232",
+        "meanRGB": [
+          157.6153718522813,
+          131.64849425699472,
+          109.55884768639656
+        ],
+        "meanChroma": 48.06303638041911,
+        "cssFilter": "none"
+      },
+      "counters": {
+        "renders": [
+          {
+            "requestID": "c9379f5f-eafc-45dc-8ecd-372c1416e807",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "warm",
+            "intensity": 0.75,
+            "preview": true,
+            "status": "cancelled",
+            "uri": ""
+          },
+          {
+            "requestID": "c0ab0754-cbc3-4424-a0ec-f71f805e140f",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "warm",
+            "intensity": 1,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/12af338a-9ca9-4491-930e-602ae2d8c3e5.jpg"
+          },
+          {
+            "requestID": "e9de2d18-d2f6-4cdf-b85c-fb8d26ad7b14",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "bw",
+            "intensity": 1,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/c19b9937-6c90-45b7-a03f-c0700c1483bc.jpg"
+          },
+          {
+            "requestID": "5238d823-8d90-4de4-88e8-0fd31987601a",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "bw",
+            "intensity": 1,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/bc34fe17-17eb-4f8c-9692-c2a815b9057f.jpg"
+          },
+          {
+            "requestID": "087380a8-8d99-4ad9-b7ff-d3067284234e",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "film",
+            "intensity": 1,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/d5cbaf43-5491-40dc-8513-17ddfe076883.jpg"
+          },
+          {
+            "requestID": "aa0ea925-c878-4312-bff7-67f89c492b5d",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "film",
+            "intensity": 1,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/90b848be-fe38-4962-82da-ecd69f2bc106.jpg"
+          },
+          {
+            "requestID": "2a333052-90b9-43f9-8f5e-e3252f5af4d1",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "film",
+            "intensity": 0.25,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/46301dfe-9386-4001-b1b1-43efb7157e1d.jpg"
+          },
+          {
+            "requestID": "16681aea-9fe3-48eb-812e-e0a1ed64890b",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "warm",
+            "intensity": 0.75,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/9052880c-0fb0-4a62-90fa-40e14e23cdc4.jpg"
+          },
+          {
+            "requestID": "499c7b17-0bbd-4fb9-aacb-c76737d55316",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "bw",
+            "intensity": 0.75,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/93571eec-7f01-41e1-a00e-f0e44f909c73.jpg"
+          },
+          {
+            "requestID": "61b95930-4519-4eaf-92dd-a0a920ebee08",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "bw",
+            "intensity": 1,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/2ee9edf1-7f64-4aa7-8785-9d604a11f63f.jpg"
+          },
+          {
+            "requestID": "21308c75-1e80-4add-ab51-b3f68c2cbf26",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "warm",
+            "intensity": 0.75,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/39b3c2e6-051c-4486-a56c-d92f624beca4.jpg"
+          },
+          {
+            "requestID": "75fc47d9-0b9f-4425-853b-1990d57dc219",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "warm",
+            "intensity": 0.75,
+            "preview": false,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/b33ab72c-7328-43a5-adde-908a745602fa.jpg"
+          },
+          {
+            "requestID": "faac0092-426a-4697-b8c3-559bf06af6ee",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "warm",
+            "intensity": 0.75,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/e4e4dcde-eeda-441d-b9b9-9728c7e37820.jpg"
+          },
+          {
+            "requestID": "8dd74604-f21f-4489-a366-ad6eb160fd76",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "film",
+            "intensity": 0.75,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/4e48b1d8-e1e3-4b57-a5db-ed2d88be38c0.jpg"
+          },
+          {
+            "requestID": "e3fa2572-72cf-4a8a-8d48-8248a6622011",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "film",
+            "intensity": 0.75,
+            "preview": false,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/52cd0e0a-3bb9-4146-9432-a3435a18ccc5.jpg"
+          },
+          {
+            "requestID": "d6fe704e-3902-4f78-88f5-c70126675db8",
+            "sourceUri": "file:///synthetic/9bce93d6-e1de-4f1c-804d-941adeb8d21b.jpg",
+            "preset": "warm",
+            "intensity": 0.75,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/bb4fb925-b4b6-422b-9db6-bc4d515ea6ff.jpg"
+          }
+        ],
+        "cancellations": [
+          "c9379f5f-eafc-45dc-8ecd-372c1416e807",
+          "16681aea-9fe3-48eb-812e-e0a1ed64890b",
+          "499c7b17-0bbd-4fb9-aacb-c76737d55316",
+          "d6fe704e-3902-4f78-88f5-c70126675db8"
+        ],
+        "releases": [
+          "file:///synthetic-effects/12af338a-9ca9-4491-930e-602ae2d8c3e5.jpg",
+          "file:///synthetic-effects/c19b9937-6c90-45b7-a03f-c0700c1483bc.jpg",
+          "file:///synthetic-effects/bc34fe17-17eb-4f8c-9692-c2a815b9057f.jpg",
+          "file:///synthetic-effects/d5cbaf43-5491-40dc-8513-17ddfe076883.jpg",
+          "file:///synthetic-effects/90b848be-fe38-4962-82da-ecd69f2bc106.jpg",
+          "file:///synthetic-effects/46301dfe-9386-4001-b1b1-43efb7157e1d.jpg",
+          "file:///synthetic-effects/9052880c-0fb0-4a62-90fa-40e14e23cdc4.jpg",
+          "file:///synthetic-effects/93571eec-7f01-41e1-a00e-f0e44f909c73.jpg",
+          "file:///synthetic-effects/2ee9edf1-7f64-4aa7-8785-9d604a11f63f.jpg",
+          "file:///synthetic-effects/39b3c2e6-051c-4486-a56c-d92f624beca4.jpg",
+          "file:///synthetic-effects/b33ab72c-7328-43a5-adde-908a745602fa.jpg",
+          "file:///synthetic-effects/e4e4dcde-eeda-441d-b9b9-9728c7e37820.jpg",
+          "file:///synthetic-effects/4e48b1d8-e1e3-4b57-a5db-ed2d88be38c0.jpg",
+          "file:///synthetic-effects/52cd0e0a-3bb9-4146-9432-a3435a18ccc5.jpg",
+          "file:///synthetic-effects/bb4fb925-b4b6-422b-9db6-bc4d515ea6ff.jpg"
+        ]
+      },
+      "originalIDs": [
+        "10000000-0000-4000-8000-000000000001",
+        "10000000-0000-4000-8000-000000000002",
+        "10000000-0000-4000-8000-000000000003",
+        "10000000-0000-4000-8000-000000000004",
+        "10000000-0000-4000-8000-000000000005"
+      ],
+      "originalURIs": [
+        "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+        "file:///synthetic/10000000-0000-4000-8000-000000000002.jpg",
+        "file:///synthetic/10000000-0000-4000-8000-000000000003.jpg",
+        "file:///synthetic/10000000-0000-4000-8000-000000000004.jpg",
+        "file:///synthetic/10000000-0000-4000-8000-000000000005.jpg"
+      ],
+      "checks": [
+        "real JPEG pixels for all presets/intensity",
+        "late supersede ignored",
+        "cancel preserves originals",
+        "saved JPEG equals preview",
+        "Original restores original ID",
+        "retake clears look",
+        "background closes editor",
+        "no queue before confirm"
+      ]
+    },
+    {
+      "orientation": "landscape",
+      "originalPixels": {
+        "uri": "http://127.0.0.1:8791/synthetic/shot/10000000-0000-4000-8000-000000000001.png",
+        "width": 1122,
+        "height": 1402,
+        "byteLength": 2229439,
+        "jpeg": false,
+        "sha256": "6ca6274beba9483104f19fb35d1ef9b8bfaae458208025e8fb4e8d4890f45cdf",
+        "meanRGB": [
+          152.42506757598642,
+          130.9857728073722,
+          113.58985826207022
+        ],
+        "meanChroma": 38.84487337925703,
+        "cssFilter": "none"
+      },
+      "rendered": {
+        "warm": {
+          "uri": "blob:http://127.0.0.1:8791/4539c18d-62ec-45cf-ad3b-d71858594d4c",
+          "width": 1122,
+          "height": 1402,
+          "byteLength": 403443,
+          "jpeg": true,
+          "sha256": "b9ec906ee1b0fb6f836e64c8f6066fdc108e2d41f79c7de0f8ff9ce2522bf3cb",
+          "meanRGB": [
+            159.20214692023873,
+            132.10245485822392,
+            108.36497834771309
+          ],
+          "meanChroma": 50.84212965435169,
+          "cssFilter": "none"
+        },
+        "bw": {
+          "uri": "blob:http://127.0.0.1:8791/57199893-2e7e-43f0-a1d3-50af0647c963",
+          "width": 1122,
+          "height": 1402,
+          "byteLength": 370725,
+          "jpeg": true,
+          "sha256": "51efd0abe136316145976aca55b9aa501cbd8eb184c2fa7312c5675f9a6432bb",
+          "meanRGB": [
+            134.50437368566932,
+            134.50437368566932,
+            134.50437368566932
+          ],
+          "meanChroma": 0,
+          "cssFilter": "none"
+        },
+        "film": {
+          "uri": "blob:http://127.0.0.1:8791/2759cbd4-2f4e-49fc-b3e8-67d59de3ce17",
+          "width": 1122,
+          "height": 1402,
+          "byteLength": 384729,
+          "jpeg": true,
+          "sha256": "4cc01340640bb60adb25cb1cdb8d8e977edf1bf80268aaecaf9248fe3fe7fe0f",
+          "meanRGB": [
+            153.16504306300396,
+            134.18690004856825,
+            118.3619485532509
+          ],
+          "meanChroma": 34.80420954531469,
+          "cssFilter": "none"
+        }
+      },
+      "quarter": {
+        "uri": "blob:http://127.0.0.1:8791/d8efcd4a-f182-4b62-aa7c-fe88d8659a79",
+        "width": 1122,
+        "height": 1402,
+        "byteLength": 396117,
+        "jpeg": true,
+        "sha256": "49d1c8b3ad43d6f445020f8b2063a76715b402f77f26a60fd55085f579489e2b",
+        "meanRGB": [
+          152.48249254312023,
+          131.69745665092648,
+          114.74710815463521
+        ],
+        "meanChroma": 37.746811913716336,
+        "cssFilter": "none"
+      },
+      "savedPixels": {
+        "uri": "blob:http://127.0.0.1:8791/b5028cad-d354-4d4a-8d37-a13e962c1131",
+        "width": 1122,
+        "height": 1402,
+        "byteLength": 402912,
+        "jpeg": true,
+        "sha256": "a514f441565201bb937951155d3b37f536a87d6e98aa148fbd43905f683ca232",
+        "meanRGB": [
+          157.6153718522813,
+          131.64849425699472,
+          109.55884768639656
+        ],
+        "meanChroma": 48.06303638041911,
+        "cssFilter": "none"
+      },
+      "counters": {
+        "renders": [
+          {
+            "requestID": "4a8af9cd-d855-4d20-97a3-fe9a60c1eeef",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "warm",
+            "intensity": 0.75,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/7e5a9381-d55d-4a6f-b60b-7c89801c98b8.jpg"
+          },
+          {
+            "requestID": "b2c2966d-dcdf-4caa-8116-416ed3951b82",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "warm",
+            "intensity": 1,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/563bd058-9a10-447f-a0df-9b1250919d06.jpg"
+          },
+          {
+            "requestID": "cfe02629-91a9-4cef-84ec-5df86aceeb91",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "bw",
+            "intensity": 1,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/ffbde105-8794-4420-8ae5-30346af65b58.jpg"
+          },
+          {
+            "requestID": "4ab92e03-08ac-4bbb-9a18-86fb38976af9",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "bw",
+            "intensity": 1,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/fcac9088-d80e-4c19-b08e-524a7e208100.jpg"
+          },
+          {
+            "requestID": "98a44657-acba-4fed-b6f7-efa96776a625",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "film",
+            "intensity": 1,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/8a7cf953-eafd-48f4-8d2f-c65563dd1407.jpg"
+          },
+          {
+            "requestID": "cdb2862d-1b60-4062-b52e-aa10dc38b712",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "film",
+            "intensity": 1,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/f7ef275a-2afb-41a9-b6bf-eb2a3c5ec0c0.jpg"
+          },
+          {
+            "requestID": "29f075f1-5850-40fa-bdad-1555c86a2d5c",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "film",
+            "intensity": 0.25,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/c9d17188-5dea-42ef-9a12-56804b76b44d.jpg"
+          },
+          {
+            "requestID": "fda2b7d7-da48-48cb-a39a-1d8272d18165",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "warm",
+            "intensity": 0.75,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/9d9e9437-0330-477e-bf4c-0a6d039c5b58.jpg"
+          },
+          {
+            "requestID": "415749c4-c2eb-4c26-9dff-8abd22494e80",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "bw",
+            "intensity": 0.75,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/37c01b7a-6f64-40d6-8e38-dee090af47d0.jpg"
+          },
+          {
+            "requestID": "aa9b60c6-bb1e-486c-bc38-2266fc7774d7",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "bw",
+            "intensity": 1,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/3fcffa09-93a6-4e60-9020-414c851c184d.jpg"
+          },
+          {
+            "requestID": "af845b1d-760f-4765-89fd-c78056ec7a41",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "warm",
+            "intensity": 0.75,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/cc8e9bed-8537-4f3c-90b2-df83e6a1fdb4.jpg"
+          },
+          {
+            "requestID": "55987b16-53cd-4963-b1e0-9f123b4107b7",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "warm",
+            "intensity": 0.75,
+            "preview": false,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/e2fa8bcc-aece-4a16-b530-102910e86751.jpg"
+          },
+          {
+            "requestID": "c6339876-fd19-49cd-a54f-2cc57926e67e",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "warm",
+            "intensity": 0.75,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/9092ea32-edaa-44ac-9cae-6ed63c8fb601.jpg"
+          },
+          {
+            "requestID": "6f9e685a-39ad-48f8-8bcc-2d38e4318d6a",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "film",
+            "intensity": 0.75,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/f48a3491-0d3a-43ae-8d9d-7ae2ac22fd28.jpg"
+          },
+          {
+            "requestID": "dccd6804-283b-49e1-9c6f-5cd5f033ff2e",
+            "sourceUri": "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+            "preset": "film",
+            "intensity": 0.75,
+            "preview": false,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/b883a5cf-8f2b-41d9-b5f0-77a8c19515cc.jpg"
+          },
+          {
+            "requestID": "18625465-fa22-4907-b571-66d70d89a592",
+            "sourceUri": "file:///synthetic/fff38f0d-3707-417f-9f41-f7c8963a4794.jpg",
+            "preset": "warm",
+            "intensity": 0.75,
+            "preview": true,
+            "status": "complete",
+            "uri": "file:///synthetic-effects/af67fcd4-8964-43f6-a027-cca7c81f9c1b.jpg"
+          }
+        ],
+        "cancellations": [
+          "fda2b7d7-da48-48cb-a39a-1d8272d18165",
+          "415749c4-c2eb-4c26-9dff-8abd22494e80",
+          "18625465-fa22-4907-b571-66d70d89a592"
+        ],
+        "releases": [
+          "file:///synthetic-effects/7e5a9381-d55d-4a6f-b60b-7c89801c98b8.jpg",
+          "file:///synthetic-effects/563bd058-9a10-447f-a0df-9b1250919d06.jpg",
+          "file:///synthetic-effects/ffbde105-8794-4420-8ae5-30346af65b58.jpg",
+          "file:///synthetic-effects/fcac9088-d80e-4c19-b08e-524a7e208100.jpg",
+          "file:///synthetic-effects/8a7cf953-eafd-48f4-8d2f-c65563dd1407.jpg",
+          "file:///synthetic-effects/f7ef275a-2afb-41a9-b6bf-eb2a3c5ec0c0.jpg",
+          "file:///synthetic-effects/c9d17188-5dea-42ef-9a12-56804b76b44d.jpg",
+          "file:///synthetic-effects/9d9e9437-0330-477e-bf4c-0a6d039c5b58.jpg",
+          "file:///synthetic-effects/37c01b7a-6f64-40d6-8e38-dee090af47d0.jpg",
+          "file:///synthetic-effects/3fcffa09-93a6-4e60-9020-414c851c184d.jpg",
+          "file:///synthetic-effects/cc8e9bed-8537-4f3c-90b2-df83e6a1fdb4.jpg",
+          "file:///synthetic-effects/e2fa8bcc-aece-4a16-b530-102910e86751.jpg",
+          "file:///synthetic-effects/9092ea32-edaa-44ac-9cae-6ed63c8fb601.jpg",
+          "file:///synthetic-effects/f48a3491-0d3a-43ae-8d9d-7ae2ac22fd28.jpg",
+          "file:///synthetic-effects/b883a5cf-8f2b-41d9-b5f0-77a8c19515cc.jpg",
+          "file:///synthetic-effects/af67fcd4-8964-43f6-a027-cca7c81f9c1b.jpg"
+        ]
+      },
+      "originalIDs": [
+        "10000000-0000-4000-8000-000000000001",
+        "10000000-0000-4000-8000-000000000002",
+        "10000000-0000-4000-8000-000000000003",
+        "10000000-0000-4000-8000-000000000004",
+        "10000000-0000-4000-8000-000000000005"
+      ],
+      "originalURIs": [
+        "file:///synthetic/10000000-0000-4000-8000-000000000001.jpg",
+        "file:///synthetic/10000000-0000-4000-8000-000000000002.jpg",
+        "file:///synthetic/10000000-0000-4000-8000-000000000003.jpg",
+        "file:///synthetic/10000000-0000-4000-8000-000000000004.jpg",
+        "file:///synthetic/10000000-0000-4000-8000-000000000005.jpg"
+      ],
+      "checks": [
+        "real JPEG pixels for all presets/intensity",
+        "late supersede ignored",
+        "cancel preserves originals",
+        "saved JPEG equals preview",
+        "Original restores original ID",
+        "retake clears look",
+        "background closes editor",
+        "no queue before confirm"
+      ]
+    }
+  ],
+  "screenshots": [
+    "artifacts/visual/looks-original-portrait.png",
+    "artifacts/visual/looks-warm-portrait.png",
+    "artifacts/visual/looks-bw-portrait.png",
+    "artifacts/visual/looks-film-portrait.png",
+    "artifacts/visual/looks-film-strength25-portrait.png",
+    "artifacts/visual/looks-saved-warm-portrait.png",
+    "artifacts/visual/looks-original-landscape.png",
+    "artifacts/visual/looks-warm-landscape.png",
+    "artifacts/visual/looks-bw-landscape.png",
+    "artifacts/visual/looks-film-landscape.png",
+    "artifacts/visual/looks-film-strength25-landscape.png",
+    "artifacts/visual/looks-saved-warm-landscape.png"
+  ],
+  "videos": [
+    "artifacts/visual/looks-demo-portrait.webm",
+    "artifacts/visual/looks-demo-landscape.webm"
+  ],
+  "errors": [],
+  "mockedHealthRequests": [],
+  "unexpectedExternalRequests": [],
+  "sourceSHA256": "640a9ac8c0d04f73ab34956615bf8a4a5be453a52a6301b80634f900818c5ffc",
+  "sourceHashes": {
+    "apps/ipad/App.tsx": "640a9ac8c0d04f73ab34956615bf8a4a5be453a52a6301b80634f900818c5ffc",
+    "apps/ipad/src/GlassSurface.tsx": "ace64a22e740d69040689495c0aa7147f7456038bbd0ee9aba6f2d52b58af972",
+    "apps/ipad/src/glass-policy.ts": "d3e33995484239887dde90f2743919c17bb2e8ff23093ceb45a804e530499e9e",
+    "apps/ipad/src/host-visibility.ts": "9b8033279a1249c59cd04e3f185792fa2a61c14f892f2cb9cf98953ceab02014",
+    "apps/ipad/src/photo-look-editor.ts": "a5fd1060b3749d736894e5ddb8565539ad3ae13f245edfb5ced7c7a887884481",
+    "apps/ipad/src/native-photo-effects.ts": "63c66993826a9644e90d7fb27f3af3387a3c09e97f58136fd711551cff69c587",
+    "apps/ipad/src/local-types.ts": "1209fb89585bdf5fcbc609a3fb466aad5961364f94d83acb6e5e90796c338ada",
+    "apps/ipad/src/session-capture.ts": "b41f7ee98282fe5661e080a6b4e0b88b17c56e3c1e5908adebbe020ed6323e24",
+    "apps/ipad/src/review-selection.ts": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
+    "apps/ipad/src/sharing.ts": "00f6890855b5ed5942b23fd10f5f54f88d1bfa62ae541d9c0835c8a7ac9e415f",
+    "apps/ipad/src/SmsShare.tsx": "ee2740889c602683049dae6b599bbdd9886fef271bf30df4f18e50dbc6e6b8c2",
+    "apps/ipad/src/sms-state.ts": "4c7125d4f710c97848b6690196fa328edc83e85488ce3626dd7e843e2e99497a",
+    "apps/ipad/src/booth-presentation.ts": "b6f720f7d9133a0603f847efd0646a9a23f40d409018e9eb757d5326bc43e935",
+    "apps/ipad/src/host-originals.ts": "c2f3e5707832bc96988bd4f91ddbedd22d93b2feb2248266c55454da4256431f",
+    "apps/ipad/src/photo-export.ts": "fcc298173415b25cf15e71757e7c741485ca3b88a44b7422594388a56c447a9b",
+    "apps/ipad/src/photo-library.ts": "fe2344e73c2d96d42417d201f5464fc72b8093b8bf43339e3011b7ba31942246",
+    "packages/core/src/index.ts": "945d97743a621558369c7029acbc5b61daae85d2c08156368c188aedbbb9a991",
+    "apps/ipad/assets/attract-scene.png": "6ca6274beba9483104f19fb35d1ef9b8bfaae458208025e8fb4e8d4890f45cdf"
+  }
+}

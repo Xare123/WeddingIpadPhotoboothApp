@@ -1,4 +1,5 @@
-import type { ActiveSession, PhotoExportStatus, PhotoLibraryCapability } from './local-types';
+import { publicationAssets } from './publication';
+import type { ActiveCapture, ActiveSession, PhotoExportStatus, PhotoLibraryCapability } from './local-types';
 export interface PhotoLibraryPort {
   capability(): Promise<PhotoLibraryCapability>;
   requestAddPermission(): Promise<PhotoLibraryCapability>;
@@ -8,7 +9,20 @@ export interface ExportSessions {
   get(id: string): Promise<ActiveSession | null>;
   update(sessionId: string, photoId: string, status: PhotoExportStatus): Promise<ActiveSession | null>;
 }
-export type PhotoExportOptions = { requestPermission?: boolean; retryUncertain?: boolean; photoIds?: string[]; includeRetakes?: boolean };
+// Only the current, lineage-valid, committed JPEG is a Photos candidate.
+// Staged and superseded composites never enter the original-shot collections.
+export function compositeExportCapture(session: ActiveSession): ActiveCapture | null {
+  const composite = session.composite;
+  if (!composite || !Number.isFinite(session.createdAt) || !/^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/.test(composite.id)) return null;
+  try {
+    const uri = new URL(composite.fileUri);
+    if (uri.protocol !== 'file:' || uri.hostname || !uri.pathname.endsWith(`/photobooth/${composite.id}.jpg`) ||
+      !publicationAssets({ ...session, confirmed: true })?.composite) return null;
+  } catch { return null; }
+  return { id: composite.id, fileUri: composite.fileUri, sessionId: session.id,
+    createdAt: session.createdAt, confirmed: session.confirmed, exportStatus: composite.exportStatus };
+}
+export type PhotoExportOptions = { includeComposite?: boolean; requestPermission?: boolean; retryUncertain?: boolean; photoIds?: string[]; includeRetakes?: boolean };
 export function createPhotoExporter(library: PhotoLibraryPort, sessions: ExportSessions) {
   let running: Promise<unknown> = Promise.resolve();
   return {
@@ -17,7 +31,14 @@ export function createPhotoExporter(library: PhotoLibraryPort, sessions: ExportS
       const operation = running.catch(() => {}).then(async () => {
         const initial = await sessions.get(session.id);
         if (!initial) throw new Error('The local session is unavailable (export-session).');
-        const candidates = (value: ActiveSession) => [...value.shots, ...(options.includeRetakes === true ? value.retakes ?? [] : [])].filter(photo => !options.photoIds || options.photoIds.includes(photo.id));
+        const candidates = (value: ActiveSession) => {
+          const composite = options.includeComposite === true ? compositeExportCapture(value) : null;
+          // Explicit selection is required for composite export. Including a
+          // composite flag alone must not turn original batch retries into a copy.
+          return [...value.shots, ...(options.includeRetakes === true ? value.retakes ?? [] : []),
+            ...(composite && options.photoIds?.includes(composite.id) ? [composite] : [])]
+            .filter(photo => !options.photoIds || options.photoIds.includes(photo.id));
+        };
         const targets = candidates(initial);
         if (targets.every(photo => photo.exportStatus === 'saved' || (photo.exportStatus === 'uncertain' && options.retryUncertain !== true))) return initial;
         let capability: PhotoLibraryCapability;
@@ -36,7 +57,10 @@ export function createPhotoExporter(library: PhotoLibraryPort, sessions: ExportS
           if (status === 'pending' && capability.permission === 'granted') {
             // A durable uncertainty marker precedes the non-idempotent native
             // write. After termination, never automatically create a duplicate.
-            try { await sessions.update(initial.id, selected.id, 'uncertain'); }
+            try {
+              const marked = await sessions.update(initial.id, selected.id, 'uncertain');
+              if (!marked || !candidates(marked).some(item => item.id === selected.id && item.exportStatus === 'uncertain')) throw new Error('Photos journal unavailable');
+            }
             catch { outcomes.set(selected.id, 'uncertain'); continue; }
             try {
               const uri = new URL(selected.fileUri);
@@ -45,7 +69,10 @@ export function createPhotoExporter(library: PhotoLibraryPort, sessions: ExportS
               status = 'saved';
             } catch { status = 'failed'; }
           }
-          try { await sessions.update(initial.id, selected.id, status); }
+          try {
+            const updated = await sessions.update(initial.id, selected.id, status);
+            if (!updated) throw new Error('Photos journal unavailable');
+          }
           catch { status = 'uncertain'; }
           outcomes.set(selected.id, status);
         }
@@ -53,7 +80,8 @@ export function createPhotoExporter(library: PhotoLibraryPort, sessions: ExportS
         // This overlay is honest even if the export-status journal could not be
         // written. Never return a stale whole-session snapshot to storage.
         const overlay = (photo: ActiveSession['shots'][number]) => outcomes.has(photo.id) ? { ...photo, exportStatus: outcomes.get(photo.id)! } : photo;
-        return { ...result, shots: result.shots.map(overlay), retakes: result.retakes?.map(overlay) };
+        return { ...result, shots: result.shots.map(overlay), retakes: result.retakes?.map(overlay),
+          ...(result.composite && outcomes.has(result.composite.id) ? { composite: { ...result.composite, exportStatus: outcomes.get(result.composite.id)! } } : {}) };
       });
       running = operation;
       return operation;
