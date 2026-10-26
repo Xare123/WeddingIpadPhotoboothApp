@@ -1,0 +1,21 @@
+{
+  "sourceCommit": "873f783b412db566f379499d2030e3427274bec0",
+  "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40368245476",
+  "job": "121731688995",
+  "outcome": "Intel runner acquired; simulator-ready timed out before xcode-test",
+  "publicAnnotation": "Failed stage: simulator-ready: failed; Failure: simulator-ready timed out",
+  "coordinatorArtifactReview": {
+    "source": "Coordinator inspected actual GitHub boot artifact and console",
+    "progress": "Cold Intel iOS26.2 progressed through data migration to Waiting on System App at2:46; still waiting at3:00",
+    "limit": "Default180000ms command timeout, no boot-specific override; harness termination, not a proven OS kill",
+    "expectedTestCount": 15,
+    "executedTests": 0,
+    "xcodeTestLogPresent": false,
+    "xcresultPresent": false
+  },
+  "targetedRepair": "Explicit600000ms simulator-ready allowance for cold boot; successful bootstatus remains mandatory",
+  "testAssertionsWeakened": false,
+  "productSourceChangedByRepair": false,
+  "nativeSuitePassed": false,
+  "newPaidResources": false
+}

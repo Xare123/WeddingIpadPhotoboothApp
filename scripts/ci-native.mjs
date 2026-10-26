@@ -178,7 +178,9 @@ async function main() {
   simulator = { ...template, name: `Wedding CI (${template.name})`, udid }; createdHere = true;
   status.simulator = { name: simulator.name, runtime: simulator.runtime, udid: simulator.udid }; saveStatus();
   await command('simulator-boot', 'xcrun', ['simctl', 'boot', simulator.udid]); bootedHere = true;
-  await command('simulator-ready', 'xcrun', ['simctl', 'bootstatus', simulator.udid, '-b']);
+  // Cold Intel iOS26.2 progressed into System App startup at the old 180s limit.
+  // Keep readiness mandatory, with a bounded 10-minute cold-boot allowance.
+  await command('simulator-ready', 'xcrun', ['simctl', 'bootstatus', simulator.udid, '-b'], { timeout: 600_000 });
   if (settings.requiresMetro) {
     writeFileSync(join(diagnostics, 'metro.log'), 'Metro startup requested.\n');
     const metroEntry = expoEntry;
