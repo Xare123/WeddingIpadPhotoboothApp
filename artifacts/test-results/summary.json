@@ -48,7 +48,7 @@
   "gallery_worker_source_sha256": "4801a7cfcc475da2fa2d180b1a01dc5d98b996cf1dd830cf31f66f7dfb9f42b9",
   "ci_contract_tests": {
     "command": "node --test scripts/ci-native.test.mjs",
-    "passed": 34,
+    "passed": 38,
     "failed": 0,
     "skipped": 0
   },
@@ -116,7 +116,7 @@
       "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40250912422",
       "commit": "43ceaa34bfa135bc6bde3399981408f3aae50fea",
       "result": "failed",
-      "diagnosis": "Undici crash resolved; metro-ready reached60s deadline withlauncher alive, localhost ETIMEDOUT, IPv4/IPv6 ECONNREFUSED. Native compile/XCTest unrun. Coordinator retrieving artifact metro.log; further hosted retries held."
+      "diagnosis": "Undici crash resolved; metro-ready reached60s with npxlauncher alive, localhost timeout and IPconnectionrefused. Coordinator fullyinspectedartifact: no metro.log/no capturedCLIoutput; cleanup passed. Underlying npxstall cause unproven. Direct installedExpoCLI invocation and initialized lifecycle logs are the next targeted repair; no nativecompile/XCTest yet."
     }
   ],
   "firebase": {
@@ -134,5 +134,18 @@
     "owned_server_stopped": true
   },
   "native_compilation_executed": false,
-  "native_xctest_executed": false
+  "native_xctest_executed": false,
+  "isolated_preinstall_contracts": {
+    "passed": 38,
+    "failed": 0,
+    "skipped": 0,
+    "project_dependencies_available": false
+  },
+  "direct_expo_cli_startup": {
+    "expo_version": "58.0.19",
+    "ready_seconds": 2,
+    "http_status": 200,
+    "owned_process_group_stopped": true,
+    "macos_result": "pending_hosted_run"
+  }
 }

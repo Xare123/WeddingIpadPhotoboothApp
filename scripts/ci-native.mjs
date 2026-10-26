@@ -1,9 +1,9 @@
 import { spawn, spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, isAbsolute, join, resolve } from 'node:path';
+import { basename, dirname, isAbsolute, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { bounded, redact } from './ci-summary.mjs';
-import { commandStreams, parseNamedJSON, passingXCTestCounts, selectIpadSimulator, waitForMetro, metroErrorCodes } from './ci-native-contract.mjs';
+import { commandStreams, parseNamedJSON, passingXCTestCounts, selectIpadSimulator, waitForMetro, metroErrorCodes, resolveExpoEntry, ownedProcessTree } from './ci-native-contract.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const diagnostics = process.env.WEDDING_DIAGNOSTICS_DIR ?? join(process.env.RUNNER_TEMP ?? '/tmp', 'wedding-native-diagnostics');
@@ -151,7 +151,9 @@ async function main() {
   status.simulator = { name: simulator.name, runtime: simulator.runtime, udid: simulator.udid }; saveStatus();
   await command('simulator-boot', 'xcrun', ['simctl', 'boot', simulator.udid]); bootedHere = true;
   await command('simulator-ready', 'xcrun', ['simctl', 'bootstatus', simulator.udid, '-b']);
-  const metroLog = [];
+  writeFileSync(join(diagnostics, 'metro.log'), 'Metro startup requested.\n');
+  const metroEntry = validationStage('metro-entrypoint', () => resolveExpoEntry(join(root, 'apps/ipad')));
+  const metroLog = ['Metro startup requested.\n'];
   let metroSpawnError;
   const metroOutput = data => {
     metroLog.push(redact(data.toString()));
@@ -159,12 +161,20 @@ async function main() {
     writeFileSync(join(diagnostics, 'metro.log'), bounded(metroLog.join(''), 400, 96_000));
   };
   await asyncValidationStage('metro-startup', () => new Promise((resolveSpawn, reject) => {
-    metro = spawn('npx', ['--no-install', 'expo', 'start', '--localhost', '--port', '8081'], {
+    metro = spawn(process.execPath, [metroEntry.cli, 'start', '--localhost', '--port', '8081'], {
       cwd: join(root, 'apps/ipad'), env: fixtureEnv, detached: true, stdio: ['ignore', 'pipe', 'pipe'],
     });
     metro.stdout.on('data', metroOutput); metro.stderr.on('data', metroOutput);
+    for (const event of ['exit', 'close']) metro.on(event, (code, signal) => {
+      const safeSignal = typeof signal === 'string' && /^SIG[A-Z0-9]+$/.test(signal) ? signal : 'none';
+      metroOutput(Buffer.from('Metro lifecycle: ' + event + '; pid ' + metro.pid + '; code ' +
+        (Number.isInteger(code) ? code : 'none') + '; signal ' + safeSignal + '; executable ' +
+        basename(process.execPath).replace(/[^A-Za-z0-9._-]/g, '_').slice(0, 60) + '\n'));
+    });
     metro.once('spawn', () => {
-      writeFileSync(join(diagnostics, 'metro-startup.log'), 'Expo CLI spawned through npx.\n');
+      const message = 'Expo ' + metroEntry.version + ' direct Node CLI spawned; pid ' + metro.pid + '.\n';
+      writeFileSync(join(diagnostics, 'metro-startup.log'), message);
+      metroOutput(Buffer.from('Metro lifecycle: ' + message));
       resolveSpawn();
     });
     metro.on('error', error => {
@@ -204,5 +214,13 @@ async function main() {
   status.result = 'passed';
 }
 try { await main(); }
-catch (error) { status.result = 'failed'; status.error = redact(error instanceof Error ? error.message : String(error)); process.exitCode = 1; }
+catch (error) {
+  status.result = 'failed'; status.error = redact(error instanceof Error ? error.message : String(error)); process.exitCode = 1;
+  if (metro) {
+    try {
+      status.metroProcessTree = ownedProcessTree(metro.pid);
+      writeFileSync(join(diagnostics, 'metro-processes.log'), JSON.stringify(status.metroProcessTree, null, 2) + '\n');
+    } catch { /* Preserve the original native failure if diagnostics are unavailable. */ }
+  }
+}
 finally { await cleanup(); saveStatus(); }

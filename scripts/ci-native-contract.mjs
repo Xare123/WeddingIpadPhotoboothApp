@@ -1,6 +1,56 @@
 // These parsers consume output from the installed Xcode tools. They are shared
 // with executable fixtures so hosted CI cannot mistake zero tests for a pass.
 import { request as httpRequest } from 'node:http';
+import { spawnSync } from 'node:child_process';
+import { createRequire } from 'node:module';
+import { readFileSync, realpathSync, statSync } from 'node:fs';
+import { basename, dirname, isAbsolute, resolve, sep } from 'node:path';
+
+export function resolveExpoEntry(workspace) {
+  const manifestPath = resolve(workspace, 'package.json');
+  const manifest = parseNamedJSON('workspace-package', readFileSync(manifestPath, 'utf8'));
+  if (typeof manifest.dependencies?.expo !== 'string') throw new Error('Workspace Expo dependency is missing');
+  const require = createRequire(manifestPath);
+  const packagePath = require.resolve('expo/package.json');
+  const metadata = parseNamedJSON('expo-package', readFileSync(packagePath, 'utf8'));
+  if (metadata.name !== 'expo' || !/^\d+\.\d+\.\d+(?:[-+][A-Za-z0-9.-]+)?$/.test(metadata.version ?? '')) throw new Error('Installed Expo package metadata is invalid');
+  if (/^\d+\.\d+\.\d+$/.test(manifest.dependencies.expo) && manifest.dependencies.expo !== metadata.version) throw new Error('Installed Expo version differs from the pinned workspace dependency');
+  const bin = typeof metadata.bin === 'string' ? metadata.bin : metadata.bin?.expo;
+  if (typeof bin !== 'string' || !bin || isAbsolute(bin)) throw new Error('Installed Expo CLI bin is invalid');
+  const directory = realpathSync(dirname(packagePath));
+  const cli = realpathSync(resolve(directory, bin));
+  if (!cli.startsWith(directory + sep) || !statSync(cli).isFile()) throw new Error('Installed Expo CLI must be a file inside its package');
+  return { cli, version: metadata.version };
+}
+
+export function ownedProcessTree(rootPid, { run = spawnSync, maxProcesses = 12, budgetMs = 1500 } = {}) {
+  const result = { processes: [], truncated: false };
+  if (!Number.isSafeInteger(rootPid) || rootPid <= 0) return result;
+  const maximum = Math.max(1, Math.min(12, maxProcesses)), deadline = performance.now() + Math.min(1500, budgetMs);
+  const queue = [{ pid: rootPid, parent: undefined, depth: 0 }], seen = new Set();
+  while (queue.length && result.processes.length < maximum && performance.now() < deadline) {
+    const current = queue.shift();
+    if (seen.has(current.pid)) continue;
+    seen.add(current.pid);
+    let record, children;
+    try {
+      record = run('ps', ['-o', 'pid=,ppid=,pgid=,stat=,comm=', '-p', String(current.pid)], { encoding: 'utf8', timeout: 250, maxBuffer: 8192 });
+      const match = /^\s*(\d+)\s+(\d+)\s+(\d+)\s+([A-Za-z+<>\-]+)\s+(.+?)\s*$/.exec(record.stdout ?? '');
+      if (!match || Number(match[1]) !== current.pid || (current.parent !== undefined && Number(match[2]) !== current.parent)) continue;
+      result.processes.push({
+        pid: current.pid, ppid: Number(match[2]), pgid: Number(match[3]), state: match[4].slice(0, 16),
+        executable: basename(match[5].split(/\s+/)[0]).replace(/[^A-Za-z0-9._-]/g, '_').slice(0, 60),
+      });
+      if (current.depth >= 2) continue;
+      children = run('pgrep', ['-P', String(current.pid)], { encoding: 'utf8', timeout: 250, maxBuffer: 1024 });
+      for (const value of (children.stdout ?? '').trim().split(/\s+/).slice(0, 12)) {
+        if (/^\d{1,10}$/.test(value) && Number(value) > 0) queue.push({ pid: Number(value), parent: current.pid, depth: current.depth + 1 });
+      }
+    } catch { /* Missing tools or an exited process do not replace the original failure. */ }
+  }
+  result.truncated = queue.length > 0;
+  return result;
+}
 
 export const MAX_MACHINE_STDOUT = 4 * 1024 * 1024;
 

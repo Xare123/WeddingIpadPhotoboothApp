@@ -1,11 +1,11 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn, spawnSync } from 'node:child_process';
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createServer } from 'node:http';
-import { commandStreams, MAX_MACHINE_STDOUT, metroErrorCodes, metroHTTPStatus, parseNamedJSON, passingXCTestCounts, selectIpadSimulator, waitForMetro } from './ci-native-contract.mjs';
+import { commandStreams, MAX_MACHINE_STDOUT, metroErrorCodes, metroHTTPStatus, ownedProcessTree, parseNamedJSON, passingXCTestCounts, resolveExpoEntry, selectIpadSimulator, waitForMetro } from './ci-native-contract.mjs';
 import { annotationText, bounded, diagnosticLines, publicAnnotations, redact, workflowData } from './ci-summary.mjs';
 
 const ipad = { udid: '11111111-1111-4111-8111-111111111111', name: 'iPad Pro 13-inch (M4)',
@@ -348,4 +348,76 @@ test('Node HTTP Metro connection failures retain their safe network code', async
   const port = server.address().port;
   await new Promise(resolve => server.close(resolve));
   await assert.rejects(metroHTTPStatus('http://127.0.0.1:' + port), error => error.code === 'ECONNREFUSED');
+});
+
+function expoFixture(t) {
+  const root = mkdtempSync(join(tmpdir(), 'wedding-expo-entry-'));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const directory = join(root, 'node_modules/expo');
+  mkdirSync(join(directory, 'bin'), { recursive: true });
+  writeFileSync(join(root, 'package.json'), JSON.stringify({ dependencies: { expo: '58.0.19' } }));
+  writeFileSync(join(directory, 'bin/cli'), "#!/usr/bin/env node\nrequire('@expo/cli');\n");
+  const metadata = { name: 'expo', version: '58.0.19', bin: { expo: 'bin/cli' } };
+  const save = value => writeFileSync(join(directory, 'package.json'), JSON.stringify(value));
+  save(metadata);
+  return { root, directory, metadata, save };
+}
+
+test('direct Expo entry resolves the workspace-installed versioned package bin without dependencies', t => {
+  const fixture = expoFixture(t);
+  assert.deepEqual(resolveExpoEntry(fixture.root), { cli: join(fixture.directory, 'bin/cli'), version: '58.0.19' });
+  fixture.save({ ...fixture.metadata, bin: 'bin/cli' });
+  assert.equal(resolveExpoEntry(fixture.root).cli, join(fixture.directory, 'bin/cli'));
+});
+
+test('direct Expo entry rejects version mismatches, missing files, directories and package escapes', t => {
+  const fixture = expoFixture(t);
+  fixture.save({ ...fixture.metadata, version: '59.0.0' });
+  assert.throws(() => resolveExpoEntry(fixture.root), /differs from the pinned/);
+  writeFileSync(join(fixture.root, 'outside.js'), 'not an Expo CLI');
+  for (const bin of ['../../outside.js', 'bin', 'bin/missing']) {
+    fixture.save({ ...fixture.metadata, bin: { expo: bin } });
+    assert.throws(() => resolveExpoEntry(fixture.root));
+  }
+  fixture.save({ ...fixture.metadata, bin: { expo: join(fixture.root, 'outside.js') } });
+  assert.throws(() => resolveExpoEntry(fixture.root), /CLI bin is invalid/);
+});
+
+test('process diagnostics publish only the owned PID tree and sanitized executable basenames', () => {
+  const calls = [];
+  const run = (program, args, options) => {
+    calls.push({ program, args, options });
+    const pid = Number(args.at(-1));
+    if (program === 'pgrep') return { stdout: pid === 100 ? '101\n202\n' : pid === 101 ? '102\n' : '' };
+    const rows = {
+      100: '100 1 100 S /opt/node SECRET_ARG=never-publish',
+      101: '101 100 100 S /usr/bin/dotslash',
+      102: '102 101 100 R /opt/node ENV_FLAG=never-publish',
+      202: '202 999 202 S UNRELATED-PROCESS',
+    };
+    return { stdout: rows[pid] ?? '' };
+  };
+  const result = ownedProcessTree(100, { run });
+  assert.deepEqual(result.processes.map(row => row.pid), [100, 101, 102]);
+  assert.deepEqual(result.processes.map(row => row.executable), ['node', 'dotslash', 'node']);
+  for (const value of ['SECRET_ARG', 'ENV_FLAG', 'never-publish', 'UNRELATED']) assert.ok(!JSON.stringify(result).includes(value));
+  for (const call of calls) {
+    assert.equal(call.options.timeout, 250);
+    if (call.program === 'ps') assert.deepEqual(call.args.slice(0, 3), ['-o', 'pid=,ppid=,pgid=,stat=,comm=', '-p']);
+    else assert.equal(call.args[0], '-P');
+  }
+});
+
+test('process diagnostics enforce their own-PID and process-count bounds without unrelated dumps', () => {
+  let calls = 0;
+  const run = (program, args) => {
+    calls++; const pid = Number(args.at(-1));
+    return { stdout: program === 'ps' ? pid + ' ' + (pid - 1) + ' 100 S node' : String(pid + 1) };
+  };
+  assert.deepEqual(ownedProcessTree(-1, { run }).processes, []);
+  assert.equal(calls, 0);
+  const result = ownedProcessTree(100, { run, maxProcesses: 2 });
+  assert.equal(result.processes.length, 2);
+  assert.equal(result.truncated, true);
+  assert.ok(calls <= 4);
 });
