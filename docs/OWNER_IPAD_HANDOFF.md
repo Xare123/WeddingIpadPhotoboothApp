@@ -5,14 +5,16 @@ Use a Mac with compatible Xcode, the wedding iPad, Node 24 and CocoaPods 1.16.2.
 ## Install a standalone release
 
 1. Clone the repository's `codex/wedding-photobooth-mvp` review branch and run `npm ci` from its root.
-2. Follow [iOS setup](IOS.md) to generate/open the native project. Confirm the final bundle identifier and an existing signing team in Xcode before capturing any event photos. The example identifier is not an established distribution identity. Review any Apple account/profile/terms prompts yourself.
-3. Once signing is configured, build/install the actual release from the repository root:
+2. Follow [iOS setup](IOS.md) to generate/open the native project. Confirm the final bundle identifier and an existing signing team in Xcode before capturing any event photos. The example identifier is not an established distribution identity. Keep the identifier in Expo's `apps/ipad/app.json` consistent with Xcode so a later prebuild does not replace it. Review any Apple account/profile/terms prompts yourself.
+3. In the generated `WeddingPhotobooth.xcworkspace`, select the **WeddingPhotobooth** application scheme and the connected iPad. In **Product → Scheme → Edit Scheme → Run → Info**, choose **Release**, then use **Product → Run**. Keep the native test scheme for the separate synthetic simulator checks. This Xcode path requires owner signing and has not been executed by the Linux agent.
+
+   The equivalent Expo CLI route, after signing is configured, is:
 
    ```sh
    EXPO_PUBLIC_E2E_FIXTURE=0 npm run ios --workspace @wedding-booth/ipad -- --device --configuration Release
    ```
 
-   Choose the connected iPad when prompted. This requires the Mac/Xcode toolchain and has not been run by the Linux cloud agent. A simulator `.app` or the Debug native fixture is not an installable wedding release.
+   Choose the connected iPad when prompted. This route also requires Mac/Xcode and has not been run by the Linux cloud agent. A simulator `.app` or the Debug native fixture is not an installable wedding release.
 4. Quit Metro, disconnect the Mac, and cold-launch/reboot the iPad. Verify the app opens without a development server. No synthetic-fixture panel or simulated camera should be present. Free personal-team provisioning can expire near the event; inspect the actual profile expiry and renew/rehearse with time to spare rather than assuming seven days will cover it.
 
 Do not uninstall or clear an app that contains event photos. A bundle-identifier change creates a different app container; preserve any existing originals and verify backups before changing identity or installation method.

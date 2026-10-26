@@ -13,7 +13,13 @@ cd WeddingIpadPhotoboothApp
 npm ci
 cd apps/ipad
 npx expo prebuild --platform ios --no-install
-npx pod-install ios
+pod _1.16.2_ install --project-directory=ios
+open ios/WeddingPhotobooth.xcworkspace
+```
+
+Use the application scheme and connected iPad in Xcode; follow [the standalone Release handoff](OWNER_IPAD_HANDOFF.md). The optional CLI installation route from the same `apps/ipad` directory is:
+
+```sh
 npx expo run:ios --device
 ```
 
