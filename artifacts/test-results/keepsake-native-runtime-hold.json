@@ -1,0 +1,22 @@
+{
+  "generatedAt": "2026-10-26T18:31:26.140766+00:00",
+  "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40372103636",
+  "job": "121745248298",
+  "commit": "d1dbc8fd3254005f24ec00132dc07bc998a18308",
+  "result": "failed",
+  "duration": "38m38s",
+  "publicAnnotation": "Verify selected unsigned native target timed out after35minutes",
+  "expectedSuite": 15,
+  "executedTestCount": null,
+  "innerStage": null,
+  "neededArtifacts": [
+    "status.json",
+    "simulator-ready.log",
+    "xcode-test*.log",
+    "native-tests.xcresult if present"
+  ],
+  "accessBoundary": "Public annotations read; raw artifacts require coordinator GitHub connector not exposed here. No unchanged denied API retry.",
+  "nextAction": "Hold another simulator retry until actual logs diagnose stage; publish reviewedV2 and independently verify current physicalSDK Release build plusLinux.",
+  "newV2RequiredTests": 20,
+  "newV2NativeVerified": false
+}

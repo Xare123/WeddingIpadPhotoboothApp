@@ -1,10 +1,10 @@
 {
   "scope": "Four-photo V2 composition refinement, current local source candidate; current native execution still pending",
-  "generatedAt": "2026-10-26T18:21:19.189838+00:00",
+  "generatedAt": "2026-10-26T18:31:26.140319+00:00",
   "publicationApproved": true,
   "appVersion": "0.3.1",
   "iosBuild": "4",
-  "sourceCommit": null,
+  "sourceCommit": "4337843b38572ba8dc115578a19fac9e51569922",
   "baseHead": "d1dbc8fd3254005f24ec00132dc07bc998a18308",
   "sourceHashes": {
     ".github/workflows/ci.yml": "bc45a9a2b36e2e933b4830d75f9e2a38476397ad5f6d8d0523f3cfa2f9d89b71",
@@ -206,7 +206,8 @@
     "attractLaunchRelaunchRotationTests": 1,
     "fixture": "disabled",
     "metro": false,
-    "physicalCameraPhotosKeychainVerified": false
+    "physicalCameraPhotosKeychainVerified": false,
+    "blocker": "OldV1 run40372103636/job121745248298 raw artifacts needed for precise timeout diagnosis before another simulator attempt"
   },
   "hostedLinux": {
     "status": "Current V2 fresh exact-commit run pending"
@@ -240,8 +241,12 @@
       "linuxStatus": "passed",
       "runtime": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40372103636",
       "job": "121745248298",
-      "status": "in progress; OLD15-method V1 suite, not currentV2",
-      "change": "Only bounded600sbootallowance; no weaker assertions"
+      "status": "failed outer35-minute native-step deadline after38m38s; inner stage and executed count unknown until raw status/boot/Xcode artifacts. OLD15-methodsuite, not currentV2",
+      "change": "Only bounded600sbootallowance; no weaker assertions",
+      "publicAnnotations": [
+        "native-invocation failed",
+        "Verify selected unsigned native target timed out after35minutes"
+      ]
     }
   ],
   "boundedCounts": "Independent/focused/API repeats overlap integrated293; do not sum them as unique coverage",
@@ -348,5 +353,6 @@
     }
   },
   "featureCommit": "cfec4ff2091f8f59dbbe83788e75e851b4bc63f1",
-  "toolingRemediation": "artifacts/security/keepsake-tooling-applied.json"
+  "toolingRemediation": "artifacts/security/keepsake-tooling-applied.json",
+  "sourceIdentity": "Source hashes and code checkpoint4337843; upcoming metadata-only native-ci push uses identical app/lock/native sources"
 }
