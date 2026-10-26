@@ -7,6 +7,17 @@ import { readFileSync, realpathSync, statSync } from 'node:fs';
 import { basename, dirname, isAbsolute, resolve, sep } from 'node:path';
 import { createHash } from 'node:crypto';
 
+export function requireSwiftTools62(output) {
+  const match = /\b(?:Apple )?Swift version\s+(\d+)\.(\d+)(?:\.(\d+))?/.exec(String(output));
+  if (!match) throw new Error('The selected Xcode did not report a Swift compiler version');
+  const major = Number(match[1]), minor = Number(match[2]);
+  const version = [major, minor, Number(match[3] ?? 0)].join('.');
+  if (major < 6 || (major === 6 && minor < 2)) {
+    throw new Error('ExpoModulesJSI requires Swift tools 6.2 or newer; selected compiler is ' + version);
+  }
+  return version;
+}
+
 export function verifyReleaseApp(directory, info, expectedBundleId) {
   if (info?.CFBundleIdentifier !== expectedBundleId) throw new Error('Release app bundle identifier does not match the generated plan');
   if (!Array.isArray(info.UIDeviceFamily) || !info.UIDeviceFamily.includes(2)) throw new Error('Release app does not support the iPad device family');

@@ -4,7 +4,7 @@
 
 Use a Mac with a compatible Xcode/iOS SDK, CocoaPods and Node 24 (see `.nvmrc`). Install dependencies from the root with `npm ci`. Confirm the iPad's actual model, iPadOS version, free storage and available power. The provisional target is iPad Air M1, fifth generation; no enclosure dimensions or fit have been verified.
 
-React Native's installed 0.88 scripts declare iOS 15.1 and Xcode 16.1 minimums, but the complete Expo SDK/native dependency and target-iPadOS combination can require a newer toolchain. Use current supported Xcode for the device and verify the generated project's effective deployment target instead of relying on those lower bounds.
+The installed ExpoModulesJSI Swift package requires **Swift tools 6.2 or newer**. The initial hosted Release build selected Xcode 16.4 / Swift 6.1 and failed that requirement. CI now explicitly selects installed Xcode 26.3; use a compatible Mac/Xcode with Swift 6.2+ for owner builds. Verify both `xcodebuild -version` and `xcrun swift --version` before CocoaPods or compilation. React Native's lower declared Xcode minimum is insufficient for this complete dependency graph. The generated app deployment target and the installed iPadOS remain separate checks.
 
 ## Development build on a Mac (not run here)
 

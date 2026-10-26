@@ -5,11 +5,24 @@ import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createServer } from 'node:http';
-import { commandStreams, MAX_MACHINE_STDOUT, metroErrorCodes, metroHTTPStatus, ownedProcessTree, parseNamedJSON, passingXCTestCounts, resolveExpoEntry, selectIpadSimulator, verifyReleaseApp, waitForMetro } from './ci-native-contract.mjs';
+import { commandStreams, MAX_MACHINE_STDOUT, metroErrorCodes, metroHTTPStatus, ownedProcessTree, parseNamedJSON, passingXCTestCounts, requireSwiftTools62, resolveExpoEntry, selectIpadSimulator, verifyReleaseApp, waitForMetro } from './ci-native-contract.mjs';
 import { annotationText, bounded, diagnosticLines, publicAnnotations, redact, workflowData } from './ci-summary.mjs';
 
 const ipad = { udid: '11111111-1111-4111-8111-111111111111', name: 'iPad Pro 13-inch (M4)',
   isAvailable: true, state: 'Shutdown', deviceTypeIdentifier: 'com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M4-16GB' };
+
+test('Swift tools gate rejects the observed Xcode16.4 compiler and absent compiler evidence before Pods', () => {
+  assert.throws(() => requireSwiftTools62('Apple Swift version 6.1.0 (swiftlang-6.1.0)\nTarget: arm64-apple-macosx15.0'), /requires Swift tools 6\.2/);
+  assert.throws(() => requireSwiftTools62('Apple Swift version 6.1.2\nTarget: Swift tools 6.2.0'), /selected compiler is 6\.1\.2/);
+  assert.throws(() => requireSwiftTools62('swift-driver version: 1.127.14.1\nXcode 26.3'), /did not report a Swift compiler/);
+});
+
+test('Swift tools gate reads the Apple compiler rather than the driver and compares versions numerically', () => {
+  assert.equal(requireSwiftTools62('swift-driver version: 1.127.14.1\nApple Swift version 6.2.3 (swiftlang-6.2.3)\nTarget: arm64-apple-macosx15.0'), '6.2.3');
+  assert.equal(requireSwiftTools62('Apple Swift version 6.2'), '6.2.0');
+  assert.equal(requireSwiftTools62('Apple Swift version 6.10.1'), '6.10.1');
+  assert.equal(requireSwiftTools62('Swift version 7.0.0'), '7.0.0');
+});
 
 test('simctl fixture selects an available iPad from the real-shaped iOS runtime inventory', () => {
   const inventory = JSON.parse(JSON.stringify({ devices: {

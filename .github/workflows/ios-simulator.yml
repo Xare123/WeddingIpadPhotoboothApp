@@ -30,6 +30,9 @@ jobs:
       EXPO_OFFLINE: '1'
       EXPO_PUBLIC_E2E_FIXTURE: '0'
       COCOAPODS_DISABLE_STATS: 'true'
+      # The installed macOS-15 image defaults to Xcode 16.4 / Swift 6.1.
+      # ExpoModulesJSI's Swift package requires tools 6.2 or newer.
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
       WEDDING_NATIVE_MODE: ${{ contains(github.event.head_commit.message, '[native-ui]') && 'ui-tests' || 'release-build' }}
     steps:
       - id: checkout
@@ -46,11 +49,20 @@ jobs:
         id: bootstrap
         run: |
           mkdir -p "$RUNNER_TEMP/wedding-native-diagnostics"
+          test -d "$DEVELOPER_DIR"
           {
             node --version
             ruby --version
             xcodebuild -version
+            xcrun swift --version
           } 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/runner-tools.log"
+          node --input-type=module - <<'JS'
+          import {readFileSync} from 'node:fs';
+          import {join} from 'node:path';
+          import {requireSwiftTools62} from './scripts/ci-native-contract.mjs';
+          const version = requireSwiftTools62(readFileSync(join(process.env.RUNNER_TEMP, 'wedding-native-diagnostics/runner-tools.log'), 'utf8'));
+          console.log('Selected Swift ' + version + ' satisfies ExpoModulesJSI before dependency installation.');
+          JS
       - name: Verify native CI parsing and diagnostic contracts
         id: contracts
         run: node --test --test-reporter=tap scripts/ci-native.test.mjs 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/ci-contracts.log"

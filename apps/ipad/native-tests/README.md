@@ -18,7 +18,7 @@ This is **API-offline native storage coverage**. Debug JavaScript and the JPEG c
 
 ## Owner Mac reproduction
 
-Requirements: a supported Xcode installation (React Native's installed minimum is 16.1), an available iPad simulator running iOS 16.4 or later, Node/npm versions from the repository, and CocoaPods 1.16.2. No Apple account, signing certificate or provisioning profile is required for the unsigned simulator target. This does not produce an installable physical-iPad distribution.
+Requirements: Xcode with Swift 6.2+ (CI selects Xcode 26.3), an available iPad simulator running iOS 16.4 or later, Node/npm versions from the repository, and CocoaPods 1.16.2. ExpoModulesJSI's Swift-package requirement exceeds React Native's lower declared Xcode minimum. No Apple account, signing certificate or provisioning profile is required for the unsigned simulator target. This does not produce an installable physical-iPad distribution.
 
 From the repository root:
 

@@ -1,6 +1,6 @@
 # Mac-to-iPad handoff
 
-Use a Mac with compatible Xcode, the wedding iPad, Node 24 and CocoaPods 1.16.2. Keep the iPad connected and unlocked. Apple signing/account access is separate from the unsigned hosted simulator test; do not create certificates, buy membership or accept terms automatically.
+Use a Mac with Xcode providing **Swift 6.2+**, the wedding iPad, Node 24 and CocoaPods 1.16.2. CI selects Xcode 26.3; Xcode 16.4 / Swift 6.1 cannot build the installed ExpoModulesJSI package. Check `xcodebuild -version` and `xcrun swift --version` first, and select the intended installation in Xcode's Locations settings if several are installed. Keep the iPad connected and unlocked. Apple signing/account access is separate from unsigned compilation; do not create certificates, buy membership or accept terms automatically.
 
 ## Install a standalone release
 

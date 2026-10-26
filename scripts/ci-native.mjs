@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { bounded, redact } from './ci-summary.mjs';
-import { commandStreams, parseNamedJSON, passingXCTestCounts, selectIpadSimulator, waitForMetro, metroErrorCodes, resolveExpoEntry, ownedProcessTree, verifyReleaseApp } from './ci-native-contract.mjs';
+import { commandStreams, parseNamedJSON, passingXCTestCounts, selectIpadSimulator, waitForMetro, metroErrorCodes, resolveExpoEntry, ownedProcessTree, verifyReleaseApp, requireSwiftTools62 } from './ci-native-contract.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const diagnostics = process.env.WEDDING_DIAGNOSTICS_DIR ?? join(process.env.RUNNER_TEMP ?? '/tmp', 'wedding-native-diagnostics');
@@ -119,7 +119,9 @@ async function main() {
   if (process.platform !== 'darwin') throw new Error('Native verification requires the standard macOS runner');
   const expoEntry = validationStage('expo-entrypoint', () => resolveExpoEntry(join(root, 'apps/ipad')));
   const tools = await command('toolchain', 'xcodebuild', ['-version']);
-  writeFileSync(join(diagnostics, 'toolchain.txt'), `Node ${process.version}\n${tools.output}\n`);
+  const swift = await command('swift-toolchain', 'xcrun', ['swift', '--version']);
+  status.swiftVersion = validationStage('swift-compatibility', () => requireSwiftTools62(swift.output));
+  writeFileSync(join(diagnostics, 'toolchain.txt'), `Node ${process.version}\n${tools.output}\n${swift.output}\n`);
   await command('prebuild', process.execPath, [expoEntry.cli, 'prebuild', '--platform', 'ios', '--no-install'], { cwd: join(root, 'apps/ipad') });
   if (!existsSync(join(root, 'scripts/prepare-ios-tests.mjs'))) throw new Error('Native UI test preparation script is missing; tests were not run');
   await command('prepare-tests', process.execPath, ['scripts/prepare-ios-tests.mjs']);
@@ -136,6 +138,7 @@ async function main() {
     return { plan, workspace, appScheme: basename(project, '.xcodeproj') };
   });
   if (mode === 'release-build') {
+    status.nativeBuild = 'running'; saveStatus();
     await command('release-build', 'xcodebuild', [
       '-workspace', workspace, '-scheme', appScheme, '-configuration', 'Release',
       '-sdk', 'iphoneos', '-destination', 'generic/platform=iOS', '-derivedDataPath', derived,
@@ -234,6 +237,7 @@ async function main() {
 try { await main(); }
 catch (error) {
   status.result = 'failed'; status.error = redact(error instanceof Error ? error.message : String(error)); process.exitCode = 1;
+  if (mode === 'release-build' && status.nativeBuild === 'running') status.nativeBuild = 'failed';
   if (metro) {
     try {
       status.metroProcessTree = ownedProcessTree(metro.pid);

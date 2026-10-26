@@ -4,7 +4,7 @@
     "command": "bash scripts/setup-cloud.sh",
     "passed": true,
     "packages": 587,
-    "hosted_run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40253752308"
+    "hosted_run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40256121532"
   },
   "tests": {
     "command": "npm test",
@@ -48,7 +48,7 @@
   "gallery_worker_source_sha256": "4801a7cfcc475da2fa2d180b1a01dc5d98b996cf1dd830cf31f66f7dfb9f42b9",
   "ci_contract_tests": {
     "command": "node --test scripts/ci-native.test.mjs",
-    "passed": 41,
+    "passed": 43,
     "failed": 0,
     "skipped": 0
   },
@@ -143,6 +143,19 @@
       "commit": "d1f69864d6a90f6ca1640c4276478045b06b9593",
       "result": "failed",
       "diagnosis": "DirectExpoCLI reachedprojectinitialization; Metrodeadlineexpired. Coordinatorinspectedartifact; SIGKILLfromcleanupnotprovenOOM; emptyps inconclusive. Releasephysical-SDKcompile is now independent ofMetro; UItestsremainunrun."
+    },
+    {
+      "lane": "linux",
+      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40256121532",
+      "commit": "7a51427ab1305ff401a4a0ca36954a7ada607ace",
+      "result": "passed"
+    },
+    {
+      "lane": "native-release",
+      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40256121530",
+      "commit": "7a51427ab1305ff401a4a0ca36954a7ada607ace",
+      "result": "failed",
+      "diagnosis": "Confirmedtoolchainmismatch: ExpoModulesJSI apple package requiresSwiftTools6.2.0; selectedXcode16.4/Swift6.1. Job-wideinstalledXcode26.3selection+effectiveSwift6.2guardimplemented; no dependencyrequirementdowngrade. CorrectedReleasebuildpending."
     }
   ],
   "firebase": {
@@ -150,7 +163,7 @@
     "reason": "No usable configured Google identity or signed iOS XCTest package; bounded assessment completed and Firebase deferred"
   },
   "native_xctest_passed": false,
-  "last_successful_hosted_linux_commit": "d1f69864d6a90f6ca1640c4276478045b06b9593",
+  "last_successful_hosted_linux_commit": "7a51427ab1305ff401a4a0ca36954a7ada607ace",
   "metro_entry_checks": {
     "passed": true,
     "native_test_flag": true,
@@ -159,10 +172,9 @@
     "native_execution": false,
     "owned_server_stopped": true
   },
-  "native_compilation_executed": false,
   "native_xctest_executed": false,
   "isolated_preinstall_contracts": {
-    "passed": 41,
+    "passed": 43,
     "failed": 0,
     "skipped": 0,
     "project_dependencies_available": false
@@ -175,12 +187,34 @@
     "macos_result": "pending_hosted_run"
   },
   "native_release_build": {
-    "result": "pending_hosted_run",
+    "result": "failed",
     "configuration": "Release",
     "sdk": "iphoneos",
     "signed": false,
     "metro_required": false,
     "xctest_executed": false,
-    "embedded_javascript_check_configured": true
+    "embedded_javascript_check_configured": true,
+    "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40256121530",
+    "exit_code": 65,
+    "native_app_verified": false,
+    "specific_build_diagnostic": "Swift tools6.2 required; old defaultXcode16.4 selectedSwift6.1"
+  },
+  "native_compilation_attempted": true,
+  "native_compilation_passed": false,
+  "local_release_embed": {
+    "passed": true,
+    "command": "Expo export:embed --platform ios --dev false --minify false",
+    "fixture_enabled": false,
+    "metro_modules": 1005,
+    "bytes": 3968418,
+    "sha256": "fa9f550069c553cc4e09c3b9cd4a523ef8c90a9c5fb3562b9983f8991df55b13",
+    "native_build": false
+  },
+  "toolchain_repair": {
+    "developer_dir": "/Applications/Xcode_26.3.app/Contents/Developer",
+    "minimum_swift": "6.2",
+    "verified_before_pods": true,
+    "dependency_requirement_lowered": false,
+    "hosted_result": "pending"
   }
 }
