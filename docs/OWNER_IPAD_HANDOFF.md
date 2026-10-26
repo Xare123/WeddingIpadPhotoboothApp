@@ -2,6 +2,8 @@
 
 Use a Mac with Xcode providing **Swift 6.2+**, the wedding iPad, Node 24 and CocoaPods 1.16.2. CI selects Xcode 26.3; Xcode 16.4 / Swift 6.1 cannot build the installed ExpoModulesJSI package. Check `xcodebuild -version` and `xcrun swift --version` first, and select the intended installation in Xcode's Locations settings if several are installed. Keep the iPad connected and unlocked. Apple signing/account access is separate from unsigned compilation; do not create certificates, buy membership or accept terms automatically.
 
+The tested native source is [`82703b6`](https://github.com/Xare123/WeddingIpadPhotoboothApp/commit/82703b627aa3df7d0a7e5e6a930c2612fda43891). Its [unsigned device-SDK Release build](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40258141808) and matching Linux checks passed. Build and sign from the review branch source on the Mac; CI does not supply an installable signed app. Actual iPad launch, camera, offline recovery, QR scans and signing expiry are still owner checks.
+
 ## Install a standalone release
 
 1. Clone the repository's `codex/wedding-photobooth-mvp` review branch and run `npm ci` from its root.

@@ -20,3 +20,5 @@ This file is durable repository guidance. No native persistent-goal API is expos
 4. Preserve exact-source test reports, the private-storage deployment artifact, and reusable environment configuration. Distinguish implemented, locally tested, hosted-tested, deployed and physical-device-tested status in every handoff.
 
 Production key approval is pending. Do not create keys, buy services, alter persistent access, enable real messaging or publish real guest photos as a way to remove that gate.
+
+Checkpoint: source 82703b6 passed Linux checks and unsigned Release compilation for the physical iOS SDK, including embedded-JavaScript/iPad metadata verification. Next acceptance work is owner-controlled signing and actual-iPad rehearsal, plus coordinated private-backend deployment after secret approval. Debug XCTest remains unrun due to hosted Metro startup; record that gap until tested. This is not a completed wedding launch.

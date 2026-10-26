@@ -1,5 +1,5 @@
 {
-  "scope": "Current release-mode iOS Hermes JavaScript source map; native signed binary unbuilt/unreviewed",
+  "scope": "Linux release-mode iOS Hermes JavaScript source map; successful unsigned native Release CI build is separate and is not a native-binary security audit",
   "app_source_sha256": "1004bb5a350a47402191489d54e77a4ea275caefc3634419d8d0cd284747ea76",
   "source_module_count": 992,
   "findings": {
@@ -18,5 +18,11 @@
   "worker_bundle_sha256": "fa45361fd720d716df92efcc8f4917d53fbba3b55c3d1c00c463604dce8ca870",
   "remaining_cli_advisories": 2,
   "audit_dependency_entries_high": 5,
-  "fixture_boundary": "Synthetic JPEG remains an inert bundled asset. Native test behavior requires __DEV__ and explicit opt-in; guards tested separately."
+  "fixture_boundary": "Synthetic JPEG remains an inert bundled asset. Native test behavior requires __DEV__ and explicit opt-in; guards tested separately.",
+  "native_release_build": {
+    "passed": true,
+    "signed": false,
+    "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40258141808",
+    "native_binary_security_audited": false
+  }
 }
