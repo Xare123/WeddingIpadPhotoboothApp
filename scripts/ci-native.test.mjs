@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn, spawnSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createServer } from 'node:http';
@@ -365,9 +365,19 @@ function expoFixture(t) {
 
 test('direct Expo entry resolves the workspace-installed versioned package bin without dependencies', t => {
   const fixture = expoFixture(t);
-  assert.deepEqual(resolveExpoEntry(fixture.root), { cli: join(fixture.directory, 'bin/cli'), version: '58.0.19' });
+  const expected = { cli: realpathSync(join(fixture.directory, 'bin/cli')), version: '58.0.19' };
+  assert.deepEqual(resolveExpoEntry(fixture.root), expected);
+  // macOS temporary directories can be reached through /var and /private/var.
+  // Exercise an actual alias on every host while requiring the canonical CLI.
+  const aliases = mkdtempSync(join(tmpdir(), 'wedding-expo-alias-'));
+  t.after(() => rmSync(aliases, { recursive: true, force: true }));
+  const alias = join(aliases, 'workspace');
+  symlinkSync(fixture.root, alias, 'dir');
+  assert.notEqual(join(alias, 'node_modules/expo/bin/cli'), expected.cli);
+  assert.deepEqual(resolveExpoEntry(alias), expected);
   fixture.save({ ...fixture.metadata, bin: 'bin/cli' });
-  assert.equal(resolveExpoEntry(fixture.root).cli, join(fixture.directory, 'bin/cli'));
+  assert.deepEqual(resolveExpoEntry(fixture.root), expected);
+  assert.deepEqual(resolveExpoEntry(alias), expected);
 });
 
 test('direct Expo entry rejects version mismatches, missing files, directories and package escapes', t => {

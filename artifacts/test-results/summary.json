@@ -4,7 +4,7 @@
     "command": "bash scripts/setup-cloud.sh",
     "passed": true,
     "packages": 587,
-    "hosted_run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40250912454"
+    "hosted_run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40253365792"
   },
   "tests": {
     "command": "npm test",
@@ -117,6 +117,19 @@
       "commit": "43ceaa34bfa135bc6bde3399981408f3aae50fea",
       "result": "failed",
       "diagnosis": "Undici crash resolved; metro-ready reached60s with npxlauncher alive, localhost timeout and IPconnectionrefused. Coordinator fullyinspectedartifact: no metro.log/no capturedCLIoutput; cleanup passed. Underlying npxstall cause unproven. Direct installedExpoCLI invocation and initialized lifecycle logs are the next targeted repair; no nativecompile/XCTest yet."
+    },
+    {
+      "lane": "linux",
+      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40253365792",
+      "commit": "ad8adc811cb3e9e76b2e0574df911367eeca9ae7",
+      "result": "passed"
+    },
+    {
+      "lane": "native",
+      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40253365785",
+      "commit": "ad8adc811cb3e9e76b2e0574df911367eeca9ae7",
+      "result": "failed",
+      "diagnosis": "Resolverfixture35 expected a rawtemporarypath ratherthan canonicalpath onmacOS; stopped beforeinstallation/Metro. Canonicalpath assertion and actualworkspace-symlink coverage now pass in all38isolated preinstall checks. Functionalrunner unchanged; newhostedattemptrequired."
     }
   ],
   "firebase": {
@@ -124,7 +137,7 @@
     "reason": "No usable configured Google identity or signed iOS XCTest package; bounded assessment completed and Firebase deferred"
   },
   "native_xctest_passed": false,
-  "last_successful_hosted_linux_commit": "43ceaa34bfa135bc6bde3399981408f3aae50fea",
+  "last_successful_hosted_linux_commit": "ad8adc811cb3e9e76b2e0574df911367eeca9ae7",
   "metro_entry_checks": {
     "passed": true,
     "native_test_flag": true,
