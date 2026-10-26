@@ -1,18 +1,16 @@
 {
-  "scope": "Four-photo V2 composition refinement, current local source candidate; current native execution still pending",
-  "generatedAt": "2026-10-26T18:31:26.139629+00:00",
-  "publicationApproved": true,
-  "appVersion": "0.3.1",
-  "iosBuild": "4",
-  "sourceCommit": "4337843b38572ba8dc115578a19fac9e51569922",
-  "baseHead": "d1dbc8fd3254005f24ec00132dc07bc998a18308",
+  "scope": "Current0.3.2 two-stage session timing with separately committed simulator architecture/process/budget repair",
+  "generatedAt": "2026-10-26T19:18:50.134450+00:00",
+  "appVersion": "0.3.2",
+  "iosBuild": "5",
+  "sourceCommit": null,
   "sourceHashes": {
     ".github/workflows/ci.yml": "bc45a9a2b36e2e933b4830d75f9e2a38476397ad5f6d8d0523f3cfa2f9d89b71",
-    ".github/workflows/ios-release-runtime.yml": "9bb2934e20964ed6580d7da3249e9ef4533bdb33b07ddde44bb2c81cfab10e31",
+    ".github/workflows/ios-release-runtime.yml": "a1904785c694af48706e651fe5127ca88650b3de5dd6a7e01052c91defe9d0e2",
     ".github/workflows/ios-simulator.yml": "dfc71f469f1f16282540aaae6a75349a071199d2a646428d8d569865abd9d109",
     ".nvmrc": "7e8a2fa94951112b894a3dbe3d05efef5e9263741fa49125f0a70f40fedab4cc",
-    "apps/ipad/App.tsx": "151488bb3fdbf6435a16855ba70bfbc2f7408cbef8cb30de040121ce81dc30e7",
-    "apps/ipad/app.json": "88107338276acfb4108588ce85819e698f8f32d51c0b90d3da36ccde3103556f",
+    "apps/ipad/App.tsx": "feab5d929c5f8552e7e72540974bb28c5dd415063072f677ebe2704362353e18",
+    "apps/ipad/app.json": "f24136a88f4045c910702d79f3bad5459accb7acd79a012486fa4993831185a1",
     "apps/ipad/index.ts": "af10e01cf5fa6d399a83829926cc80d935c1dca8fb01313ab7cb54aab84c028b",
     "apps/ipad/modules/wedding-photo-effects/LICENSE": "091f69c8bdf6d567af695e7c0d15bcfa607907977b9789ef304ca720a1be4282",
     "apps/ipad/modules/wedding-photo-effects/README.md": "7f81ca3dd01cfc8ea3a10e4478ed93eeeac7d39974aeaffe2efe8165d10a28a9",
@@ -24,7 +22,7 @@
     "apps/ipad/modules/wedding-photo-effects/package.json": "03e767c9c29501ffccd82b81dbbd05359a0641d845766cb93b0996576ff5e525",
     "apps/ipad/modules/wedding-photo-effects/tests/PhotoEffectsEngineTests.swift": "75494a4afa5fbb53860a397bbca38a5f76b03f2cfb7cb3be490c2d50644111f7",
     "apps/ipad/modules/wedding-photo-effects/tests/PhotoTemplateEngineTests.swift": "f0583cd329c366f030e11426d4083b556ec561ef07b540150a3f52c6664945ed",
-    "apps/ipad/native-tests/README.md": "404119fe661564e7d432f888739429ebe8ec5742cdd64db99a77b69b543d7553",
+    "apps/ipad/native-tests/README.md": "46d6375ec1e116c39bc377c37273199d33898924c9af94886e6debf1a092fead",
     "apps/ipad/native-tests/WeddingPhotoboothReleaseSmokeTests.swift": "c5a6b71bf5864d1f0326d0dce274ebd5f5001d055d1551b1aa49c824a1ba494f",
     "apps/ipad/native-tests/WeddingPhotoboothUITests.swift": "0d1c388a9d5f9495f98d83667e16a2b2e42681a1908ad7fb5aa594b4e8f1071a",
     "apps/ipad/native-tests/fixtures/capture.jpg": "5fa69879e90ccd1e4ef9e602b8159f3f788857bb483bd49927bb76a1fba187bb",
@@ -39,9 +37,11 @@
     "apps/ipad/src/GlassSurface.tsx": "ace64a22e740d69040689495c0aa7147f7456038bbd0ee9aba6f2d52b58af972",
     "apps/ipad/src/SmsShare.tsx": "79464043a0e40a6cc7850c0e46cacfab33b3b19e477fee87192c0b38195d7541",
     "apps/ipad/src/TemplateStudio.tsx": "2ce75e3831efeff05e6c841440ace23dfb34d220f09af30f0c80a418800113fc",
-    "apps/ipad/src/booth-presentation.ts": "b6f720f7d9133a0603f847efd0646a9a23f40d409018e9eb757d5326bc43e935",
+    "apps/ipad/src/TimingSheet.tsx": "c6564a204c7a3a3ebd3fe993c04facc755ba08e18bc1e0cee62c572a0e466210",
+    "apps/ipad/src/booth-presentation.ts": "c9bee7d01b75b29e5c3cb958483adf155dd843824c2216e60219fb3bd0d0c507",
     "apps/ipad/src/capture-state.ts": "0778f13dee0bb5a14c71dc5fe15c9162cfe5fdc68dedd2b2fef336de6a4893c6",
-    "apps/ipad/src/config.ts": "c4ef8c0378d3733de48f977035455bbb32916d882202d6100769ca8670dacffd",
+    "apps/ipad/src/capture-timing.ts": "83eec4ead6d14e43e6061b63201d6b432c1e0f17a24a4d35035944c8638c5683",
+    "apps/ipad/src/config.ts": "9344c5f7b5292b941e1b2a2f0028e78dc94e1fbb5626148e09aba736cff1566f",
     "apps/ipad/src/glass-policy.ts": "d3e33995484239887dde90f2743919c17bb2e8ff23093ceb45a804e530499e9e",
     "apps/ipad/src/host-auth.ts": "dc1bc95165362c110beded9a10d18bd9207c1cb1c5a145da918193e5545d6a32",
     "apps/ipad/src/host-originals.ts": "938e564eb50d984754abf5ec2d07a4671faa2110bb01ad4394f5377f4d271c1e",
@@ -55,20 +55,22 @@
     "apps/ipad/src/photo-export.ts": "8ba8baae4fe425bd0f99079619e0a693f5c3fcf83ee73a93e167c7c93f7fb633",
     "apps/ipad/src/photo-library.ts": "800b9dd768d660c16720fda134fe33a1a14db1061f7f31531063b136b670b6a8",
     "apps/ipad/src/photo-look-editor.ts": "38d6dc47fb34d9d9da58cf96a7daa6102d9616c7f54720c0406c1962548f817b",
-    "apps/ipad/src/provisioning.ts": "5a8d722370bab340154edc1fce9ca4f0cf0a1725ed7dcd2cb2d64d9001af59d5",
+    "apps/ipad/src/provisioning.ts": "926f7bdbd4a7799a839f6e72ba11719ae644080bb50fa263a00ffde37dca89dd",
     "apps/ipad/src/publication.ts": "33d26658c1c2de8781bc62ded35c80cbd00394c7413c70fdedf1fbc834875357",
     "apps/ipad/src/queue-index.ts": "02d23ad2dadeb024cfb9f0eb8ce8d6f908b35a4f447f01d9a17d854a93708623",
     "apps/ipad/src/recipient-retention.ts": "9956155c952418fd5ad31976b09e830a48d1d91443a963fa85253e42f0d7d842",
     "apps/ipad/src/recipients.ts": "b5131ec99a4a7b14e0dd99318b32f05c71f56af48d321489c8fedfbbe33dccec",
     "apps/ipad/src/review-selection.ts": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
-    "apps/ipad/src/session-capture.ts": "b41f7ee98282fe5661e080a6b4e0b88b17c56e3c1e5908adebbe020ed6323e24",
+    "apps/ipad/src/session-capture.ts": "544104e153dab9b9d8f7996f15e4b79180d9dede1819620de7fec07c076f4763",
     "apps/ipad/src/session-sync.ts": "4aa8b3242424286990704f3e343e0b1709f322edbcf4a234b5fa767dde16ea99",
     "apps/ipad/src/sharing.ts": "6bce9b315a8dc7064f858d7ff9d10c5d5587b1b2bf66a56923f738823c1df271",
     "apps/ipad/src/sms-state.ts": "4c7125d4f710c97848b6690196fa328edc83e85488ce3626dd7e843e2e99497a",
     "apps/ipad/src/storage.ts": "05b03145effb4f3a251504a11fac8a96cc1a09e6d41f4ed6ba9b05e41eed7ae0",
     "apps/ipad/src/sync.ts": "9c113f3d6a2a9434f90d3e67cc676f8676cc0c096f00a36a18b49013af830038",
     "apps/ipad/src/template-editor.ts": "ad02f03cb5cae30d801e5262fd8f363f4e023b3c7f815f7e22e56ee604abe3df",
-    "apps/ipad/test/booth-presentation.test.ts": "eb48971eb520f3563ad8cfaac068d4b2a9de0ed09f4fdea091a4bc62f16f93cb",
+    "apps/ipad/src/timing-controls.ts": "b73ced2d2ba25beaffbf4f0ec3fcda648de0bafebcae44534052d7649facc5b1",
+    "apps/ipad/test/booth-presentation.test.ts": "dc037d3affacb439cc4df8c82928232b297a6402de97dbd07bc6ba9d53823670",
+    "apps/ipad/test/capture-timing.test.ts": "944daed045f44370e8ef290236037cb3a5f42c5c4cac94d9c92e6a255cfbceb6",
     "apps/ipad/test/composite-export.test.ts": "5b4ef28be27c2f95056307e2747841550415bc95341f77a88b23a3297d138ac6",
     "apps/ipad/test/glass-policy.test.ts": "937e9e8610c68bace03277e7d099cdd09536c737b295f7495abe217c05399a82",
     "apps/ipad/test/host-originals.test.ts": "c946c4f09b0f72cbe7e7c6a3af2ba65b58eae6ce8840be2460f9da45668831f2",
@@ -76,8 +78,9 @@
     "apps/ipad/test/photo-look-editor.test.ts": "dd80de93e6c4741e1692afa7a9db7349d1ec44170e913de7e0eef26181709a45",
     "apps/ipad/test/recipient-retention.test.ts": "3f099ea23723ba6bb6dd5f3b5cb5c2a83d550a9e5d33547eb597034a8d34b80e",
     "apps/ipad/test/review-selection.test.ts": "9baff3e1079486e8491c4132e9dffa50ae69d59986b411e1800772ae649548ae",
-    "apps/ipad/test/session-capture.test.ts": "562745015ba45cf4d8939ff761c63db01d04596632fa4ac77d7cea85e8056903",
+    "apps/ipad/test/session-capture.test.ts": "4fbbf06c15c767ae721d4c0b098122913b26bb270768824161849228a2819134",
     "apps/ipad/test/template-editor.test.ts": "95e8b2b5bd71bd4bf367757b1e76913d07279aee234a324fc640910ced8d8ffe",
+    "apps/ipad/test/timing-controls.test.ts": "2567afa083512ceb05b1bb364a5c2b8f3c63b76bc799e33bc67bd9aa2f3c7794",
     "package-lock.json": "3e641bdf69fb8255425da63d4d1b827c0cf811c431ea64ab12a4c8fcfad55bf3",
     "package.json": "21ab07c98e468f97bf05dc8789ab508bb3ee18ae9fbdd724f2cfadb42bf90a30",
     "packages/core/package.json": "b7f38e962b36d12b967ac99584b9e50957ab51d9be7f52620f61e706bf042aa2",
@@ -88,7 +91,7 @@
     "packages/core/test/local-persistence.test.ts": "543f6067f862d8e1f0ffe398f9171b79014ef6a09cc66fab72b73ef23e36570e",
     "packages/core/test/native-file-ports.test.ts": "77767f320ab9b05596222819c68ac8ccd1bc68f066d68b42eca944a6c9cb563d",
     "packages/core/test/native-fixture.test.ts": "5933a50f626eba3ff07341842300e0723773c2e7d1026e99c7d51c4697dc58d6",
-    "packages/core/test/provisioning.test.ts": "1d378a0b325a80193bdefdc9fb9683f13fb850acd573e842987a98084e1b6e13",
+    "packages/core/test/provisioning.test.ts": "8f73f8a499d475253e43f516ac2ee7ce6ab262f557ac6facf78aa580752916f1",
     "packages/core/test/queue.test.ts": "bc70b4a65b51c6e876facdb5725b8148f76c9b142366b3ff04c0f70d5468daab",
     "packages/core/test/session-sync.test.ts": "2aee9a80c7909cd4f4051fab2d64b6670e89d5e182ddb36a8dc92efcedc0cda0",
     "packages/core/test/sharing.test.ts": "dff441ed28f4d61b2b43553d188299e17548250a36dbcf17075b064e3a8ae1a3",
@@ -103,9 +106,9 @@
     "plugins/test/full-photo.test.cjs": "9a55cd929e7c01306886f9ed3862e8f895d8a21ae90b9596d854bba23d15628b",
     "plugins/with-full-photo.cjs": "1d16c909a06a4011401addd5185d69afcf30255365fd6e40d853f2545e4ca816",
     "scripts/build-worker.mjs": "0952be77a29b9cf5efa58d3f3830aeff814d634b74bd35d44162166996d7e07c",
-    "scripts/ci-native-contract.mjs": "e7695099d8de7d389efdf177bc16de23083594ee58d3cbca8c49b93a5e1a1709",
-    "scripts/ci-native.mjs": "ce12a213fd8bc8fd1d7a48037ca4b954c6c1c8aab435c49b06d1090f6a84d5d1",
-    "scripts/ci-native.test.mjs": "bd2264393a51652b6c24fcc0cbd226f903c0eaf1fe785ec5ba4a654c6ea045e2",
+    "scripts/ci-native-contract.mjs": "96b85123bf1995b01a10e09f92300a1e2999da635186985d7553149d2dfb034d",
+    "scripts/ci-native.mjs": "21a3fa9b59931eea77007cae775b545b2ed89db2f6fd33a4f79b4228c74587ff",
+    "scripts/ci-native.test.mjs": "67bd3eba5b450fe13665daf40295ce5d6ef636b39854cf8efd3f5fdb1d61241c",
     "scripts/ci-summary.mjs": "4d229a8f5527e5ac78fe915d6974ecce2d96c9c95b024c53bf9112b8e124b564",
     "scripts/cloud-env.sh": "89b85573922b1bcf9258621c04fb731b317fc28f2ae4e0eff2af2d0ca784667b",
     "scripts/dev-api.sh": "ddd24553f3971a6540bef897239b4a07d138fc40c62d46246adf3525d0f7accb",
@@ -135,7 +138,7 @@
     "tools/native-visual/new-session/clean-design-fixtures.mjs": "5f2763aa58275d1fce81d4dd365669504c83a0f822520d7d8d4c1ccf8885345a",
     "tools/native-visual/new-session/effects-stub.ts": "2aabd78a80740fcf405d630a18af6c83fb350e5853db2c5bdbe697181a377724",
     "tools/native-visual/new-session/entry.tsx": "c9ba630f53c61f7e25b5c2381d31a7070dccae2c4a3fb058c2d50220fa48498a",
-    "tools/native-visual/new-session/fixture-controls.ts": "4ebbfba8509844430e45308647db31818fcc35807d1ed7e6a15e58b8c203fb2b",
+    "tools/native-visual/new-session/fixture-controls.ts": "35474432a7ae398fdeaf1ede761dd26da21b48acec2e822323b59fee43c79ab5",
     "tools/native-visual/new-session/fullbleed-checks.mjs": "e04527dbb2766cf5aa8bac961359885891b03e7cb41217a8d7617aa64a64d048",
     "tools/native-visual/new-session/glass-stub.tsx": "3712d3272cb137bfba9c4d19cf4913a0cbafd53a6b43225c6876cf19f97b8e7f",
     "tools/native-visual/new-session/host-checks.mjs": "af87c5a5a0cb7662f3f7d3b1e2fdf5d96b9bfcf6c887e91c8f01dc152c90ea8f",
@@ -151,208 +154,176 @@
     "tools/native-visual/new-session/qr-decode.mjs": "bc5a243244b63f109bd07fa3132d59a3e62889b7cf3beae9dd5b9982fe80570a",
     "tools/native-visual/new-session/safe-area-stub.tsx": "4b9fc1218f6a64c71ff6bbb51a57c50826ccca1a957c5d021bd5dc9643e505f7",
     "tools/native-visual/new-session/scene-variants.mjs": "a9b0058f575e9fe0e922fab3648ce9534cd426825975f0a10c7ac6778f03f078",
-    "tools/native-visual/new-session/serve.mjs": "4742f1bde9ffc20ce9df96de21b5f01005fc14ed07a9d6cc09dc12945861da69",
-    "tools/native-visual/new-session/stubs.tsx": "a4a980d7711f7e8ee8870bf473b6ca442a2c8bfae9254b5858fb4937cf6cea54",
+    "tools/native-visual/new-session/serve.mjs": "dd3da07aeb9c5238da083ffdd7d829c2399bd70a46b547b375aa0c90fb36e27e",
+    "tools/native-visual/new-session/stubs.tsx": "077492ae81bf671b0b4667511c5b514287d7b97be14482a600c6bc2fdd9a9e9d",
     "tools/native-visual/new-session/template-checks.mjs": "07c11a63dfe8b1b4f041d077982a6ae61dc78460c2ea5c28d616e5b620885ee9",
     "tools/native-visual/new-session/template-image-checks.mjs": "8f6c0f53b076a3ffcb9f5762aff2c5a2d0fdd8b8e489cfded7996a98ab457c9c",
     "tools/native-visual/new-session/template-static-checks.mjs": "d5687f41a81c7ce799482014888f8b059f04d4503e83bc8f1002c78fb1a57342",
     "tools/native-visual/new-session/template-stub.ts": "0bc1ecdf6cd578fa5fb5ac8203438389806e3b76b161b3d389e096174ea49d6d",
     "tools/native-visual/new-session/template-v2-stub.ts": "db4497c78eb087ae6459da7b0425b7fda221b4abcd941fa3ad4521f382bbaa6d",
+    "tools/native-visual/new-session/timer-build-evidence.mjs": "327501af774d8b9f4f76df65628c166c0329e4f993aeb3ccc9f94b50eaae1bf2",
+    "tools/native-visual/new-session/timer-checks.mjs": "4e5bd3982cc07f77c7c67ba3669e9bcf7ed3ce634a96ec21f5626ed9a9dc2919",
+    "tools/native-visual/new-session/timer-demo.mjs": "abad258a6a51a1aa678cecd75240534df18a9de6db1ef30f4616b5071a0ef3d0",
     "tools/native-visual/serve.mjs": "48a020fa0ffceb7a7d2586b3b9e1faf5fb3b295c8601c93578981fd87a89d020",
     "tools/native-visual/stubs.tsx": "1d7b06a44f721a65633cf270128dd546d1655f40dd8a27d5930a140cca0499cd"
   },
-  "sourceManifestSha256": "700eb82f97b691339c5a93df418bcc43b0674ff1a76a6b0303474ebc1d4ff67f",
+  "sourceManifestSha256": "97b741820af0419fb82e84972055fad79f354567b00b33bdfd2af80389c6b12a",
+  "ciRepairCommit": "d2c0577bd326d181a1e93a2239566f0d1c9a14cd",
+  "publicationApproved": true,
   "local": {
-    "frozenSetup": "passed after separately tested Wrangler4.153.0 integration;590packages",
-    "packages": 590,
-    "workspaceTypecheck": "passed on exact final App/Studio",
+    "frozenDependencyBaseline": "590packages installed and sameunchangedlock; separateWrangler4.153.0 fix retained",
+    "workspaceTypecheck": "passed",
     "suite": {
-      "tests": 293,
-      "passed": 293,
+      "tests": 310,
+      "passed": 310,
       "failed": 0,
       "skipped": 0
     },
-    "additionalHistoricalFaultTests": {
+    "ciContracts": {
+      "tests": 57,
+      "passed": 57,
+      "failed": 0,
+      "skipped": 0
+    },
+    "historicalFaults": {
       "tests": 4,
       "passed": 4,
-      "legacyFiveExplicit": true
-    },
-    "ciContracts": {
-      "tests": 50,
-      "passed": 50
+      "failed": 0,
+      "skipped": 0
     },
     "iosJavascriptExport": {
-      "passed": true,
-      "modules": 1045,
-      "sourceMapEntries": 1030,
+      "modules": 1048,
+      "sourceMapEntries": 1033,
       "assets": 2,
-      "exactAppAndStudioContentMatched": true
+      "exactSourceContentsMatched": true
     },
-    "nativeProjectGeneration": "passed current0.3.1/build4; localmodule and guarded originalpreservationplugin",
-    "nativeRuntimePreparedSources": 5,
-    "nativeRuntimePreparedJpegResources": 6,
-    "requiredNativeRuntimeTests": 20
-  },
-  "nativeRelease": {
-    "status": "Current V2 fresh exact-commit run pending",
-    "signed": false,
-    "physicalIpadVerified": false
-  },
-  "nativeReleaseRuntime": {
-    "status": "Current V2 fresh exact-commit run pending; inventory is not execution",
-    "requiredTests": 20,
-    "coreImageEffectsTests": 8,
-    "coreImageTemplateTests": 11,
-    "attractLaunchRelaunchRotationTests": 1,
-    "fixture": "disabled",
-    "metro": false,
-    "physicalCameraPhotosKeychainVerified": false,
-    "blocker": "OldV1 run40372103636/job121745248298 raw artifacts needed for precise timeout diagnosis before another simulator attempt"
-  },
-  "hostedLinux": {
-    "status": "Current V2 fresh exact-commit run pending"
-  },
-  "priorV1": {
-    "commit": "e0506f92f56b8847aa36aa4ce7f59002da54cffc",
-    "linux": {
-      "status": "passed",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40365263266"
-    },
-    "physicalSdkCompile": {
-      "status": "passed",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40365263378",
-      "scope": "Unsigned compilation/embeddedJS/iPadmetadata only"
-    },
-    "runtime": {
-      "status": "failed before hosted runner acquisition; zero tests executed",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40365263356"
+    "nativePrebuild": "passed0.3.2/build5",
+    "nativePreparedInventory": {
+      "methods": 20,
+      "effects": 8,
+      "templates": 11,
+      "attractSmoke": 1,
+      "swiftSources": 5,
+      "jpegResources": 6,
+      "execution": "not implied by preparation"
     }
   },
-  "ciOnlyFollowups": [
-    {
-      "commit": "873f783b412db566f379499d2030e3427274bec0",
-      "runtime": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40368245476",
-      "status": "failed cold iOS26.2 boot at former180sdeadline; zero tests executed",
-      "evidence": "artifacts/test-results/studio-runtime-boot.json"
+  "behavior": {
+    "defaults": {
+      "firstSeconds": 5,
+      "nextSeconds": 3
     },
-    {
-      "commit": "d1dbc8fd3254005f24ec00132dc07bc998a18308",
-      "linux": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40372103512",
-      "linuxStatus": "passed",
-      "runtime": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40372103636",
-      "job": "121745248298",
-      "status": "failed outer35-minute native-step deadline after38m38s; inner stage and executed count unknown until raw status/boot/Xcode artifacts. OLD15-methodsuite, not currentV2",
-      "change": "Only bounded600sbootallowance; no weaker assertions",
-      "publicAnnotations": [
-        "native-invocation failed",
-        "Verify selected unsigned native target timed out after35minutes"
-      ]
-    }
-  ],
-  "boundedCounts": "Independent/focused/API repeats overlap integrated293; do not sum them as unique coverage",
-  "geometry": {
-    "version": "wedding-template-v2",
-    "aspect": "chosen once from oriented source median; persisted",
-    "strip": [
-      1200,
-      3600
+    "detents": [
+      2,
+      3,
+      5,
+      8,
+      10
     ],
-    "portraitGrid": [
-      2400,
-      3000
+    "guestOverrides": "memory/sessiononly; Nextguests/apprestart restorepersistedHostdefaults",
+    "legacyPreferenceMigration": "validoldcountdownSeconds retainedasfirst; nextdefaults3",
+    "snapshot": "timing+retake lockedatrunstart",
+    "automatic": "nextcountdown beginsafterdurablesaveANDcameraReady, no300msor3sextragap",
+    "resumeRetake": "first/preparationtimer again",
+    "background": "inflight exposure preservation finishes beforecamera remount/freshready; staleepochs/canceledrejectionsignored",
+    "warningRecovery": "clears exactcamera-unavailable message onfreshready; retainsdifferentstoragewarnings",
+    "virtualExposuresSeconds": [
+      5,
+      8,
+      11,
+      14
     ],
-    "squareGrid": [
-      2400,
-      2400
-    ],
-    "v1": "oldgeometry/schema remains unchanged",
-    "fullPhoto": "default preserves edges",
-    "fill": "explicit new selection starts top; bounded manual adjustment and cropwarning"
+    "timingLimits": "Immediatevirtualsave/readiness only; not adeviceperformancepromise"
   },
   "browser": {
-    "currentCleanEvidence": {
-      "status": "passed",
-      "index": "artifacts/visual/keepsake-index.html",
-      "report": "artifacts/visual/keepsake-evidence.json",
-      "reportSHA256": "df5822ccaaa57ee6d7ec3b6c38870016219498aebdbcecdb9bbecea96c310ea6",
-      "screenshots": 113,
-      "fullSizeJPEGs": 13,
-      "recordings": 4,
-      "markerEdgeAssertions": 192,
-      "scope": "ActualJSX/controllers plus explicitCanvas/nativeSDKsubstitutes; source and exactDOM-to-receipt/JPEGbytes matched; no Apple/iPad proof",
-      "independentVisualStatus": "passed"
+    "report": "artifacts/visual/timer-evidence.json",
+    "status": "passed",
+    "counts": {
+      "actualRootGroups": 13,
+      "normalMotionGroups": 2,
+      "actualScreenshots": 46,
+      "reviewContactSheets": 2,
+      "recordings": 2
     },
-    "scope": "Actual native JSX/controllers with Canvas/nativeSDKsubstitutes; noCoreImage/camera/Photos/nativeglass/device claim",
-    "gallery": "artifacts/visual/gallery-v2-checks.json;12actualWorkerHTTP/Chromiumgroups,15PNGs,12exactclickeddownloads,private/revoke/naturalexpiry"
+    "scope": "Actual current native JSX/session runner in Chromium with explicitly synthetic camera, files, SQLite, Photos, host auth and template renderer. Not native iPad camera/gesture/VoiceOver/Photos or Apple CoreImage, signed install, live sharing/SMS or phone-scan proof.",
+    "sourceHashesMatched": true,
+    "normalMotionDemo": "Two drink-free normalmotion demonstrations usingexistingcleansyntheticmixedfixtures; functionalportraitmatrix unchanged.",
+    "reportSHA256": "e1b41ffffe204df6e5b24f4f22a0bfc988e111e36ac85a99c8481188fcd40a68"
   },
-  "independentReview": {
-    "report": "artifacts/test-results/keepsake-v2-independent-final.json",
-    "checks": 161,
-    "passed": 161,
+  "independent": {
+    "report": "artifacts/test-results/timer-independent-acceptance.json",
+    "passed": 68,
     "failed": 0,
     "skipped": 0,
-    "components": {
-      "v2Probes": 9,
-      "historicalFaultSequences": 4,
-      "focusedRegressions": 148
-    },
-    "blockingFindings": [],
-    "limits": "Linux/synthetic boundaries only; native inventory not execution",
-    "visual": {
-      "status": "passed within browser/Canvas boundary",
-      "report": "artifacts/visual/keepsake-independent-visual-review.md",
-      "detail": "artifacts/visual/keepsake-independent-visual-review.json",
-      "detailSHA256": "a02145a115cb92f6cf816ff94e46665b00296a51e5224e347031325cdc95f528",
-      "personallyViewed": {
-        "fullSizeExports": 8,
-        "keyScreens": 31,
-        "sampledVideoFrames": 126
-      },
-      "evidenceEntriesVerified": 140,
-      "qr": "Two orientations x two independentdecoders exactfabricatedpayload; no liveURL or phonescan"
-    }
+    "scope": "11independent productionprobes+57contractreruns; overlapsmainchecks, notuniqueadditionalcoverage"
   },
-  "workerArtifact": {
-    "sha256": "43dabd6c9dcda6aa44f23ca11ac544f2588f9efd5428f0837dc839f4f98c9ded",
-    "sourceSha256": "82a548e2f5e640ce6f57f360b7636959e8c6877c3ec3b6c58570a80fb103bd63",
-    "bytes": 39993,
-    "manifest": "artifacts/deploy/manifest.json",
-    "deployedByExecutor": false,
-    "contractChange": "V2gridAspect requires matching Worker, V1/five remain supported"
-  },
-  "production": "Coordinator owns deployment/provisioning/provider eligibility and approved capped recipient tests; this executor sent zero real messages and made no Cloudflare writes",
-  "firebase": "Owner deferred; no project/catalog/quota/signedpackage/run verified, no productionFirebaseSDK",
-  "references": "Luna reviewed2publicGitHubimages recordedinluna-keepsake-references.md; ownerLibraryscreenshots unavailablehere, no private referenceassets published",
-  "securityAssessment": "artifacts/security/studio-advisory-assessment.json; tested Wrangler4.153.0 applied, audit still8high/0moderate affected Expo/directMiniflare entries. Exact-source graph exclusion is not binary/infrastructure audit.",
-  "remainingGates": [
-    "Fresh exactcommit currentV2 Linux/physicalSDK/20-testnative suite",
-    "Coordinator matchingV2deploy preservingprivateR2/secrets/logging/rates; privatepairing andlivesyntheticstorageproof",
-    "Owner sameidentityRelease install; actualiPad saving/Photos/interruption/reboot/edge/parity/QR/boothrehearsal",
-    "Provider eligibility/liveconfiguration and coordinator-owned cappedSMStestsifapproved",
-    "Environment draftpublication/freshtaskrestore"
-  ],
-  "projectFinished": false,
-  "testedFallback": {
-    "commit": "0dc4385217678f56e8b7ad2d38f9398fc7dcc31f",
+  "priorFrozenV2": {
+    "commit": "00e7a2bf5289d95da8b67babc2426cef1d4ef761",
+    "report": "artifacts/test-results/keepsake-v2-local.json",
     "linux": {
       "status": "passed",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40343542139",
-      "duration": "1m15s"
+      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40378513541",
+      "duration": "1m6s"
     },
     "physicalSdkCompile": {
       "status": "passed",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40343543014",
-      "duration": "9m52s"
+      "sourceCommit": "00e7a2bf5289d95da8b67babc2426cef1d4ef761",
+      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40378513599",
+      "job": "121768064113",
+      "duration": "23m17s",
+      "scope": "Public exact-SHA annotation verifies unsignediPhoneOS Releasecompile/embeddedJS/iPadmetadata only; noXCTest/sign/install/device"
     },
-    "releaseSimulator": {
-      "status": "passed",
-      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40343542363",
-      "job": "121644303874",
-      "duration": "29m56s",
-      "scope": "One actual launch/relaunch/orientation smoke XCTest; no Core Image/camera/Photos claim"
-    }
+    "scope": "BaselineCoreImagenativeV2compiled; doesnotverifynewtimeroractualnativeXCTest"
   },
-  "featureCommit": "cfec4ff2091f8f59dbbe83788e75e851b4bc63f1",
-  "toolingRemediation": "artifacts/security/keepsake-tooling-applied.json",
-  "sourceIdentity": "Source hashes and code checkpoint4337843; upcoming metadata-only native-ci push uses identical app/lock/native sources"
+  "currentHosted": {
+    "linux": "pending exact-commit push/run",
+    "physicalSdkRelease": "pending exact-commit push/run",
+    "releaseRuntime": "pending repaired exact-commit20-method run; zero nativepass inferred"
+  },
+  "ciRepair": {
+    "report": "artifacts/test-results/keepsake-native-runtime-repair.json",
+    "diagnosis": "Oldruntimebootpassed254s; coldprep~11min then dualarchitectureIntelcompilation exceededouter35m, noassertionsestablished",
+    "architecture": "Runtime-onlyONLY_ACTIVE_ARCHYES plusvalidatedx86_64/arm64hostARCHS; deviceReleaseargsunchanged",
+    "budgetsMinutes": {
+      "preparation": 18,
+      "xcode": 25,
+      "cleanup": 2,
+      "nativeStep": 48,
+      "job": 75
+    },
+    "bootSeconds": 600,
+    "cleanup": "OwnedprocessgroupTERM/KILLawaited; unknownwritersretainoutputs; validfailedXCTestresultsuploadable"
+  },
+  "worker": {
+    "sha256": "43dabd6c9dcda6aa44f23ca11ac544f2588f9efd5428f0837dc839f4f98c9ded",
+    "bytes": 39993,
+    "sourceSHA256": "82a548e2f5e640ce6f57f360b7636959e8c6877c3ec3b6c58570a80fb103bd63",
+    "timerChangesApi": false,
+    "v2MatchingBackendStillRequired": true,
+    "deployedByExecutor": false
+  },
+  "security": {
+    "audit": "artifacts/security/keepsake-v2-audit.json",
+    "highAffectedEntries": 8,
+    "moderateAffectedEntries": 0,
+    "toolingFix": "Wrangler4.153.0applied; Expo/directMiniflarefindingsremain",
+    "currentGraphReview": "ExactApp/UI/Core1033sourceentries checked; affectedNodepackages absent; no nativebinaryaudit"
+  },
+  "environment": {
+    "lastSavedRevision": 16,
+    "lastSavedRef": "00e7a2bf5289d95da8b67babc2426cef1d4ef761",
+    "currentTimerSave": "pendingpublishedref/completeinstructions refresh",
+    "requiresPublish": true,
+    "freshRestoreVerified": false
+  },
+  "remainingGates": [
+    "Current exact-commit Linux and bothnative lanes",
+    "Coordinator matchingV2deploy/privatepairing/liveSyntheticR2download/privacyproof",
+    "Owner samecontainer signedReleaseinstall and realiPad camera/Photos/offline/reboot/timer/VO/filter/template/phoneQR/boothrehearsal",
+    "SMSprovidereligibility andcoordinator-owned approvedcappedtest ifenabled",
+    "Environment draftpublication/freshrestore"
+  ],
+  "projectFinished": false,
+  "realSmsFromExecutor": 0,
+  "cloudflareWritesFromExecutor": 0
 }

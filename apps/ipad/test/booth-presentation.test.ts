@@ -25,3 +25,11 @@ test('ready and completed local counts never imply cloud or Photos-library succe
   assert.equal(durableSaveLabel(5, 5), '5 of 5 originals saved on this iPad');
   assert.equal(captureErrorMessage(1, false), 'The camera could not finish this photo. Your 1 saved original is safe on this iPad. Try again.');
 });
+
+test('two-stage timing never claims the same duration for every photo or hides a save delay', () => {
+  const timing = { firstSeconds: 5, nextSeconds: 3 } as const;
+  assert.equal(captureSaveStatus({ savedCount: 0, targetCount: 4, timing, saving: false }),
+    'Each original saves before the next countdown · No photos saved on this iPad yet');
+  assert.equal(captureSaveStatus({ savedCount: 1, targetCount: 4, timing, saving: true }),
+    'Saving this photo · 1 of 4 originals saved on this iPad');
+});

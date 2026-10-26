@@ -1,3 +1,5 @@
+import type { CaptureTiming } from './capture-timing';
+
 export const WEDDING_NAMES = 'Gizelle & Rami';
 export const WEDDING_DATE = 'November 1, 2026';
 export const WEDDING_IDENTITY = `${WEDDING_NAMES} · ${WEDDING_DATE}`;
@@ -8,11 +10,12 @@ export function durableSaveLabel(savedCount: number, targetCount: number): strin
 }
 
 export function captureSaveStatus(options: {
-  savedCount: number; targetCount: number; seconds: number; saving: boolean; failedSlot?: number;
-}): string {
+  savedCount: number; targetCount: number; saving: boolean; failedSlot?: number;
+} & ({ timing: CaptureTiming; seconds?: never } | { seconds: number; timing?: never })): string {
   const saved = durableSaveLabel(options.savedCount, options.targetCount);
   if (options.failedSlot !== undefined) return `Photo ${options.failedSlot + 1} still needs saving · ${saved}`;
   if (options.saving) return `Saving this photo · ${saved}`;
+  if (options.timing) return `Each original saves before the next countdown · ${saved}`;
   return `${options.seconds} seconds per photo · ${saved}`;
 }
 

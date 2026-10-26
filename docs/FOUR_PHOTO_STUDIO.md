@@ -1,8 +1,12 @@
 # Four-photo wedding studio
 
-The local V2 candidate, version **0.3.1 / build 4**, defaults to four independent camera originals. Existing five-photo sessions and `wedding-template-v1` recipes remain readable, recoverable and shareable without changing their saved geometry. The app identifier and signing team must stay unchanged when updating an installation containing photos. The V2 installation commit and fresh hosted results must be pinned before owner installation; earlier hosted checks do not verify this working-tree candidate.
+The local timer candidate, version **0.3.2 / build 5**, defaults to four independent camera originals. Existing five-photo sessions and `wedding-template-v1` recipes remain readable, recoverable and shareable without changing their saved geometry. The app identifier and signing team must stay unchanged when updating an installation containing photos. The final timer installation commit and fresh hosted results must be pinned before owner installation; earlier hosted checks do not verify later files.
 
 The guest flow is capture → review/individual retake → optional photo looks → Make it yours → save keepsake → private QR when ready → Next guests. The camera remains full bleed. Template choices are deliberately small: Photo strip or Four-cut grid, each with **Classic Ivory**, **Sage Botanical** and **Coastal Sea Glass**. Every theme thumbnail is an actual rendered preview using the current four photos. Strip + Classic Ivory + Full photo is the default and needs no adjustment.
+
+## Before capture
+
+A compact camera chip opens independent preparation and following-photo timers. New defaults are 5 seconds first and 3 seconds next, with useful integer stops. Guest edits are session-only, lock at Start and reset to the saved host defaults on Next guests. Hosts can persist both values; valid legacy single-timer preferences migrate to preparation time. Resume and individual retake use preparation time again. Automatic following countdowns wait for the previous durable save and camera readiness, without an extra three-second gap. See [timing and rehearsal](TIMING.md).
 
 ## Images and editing
 
@@ -27,6 +31,10 @@ Without Internet the app retains photos and the keepsake, shows No download link
 An optional add-only Photos copy is separate from the private original. A confirmed keepsake can also be exported to Photos. Uncertain results are never retried automatically; authenticated host controls let the owner check Photos, acknowledge an existing copy or explicitly accept duplicate risk. A staged keepsake has its own finish-save action and is excluded from sharing/Photos until verified. Host data relocks and redacts on inactive/background; foreground does not automatically restore the private library. See [saving repair](SAVING_REPAIR.md) and [recipient retention](RECIPIENT_RETENTION.md).
 
 ## Evidence boundaries
+
+The new timer source passes 310 integrated local tests, 57 runner contracts, four historical recovery faults, typechecks and a 1,048-module iOS export. Its prepared native inventory remains 20 methods and six clean JPEG resources. [Timer browser evidence](../artifacts/visual/timer-index.html) and [independent acceptance](../artifacts/test-results/timer-independent-acceptance.json) retain their own source hashes and test boundaries. Fresh native results and device acceptance are still required.
+
+The published V2 checkpoint `00e7a2bf5289d95da8b67babc2426cef1d4ef761` passed [Linux](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40378513541) and [unsigned physical-SDK Release compilation](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40378513599). That build verified embedded JavaScript and iPad metadata, with no XCTest, signing, installation or device test. It does not validate the later timer source.
 
 [Earlier V1 template browser evidence](../artifacts/visual/templates-evidence.md) and [look evidence](../artifacts/visual/looks-evidence.md) run actual JSX/controllers with explicit synthetic native boundaries and Canvas-produced JPEGs. They retain their original source hashes. V2 clean synthetic exports and UI captures are reviewed separately from diagnostic marker fixtures; neither is Apple Core Image or iPad evidence. [V2 local Worker/browser evidence](../artifacts/visual/gallery-v2-evidence.md) covers actual HTTP downloads, privacy, expiry and revocation. Two public GitHub visual examples were inspected during [bounded composition research](../artifacts/visual/luna-keepsake-references.md). The owner's Library reference images could not be materialized here, and no direct comparison is claimed.
 

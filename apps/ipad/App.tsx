@@ -33,12 +33,13 @@ import { createPhotoLookEditor, type PhotoLookEditorState, type PhotoLookPreset 
 import { loadPhotoEffects, loadTemplateEffects } from './src/native-photo-effects';
 import { createTemplateEditor, type TemplateEditorState } from './src/template-editor';
 import { TemplateStudio } from './src/TemplateStudio';
+import { TimingSheet, TimingControls } from './src/TimingSheet';
+import { DEFAULT_CAPTURE_TIMING, normalizeCaptureTiming, type CaptureTiming } from './src/capture-timing';
 
+const CAMERA_UNAVAILABLE_MESSAGE = 'The front camera is unavailable. Please ask the host.';
 const pause = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
-const TIMERS = [2, 3, 5, 8, 10] as const;
 const LOOKS: { preset: PhotoLookPreset; title: string }[] = [{ preset: 'original', title: 'Original' }, { preset: 'warm', title: 'Warm' }, { preset: 'bw', title: 'B&W' }, { preset: 'film', title: 'Film' }];
 const STRENGTHS = [0, 0.25, 0.5, 0.75, 1] as const;
-type Seconds = typeof TIMERS[number];
 type Screen = 'attract' | 'camera' | 'review' | 'template' | 'share';
 type HostPage = 'controls' | 'library' | 'setup';
 
@@ -137,9 +138,29 @@ function Photobooth() {
   const [session, setSession] = useState<ActiveSession | null>(null);
   const [initialized, setInitialized] = useState(false);
   const [cameraReady, setCameraReady] = useState(false);
+  const cameraReadyRef = useRef(false);
+  function updateCameraReady(value: boolean) { cameraReadyRef.current = value; setCameraReady(value); }
+  const [cameraEpoch, setCameraEpoch] = useState(0);
+  const cameraEpochRef = useRef(0);
+  const cameraNeedsRemount = useRef(false);
+  const capturePersisting = useRef(false);
+  function refreshInterruptedCamera() {
+    if (!cameraNeedsRemount.current || capturePersisting.current || AppState.currentState !== 'active') return;
+    // SDK58 resumes a session without emitting onCameraReady. Remount only after
+    // an already exposed photo has finished preserving, then await fresh readiness.
+    cameraNeedsRemount.current = false; updateCameraReady(false);
+    cameraEpochRef.current += 1; setCameraEpoch(cameraEpochRef.current);
+  }
+  function acknowledgeCameraReady(epoch: number) {
+    if (epoch === cameraEpochRef.current && !cameraNeedsRemount.current && AppState.currentState === 'active') {
+      updateCameraReady(true);
+      setMessage(current => current === CAMERA_UNAVAILABLE_MESSAGE ? '' : current);
+    }
+  }
   const [busy, setBusy] = useState(false);
   const [countdown, setCountdown] = useState<number>();
   const [saving, setSaving] = useState(false);
+  const [preparing, setPreparing] = useState(false);
   const [activeSlot, setActiveSlot] = useState(0);
   const [focusedSlot, setFocusedSlot] = useState(0);
   const [retakeSlot, setRetakeSlot] = useState<number>();
@@ -152,9 +173,13 @@ function Photobooth() {
   const [now, setNow] = useState(Date.now());
   const [reduceMotion, setReduceMotion] = useState(true);
   const [foreground, setForeground] = useState(AppState.currentState === 'active');
-  const [seconds, setSeconds] = useState<Seconds>(3);
+  const [hostTiming, setHostTiming] = useState<CaptureTiming>({ ...DEFAULT_CAPTURE_TIMING });
+  const [guestTiming, setGuestTiming] = useState<CaptureTiming>({ ...DEFAULT_CAPTURE_TIMING });
+  const guestTimingRef = useRef<CaptureTiming>({ ...DEFAULT_CAPTURE_TIMING });
+  const guestTimingOverride = useRef(false);
+  const [timingVisible, setTimingVisible] = useState(false);
   const [exportEnabled, setExportEnabled] = useState(true);
-  const preferencesRef = useRef({ countdownSeconds: 3 as Seconds, photosExportEnabled: true });
+  const preferencesRef = useRef({ ...DEFAULT_CAPTURE_TIMING, photosExportEnabled: true });
   const [hostVisible, setHostVisible] = useState(false);
   const [hostPage, setHostPage] = useState<HostPage>('controls');
   const [hostBusy, setHostBusy] = useState(false);
@@ -359,6 +384,7 @@ function Photobooth() {
   if (!runner.current) runner.current = createSessionCaptureRunner<ActiveSession>({
     wait: pause,
     isActive: () => AppState.currentState === 'active',
+    isCameraReady: () => cameraReadyRef.current && !hostVisibleRef.current,
     async capture() {
       const options: CameraPictureOptions & { preserveFullPhoto?: boolean } = { quality: 1, skipProcessing: false, ...(fullPhotoSupported ? { preserveFullPhoto: true } : {}) };
       const photo = nativeFixtureEnabled ? await takeNativeFixturePhoto() : await camera.current?.takePictureAsync(options);
@@ -378,21 +404,23 @@ function Photobooth() {
     save: persistPhoto,
     onEvent(event) {
       if (!mounted.current) return;
-      if (event.kind === 'countdown') {
-        setBusy(true); setSaving(false); setActiveSlot(event.slot); setCountdown(event.remaining);
+      if (event.kind === 'preparing') {
+        setTimingVisible(false); setBusy(true); setPreparing(true); setSaving(false); setActiveSlot(event.slot); setCountdown(undefined);
+      } else if (event.kind === 'countdown') {
+        setTimingVisible(false); setPreparing(false); setBusy(true); setSaving(false); setActiveSlot(event.slot); setCountdown(event.remaining);
       } else if (event.kind === 'saving') {
-        setCountdown(undefined); setSaving(true);
+        capturePersisting.current = true; setPreparing(false); setCountdown(undefined); setSaving(true);
       } else if (event.kind === 'saved') {
-        adoptSession(event.session); setFailedPhoto(undefined); setSaving(false);
+        capturePersisting.current = false; adoptSession(event.session); setFailedPhoto(undefined); setSaving(false);
         void refreshQueue();
       } else if (event.kind === 'done') {
-        setBusy(false); setSaving(false); setCountdown(undefined); setRetakeSlot(undefined);
-        focusReview(event.retake ? event.slot : 0); setScreen('review'); setCameraReady(false);
+        capturePersisting.current = false; refreshInterruptedCamera(); setBusy(false); setSaving(false); setPreparing(false); setCountdown(undefined); setRetakeSlot(undefined);
+        focusReview(event.retake ? event.slot : 0); setScreen('review'); updateCameraReady(false);
         if (preferencesRef.current.photosExportEnabled && sessionIsComplete(event.session)) void exportPhotos(event.session, true);
       } else if (event.kind === 'paused') {
-        setBusy(false); setSaving(false); setCountdown(undefined);
+        capturePersisting.current = false; refreshInterruptedCamera(); setBusy(false); setSaving(false); setPreparing(false); setCountdown(undefined);
       } else if (event.kind === 'error') {
-        setBusy(false); setSaving(false); setCountdown(undefined); setFailedPhoto(event.photo);
+        capturePersisting.current = false; refreshInterruptedCamera(); setBusy(false); setSaving(false); setPreparing(false); setCountdown(undefined); setFailedPhoto(event.photo);
         diagnose(event.error);
         setMessage(captureErrorMessage(event.session.shots.length, !!event.photo));
       }
@@ -407,12 +435,15 @@ function Photobooth() {
         const active = await getActiveSession();
         if (!mounted.current) return;
         adoptSession(active); setScreen(screenForSession(active)); setActiveSlot(active ? nextPhotoSlot(active) ?? 0 : 0);
-        setInitialized(true);
-        await refreshQueue();
         try {
           const prefs = await loadHostPreferences();
-          preferencesRef.current = prefs; setSeconds(prefs.countdownSeconds); setExportEnabled(prefs.photosExportEnabled);
+          if (!mounted.current) return;
+          preferencesRef.current = prefs; setHostTiming(normalizeCaptureTiming(prefs)); setExportEnabled(prefs.photosExportEnabled);
+          guestTimingRef.current = normalizeCaptureTiming(prefs); setGuestTiming(guestTimingRef.current);
         } catch (error) { diagnose(error); }
+        if (!mounted.current) return;
+        setInitialized(true);
+        await refreshQueue();
         try { setPaired(!!await loadConnection()); } catch (error) { diagnose(error); }
         void refreshCapability();
         void retrySharing();
@@ -424,15 +455,16 @@ function Photobooth() {
     const lifecycle = AppState.addEventListener('change', state => {
       setForeground(state === 'active');
       if (state !== 'active') {
+        cameraNeedsRemount.current = true; updateCameraReady(false);
         const wasTemplate = templateActive.current;
         templateEditor.current?.close(); if (wasTemplate) setScreen('review');
         lookEditor.current?.close();
         hostVisibility.current.suspend(state);
         hostVisibleRef.current = false; setHostVisible(false); setHostDecision(null);
         librarySessionRef.current = null; setLibrarySession(null); setSavedSessions([]); setLibraryMode('selected'); setHostPage('controls'); setHostMessage('');
-        setScanningSetup(false); setPairingCode(''); runner.current?.interrupt(); screenFade.stopAnimation(); screenFade.setValue(1); countdownReveal.stopAnimation(); exposureFlash.stopAnimation(); exposureFlash.setValue(0);
+        setTimingVisible(false); setScanningSetup(false); setPairingCode(''); runner.current?.interrupt(); screenFade.stopAnimation(); screenFade.setValue(1); countdownReveal.stopAnimation(); exposureFlash.stopAnimation(); exposureFlash.setValue(0);
       }
-      else { void retrySharing(); void refreshCapability(); }
+      else { refreshInterruptedCamera(); void retrySharing(); void refreshCapability(); }
     });
     const timer = setInterval(() => {
       if (AppState.currentState === 'active') { setNow(Date.now()); void retrySharing(); }
@@ -474,15 +506,30 @@ function Photobooth() {
     actionLock.current = true; setBusy(true); setMessage('');
     try {
       const value = sessionRef.current ?? await createSession();
-      adoptSession(value); setActiveSlot(nextPhotoSlot(value) ?? 0); setCameraReady(false); setScreen(screenForSession(value) === 'attract' ? 'camera' : screenForSession(value));
+      adoptSession(value); setActiveSlot(nextPhotoSlot(value) ?? 0); updateCameraReady(false); setScreen(screenForSession(value) === 'attract' ? 'camera' : screenForSession(value));
     } catch (error) { diagnose(error); setMessage('We could not start saving a session. Please ask the host to check this iPad.'); }
     finally { actionLock.current = false; setBusy(false); }
   }
   async function startPhotos() {
-    if (!sessionRef.current || !cameraReady || runner.current?.isBusy() || actionLock.current || failedPhoto) return;
+    if (!sessionRef.current || !cameraReadyRef.current || timingVisible || runner.current?.isBusy() || actionLock.current || failedPhoto || AppState.currentState !== 'active') return;
     setMessage('');
-    await runner.current?.run(sessionRef.current, { seconds: preferencesRef.current.countdownSeconds, ...(retakeSlot !== undefined ? { retakeSlot } : {}) });
-    if (mounted.current && !runner.current?.isBusy()) { setBusy(false); setSaving(false); setCountdown(undefined); }
+    await runner.current?.run(sessionRef.current, { timing: { ...guestTimingRef.current }, ...(retakeSlot !== undefined ? { retakeSlot } : {}) });
+    if (mounted.current && !runner.current?.isBusy()) { setBusy(false); setSaving(false); setPreparing(false); setCountdown(undefined); }
+  }
+  function openTiming() {
+    if (runner.current?.isBusy() || actionLock.current || failedPhoto || hostVisibleRef.current || !initialized || AppState.currentState !== 'active') return;
+    setTimingVisible(true);
+  }
+  function applyGuestTiming(value: CaptureTiming) {
+    if (runner.current?.isBusy() || actionLock.current || hostVisibleRef.current || screen !== 'camera' || AppState.currentState !== 'active') return;
+    guestTimingRef.current = normalizeCaptureTiming(value);
+    guestTimingOverride.current = true;
+    setGuestTiming({ ...guestTimingRef.current }); setTimingVisible(false);
+  }
+  function restoreGuestTimingDefaults() {
+    guestTimingOverride.current = false;
+    guestTimingRef.current = normalizeCaptureTiming(preferencesRef.current);
+    setGuestTiming({ ...guestTimingRef.current }); setTimingVisible(false);
   }
   function cancelPhotos() { runner.current?.cancel(); }
   async function retrySave() {
@@ -491,7 +538,7 @@ function Photobooth() {
     try {
       const updated = await persistPhoto(sessionRef.current, failedPhoto);
       adoptSession(updated); setFailedPhoto(undefined); setMessage(''); setActiveSlot(nextPhotoSlot(updated) ?? failedPhoto.slot);
-      if (retakeSlot !== undefined || sessionIsComplete(updated)) { focusReview(failedPhoto.slot); setRetakeSlot(undefined); setCameraReady(false); setScreen('review'); }
+      if (retakeSlot !== undefined || sessionIsComplete(updated)) { focusReview(failedPhoto.slot); setRetakeSlot(undefined); updateCameraReady(false); setScreen('review'); }
       await refreshQueue();
     } catch (error) { diagnose(error); setMessage('Saving still needs attention. Keep this session open and ask the host.'); }
     finally { actionLock.current = false; setBusy(false); setSaving(false); }
@@ -502,7 +549,7 @@ function Photobooth() {
     const index = value.shots.findIndex((photo, i) => photoSlot(photo, i) === slot);
     if (index < 0) return;
     // Reserve before React renders or any scrollTo callback can run.
-    focusReview(slot); setScreen('review'); setCameraReady(false);
+    focusReview(slot); setScreen('review'); updateCameraReady(false);
     requestAnimationFrame(() => { if (reviewSelection.current.isTarget(slot)) review.current?.scrollTo({ x: index * reviewWidthRef.current, animated: !reduceMotion }); });
   }
   function reviewSlots() { return sessionRef.current?.shots.map(photoSlot) ?? []; }
@@ -518,11 +565,11 @@ function Photobooth() {
     // Read synchronous intent, never a potentially stale React render closure.
     const slot = reviewSelection.current.current();
     if (!value.shots.some((photo, index) => photoSlot(photo, index) === slot)) return;
-    setRetakeSlot(slot); setActiveSlot(slot); setCameraReady(false); setMessage(''); setScreen('camera');
+    setRetakeSlot(slot); setActiveSlot(slot); updateCameraReady(false); setMessage(''); setScreen('camera');
   }
   function leaveRetake() {
     if (saving || failedPhoto) return;
-    cancelPhotos(); setRetakeSlot(undefined); setCameraReady(false); setScreen('review');
+    cancelPhotos(); setRetakeSlot(undefined); updateCameraReady(false); setScreen('review');
   }
   async function keepSession() {
     const value = sessionRef.current;
@@ -534,7 +581,7 @@ function Photobooth() {
     actionLock.current = true; setBusy(true); setMessage('');
     try {
       const updated = await confirmSession(value);
-      adoptSession(updated); setScreen('share'); setCameraReady(false); await refreshQueue(); void retrySharing(true);
+      adoptSession(updated); setScreen('share'); updateCameraReady(false); await refreshQueue(); void retrySharing(true);
     } catch (error) { diagnose(error); setMessage('Your originals are safe here. Sharing setup needs a retry; keep this session open.'); }
     finally { actionLock.current = false; setBusy(false); }
   }
@@ -542,7 +589,7 @@ function Photobooth() {
     if (actionLock.current || runner.current?.isBusy() || lookActive.current || lookSaving.current || templateActive.current || templateSaving.current) return;
     actionLock.current = true; setBusy(true);
     try {
-      await clearActiveSession(); adoptSession(null); setJobs([]); setScreen('attract'); focusReview(0); setActiveSlot(0); setRetakeSlot(undefined); setFailedPhoto(undefined); setMessage(''); setCameraReady(false);
+      await clearActiveSession(); restoreGuestTimingDefaults(); adoptSession(null); setJobs([]); setScreen('attract'); focusReview(0); setActiveSlot(0); setRetakeSlot(undefined); setFailedPhoto(undefined); setMessage(''); updateCameraReady(false);
       void refreshQueue();
     } catch (error) { diagnose(error); setMessage('Please ask the host to reset this screen. Your originals remain safe.'); }
     finally { actionLock.current = false; setBusy(false); }
@@ -555,7 +602,7 @@ function Photobooth() {
     try {
       await authenticateHost();
       if (!hostVisibility.current.finish(ticket) || AppState.currentState !== 'active') return;
-      setCameraReady(false); setScanningSetup(false); setHostPage('controls'); setHostMessage(''); hostVisibleRef.current = true; setHostVisible(true); setHostDecision(null); setPairingCode('');
+      setTimingVisible(false); setHostTiming(normalizeCaptureTiming(preferencesRef.current)); setExportEnabled(preferencesRef.current.photosExportEnabled); updateCameraReady(false); setScanningSetup(false); setHostPage('controls'); setHostMessage(''); hostVisibleRef.current = true; setHostVisible(true); setHostDecision(null); setPairingCode('');
       await refreshLibrary(); await refreshCapability();
       try { const connection = await loadConnection(); if (hostVisibleRef.current && hostVisibility.current.current(ticket)) setPaired(!!connection); } catch (error) { diagnose(error); }
     } catch (error) { setMessage(error instanceof Error ? error.message : 'Host authentication is unavailable.'); }
@@ -565,8 +612,10 @@ function Photobooth() {
     setHostBusy(true); setHostMessage('');
     try {
       await authenticateHost();
-      const prefs = await saveHostPreferences({ countdownSeconds: seconds, photosExportEnabled: exportEnabled });
-      preferencesRef.current = prefs; setHostMessage('Booth settings saved.');
+      const prefs = await saveHostPreferences({ ...hostTiming, photosExportEnabled: exportEnabled });
+      preferencesRef.current = prefs; setHostTiming(normalizeCaptureTiming(prefs));
+      if (!guestTimingOverride.current && !runner.current?.isBusy()) { guestTimingRef.current = normalizeCaptureTiming(prefs); setGuestTiming({ ...guestTimingRef.current }); }
+      setHostMessage('Booth defaults saved. Guest changes apply to one session only.');
     } catch (error) { setHostMessage(error instanceof Error ? error.message : 'Settings could not save.'); }
     finally { setHostBusy(false); }
   }
@@ -619,7 +668,7 @@ function Photobooth() {
       if (AppState.currentState !== 'active') { adoptSession(current); setScreen('review'); return; }
       actionLock.current = true; setBusy(true); setMessage('');
       const updated = await confirmSession(current);
-      adoptSession(updated); setScreen('share'); setCameraReady(false);
+      adoptSession(updated); setScreen('share'); updateCameraReady(false);
       await refreshQueue(); void retrySharing(true);
       if (preferencesRef.current.photosExportEnabled) void exportPhotos(updated, true, true);
     } catch (error) { diagnose(error); setScreen('review'); setMessage('Your photos remain saved. The keepsake needs a retry before sharing.'); }
@@ -669,8 +718,8 @@ function Photobooth() {
         {screen === 'camera' && session && <View style={styles.capturePage}>
           <View testID="camera-stage" style={styles.cameraStage}>
             {permission?.granted ? hostVisible ? <View style={StyleSheet.absoluteFill} /> : nativeFixtureEnabled
-              ? <Image testID="camera-surface" source={nativeFixtureImage()} resizeMode="cover" style={StyleSheet.absoluteFill} onLoad={() => setCameraReady(true)} accessibilityLabel="Synthetic native camera scene" />
-              : <CameraView testID="camera-surface" ref={camera} facing="front" mirror={false} style={StyleSheet.absoluteFill} onCameraReady={() => setCameraReady(true)} onMountError={() => { setCameraReady(false); setMessage('The front camera is unavailable. Please ask the host.'); }} />
+              ? <Image key={`fixture-${cameraEpoch}`} testID="camera-surface" source={nativeFixtureImage()} resizeMode="cover" style={StyleSheet.absoluteFill} onLoad={() => acknowledgeCameraReady(cameraEpoch)} accessibilityLabel="Synthetic native camera scene" />
+              : <CameraView key={`camera-${cameraEpoch}`} testID="camera-surface" ref={camera} facing="front" mirror={false} style={StyleSheet.absoluteFill} onCameraReady={() => acknowledgeCameraReady(cameraEpoch)} onMountError={() => { if (cameraEpoch !== cameraEpochRef.current) return; updateCameraReady(false); setMessage(CAMERA_UNAVAILABLE_MESSAGE); }} />
               : <View style={styles.permission}><Text style={styles.permissionTitle}>You bring the smiles.</Text><Text style={styles.permissionBody}>We just need the camera.</Text><Button title={permission?.canAskAgain === false ? 'Open iPad Settings' : 'Enable camera'} testID="allow-camera" light onPress={() => void (permission?.canAskAgain === false ? Linking.openSettings() : requestPermission())} /></View>}
             <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: '#fff', opacity: exposureFlash }]} />
             <View style={[styles.cameraTop, { top: insets.top + 16, left: insets.left + 20, right: insets.right + 20 }]}>
@@ -678,18 +727,19 @@ function Photobooth() {
               <Text style={styles.progressText}>{retakeSlot !== undefined ? 'RETAKE' : 'PHOTO'} {activeSlot + 1} <Text style={styles.progressMuted}>OF {total}</Text></Text>
               <Pressable accessibilityRole="button" accessibilityLabel="Open host controls" disabled={busy || hostBusy} onPress={() => void openHost()} style={styles.cameraHost}><Text style={styles.cameraHostText}>Host</Text></Pressable>
             </View>
-            {countdown !== undefined && <View pointerEvents="none" style={styles.countdownShade}><View style={styles.countdownDisc}><Animated.Text accessibilityLiveRegion="assertive" style={[styles.countdown, { opacity: countdownReveal.interpolate({ inputRange: [0, 1], outputRange: [0.92, 1] }), transform: [{ scale: countdownReveal.interpolate({ inputRange: [0, 1], outputRange: [0.96, 1] }) }] }]}>{countdown}</Animated.Text></View></View>}
+            {countdown !== undefined && <View pointerEvents="none" style={styles.countdownShade}><View style={styles.countdownDisc}><Animated.Text testID="capture-countdown-value" accessibilityLiveRegion="assertive" style={[styles.countdown, { opacity: countdownReveal.interpolate({ inputRange: [0, 1], outputRange: [0.92, 1] }), transform: [{ scale: countdownReveal.interpolate({ inputRange: [0, 1], outputRange: [0.96, 1] }) }] }]}>{countdown}</Animated.Text></View></View>}
           </View>
           <View pointerEvents="box-none" style={[styles.captureFloating, { bottom: insets.bottom + 16, left: insets.left + 18, right: insets.right + 18 }]}>
           <GlassSurface testID="camera-action-glass" style={styles.captureIsland}>
             <View testID="camera-controls" style={[styles.captureBottom, landscape && styles.captureBottomWide]}>
             {session.shots.length > 0 && <View style={styles.captureFilmstrip}><Text style={styles.cameraSaved}>{session.shots.length} saved here</Text><Thumbnails compact reduceMotion={reduceMotion || !foreground} session={session} active={activeSlot} onSelect={!busy && !failedPhoto ? selectReview : undefined} /></View>}
             <View style={styles.captureActions}>
-              {busy ? <Button title={saving ? 'Saving original…' : 'Pause countdown'} testID="cancel-countdown" secondary disabled={saving} onPress={cancelPhotos} />
+              {!busy && !failedPhoto && <Pressable accessibilityRole="button" accessibilityLabel={`Photo timing, ${guestTiming.firstSeconds} seconds to prepare, ${guestTiming.nextSeconds} seconds for following photos. Edit for this session.`} testID="timing-chip" onPress={openTiming} disabled={!initialized || hostBusy || hostVisible} style={styles.timingChip}><Text style={styles.timingChipText}>{guestTiming.firstSeconds}s first · {guestTiming.nextSeconds}s next</Text><Text aria-hidden style={styles.timingChipEdit}>Edit</Text></Pressable>}
+              {busy ? <Button title={saving ? 'Saving original…' : preparing ? 'Pause preparation' : 'Pause countdown'} testID="cancel-countdown" secondary disabled={saving} onPress={cancelPhotos} />
                 : failedPhoto ? <Button title={`Retry saving photo ${failedPhoto.slot + 1}`} testID="retry-save" onPress={() => void retrySave()} />
-                : <Button title={retakeSlot !== undefined ? `Retake photo ${retakeSlot + 1}` : session.shots.length ? `Continue · photo ${(nextPhotoSlot(session) ?? 0) + 1}` : `Start ${total} photos`} testID="take-photo" disabled={!cameraReady || !initialized} onPress={() => void startPhotos()} />}
+                : <Button title={retakeSlot !== undefined ? `Retake photo ${retakeSlot + 1}` : session.shots.length ? `Continue · photo ${(nextPhotoSlot(session) ?? 0) + 1}` : `Start ${total} photos`} testID="take-photo" disabled={!cameraReady || !initialized || timingVisible} onPress={() => void startPhotos()} />}
               {retakeSlot !== undefined && !saving && !failedPhoto && <Pressable accessibilityRole="button" style={styles.textAction} onPress={leaveRetake}><Text style={styles.mutedButtonText}>Back to review</Text></Pressable>}
-              <Text testID="capture-save-status" style={styles.cameraHint}>{captureSaveStatus({ savedCount: session.shots.length, targetCount: total, seconds: preferencesRef.current.countdownSeconds, saving, failedSlot: failedPhoto?.slot })}</Text>
+              <Text testID="capture-save-status" style={styles.cameraHint}>{preparing ? `Getting the camera ready · ${session.shots.length} of ${total} saved here` : captureSaveStatus({ savedCount: session.shots.length, targetCount: total, timing: guestTiming, saving, failedSlot: failedPhoto?.slot })}</Text>
               {!busy && !failedPhoto && <Text testID="capture-framing-hint" style={styles.cameraHint}>{fullPhotoSupported ? 'Full original kept · screen preview crops the edges' : 'Preview fills the screen · check your full photo in review'}</Text>}
             </View>
             </View>
@@ -707,7 +757,7 @@ function Photobooth() {
             {landscape && <View style={styles.reviewRailHeading}><Text testID="review-navigation-hint" style={styles.reviewEyebrow}>Swipe photos · tap a thumbnail</Text><Text style={styles.reviewTitle}>{sessionIsComplete(session) ? (total === 5 ? 'Five worth keeping.' : 'Worth keeping.') : 'Looking good so far.'}</Text><Text style={styles.reviewCount}>Photo {focusedSlot + 1} of {total}</Text></View>}
             <Thumbnails compact={landscape} reduceMotion={reduceMotion || !foreground} session={session} active={focusedSlot} onSelect={selectReview} />
             <View style={[styles.reviewActions, landscape && styles.reviewActionsWide]}><Button title={`Retake photo ${focusedSlot + 1}`} testID="retake-photo" secondary disabled={busy || exporting || lookApplying || !!lookState} onPress={retakePhoto} />
-              <Button title={lookApplying ? 'Finishing this photo…' : busy ? 'Preparing your session…' : sessionIsComplete(session) ? total === 4 ? 'Make my keepsake' : `Keep all ${total} photos` : 'Finish the session'} testID="use-photo" disabled={busy || lookApplying || !!lookState || templateApplying} onPress={sessionIsComplete(session) ? () => void keepSession() : () => { setRetakeSlot(undefined); setActiveSlot(nextPhotoSlot(session) ?? 0); setCameraReady(false); setScreen('camera'); }} /></View>
+              <Button title={lookApplying ? 'Finishing this photo…' : busy ? 'Preparing your session…' : sessionIsComplete(session) ? total === 4 ? 'Make my keepsake' : `Keep all ${total} photos` : 'Finish the session'} testID="use-photo" disabled={busy || lookApplying || !!lookState || templateApplying} onPress={sessionIsComplete(session) ? () => void keepSession() : () => { setRetakeSlot(undefined); setActiveSlot(nextPhotoSlot(session) ?? 0); updateCameraReady(false); setScreen('camera'); }} /></View>
             {photoEffects && <Pressable accessibilityRole="button" testID="choose-look" disabled={busy || exporting || lookApplying || !!lookState} onPress={openLookEditor} style={styles.lookEntry}><Text style={styles.lookEntryText}>Choose a look{selectedPhoto?.look ? ` · ${LOOKS.find(value => value.preset === selectedPhoto.look?.preset)?.title}` : ''}</Text></Pressable>}
             <Text style={styles.localSaved}>{session.shots.length} originals saved on this iPad</Text><Text style={styles.libraryStatus}>{photosStatus(session)}</Text>
             {needsPhotosExport(session) && <Pressable accessibilityRole="button" disabled={exporting} style={styles.textAction} onPress={() => void exportPhotos(session, true)}><Text style={styles.mutedButtonText}>{exporting ? 'Exporting to Photos…' : 'Save a copy to Photos'}</Text></Pressable>}
@@ -730,12 +780,13 @@ function Photobooth() {
       {!!message && <View accessibilityLiveRegion="polite" style={[styles.message, screen === 'camera' && styles.cameraMessage, screen === 'camera' && { left: insets.left + 18, right: insets.right + 18, top: insets.top + 80 }]}><Text style={styles.messageText}>{message}</Text></View>}
       {nativeFixtureEnabled && <View style={styles.fixture}><Text testID="native-fixture-enabled" style={styles.fixtureText}>SYNTHETIC CAMERA · REAL LOCAL STORAGE · OFFLINE SHARING</Text><Text testID="native-fixture-storage" style={styles.fixtureText}>{fixtureStatus}</Text></View>}
     </Animated.View>
+    <TimingSheet visible={timingVisible && foreground && !hostVisible && !busy} timing={guestTiming} defaults={normalizeCaptureTiming(preferencesRef.current)} onApply={applyGuestTiming} onClose={() => setTimingVisible(false)} reduceMotion={reduceMotion} disabled={busy} />
     <Modal visible={hostVisible && foreground} animationType={reduceMotion || !foreground ? 'none' : 'slide'} presentationStyle="pageSheet" onRequestClose={closeHost}>
       <SafeAreaView style={styles.hostPage}><ScrollView contentContainerStyle={styles.hostContent} keyboardShouldPersistTaps="handled">
         <View style={styles.hostHeader}><Text style={styles.hostTitle}>{hostPage === 'library' ? 'On this iPad' : hostPage === 'setup' ? 'Private setup' : 'Booth controls'}</Text><Pressable accessibilityRole="button" onPress={closeHost}><Text style={styles.closeHost}>Done</Text></Pressable></View>
         <View style={styles.hostTabs}>{(['controls', 'library', 'setup'] as HostPage[]).map(page => <Pressable key={page} accessibilityRole="button" accessibilityState={{ selected: hostPage === page }} style={[styles.hostTab, hostPage === page && styles.hostTabActive]} onPress={() => { setHostPage(page); setHostMessage(''); setScanningSetup(false); setPairingCode(''); }}><Text style={styles.hostTabText}>{page === 'controls' ? 'Controls' : page === 'library' ? 'Saved sessions' : 'Private setup'}</Text></Pressable>)}</View>
         {hostPage === 'controls' && <>
-          <View style={styles.hostCard}><Text style={styles.hostSectionTitle}>Countdown</Text><Text style={styles.hostBody}>Time to settle into each frame.</Text><View style={styles.timerOptions}>{TIMERS.map(value => <Pressable key={value} accessibilityRole="button" accessibilityState={{ selected: seconds === value }} testID={`host-timer-${value}`} onPress={() => setSeconds(value)} style={[styles.timerOption, seconds === value && styles.timerOptionSelected]}><Text style={[styles.timerNumber, seconds === value && styles.timerNumberSelected]}>{value}s</Text></Pressable>)}</View></View>
+          <View style={styles.hostCard}><Text style={styles.hostSectionTitle}>Booth timing defaults</Text><Text style={styles.hostBody}>A little longer to get ready, then a quicker rhythm. Guests can adjust their own session before starting.</Text><TimingControls value={hostTiming} onChange={setHostTiming} disabled={hostBusy} testIDPrefix="host-timing" /><Text style={styles.hostSmall}>Next guests start with these saved defaults. Retakes and paused sessions use the first-photo preparation time again.</Text></View>
           <View style={styles.hostCard}><View style={styles.switchRow}><View style={styles.switchText}><Text style={styles.hostSectionTitle}>Copies in Photos</Text><Text style={styles.hostBody}>Try an additional Photos export after capture. Local originals always save first.</Text></View><Switch accessibilityLabel="Automatically export copies to Photos" value={exportEnabled} onValueChange={setExportEnabled} trackColor={{ true: '#596857' }} /></View><Text style={styles.hostSmall}>Photos permission: {libraryPermission}. Failed or denied exports keep their local originals.</Text><Pressable accessibilityRole="button" style={styles.textAction} onPress={() => void Linking.openSettings()}><Text style={styles.lightTextAction}>Open iPad permission settings</Text></Pressable></View>
           <Button title={hostBusy ? 'Saving settings…' : 'Save booth settings'} disabled={hostBusy} onPress={() => void savePreferences()} />
           <View style={styles.hostCard}><Text style={styles.hostSectionTitle}>Sharing {paired ? 'paired' : 'offline'}</Text><Text style={styles.hostBody}>{pendingCount} photos currently listed in the upload queue. Local capture and saved sessions work independently.</Text>{queueRepairStatus && <Text testID="host-index-repair-status" style={styles.hostWarning}>{queueRepairStatus}</Text>}<Pressable accessibilityRole="button" style={styles.textAction} onPress={() => void retrySharing(true)}><Text style={styles.lightTextAction}>{queueRepairStatus ? 'Repair index & retry sharing' : 'Retry pending sharing'}</Text></Pressable>{!!hostDiagnostic && <Text selectable style={styles.diagnostic}>{hostDiagnostic}</Text>}</View>
@@ -829,6 +880,7 @@ const styles = StyleSheet.create({
   cameraIdentity: { backgroundColor: '#102219', borderRadius: 18, paddingHorizontal: 15, paddingVertical: 10, gap: 3 }, cameraNames: { color: '#FAF7EF', fontSize: 12, fontWeight: '600', letterSpacing: 1 }, cameraDate: { color: '#D4DECF', fontSize: 10 },
   cameraHost: { minHeight: 48, minWidth: 60, padding: 14, borderRadius: 24, backgroundColor: '#102219', alignItems: 'center', justifyContent: 'center' }, cameraHostText: { color: '#F4F8EF', fontWeight: '600', fontSize: 13 },
   progressText: { backgroundColor: '#102219', color: '#fff', paddingHorizontal: 16, paddingVertical: 13, borderRadius: 24, fontWeight: '700', letterSpacing: 1, fontSize: 13 }, progressMuted: { color: '#D9E4D3' }, cameraSaved: { color: '#E7ECDF', fontSize: 12, fontWeight: '600', textAlign: 'center' },
+  timingChip: { minHeight: 44, alignSelf: 'center', borderRadius: 24, borderWidth: 1, borderColor: '#91A58A', paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', gap: 14 }, timingChipText: { color: '#F7F4E8', fontSize: 14, fontWeight: '600', fontVariant: ['tabular-nums'] }, timingChipEdit: { color: '#D5C6A5', fontSize: 12, fontWeight: '600' },
   countdownShade: { ...StyleSheet.absoluteFill, justifyContent: 'center', alignItems: 'center' }, countdownDisc: { backgroundColor: '#0B1C12E6', width: 208, height: 208, borderRadius: 104, alignItems: 'center', justifyContent: 'center' }, countdown: { color: '#fff', fontSize: 156, lineHeight: 185, fontWeight: '200', fontVariant: ['tabular-nums'], textAlign: 'center' },
   permission: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 40, gap: 22 }, permissionTitle: { color: '#fff', fontFamily: 'Georgia', fontSize: 34, textAlign: 'center' }, permissionBody: { color: '#E4E9DB', fontSize: 19 },
   captureFloating: { position: 'absolute', alignItems: 'center' }, captureIsland: { borderRadius: 30, padding: 18, width: '100%', maxWidth: 760, overflow: 'hidden' }, captureFilmstrip: { gap: 7, alignItems: 'center' },

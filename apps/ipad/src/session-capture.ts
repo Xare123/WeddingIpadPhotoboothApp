@@ -1,7 +1,10 @@
+import { isCountdownSeconds, type CaptureTiming } from './capture-timing';
+
 export type ShotSelection = { id: string; shotIndex?: number };
 export type CaptureSession = { id: string; targetCount: number; shots: ShotSelection[]; confirmed: boolean };
 export type PendingPhoto = { id: string; uri: string; slot: number };
 export type CaptureRunEvent<S> =
+  | { kind: 'preparing'; slot: number }
   | { kind: 'countdown'; slot: number; remaining: number }
   | { kind: 'saving'; slot: number }
   | { kind: 'saved'; slot: number; session: S }
@@ -28,11 +31,12 @@ export function createSessionCaptureRunner<S extends CaptureSession>(dependencie
   save(session: S, photo: PendingPhoto): Promise<S>;
   wait(milliseconds: number): Promise<void>;
   isActive(): boolean;
+  isCameraReady?(): boolean;
   onEvent(event: CaptureRunEvent<S>): void;
 }) {
   let generation = 0;
   let owner: number | null = null;
-  let phase: 'idle' | 'countdown' | 'saving' | 'between' = 'idle';
+  let phase: 'idle' | 'preparing' | 'countdown' | 'saving' = 'idle';
 
   function interrupt() {
     if (owner === null) return;
@@ -50,22 +54,53 @@ export function createSessionCaptureRunner<S extends CaptureSession>(dependencie
     isBusy: () => owner !== null,
     interrupt,
     cancel() { if (phase === 'saving') return false; interrupt(); return true; },
-    async run(initial: S, options: { seconds: number; retakeSlot?: number }): Promise<void> {
+    async run(initial: S, options: ({ timing: CaptureTiming; seconds?: never } | { seconds: number; timing?: never }) & { retakeSlot?: number }): Promise<void> {
       if (owner !== null || initial.confirmed) return;
-      if (![2, 3, 5, 8, 10].includes(options.seconds)) throw new Error('Unsupported countdown');
+      const firstSeconds = options.timing?.firstSeconds ?? options.seconds;
+      const nextSeconds = options.timing?.nextSeconds ?? options.seconds;
+      if (!isCountdownSeconds(firstSeconds) || !isCountdownSeconds(nextSeconds)) throw new Error('Unsupported countdown');
+      // Read every caller-owned option once. A slider, host update or retake tap
+      // cannot change a sequence already running, even before React re-renders.
+      const timing: CaptureTiming = { firstSeconds, nextSeconds };
+      const retakeSlot = options.retakeSlot;
       const attempt = ++generation;
       owner = attempt;
       let session = initial;
-      let slot = options.retakeSlot ?? nextPhotoSlot(session);
-      if (slot === null || slot < 0 || slot >= initial.targetCount) { owner = null; return; }
+      let slot = retakeSlot ?? nextPhotoSlot(session);
+      if (slot === null || !Number.isInteger(slot) || slot < 0 || slot >= initial.targetCount) { owner = null; return; }
       let pending: PendingPhoto | undefined;
+      let firstInRun = true;
+      const active = () => attempt === generation && dependencies.isActive();
+      const cameraReady = () => dependencies.isCameraReady?.() ?? true;
+      const pauseCurrent = () => {
+        // interrupt() already announced an obsolete countdown. Never let that
+        // continuation dismiss or unlock a newer run.
+        if (attempt === generation) dependencies.onEvent({ kind: 'paused' });
+      };
       try {
         while (slot !== null) {
+          if (!active()) { pauseCurrent(); return; }
+          phase = 'preparing';
+          if (!cameraReady()) {
+            dependencies.onEvent({ kind: 'preparing', slot });
+            let waited = 0;
+            // Camera readiness is not additional guest countdown time. Bound a
+            // missing native-ready callback rather than capture an unready view.
+            while (!cameraReady()) {
+              if (waited >= 10_000) throw new Error('The camera is not ready. Try again when the preview returns.');
+              await dependencies.wait(50);
+              waited += 50;
+              if (!active()) { pauseCurrent(); return; }
+            }
+          }
+          if (!active()) { pauseCurrent(); return; }
           phase = 'countdown';
-          for (let remaining = options.seconds; remaining > 0; remaining--) {
+          const seconds = firstInRun ? timing.firstSeconds : timing.nextSeconds;
+          for (let remaining = seconds; remaining > 0; remaining--) {
             dependencies.onEvent({ kind: 'countdown', slot, remaining });
             await dependencies.wait(1_000);
-            if (attempt !== generation || !dependencies.isActive()) return;
+            if (!active()) { pauseCurrent(); return; }
+            if (!cameraReady()) { pauseCurrent(); return; }
           }
           phase = 'saving';
           dependencies.onEvent({ kind: 'saving', slot });
@@ -78,17 +113,18 @@ export function createSessionCaptureRunner<S extends CaptureSession>(dependencie
             dependencies.onEvent({ kind: 'paused' });
             return;
           }
-          if (options.retakeSlot !== undefined || sessionIsComplete(session)) {
-            dependencies.onEvent({ kind: 'done', slot, session, retake: options.retakeSlot !== undefined });
+          if (retakeSlot !== undefined || sessionIsComplete(session)) {
+            dependencies.onEvent({ kind: 'done', slot, session, retake: retakeSlot !== undefined });
             return;
           }
-          phase = 'between';
-          await dependencies.wait(300);
-          if (attempt !== generation || !dependencies.isActive()) return;
+          firstInRun = false;
           slot = nextPhotoSlot(session);
         }
       } catch (error) {
-        dependencies.onEvent({ kind: 'error', slot: slot ?? 0, session, photo: pending, error });
+        // A canceled timer/readiness promise may reject after another run owns
+        // the screen. Exposed saves retain ownership through interruption so
+        // their failure still preserves the original for an effective retry.
+        if (owner === attempt) dependencies.onEvent({ kind: 'error', slot: slot ?? 0, session, photo: pending, error });
       } finally {
         if (owner === attempt) { owner = null; phase = 'idle'; }
       }

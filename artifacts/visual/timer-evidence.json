@@ -1,0 +1,353 @@
+{
+  "status": "passed",
+  "generatedAt": "2026-10-26T19:20:00.405Z",
+  "scope": "Actual current native JSX/session runner in Chromium with explicitly synthetic camera, files, SQLite, Photos, host auth and template renderer. Not native iPad camera/gesture/VoiceOver/Photos or Apple CoreImage, signed install, live sharing/SMS or phone-scan proof.",
+  "counts": {
+    "actualRootGroups": 13,
+    "normalMotionGroups": 2,
+    "actualScreenshots": 46,
+    "reviewContactSheets": 2,
+    "recordings": 2
+  },
+  "sourceHashes": {
+    "apps/ipad/app.json": "f24136a88f4045c910702d79f3bad5459accb7acd79a012486fa4993831185a1",
+    "apps/ipad/src/config.ts": "9344c5f7b5292b941e1b2a2f0028e78dc94e1fbb5626148e09aba736cff1566f",
+    "apps/ipad/src/TimingSheet.tsx": "c6564a204c7a3a3ebd3fe993c04facc755ba08e18bc1e0cee62c572a0e466210",
+    "apps/ipad/src/capture-timing.ts": "83eec4ead6d14e43e6061b63201d6b432c1e0f17a24a4d35035944c8638c5683",
+    "apps/ipad/src/timing-controls.ts": "b73ced2d2ba25beaffbf4f0ec3fcda648de0bafebcae44534052d7649facc5b1",
+    "apps/ipad/src/provisioning.ts": "926f7bdbd4a7799a839f6e72ba11719ae644080bb50fa263a00ffde37dca89dd",
+    "apps/ipad/App.tsx": "feab5d929c5f8552e7e72540974bb28c5dd415063072f677ebe2704362353e18",
+    "apps/ipad/src/GlassSurface.tsx": "ace64a22e740d69040689495c0aa7147f7456038bbd0ee9aba6f2d52b58af972",
+    "apps/ipad/src/glass-policy.ts": "d3e33995484239887dde90f2743919c17bb2e8ff23093ceb45a804e530499e9e",
+    "apps/ipad/src/host-visibility.ts": "9b8033279a1249c59cd04e3f185792fa2a61c14f892f2cb9cf98953ceab02014",
+    "apps/ipad/src/photo-look-editor.ts": "38d6dc47fb34d9d9da58cf96a7daa6102d9616c7f54720c0406c1962548f817b",
+    "apps/ipad/src/native-photo-effects.ts": "372b1250d399429dc7396d09be1affa44b063216ba471d5cc4ed2d953394f0c9",
+    "apps/ipad/src/local-types.ts": "ab3e1e69d051a7a7c91886445781cbe306bb8839a60c2c4cbbafb49d488bde47",
+    "apps/ipad/src/template-editor.ts": "ad02f03cb5cae30d801e5262fd8f363f4e023b3c7f815f7e22e56ee604abe3df",
+    "apps/ipad/src/TemplateStudio.tsx": "2ce75e3831efeff05e6c841440ace23dfb34d220f09af30f0c80a418800113fc",
+    "apps/ipad/src/publication.ts": "33d26658c1c2de8781bc62ded35c80cbd00394c7413c70fdedf1fbc834875357",
+    "apps/ipad/src/session-capture.ts": "544104e153dab9b9d8f7996f15e4b79180d9dede1819620de7fec07c076f4763",
+    "apps/ipad/src/review-selection.ts": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
+    "apps/ipad/src/sharing.ts": "6bce9b315a8dc7064f858d7ff9d10c5d5587b1b2bf66a56923f738823c1df271",
+    "apps/ipad/src/SmsShare.tsx": "79464043a0e40a6cc7850c0e46cacfab33b3b19e477fee87192c0b38195d7541",
+    "apps/ipad/src/sms-state.ts": "4c7125d4f710c97848b6690196fa328edc83e85488ce3626dd7e843e2e99497a",
+    "apps/ipad/src/booth-presentation.ts": "c9bee7d01b75b29e5c3cb958483adf155dd843824c2216e60219fb3bd0d0c507",
+    "apps/ipad/src/host-originals.ts": "938e564eb50d984754abf5ec2d07a4671faa2110bb01ad4394f5377f4d271c1e",
+    "apps/ipad/src/photo-export.ts": "8ba8baae4fe425bd0f99079619e0a693f5c3fcf83ee73a93e167c7c93f7fb633",
+    "apps/ipad/src/photo-library.ts": "800b9dd768d660c16720fda134fe33a1a14db1061f7f31531063b136b670b6a8",
+    "packages/core/src/index.ts": "945d97743a621558369c7029acbc5b61daae85d2c08156368c188aedbbb9a991",
+    "apps/ipad/assets/attract-scene.png": "6ca6274beba9483104f19fb35d1ef9b8bfaae458208025e8fb4e8d4890f45cdf"
+  },
+  "demoSourceSet": {
+    "name": "clean-mixed",
+    "content": "Drink-free existing generated fixtures for the dry-wedding showcase; no product or native fixture changes.",
+    "sources": [
+      "studio-landscape-1.jpg",
+      "studio-portrait-1.jpg",
+      "studio-landscape-2.jpg",
+      "studio-portrait-2.jpg"
+    ],
+    "productionAttractScene": "Existing drink-free generated attract-scene.png unchanged",
+    "functionalMatrixBoundary": "The separate diagnostic13-group matrix and historical keepsake evidence remain unchanged.",
+    "fixtureSHA256": [
+      "fa7aab6c4948c559a6c2acfbe426ff79293b75edfd15229dbeacf2f8cbd0d365",
+      "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+      "e664fecbb6bdc171e092cb9c11d9ee215cbcf0722ef3f4f29090fecb73295161",
+      "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed"
+    ]
+  },
+  "browserClockBoundary": "Start event tofirst exposure observation allows10ms; subsequent exposure intervals exactly3000ms. DOM commit timestamps underfastforward are not native animation/latency measurements.",
+  "videoSampling": [
+    {
+      "orientation": "portrait",
+      "durationSeconds": 17.6,
+      "sampleRate": "1fps",
+      "sampledFrames": 18
+    },
+    {
+      "orientation": "landscape",
+      "durationSeconds": 18.4,
+      "sampleRate": "1fps",
+      "sampledFrames": 18
+    }
+  ],
+  "reproducedAndFixed": "Only the knowncamera-unavailable message clears after freshready; pending-savewarningretained. SyntheticSDKdelivery only.",
+  "nativeAndProductionVerified": false,
+  "files": [
+    {
+      "file": "timer-chip-portrait.png",
+      "bytes": 1016241,
+      "sha256": "afc22fb9988b17e071a06ac91bf98f51766cd118b3bcb2afa717e5d16286c4b5"
+    },
+    {
+      "file": "timer-sheet-default-portrait.png",
+      "bytes": 496380,
+      "sha256": "06c3029e04ba1833f3f10b95bf15103cdb0d31620d25c1482eb6a4c37484d4ed"
+    },
+    {
+      "file": "timer-sheet-edited-portrait.png",
+      "bytes": 497359,
+      "sha256": "688d9a4f6d5202ce901d28769ca8a79e816c3d2aed17e16b9375d7364d49c3ac"
+    },
+    {
+      "file": "timer-sheet-rotated-from-portrait.png",
+      "bytes": 491964,
+      "sha256": "e71f405ce1295180221429385ba0a988934caf1dc12c6592a12b14dc4da7c86f"
+    },
+    {
+      "file": "timer-first-countdown-portrait.png",
+      "bytes": 1064177,
+      "sha256": "b787bc2a2d0127bd798d08e251a6f41d780f885c1b2ebdee0cfd09c560031d6b"
+    },
+    {
+      "file": "timer-four-photo-review-portrait.png",
+      "bytes": 599596,
+      "sha256": "fa827eaf311e2aadfe4b8af3711761939c3ec763b3a56f74ecb4e7957224fff8"
+    },
+    {
+      "file": "timer-host-defaults-portrait.png",
+      "bytes": 90960,
+      "sha256": "f678d27408cabac8de22b2b1d056bcf15e87559c51ee0cb1a49c293d80e98a49"
+    },
+    {
+      "file": "timer-next-guests-host-defaults-portrait.png",
+      "bytes": 1016293,
+      "sha256": "9b996c2e1961f1213f6140b757b247d5d9ec9312f8775dd73900a4e18da2937c"
+    },
+    {
+      "file": "timer-saving-delay-portrait.png",
+      "bytes": 1062292,
+      "sha256": "454394714e17cda14fe45f94d3c3f9c6955e3cf347a6fc5a044e137c2f5eabe2"
+    },
+    {
+      "file": "timer-waiting-camera-portrait.png",
+      "bytes": 975144,
+      "sha256": "220bfeef7ba3f83ee942dc0556438218ff49a2c0f5e917e993c5829389a00381"
+    },
+    {
+      "file": "timer-camera-recovered-portrait.png",
+      "bytes": 976657,
+      "sha256": "7988e77cff2ef099241901575f3cbbe09f0aa581e3d169c0564b4850b678c3c7"
+    },
+    {
+      "file": "timer-save-warning-retained-portrait.png",
+      "bytes": 1064852,
+      "sha256": "c34a80b4c299530c3466b7016e97f8dc3a28af62b104fc6e08f75a94d59cec3f"
+    },
+    {
+      "file": "timer-resume-preparation-portrait.png",
+      "bytes": 982568,
+      "sha256": "8e8713568ead4642c9a40142948e8e48f32b2ac765b8d0bb2cf2d3b25cfe7972"
+    },
+    {
+      "file": "timer-retake-preparation-portrait.png",
+      "bytes": 940088,
+      "sha256": "e19647d826164800f85d7d433cd6ab5048dd07235a70a5ceb7797712a3b39da2"
+    },
+    {
+      "file": "timer-background-preserved-portrait.png",
+      "bytes": 921570,
+      "sha256": "686f1886f3a0cc16ef2927b8ea080253f34050ec0bc6374b6948cb1f163ec49a"
+    },
+    {
+      "file": "timer-chip-landscape.png",
+      "bytes": 1040506,
+      "sha256": "b445f1237fcf08dd9d812fbf6fb302046b2ffcdcccc55ff088611af22881b6b4"
+    },
+    {
+      "file": "timer-sheet-default-landscape.png",
+      "bytes": 491337,
+      "sha256": "e0001ee5dc62473365891bb93458e40f7ce6cd91df4d1fe89946e915bfbbffd9"
+    },
+    {
+      "file": "timer-sheet-edited-landscape.png",
+      "bytes": 492439,
+      "sha256": "0bd39fdcffcd6c577fb6e9755dc665dd2a060cff6fb318548b6d4bcf9666248c"
+    },
+    {
+      "file": "timer-sheet-rotated-from-landscape.png",
+      "bytes": 496855,
+      "sha256": "fc9d324435eb836158898a7bb0fbde2548e90edbcc0bff0ca4583670f17222a2"
+    },
+    {
+      "file": "timer-first-countdown-landscape.png",
+      "bytes": 1083987,
+      "sha256": "39aac0bd965e18649160ac1a30362589a30155300d946c5abbfb6655de5af7ab"
+    },
+    {
+      "file": "timer-four-photo-review-landscape.png",
+      "bytes": 568075,
+      "sha256": "bdd9845699f36cdc1e6e47de602acf53454bdea5f3eb625e94646a50a5ec4fbb"
+    },
+    {
+      "file": "timer-host-defaults-landscape.png",
+      "bytes": 72885,
+      "sha256": "da28e3afb72c6d0a159f6ba6306aef6f19ea6b465aa6d7f02d7a1b486ede623c"
+    },
+    {
+      "file": "timer-next-guests-host-defaults-landscape.png",
+      "bytes": 1040543,
+      "sha256": "03a79db57e43613ba0cbfc150d75a9b5be2f2d4ab47b3b9267f4326642442896"
+    },
+    {
+      "file": "timer-saving-delay-landscape.png",
+      "bytes": 1017457,
+      "sha256": "cb335d3979d08c88c2bdf3760dfd240c522a9d33397e82ada533dbf24dd57719"
+    },
+    {
+      "file": "timer-waiting-camera-landscape.png",
+      "bytes": 1027241,
+      "sha256": "4b475c494cf85b0d954a9e2ee472eca28f47cf920986859e98ba570371b2fadf"
+    },
+    {
+      "file": "timer-camera-recovered-landscape.png",
+      "bytes": 1093929,
+      "sha256": "e4ed27416d4c5e91b1126f2aca7639c44232ce21555c1dd1f3cfc2fb8562a7ab"
+    },
+    {
+      "file": "timer-save-warning-retained-landscape.png",
+      "bytes": 1019906,
+      "sha256": "071333462b6eb7398f489259445c61e32acfc3ec7766d2fb21e03772cd8e23e4"
+    },
+    {
+      "file": "timer-resume-preparation-landscape.png",
+      "bytes": 1100943,
+      "sha256": "0c1ded59cafebd9fd8c33a5bcd764850bdc850c3b724d28d0d3680658db2e901"
+    },
+    {
+      "file": "timer-retake-preparation-landscape.png",
+      "bytes": 1065225,
+      "sha256": "bc343722500e8691a80be6295915342bdc9e64e308582eda18d4874dbffb92b6"
+    },
+    {
+      "file": "timer-background-preserved-landscape.png",
+      "bytes": 1048753,
+      "sha256": "16df58477e37a8fc1350dc6ad11710096f3a8d7336a9d67c03edfb57476ed327"
+    },
+    {
+      "file": "timer-demo-chip-portrait.png",
+      "bytes": 1016241,
+      "sha256": "afc22fb9988b17e071a06ac91bf98f51766cd118b3bcb2afa717e5d16286c4b5"
+    },
+    {
+      "file": "timer-demo-sheet-portrait.png",
+      "bytes": 496346,
+      "sha256": "21948e7b9f2609a43a1050ada76201767dc331ab724391afb397ed64d322d8ee"
+    },
+    {
+      "file": "timer-demo-custom-portrait.png",
+      "bytes": 496466,
+      "sha256": "fe82fe73a430e25884337f5416e7802a0fd9f9e4fd907729231a7e28450df781"
+    },
+    {
+      "file": "timer-demo-preparation-portrait.png",
+      "bytes": 1064180,
+      "sha256": "e0fe2cb99de6d852ba0012e838dfafe755f67a54a90c2018f579455cef48f8f4"
+    },
+    {
+      "file": "timer-demo-review-portrait.png",
+      "bytes": 519079,
+      "sha256": "217b740e35b7f88ac66f0e0185ad91e890d5ef251a5c4db35fa5a8878751e98a"
+    },
+    {
+      "file": "timer-demo-keepsake-portrait.png",
+      "bytes": 146994,
+      "sha256": "fe9a1cc8440a12cd629df071724e4dde1543d1c495a7f07c20f91e39a1a92cef"
+    },
+    {
+      "file": "timer-demo-offline-portrait.png",
+      "bytes": 132389,
+      "sha256": "83327d6d40ba44989f95dc17251d4c70f77bc1370701856f413069e4cf91bae8"
+    },
+    {
+      "file": "timer-demo-next-guests-portrait.png",
+      "bytes": 949251,
+      "sha256": "ee6e47838909656a6ae471899b8354effe64b3ee0b75dd7413b6700bf89e6ce0"
+    },
+    {
+      "file": "timer-demo-chip-landscape.png",
+      "bytes": 1040506,
+      "sha256": "b445f1237fcf08dd9d812fbf6fb302046b2ffcdcccc55ff088611af22881b6b4"
+    },
+    {
+      "file": "timer-demo-sheet-landscape.png",
+      "bytes": 491356,
+      "sha256": "6b3a1fec316e295e8a4cc11f8dcd4f7ad4be808d1c8875becb747a6f31aac2cf"
+    },
+    {
+      "file": "timer-demo-custom-landscape.png",
+      "bytes": 491565,
+      "sha256": "b2907998fd2e66e2179da89872f201bba791d85348a948d8001c09d63b60d814"
+    },
+    {
+      "file": "timer-demo-preparation-landscape.png",
+      "bytes": 1084002,
+      "sha256": "bf9e6ea5f03cf1244599315a27b007da8000e7ba3742b160b617b563ecf9294e"
+    },
+    {
+      "file": "timer-demo-review-landscape.png",
+      "bytes": 548980,
+      "sha256": "dd0e79e695d5cd6cacecfb4ec54487f55a5f71ba493c372ee353d16de1b33d32"
+    },
+    {
+      "file": "timer-demo-keepsake-landscape.png",
+      "bytes": 203412,
+      "sha256": "df86be2b5cafdb284c778b1b9b2f2d78e10e6091533cae685e5b3b401c20a75a"
+    },
+    {
+      "file": "timer-demo-offline-landscape.png",
+      "bytes": 132143,
+      "sha256": "fb1a096abbbf85994d4adb560629eec69ec9e47260f29b998a003cb70dbba9f7"
+    },
+    {
+      "file": "timer-demo-next-guests-landscape.png",
+      "bytes": 976384,
+      "sha256": "f0115ba8f3696bd0f6fa763f4940a0c247290225562859bdd411bb946e5431ca"
+    },
+    {
+      "file": "timer-demo-portrait-1fps-contact.png",
+      "bytes": 1283895,
+      "sha256": "874feb13bec386d3dd198d63a7615f09b48a19d57f5795d6355d2b5cda7d05bd"
+    },
+    {
+      "file": "timer-demo-landscape-1fps-contact.png",
+      "bytes": 712638,
+      "sha256": "cb9c0f4e2c5721184c57d27ed716573a88eabc97b68a7c09bd692cd01eccd651"
+    },
+    {
+      "file": "timer-demo-portrait.webm",
+      "bytes": 1977537,
+      "sha256": "5f3b5ec524b7421044fe205aaeb384c5a53263056dcf7fd5c059c971bac75f2d"
+    },
+    {
+      "file": "timer-demo-landscape.webm",
+      "bytes": 1995234,
+      "sha256": "9238878f8c7757647ed5d60bba776c7f2ba7a2d1e60174616a2ec8a7ccef1617"
+    },
+    {
+      "file": "timer-checks.json",
+      "bytes": 13648,
+      "sha256": "7990f3bed9cb092b69e684c13ac1697a56ed0afb1cf3f1339613cceaa0b91131"
+    },
+    {
+      "file": "timer-demo-checks.json",
+      "bytes": 5961,
+      "sha256": "d8abce43b77166125fb3b769a16e7d363ef339d70a6c578695db88a3acb8b05f"
+    },
+    {
+      "file": "timer-bundle-boundary.json",
+      "bytes": 29642,
+      "sha256": "5452662a64adbcbb9e0dc9abad79528251b55fb0fef37a3f6e413822ac0d449a"
+    },
+    {
+      "file": "timer-index.html",
+      "bytes": 13655,
+      "sha256": "dba32a489a4866631657b3ccb1d3ad9590854f5298a77398e8a466b2bafdd7dd"
+    },
+    {
+      "file": "timer-visual-review.md",
+      "bytes": 3406,
+      "sha256": "9cf06f60991a7b835aa619ec2351771fc09a5698855ac85ec7b9ff0a20bd4f62"
+    }
+  ]
+}

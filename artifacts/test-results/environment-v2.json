@@ -1,0 +1,40 @@
+{
+  "generatedAt": "2026-10-26T18:35:52.140555+00:00",
+  "workflow": "ReactNative/Expo nativeiPad plus privateCloudflareWorker localdevelopment",
+  "repository": "Xare123/WeddingIpadPhotoboothApp",
+  "ref": "00e7a2bf5289d95da8b67babc2426cef1d4ef761",
+  "mountPath": "WeddingIpadPhotoboothApp",
+  "draftStatus": "saved and exactreadbackverified",
+  "draftRevision": 16,
+  "installScript": "bash scripts/setup-cloud.sh from/workspace/WeddingIpadPhotoboothApp",
+  "installScriptCharacters": 105,
+  "startupInstructionsCharacters": 19595,
+  "startupInstructionsSHA256": "55bd66008e013f419997420fc641a893da49cec720da601ecb59b0da8113833f",
+  "networkPolicy": "Known savednetworkpolicy preserved, including customapi.github.com; no newcredential/accessgrant",
+  "secretsAdded": 0,
+  "repositoryInspection": {
+    "resolvedRoots": 1,
+    "directoriesInspected": 57,
+    "knownGeneratedCachesPruned": true,
+    "gitReadAndPublishedRefVerified": true
+  },
+  "currentMachineChecks": {
+    "frozenPackages": 590,
+    "workspaceTypecheck": "passed",
+    "integratedTests": 293,
+    "ciContracts": 50,
+    "historicalFaults": 4,
+    "iosJavascriptModules": 1045,
+    "nativeProjectPreparation": "passed; noLinuxAppleexecution",
+    "localWorkerHTTP": "12V2groups and isolatedupdatedWranglerHTTPpassed; no liveorigin"
+  },
+  "requiresPublish": true,
+  "snapshotPublication": "Not performed or claimed by this executor; productenvironmentsettings ownpublication",
+  "freshTaskRestore": "not verified",
+  "externalGates": [
+    "Apple signediPadinstallation/rehearsal",
+    "current20-testnativeexecution/logdiagnosis",
+    "coordinatorV2backenddeploy/privatepairing/liveR2",
+    "optionalapprovedSMS"
+  ]
+}

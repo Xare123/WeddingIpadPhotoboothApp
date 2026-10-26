@@ -1,0 +1,118 @@
+{
+  "review": "Fresh independent timer and simulator-CI acceptance",
+  "generatedAtUTC": "2026-10-26T19:08:41.682585+00:00",
+  "verdict": "PASS within the recorded Linux/source-review boundary; no blocking defect reproduced",
+  "blockingFindings": [],
+  "workingTreeBoundary": {
+    "head": "00e7a2bf5289d95da8b67babc2426cef1d4ef761",
+    "candidate": "Local0.3.2/build5 files; no remote checkout substituted",
+    "sourceSHA256": {
+      "apps/ipad/App.tsx": "feab5d929c5f8552e7e72540974bb28c5dd415063072f677ebe2704362353e18",
+      "apps/ipad/app.json": "f24136a88f4045c910702d79f3bad5459accb7acd79a012486fa4993831185a1",
+      "apps/ipad/src/TimingSheet.tsx": "c6564a204c7a3a3ebd3fe993c04facc755ba08e18bc1e0cee62c572a0e466210",
+      "apps/ipad/src/timing-controls.ts": "b73ced2d2ba25beaffbf4f0ec3fcda648de0bafebcae44534052d7649facc5b1",
+      "apps/ipad/src/capture-timing.ts": "83eec4ead6d14e43e6061b63201d6b432c1e0f17a24a4d35035944c8638c5683",
+      "apps/ipad/src/session-capture.ts": "544104e153dab9b9d8f7996f15e4b79180d9dede1819620de7fec07c076f4763",
+      "apps/ipad/src/provisioning.ts": "926f7bdbd4a7799a839f6e72ba11719ae644080bb50fa263a00ffde37dca89dd",
+      "apps/ipad/src/config.ts": "9344c5f7b5292b941e1b2a2f0028e78dc94e1fbb5626148e09aba736cff1566f",
+      "apps/ipad/src/booth-presentation.ts": "c9bee7d01b75b29e5c3cb958483adf155dd843824c2216e60219fb3bd0d0c507",
+      ".github/workflows/ios-release-runtime.yml": "a1904785c694af48706e651fe5127ca88650b3de5dd6a7e01052c91defe9d0e2",
+      ".github/workflows/ios-simulator.yml": "dfc71f469f1f16282540aaae6a75349a071199d2a646428d8d569865abd9d109",
+      "scripts/ci-native.mjs": "21a3fa9b59931eea77007cae775b545b2ed89db2f6fd33a4f79b4228c74587ff",
+      "scripts/ci-native-contract.mjs": "96b85123bf1995b01a10e09f92300a1e2999da635186985d7553149d2dfb034d",
+      "scripts/ci-native.test.mjs": "67bd3eba5b450fe13665daf40295ce5d6ef636b39854cf8efd3f5fdb1d61241c",
+      "scripts/prepare-ios-tests.mjs": "807837607d331227ba7a69cda2d1aaf7bbc5e77e3c71fe4f798cb09927168bcf",
+      "node_modules/expo-camera/ios/Current/CameraView.swift": "9d4625286734f33613008b199a3005af2140f9c29750967cff9a2833dac2e7c7"
+    },
+    "parentBoundedChangesDuringReview": "Root changed only the legacy-five slider hint to Time for each following photo and exact camera-unavailable warning clearing after fresh valid readiness. These final source bytes were statically reviewed; tested timer core and CI inputs stayed unchanged."
+  },
+  "executedChecks": {
+    "total": 68,
+    "uniqueIndependentProbes": {
+      "tests": 11,
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "path": ".cache/timer-independent/probes.tap",
+      "sha256": "5ecc044dbb002796c3b64f887c05df6a9986d365a41356cd434ef03379df9b5b"
+    },
+    "existingCiContractRerun": {
+      "tests": 57,
+      "passed": 57,
+      "failed": 0,
+      "skipped": 0,
+      "path": ".cache/timer-independent/ci-contracts.tap",
+      "sha256": "442780ee92857ea16afe7729b43522c5b5bb760e7e0d6e98532b2155d5cfe2a4"
+    },
+    "countBoundary": "These are independent/focused/repeated checks. They overlap the integrated app/CI coverage conceptually and must not be added as an inflated global unique-suite count.",
+    "probeScript": ".cache/timer-independent/probes.ts",
+    "probeScriptSHA256": "c8b569e1d8163c201aa0ec8562ab44f598893289e05e769720b7297ef22917a5",
+    "combinedCommandExitCode": 0
+  },
+  "independentProbeCoverage": [
+    "Default5/3, malformed persisted values and legacy first-timer migration; independent returned copies",
+    "Parameterized exposure timelines contain only selected countdown durations plus actual durable-save elapsed time; no intershot gap",
+    "Deferred durable acknowledgement blocks later countdowns/exposure and duplicate run starts",
+    "Caller timing/retake mutations cannot alter a running sequence",
+    "Rejected obsolete canceled wait cannot show an error or unlock a newer owner",
+    "Background during exposed save retains ownership and original; foreground restart stays blocked until preservation; resumed run starts preparation",
+    "Camera readiness waiting has no countdown; readiness loss pauses before exposure",
+    "Individual retake snapshots slot, uses preparation time and preserves other original identities",
+    "Save failure retains exact exposed URI/slot and emits no false saved/completed progress",
+    "Host-matched simulator architecture, physicalRelease flag exclusion and finite phase budget inequality",
+    "Current20-method/six-resource native inventory remains required; zero/incomplete/failing test totals reject"
+  ],
+  "staticAcceptance": {
+    "guestAndHostSeparation": "Guest Apply updates only guest refs/state, guarded against busy/inactive/host states. Host defaults save only through saveHostPreferences; NextGuests restores the current saved defaults after successful clearActiveSession. Unsaved host draft is reset when host controls open.",
+    "initialization": "Capture initialization waits for preference load/fallback before controls can start a run; no guest edit can race late preference initialization.",
+    "backgroundPreservation": "Background clears camera readiness and closes/redacts host/timing UI. Camera epoch remount is deferred while capturePersisting is true; saved/paused/error completion can refresh the camera only in foreground. Fresh callbacks check epoch, foreground and remount guard.",
+    "cameraSdkEvidence": "Installed expo-camera58 source emits onCameraReady in initial startSessionIfNeeded; foreground session.startRunning does not emit it. Explicit post-interruption remount avoids assuming old readiness is current. This is source review, not device proof.",
+    "warningRecovery": "Final valid-epoch readiness clears only exact CAMERA_UNAVAILABLE_MESSAGE. It does not erase unrelated storage/save messages; stale/inactive readiness cannot clear or enable capture.",
+    "sheet": "Draft pair stays separate until Apply. Cancel/backdrop closes without persistence; Reset targets host defaults. Discrete rail and step actions expose bounded values; native adjustable role/value/actions plus minimum44pt controls exist. ReducedMotion selects no Modal slide; responsive stacking and safe-area limits are implemented.",
+    "privacy": "No guest identity or new credential is introduced. Timing changes do not alter upload/guest-page/SMS contracts or retained-original selection.",
+    "ciArchitecture": "Only release-runtime adds ONLY_ACTIVE_ARCH=YES and one validated host architecture. PhysicalRelease command branch and its workflow compare unchanged to HEAD.",
+    "ciBudgets": "18min preparation +25minXcode +2mincleanup +12sec stop margin fits48minstep;75minjob. Boot remains600sec. This is a finite source budget, not a hosted timing guarantee.",
+    "ciProcessAndEvidence": "Actual rerun contracts exercise stubborn/reparented group writers and preserve unrelated process. Negative PGIDs are restricted to registered detached children. Failure/cancellation retains outputs if writer state is uncertain; completed valid failed-XCTest bundles remain eligible under64MiB. All20passing/zero-skipped tests are still required for runtime success.",
+    "physicalReleaseBranchSHA256": "0364c2daafabb1bd024db0ace4158c6c2e27c34a809344ce28d11585f9b0182f"
+  },
+  "pixelSpotReview": {
+    "scope": "Five actual browser/native-JSX screenshots personally viewed before the final warning-copy-only fix; not an all-screenshot visual audit or native rendering proof. Final source-guarded recapture belongs to timer_visual_tests.",
+    "files": [
+      {
+        "file": "artifacts/visual/timer-sheet-default-portrait.png",
+        "sha256": "06c3029e04ba1833f3f10b95bf15103cdb0d31620d25c1482eb6a4c37484d4ed"
+      },
+      {
+        "file": "artifacts/visual/timer-sheet-default-landscape.png",
+        "sha256": "e0001ee5dc62473365891bb93458e40f7ce6cd91df4d1fe89946e915bfbbffd9"
+      },
+      {
+        "file": "artifacts/visual/timer-saving-delay-portrait.png",
+        "sha256": "454394714e17cda14fe45f94d3c3f9c6955e3cf347a6fc5a044e137c2f5eabe2"
+      },
+      {
+        "file": "artifacts/visual/timer-waiting-camera-landscape.png",
+        "sha256": "4b475c494cf85b0d954a9e2ee472eca28f47cf920986859e98ba570371b2fadf"
+      },
+      {
+        "file": "artifacts/visual/timer-next-guests-host-defaults-portrait.png",
+        "sha256": "9b996c2e1961f1213f6140b757b247d5d9ec9312f8775dd73900a4e18da2937c"
+      }
+    ],
+    "observations": [
+      "Both orientations show a compact coherent two-timer sheet with legible labels/actions.",
+      "Saving and camera-readiness states show truthful local counts and do not display a guest countdown before the gate.",
+      "Next-guests screenshot shows savedhost8/5 defaults rather than previous guest choice."
+    ],
+    "priorSourceApp": "c1ed3b2806921faf0b98ee512682fc95f98ce0ded245e3e4d60c21c508ca2b42"
+  },
+  "limits": [
+    "Apple compiler/XCTest/native CoreImage/CoreText execution and current timer native installation were NOT run by this review.",
+    "Expected20native tests/sixJPEG resources is inventory, not execution. Earlier00e physicalRelease success does not verify currenttimer source.",
+    "Native VoiceOver/TouchID/sheet gestures/camera lifecycle, Photos saving/offline reboot and actual iPad output/performance require real-device acceptance.",
+    "OwnedPGIDquiescence does not prove a shared Xcode service outside that group is idle; failed/cancelled output deletion is conservatively blocked.",
+    "Browser images/fixture controls use explicit synthetic boundaries. No claim of liveR2/SMS/pairing/phoneQR/venue behavior.",
+    "Raw native hosted artifacts were not fetched here; prior failure evidence is coordinator-provided."
+  ],
+  "mutations": "Only this report and ignored .cache/timer-independent probe/log files written; no product/harness/CI edits, commits, pushes, cloud operations or data resets."
+}

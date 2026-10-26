@@ -4,6 +4,7 @@ import { authenticateHost } from './host-auth';
 import { DEFAULT_API_ORIGIN, hostPreferences, pairBooth, type HostPreferences } from './provisioning';
 
 export { DEFAULT_API_ORIGIN, COUNTDOWN_OPTIONS, type HostPreferences } from './provisioning';
+export { DEFAULT_CAPTURE_TIMING, CAPTURE_TIMER_OPTIONS, type CaptureTiming, type CountdownSeconds } from './capture-timing';
 
 const CONNECTION_KEY = 'wedding-photobooth.connection.v1';
 const PREFERENCES_KEY = 'wedding-photobooth.preferences.v1';

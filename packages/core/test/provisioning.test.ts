@@ -53,10 +53,18 @@ test('lost exchange and Keychain failure do not retry or expose a private code/t
 });
 
 test('host timer preferences use bounded choices and survive malformed legacy preference data safely', () => {
-  for (const countdownSeconds of [2, 3, 5, 8, 10]) assert.equal(hostPreferences({ countdownSeconds }).countdownSeconds, countdownSeconds);
-  for (const value of [undefined, null, 'bad', { countdownSeconds: 0 }, { countdownSeconds: 60 }, { countdownSeconds: '5' }]) {
-    assert.equal(hostPreferences(value).countdownSeconds, 3);
+  for (const countdownSeconds of [2, 3, 5, 8, 10]) {
+    const migrated = hostPreferences({ countdownSeconds });
+    assert.equal(migrated.firstSeconds, countdownSeconds);
+    assert.equal(migrated.nextSeconds, 3);
+    assert.equal(Object.hasOwn(migrated, 'countdownSeconds'), false, 'Migration never re-saves the deprecated single timer');
   }
+  for (const value of [undefined, null, 'bad', { countdownSeconds: 0 }, { countdownSeconds: 60 }, { countdownSeconds: '5' }]) {
+    assert.equal(hostPreferences(value).firstSeconds, 5);
+    assert.equal(hostPreferences(value).nextSeconds, 3);
+  }
+  assert.deepEqual(hostPreferences({ firstSeconds: 2, nextSeconds: 10, countdownSeconds: 8 }), { firstSeconds: 2, nextSeconds: 10, photosExportEnabled: true });
+  assert.deepEqual(hostPreferences({ firstSeconds: 8, nextSeconds: '5' }), { firstSeconds: 8, nextSeconds: 3, photosExportEnabled: true });
   assert.equal(hostPreferences({ photosExportEnabled: false }).photosExportEnabled, false);
   assert.equal(hostPreferences({ photosExportEnabled: 'false' }).photosExportEnabled, true);
 });

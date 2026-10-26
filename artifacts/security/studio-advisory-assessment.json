@@ -1,5 +1,5 @@
 {
-  "timestampUTC": "2026-10-26T18:19:33.095007+00:00",
+  "timestampUTC": "2026-10-26T19:18:50.134450+00:00",
   "scope": "Current V2 tooling assessment after isolated-tested then root frozen-tested upstream Wrangler4.153.0 update; no forced Expo/Zod/forge or directMiniflare major changes",
   "auditSource": "artifacts/security/keepsake-v2-audit.json",
   "auditCounts": {
@@ -384,9 +384,9 @@
   "overallDisposition": "Applied the tested upstream-supported Wrangler4.153.0 update as a separate tooling checkpoint. Current audit remains failing with eight high affected entries from Expo CLI and directMiniflare; no suppressions or forced incompatible upgrades. Forge has no published fix in checked snapshot; fixedZod crossesCLIdeclaredmajor; directMiniflare unresolved. None of the affected libraries appears in inspected currentV2iOSJSgraph, which is not a binary/infrastructure audit.",
   "shippedGraphEvidence": {
     "artifact": "artifacts/security/bundle-review.json",
-    "sourceModuleCount": 1030,
+    "sourceModuleCount": 1033,
     "sourceMapSHA256": [
-      "2162884d05358f17ff3a30282e8ecdf27fec23886b02d5098cb46c8c106b39a8"
+      "a995ccb40f7a80e4423c8bd1902516082a6a27cb566d497ea2bf9fa29cbcafa5"
     ],
     "affectedPackageMatches": {
       "node-forge": [],
@@ -397,7 +397,7 @@
       "undici": [],
       "wrangler": []
     },
-    "scope": "Current exact-source Release-modeJSexport graph only; no nativebinary/OS/CocoaPods/production audit."
+    "scope": "Currenttimer exactsource ReleaseJSexport graph only; no nativebinary/OS/CocoaPods/productionaudit"
   },
   "nativeBinaryAudit": "Unknown/not performed; npm audit and JS source-map absence are not a native-binary security audit",
   "verificationLimits": [
@@ -411,7 +411,7 @@
     "apps/ipad/package.json": "c38c54aa8cedec22eb0e18e7abc1930f22fa59134ebd841b7346613757cb5cbe",
     "services/api/package.json": "ba85df5197217c1e7efb56046f8e1c152ffe5b5ee8cfa086fe30f9db80b162aa",
     "artifacts/security/fullbleed-audit.json": "f99b6e2f01df8ae502f5d3cd2651165a95f47e7269f679f0851f537a6ff1d38b",
-    "artifacts/security/bundle-review.json": "402e9d2950db8de1b02d9c1113e804e41c0a6c96f5296612302d394e240d5cb1",
+    "artifacts/security/bundle-review.json": "8f2afa75b4f7148d5c774409b1422be958b29ee04566dc0762210e3d0b3080d6",
     "artifacts/security/keepsake-v2-audit.json": "ac40b33ef7613698af065d9c053731a85023af94154863ebcc68c2cae083b672"
   }
 }

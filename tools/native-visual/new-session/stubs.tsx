@@ -24,7 +24,9 @@ const expiry = Date.now() + 7 * 86_400_000;
 const histories = new Map<string, ActiveSession>();
 const jobs: QueueJob[] = [];
 let active: ActiveSession | null = null;
-let preferences = { countdownSeconds: 3, photosExportEnabled: true };
+const preferenceValues = (parameters.get('timingDefaults') ?? '5,3').split(',').map(Number);
+const validSeconds = (value: number) => [2, 3, 5, 8, 10].includes(value) ? value : 3;
+let preferences = { firstSeconds: validSeconds(preferenceValues[0] ?? 5), nextSeconds: validSeconds(preferenceValues[1] ?? 3), photosExportEnabled: true };
 let photosPermission = fixtureState === 'photos-denied' || parameters.get('photos') === 'denied' ? 'denied' : 'granted';
 if (parameters.get('network') === 'offline') fixtureControls.online = false;
 if (['camera', 'partial', 'review', 'review4', 'photos-denied', 'photos-uncertain', 'pending', 'ready', 'partial-ready', 'host-uncertain', 'staged', 'staged-empty', 'index-repair'].includes(fixtureState)) {
@@ -79,6 +81,11 @@ export const saveShot = async (session: ActiveSession, id: string, _temporaryURI
   if (fixtureControls.failNextSave) { fixtureControls.failNextSave = false; throw new Error('Synthetic private-save failure'); }
   // Preserve an asynchronous boundary so the actual capture runner must await it.
   await Promise.resolve();
+  fixtureControls.pendingSaves++;
+  try {
+    if (fixtureControls.saveBlocked) await new Promise<void>(resolve => fixtureControls.saveWaiters.add(resolve));
+    if (fixtureControls.saveDelayMs > 0) await new Promise<void>(resolve => setTimeout(resolve, fixtureControls.saveDelayMs));
+  } finally { fixtureControls.pendingSaves--; }
   if (fixtureControls.templatesAvailable) originalImageVariants.set(shotURI(id), slot % 4);
   const previous = session.shots.find(photo => photo.shotIndex === slot);
   const photo: ActiveCapture = { id, fileUri: shotURI(id), createdAt: Date.now(), confirmed: false, sessionId: session.id, shotIndex: slot, exportStatus: 'pending' };
@@ -160,13 +167,21 @@ export const useCameraPermissions = () => {
     return { granted: mode !== 'blocked' };
   }] as const;
 };
-export const CameraView = forwardRef(function SyntheticCamera({ onCameraReady, style, testID }: { onCameraReady?: () => void; style?: object; testID?: string }, ref) {
+export const CameraView = forwardRef(function SyntheticCamera({ onCameraReady, onMountError, style, testID }: { onCameraReady?: () => void; onMountError?: () => void; style?: object; testID?: string }, ref) {
   useImperativeHandle(ref, () => ({ takePictureAsync: async () => {
+    if (fixtureControls.cameraReadyBlocked) throw new Error('Synthetic camera was used before readiness');
     fixtureControls.cameraCalls++;
     event('synthetic-camera-exposure', undefined, fixtureControls.cameraCalls - 1);
     return { uri: '/attract-scene.png' };
   } }), []);
-  useEffect(() => { onCameraReady?.(); }, []);
+  useEffect(() => {
+    fixtureControls.cameraMounts++; event('synthetic-camera-mounted');
+    const ready = () => { event('synthetic-camera-ready'); onCameraReady?.(); };
+    const error = () => { event('synthetic-camera-not-ready'); onMountError?.(); };
+    fixtureControls.cameraReadyCallbacks.add(ready); fixtureControls.cameraErrorCallbacks.add(error);
+    if (!fixtureControls.cameraReadyBlocked) ready();
+    return () => { fixtureControls.cameraReadyCallbacks.delete(ready); fixtureControls.cameraErrorCallbacks.delete(error); event('synthetic-camera-unmounted'); };
+  }, []);
   return <View testID={testID} style={style}><View testID="synthetic-browser-camera" style={StyleSheet.absoluteFill}><Image source={{ uri: '/attract-scene.png' }} style={StyleSheet.absoluteFill} resizeMode="cover" accessibilityLabel="Generated synthetic camera scene; no live camera" /></View></View>;
 });
 

@@ -45,6 +45,20 @@ export const fixtureControls = {
   effectRenders: [] as { requestID: string; sourceUri: string; preset: string; intensity: number; preview: boolean; status: string; uri: string }[],
   effectCancellations: [] as string[],
   effectReleases: [] as string[],
+  // Explicit synthetic SDK gates for actual-runner readiness/save sequencing.
+  saveBlocked: false,
+  saveDelayMs: 0,
+  pendingSaves: 0,
+  saveWaiters: new Set<() => void>(),
+  releaseSaves() { this.saveBlocked = false; for (const resolve of this.saveWaiters) resolve(); this.saveWaiters.clear(); },
+  cameraReadyBlocked: false,
+  cameraMounts: 0,
+  cameraReadyCallbacks: new Set<() => void>(),
+  cameraErrorCallbacks: new Set<() => void>(),
+  setCameraReady(ready: boolean) {
+    this.cameraReadyBlocked = !ready;
+    for (const callback of ready ? this.cameraReadyCallbacks : this.cameraErrorCallbacks) callback();
+  },
   cameraCalls: 0,
   cameraPermissionRequests: 0,
   openSettingsCalls: 0,

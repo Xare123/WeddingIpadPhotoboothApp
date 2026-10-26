@@ -1,10 +1,10 @@
 {
-  "scope": "Four-photo V2 composition refinement, current local source candidate; current native execution still pending",
+  "scope": "Frozen V2 baseline before separate timer feature/CI repair",
   "generatedAt": "2026-10-26T18:31:26.140319+00:00",
   "publicationApproved": true,
   "appVersion": "0.3.1",
   "iosBuild": "4",
-  "sourceCommit": "4337843b38572ba8dc115578a19fac9e51569922",
+  "sourceCommit": "00e7a2bf5289d95da8b67babc2426cef1d4ef761",
   "baseHead": "d1dbc8fd3254005f24ec00132dc07bc998a18308",
   "sourceHashes": {
     ".github/workflows/ci.yml": "bc45a9a2b36e2e933b4830d75f9e2a38476397ad5f6d8d0523f3cfa2f9d89b71",
@@ -194,9 +194,12 @@
     "requiredNativeRuntimeTests": 20
   },
   "nativeRelease": {
-    "status": "Current V2 fresh exact-commit run pending",
-    "signed": false,
-    "physicalIpadVerified": false
+    "status": "passed",
+    "sourceCommit": "00e7a2bf5289d95da8b67babc2426cef1d4ef761",
+    "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40378513599",
+    "job": "121768064113",
+    "duration": "23m17s",
+    "scope": "Public exact-SHA annotation verifies unsignediPhoneOS Releasecompile/embeddedJS/iPadmetadata only; noXCTest/sign/install/device"
   },
   "nativeReleaseRuntime": {
     "status": "Current V2 fresh exact-commit run pending; inventory is not execution",
@@ -210,7 +213,9 @@
     "blocker": "OldV1 run40372103636/job121745248298 raw artifacts needed for precise timeout diagnosis before another simulator attempt"
   },
   "hostedLinux": {
-    "status": "Current V2 fresh exact-commit run pending"
+    "status": "passed",
+    "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40378513541",
+    "duration": "1m6s"
   },
   "priorV1": {
     "commit": "e0506f92f56b8847aa36aa4ce7f59002da54cffc",

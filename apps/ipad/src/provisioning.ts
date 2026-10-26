@@ -1,16 +1,22 @@
 import { validateOrigin } from './sharing';
+import { CAPTURE_TIMER_OPTIONS, DEFAULT_CAPTURE_TIMING, isCountdownSeconds, normalizeCaptureTiming, type CaptureTiming } from './capture-timing';
+
+export { type CountdownSeconds } from './capture-timing';
 
 export const DEFAULT_API_ORIGIN = 'https://photos.gizelleandrami.com';
-export const COUNTDOWN_OPTIONS = [2, 3, 5, 8, 10] as const;
-export type CountdownSeconds = typeof COUNTDOWN_OPTIONS[number];
-export type HostPreferences = { countdownSeconds: CountdownSeconds; photosExportEnabled: boolean };
-export const DEFAULT_HOST_PREFERENCES: HostPreferences = { countdownSeconds: 3, photosExportEnabled: true };
+export const COUNTDOWN_OPTIONS = CAPTURE_TIMER_OPTIONS;
+export type HostPreferences = CaptureTiming & { photosExportEnabled: boolean };
+export const DEFAULT_HOST_PREFERENCES: Readonly<HostPreferences> = Object.freeze({ ...DEFAULT_CAPTURE_TIMING, photosExportEnabled: true });
 
 export function hostPreferences(value: unknown): HostPreferences {
   const input = value && typeof value === 'object' ? value as Record<string, unknown> : {};
   return {
-    countdownSeconds: COUNTDOWN_OPTIONS.includes(input.countdownSeconds as CountdownSeconds)
-      ? input.countdownSeconds as CountdownSeconds : DEFAULT_HOST_PREFERENCES.countdownSeconds,
+    // Keep a valid legacy host choice as the preparation timer. Subsequent
+    // photos adopt the new three-second default rather than a second legacy gap.
+    ...normalizeCaptureTiming({
+      firstSeconds: isCountdownSeconds(input.firstSeconds) ? input.firstSeconds : input.countdownSeconds,
+      nextSeconds: input.nextSeconds,
+    }),
     photosExportEnabled: typeof input.photosExportEnabled === 'boolean'
       ? input.photosExportEnabled : DEFAULT_HOST_PREFERENCES.photosExportEnabled,
   };

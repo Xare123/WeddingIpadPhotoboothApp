@@ -1,8 +1,10 @@
 # Wedding iPad Photobooth
 
-The current local V2 candidate, **version 0.3.1 / build 4**, defaults to **four photos**, post-capture looks and a strip/grid keepsake in three wedding themes. The grid uses a portrait 4:5 or square canvas selected once from the current photos; the strip keeps a classic 1:3 shape. Full photo is the default, with explicit crop controls and a full-resolution inspection view. Existing V1 recipes and five-photo sessions are preserved. See [the four-photo workflow and boundaries](docs/FOUR_PHOTO_STUDIO.md). Hosted results apply only to their exact commit; V2 native verification and physical-iPad saving/Photos rehearsal remain separate gates.
+The current local candidate, **version 0.3.2 / build 5**, defaults to **four photos** with **5 seconds to prepare for the first photo and 3 seconds for each following photo**. A small timing chip opens independent snapping controls before capture. Guest changes last for that session; Next guests restores saved host defaults. See [the timing workflow](docs/TIMING.md).
 
-The current full-bleed candidate removes the camera's inset stage and fixed header/footer. It adds a single floating native-glass control island with an opaque accessibility fallback, explicit uncropped-camera-file preservation, host relocking and bounded recipient cleanup. See [the design and framing contract](docs/FULL_BLEED_CAMERA.md). Earlier hosted results do not verify later working-tree changes; fresh exact-commit results are recorded in the validation report.
+The full-bleed camera, individual retakes, post-capture looks and three-theme strip/grid keepsakes remain. The grid uses a portrait 4:5 or square canvas selected once from the photos; the strip keeps a classic 1:3 shape. Full photo is the default, with explicit crop controls and full-resolution inspection. Existing V1 recipes and five-photo sessions are preserved. See [the four-photo workflow](docs/FOUR_PHOTO_STUDIO.md) and [framing contract](docs/FULL_BLEED_CAMERA.md).
+
+The preceding V2 source `00e7a2bf5289d95da8b67babc2426cef1d4ef761` passed hosted Linux checks and unsigned physical-SDK Release compilation. The new timer source still needs its final commit and fresh hosted results pinned in [validation](docs/VALIDATION.md). Compilation does not establish signing, installation, native XCTest execution or physical-iPad saving/Photos behavior.
 
 A native iOS photobooth for a personal wedding on November 1, 2026: four front-camera photos at a physical backdrop, an optional look, a curated keepsake, a private guest page with original downloads, and one QR when the complete session is ready. Digital photos only. The provisional device is an M1 iPad Air (5th generation); confirm its model, iPadOS version, and stand fit before rehearsal.
 
@@ -55,6 +57,7 @@ Cloudflare is preferred because the wedding website already uses it. The owner-c
 
 - [Architecture and boundaries](docs/ARCHITECTURE.md)
 - [iOS installation and device testing](docs/IOS.md)
+- [Timer controls and rehearsal](docs/TIMING.md)
 - [SMS options and deadline](docs/SMS.md)
 - [Launch checklist and fallback](docs/LAUNCH.md)
 - [Validation and progress](docs/VALIDATION.md)

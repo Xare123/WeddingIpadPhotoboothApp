@@ -1,0 +1,65 @@
+{
+  "scope": "Current V2 Linux Release-mode iOS source-map graph only; no native-binary or deployed infrastructure security audit",
+  "app_source_sha256": "151488bb3fdbf6435a16855ba70bfbc2f7408cbef8cb30de040121ce81dc30e7",
+  "source_module_count": 1030,
+  "appSourceContentMatched": true,
+  "affectedDependencyRuntimeFindings": {
+    "node-forge": [],
+    "@expo/code-signing-certificates": [],
+    "zod": [],
+    "miniflare": [],
+    "sharp": [],
+    "undici": [],
+    "wrangler": []
+  },
+  "source_map_sha256": [
+    "2162884d05358f17ff3a30282e8ecdf27fec23886b02d5098cb46c8c106b39a8"
+  ],
+  "native_js_bundle_sha256": "8219e30b844a7b0837d18f64b264ff7be25edd87c1362b0a5b9cbbb24deb4806",
+  "auditCounts": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 8,
+    "critical": 0,
+    "total": 8
+  },
+  "auditPassed": false,
+  "auditedPackageEntries": [
+    "@expo/cli",
+    "@expo/code-signing-certificates",
+    "expo",
+    "miniflare",
+    "node-forge",
+    "sharp",
+    "undici",
+    "zod"
+  ],
+  "exposure": "Expo certificate/validation CLI plus local Wrangler/Miniflare image/network tooling. Expo Metro require loader is present; do not equate all @expo/cli modules with affected code. None of the affected libraries above appears in this inspected app graph. The newly rebuilt Worker bundle is separately hashed and locally tested; this is not a native-binary or production audit.",
+  "safeFixStatus": "Applied tested Wrangler4.153.0; Expo/directMiniflare findings remain. See studio-advisory-assessment.json and keepsake-tooling-candidate.json; no forced major/ineffective override.",
+  "native_release_build": {
+    "current_source_passed": false,
+    "status": "V2 uncommitted; pending fresh exact-commit hosted verification"
+  },
+  "generatedAt": "2026-10-26T18:19:33.095007+00:00",
+  "sourceContents": {
+    "apps/ipad/App.tsx": {
+      "sha256": "151488bb3fdbf6435a16855ba70bfbc2f7408cbef8cb30de040121ce81dc30e7",
+      "sourceMapContentMatched": true
+    },
+    "apps/ipad/src/TemplateStudio.tsx": {
+      "sha256": "2ce75e3831efeff05e6c841440ace23dfb34d220f09af30f0c80a418800113fc",
+      "sourceMapContentMatched": true
+    },
+    "apps/ipad/src/template-editor.ts": {
+      "sha256": "ad02f03cb5cae30d801e5262fd8f363f4e023b3c7f815f7e22e56ee604abe3df",
+      "sourceMapContentMatched": true
+    },
+    "apps/ipad/src/native-fixture.ts": {
+      "sha256": "fd50a3d03462b362aad6e7a4eeb60fac1949de6dd79186695d411cdd94eeaaf9",
+      "sourceMapContentMatched": true
+    }
+  },
+  "workerBundleSHA256": "43dabd6c9dcda6aa44f23ca11ac544f2588f9efd5428f0837dc839f4f98c9ded",
+  "fixtureBoundary": "Production export with EXPO_PUBLIC_E2E_FIXTURE=0. nativeFixtureEnabled additionally requires __DEV__; synthetic fixture asset presence is not a live camera substitution. Neither JS graph nor binary inspection proves physical iPad behavior."
+}

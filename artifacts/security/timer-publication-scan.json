@@ -1,0 +1,15 @@
+{
+  "generatedAt": "2026-10-26T19:21:48.866742+00:00",
+  "scope": "Tracked/unignoredtext credential-pattern plus provenance/path scan, notcomprehensivesecretdetection/OCR/binaryaudit",
+  "textFilesScanned": 299,
+  "credentialPatternFindings": [],
+  "privateReferenceScreenshotsIncluded": false,
+  "realGuestPhotosIncluded": false,
+  "syntheticDataOnly": true,
+  "sourceHashes": {
+    "apps/ipad/App.tsx": "feab5d929c5f8552e7e72540974bb28c5dd415063072f677ebe2704362353e18",
+    "apps/ipad/src/TimingSheet.tsx": "c6564a204c7a3a3ebd3fe993c04facc755ba08e18bc1e0cee62c572a0e466210",
+    "package-lock.json": "3e641bdf69fb8255425da63d4d1b827c0cf811c431ea64ab12a4c8fcfad55bf3"
+  },
+  "artifacts": "Timerdemo usesexistingdrink-freegeneratedphotos; rawfunctionalfixtures preserved"
+}
