@@ -14,6 +14,69 @@ export function bounded(text, lines = 100, chars = 32_000) {
   return redact(text).split('\n').slice(-lines).join('\n').slice(-chars);
 }
 
+export function workflowData(text) {
+  return String(text).replaceAll('%', '%25').replaceAll('\r', '%0D').replaceAll('\n', '%0A');
+}
+
+export function annotationText(text, limit = 700) {
+  return redact(String(text))
+    .replace(/(?:https?|wss?|ftp|file):\/\/[^\s<>"']+/gi, '[redacted URL]')
+    .replace(/\b(?:[a-z0-9-]+\.)+(?:com|org|net|io|dev|app|co|test|invalid)(?:\/[^\s<>"']*)?/gi, '[redacted host]')
+    .replace(/\b[a-f0-9]{48,}\b/gi, '[redacted token]')
+    .replace(/\+[1-9][\d ().-]{6,30}\d\b/g, '[redacted phone]')
+    .replace(/\b(?:token|secret|password|api[_-]?key|authorization)\s*:\s*[^\r\n]*/gi, '[redacted credential]')
+    .replace(/\b[A-Za-z_][A-Za-z0-9_]*\s*=\s*[^\r\n]*/g, '[redacted assignment]')
+    .replace(/\b[A-Z_][A-Z0-9_]{2,}\s*:\s*[^\r\n]*/g, '[redacted assignment]')
+    .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, '')
+    .slice(0, limit);
+}
+
+export function diagnosticLines(logs, stages = [], limit = 3) {
+  const preferred = stages.filter(stage => stage.result === 'failed').map(stage => stage.name + '.log');
+  const names = [...new Set([...preferred, ...Object.keys(logs).sort()])];
+  const selected = [], seen = new Set();
+  // Select error records, never a dump of build commands or exported variables.
+  const errorRecord = /^\s*(?:.*?:\d+(?::\d+)?:\s*)?(?:fatal\s+)?error:\s|^\s*(?:\[!\]|npm (?:ERR!|error)\b|Error:|fatal:|xcodebuild:\s*error:|Traceback\b|Could not\b|Cannot\b|Unable to\b)|\((?:LoadError|RuntimeError)\)|:\s*(?:command not found|Permission denied|No such file or directory)\s*$/i;
+  for (const name of names) {
+    const candidates = bounded(logs[name] ?? '', 400, 96_000).split('\n').filter(line => errorRecord.test(line));
+    for (const line of candidates.slice(-limit)) {
+      const safe = annotationText(line.trim(), 550);
+      if (!safe || seen.has(safe)) continue;
+      seen.add(safe);
+      selected.push(annotationText(basename(name), 80) + ': ' + safe);
+      if (selected.length >= limit) return selected;
+    }
+  }
+  return selected;
+}
+
+export function publicAnnotations({ kind = 'native', jobStatus, status, sha, logs = {} }) {
+  const exactSha = /^[a-f0-9]{40}$/i.test(sha ?? '') ? sha : 'unavailable';
+  const title = kind === 'native' ? 'Native simulator diagnostics' : 'Linux verification diagnostics';
+  const failed = ['failure', 'failed'].includes(jobStatus) || status?.result === 'failed';
+  if (failed) {
+    const stages = status?.stages ?? [];
+    const failures = stages.filter(stage => stage.result === 'failed')
+      .map(stage => annotationText(stage.name, 80) + ': failed').slice(0, 3);
+    const context = [
+      'Commit: ' + exactSha,
+      'Failed stage: ' + (failures.join('; ') || 'not reported; consult the diagnostic records'),
+      ...(status?.error ? ['Failure: ' + annotationText(status.error)] : []),
+      ...diagnosticLines(logs, stages),
+    ].join('\n');
+    return ['::error title=' + title + '::' + workflowData(context)];
+  }
+  const succeeded = jobStatus === 'success' || status?.result === 'passed';
+  if (succeeded && kind === 'native' && status?.result === 'passed' &&
+    status.tests?.executed > 0 && status.tests.failures === 0 && (status.tests.skipped ?? 0) === 0) {
+    return ['::notice title=Native simulator XCTest evidence::' + workflowData(
+      'Commit: ' + exactSha + '; executed XCTest tests: ' + status.tests.executed + '; failures: 0; skipped: 0. Synthetic camera and real native storage; Debug JavaScript supplied by Metro.')];
+  }
+  if (succeeded && kind === 'linux') return ['::notice title=Linux verification evidence::' + workflowData(
+    'Commit: ' + exactSha + '; Linux checks completed. Native XCTest execution is reported by the simulator lane.')];
+  return [];
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === resolve(new URL(import.meta.url).pathname)) {
   const kind = process.argv[2] === 'native' ? 'native' : 'linux';
   const directory = process.env.WEDDING_DIAGNOSTICS_DIR ?? join(process.env.RUNNER_TEMP ?? '/tmp', `wedding-${kind}-diagnostics`);
@@ -53,4 +116,8 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(new URL(import.meta.
   writeFileSync(join(directory, 'summary.md'), summary.join('\n'));
   if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary.join('\n'));
   else process.stdout.write(summary.join('\n'));
+  const logs = Object.fromEntries(files.map(name => [name, readFileSync(join(directory, name), 'utf8')]));
+  for (const annotation of publicAnnotations({ kind, jobStatus: process.env.WEDDING_JOB_STATUS, status, sha: process.env.GITHUB_SHA, logs })) {
+    process.stdout.write(annotation + '\n');
+  }
 }
