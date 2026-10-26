@@ -50,7 +50,8 @@ const shareRequest = (sessionId: string, overrides: Record<string, unknown> = {}
   id: randomUUID(), sessionId, phone: '+12025550123', consent: true, ...overrides,
 }, instance);
 type Gallery = { status: 'ready'; url: string; expiresAt: number };
-async function gallery(sessionId = randomUUID(), photoIds = [randomUUID()]) {
+const fivePhotos = () => Array.from({ length: 5 }, () => randomUUID());
+async function gallery(sessionId = randomUUID(), photoIds = fivePhotos()) {
   for (const photoId of photoIds) assert.equal((await put(sessionId, photoId)).status, 201);
   const response = await ready(sessionId, photoIds);
   assert.equal(response.status, 200);
@@ -120,17 +121,22 @@ test('JPEG content type, markers, IDs, and streamed 10 MiB limit are enforced', 
   assert.equal(await (await runtime.getR2Bucket('PHOTOS')).head(`sessions/${sessionId}/photos/${photoId}.jpg`), null);
 });
 
-test('readiness and sharing cannot create a link before every expected upload exists', async () => {
-  const sessionId = randomUUID(), first = randomUUID(), missing = randomUUID();
+test('new five-photo gallery stays unavailable until every original is durable', async () => {
+  const sessionId = randomUUID(), photoIds = fivePhotos();
   const before = (await (await runtime.getR2Bucket('PHOTOS')).list({ prefix: 'galleries/' })).objects.length;
-  assert.equal((await ready(sessionId, [first, missing])).status, 409);
+  assert.equal((await ready(sessionId, photoIds)).status, 409);
   assert.equal((await shareRequest(sessionId)).status, 409);
-  await put(sessionId, first);
-  assert.equal((await ready(sessionId, [first, missing])).status, 409);
+  await put(sessionId, photoIds[0]!);
+  assert.equal((await ready(sessionId, [photoIds[0]!])).status, 400);
+  assert.equal((await ready(sessionId, photoIds)).status, 409);
   assert.equal((await shareRequest(sessionId)).status, 409);
   assert.equal((await (await runtime.getR2Bucket('PHOTOS')).list({ prefix: 'galleries/' })).objects.length, before);
-  await put(sessionId, missing);
-  assert.equal((await ready(sessionId, [first, missing])).status, 200);
+  for (const id of photoIds.slice(1)) await put(sessionId, id);
+  const response = await ready(sessionId, photoIds);
+  assert.equal(response.status, 200);
+  const result = await response.json() as Gallery;
+  const html = await (await runtime.dispatchFetch(result.url)).text();
+  for (const id of photoIds) assert.ok(html.includes(`/photos/${id}`));
 });
 
 test('ready requires a nonempty unique UUID list and valid JSON', async () => {
@@ -144,7 +150,7 @@ test('ready requires a nonempty unique UUID list and valid JSON', async () => {
 });
 
 test('readiness replay preserves link expiry and forbids mutating a published manifest', async () => {
-  const result = await gallery(randomUUID(), [randomUUID(), randomUUID()]);
+  const result = await gallery(randomUUID(), fivePhotos());
   const repeated = await ready(result.sessionId, result.photoIds);
   assert.deepEqual(await repeated.json(), { status: result.status, url: result.url, expiresAt: result.expiresAt });
   assert.equal((await ready(result.sessionId, [...result.photoIds].reverse())).status, 409);
@@ -152,7 +158,7 @@ test('readiness replay preserves link expiry and forbids mutating a published ma
 });
 
 test('opaque gallery renders only its own photos and offers private downloads', async () => {
-  const first = await gallery(randomUUID(), [randomUUID(), randomUUID()]);
+  const first = await gallery(randomUUID(), fivePhotos());
   const other = await gallery();
   const token = new URL(first.url).pathname.split('/').at(-1)!;
   assert.match(token, /^[a-f0-9]{64}$/);
@@ -242,11 +248,11 @@ test('SMS requires explicit consent and E.164 and reports mocked without storing
 
 test('mock failure is an explicit retryable result and live SMS modes fail closed', async () => {
   const failed = await createRuntime({ SMS_MODE: 'mock-fail' });
-  const sessionId = randomUUID(), photoId = randomUUID();
-  assert.equal((await failed.dispatchFetch(`${origin}/v1/sessions/${sessionId}/photos/${photoId}`, {
+  const sessionId = randomUUID(), photoIds = fivePhotos();
+  for (const photoId of photoIds) assert.equal((await failed.dispatchFetch(`${origin}/v1/sessions/${sessionId}/photos/${photoId}`, {
     method: 'PUT', headers: { ...auth, 'Content-Type': 'image/jpeg' }, body: jpeg,
   })).status, 201);
-  assert.equal((await ready(sessionId, [photoId], failed)).status, 200);
+  assert.equal((await ready(sessionId, photoIds, failed)).status, 200);
   const response = await shareRequest(sessionId, {}, failed);
   assert.equal(response.status, 503);
   const failure = await response.json() as { status: string; retryable: boolean };
@@ -288,9 +294,11 @@ test('production configuration uses an HTTPS canonical origin and a distinct dev
   assert.equal((await instance.dispatchFetch(path, { method: 'PUT', headers: { ...auth, 'Content-Type': 'image/jpeg' }, body: jpeg })).status, 401);
   const productionAuth = { Authorization: `Bearer ${device}`, 'Content-Type': 'image/jpeg' };
   assert.equal((await instance.dispatchFetch(path, { method: 'PUT', headers: productionAuth, body: jpeg })).status, 201);
+  const photoIds = [photoId, ...fivePhotos().slice(0, 4)];
+  for (const id of photoIds.slice(1)) assert.equal((await instance.dispatchFetch(`https://gallery.example/v1/sessions/${sessionId}/photos/${id}`, { method: 'PUT', headers: productionAuth, body: jpeg })).status, 201);
   const readyStartedAt = Date.now();
   const response = await instance.dispatchFetch(`https://gallery.example/v1/sessions/${sessionId}/ready`, {
-    method: 'POST', headers: { ...productionAuth, 'Content-Type': 'application/json' }, body: JSON.stringify({ photoIds: [photoId] }),
+    method: 'POST', headers: { ...productionAuth, 'Content-Type': 'application/json' }, body: JSON.stringify({ photoIds }),
   });
   assert.equal(response.status, 200);
   const result = await response.json() as Gallery;
@@ -306,20 +314,21 @@ async function rotationFixture() {
   persistencePaths.push(path);
   const bindings = { LOCAL_LINK_KEY: 'rotation-test-key-a' };
   const instance = await createRuntime(bindings, path);
-  const sessionId = randomUUID(), photoId = randomUUID();
+  const sessionId = randomUUID(), photoIds = fivePhotos(), photoId = photoIds[0]!;
+  for (const id of photoIds.slice(1)) assert.equal((await instance.dispatchFetch(`${origin}/v1/sessions/${sessionId}/photos/${id}`, { method: 'PUT', headers: { ...auth, 'Content-Type': 'image/jpeg' }, body: jpeg })).status, 201);
   const stored = await instance.dispatchFetch(`${origin}/v1/sessions/${sessionId}/photos/${photoId}`, {
     method: 'PUT', headers: { ...auth, 'Content-Type': 'image/jpeg' }, body: jpeg,
   });
   assert.equal(stored.status, 201);
-  const response = await ready(sessionId, [photoId], instance);
+  const response = await ready(sessionId, photoIds, instance);
   assert.equal(response.status, 200);
   const result = await response.json() as Gallery;
   const rotate = (key: string) => instance.setOptions(runtimeOptions({ LOCAL_LINK_KEY: key }, path));
-  return { instance, sessionId, photoId, result, rotate };
+  return { instance, sessionId, photoId, photoIds, result, rotate };
 }
 
 test('signing-key rotation rejects existing gallery tokens while retaining stored originals and allowing a fresh token', async () => {
-  const { instance, sessionId, photoId, result, rotate } = await rotationFixture();
+  const { instance, sessionId, photoId, photoIds, result, rotate } = await rotationFixture();
   assert.equal((await instance.dispatchFetch(result.url)).status, 200);
   await rotate('rotation-test-key-b');
   // Prove the denial comes from current-key verification, not an empty emulator
@@ -329,7 +338,7 @@ test('signing-key rotation rejects existing gallery tokens while retaining store
   assert.deepEqual(new Uint8Array(await (await bucket.get(`sessions/${sessionId}/photos/${photoId}.jpg`))!.arrayBuffer()), jpeg);
   assert.equal((await instance.dispatchFetch(result.url)).status, 410);
   assert.equal((await instance.dispatchFetch(`${result.url}/photos/${photoId}?download=1`)).status, 410);
-  const fresh = await ready(sessionId, [photoId], instance);
+  const fresh = await ready(sessionId, photoIds, instance);
   assert.equal(fresh.status, 200);
   const renewed = await fresh.json() as Gallery;
   assert.notEqual(renewed.url, result.url);
@@ -339,7 +348,7 @@ test('signing-key rotation rejects existing gallery tokens while retaining store
 });
 
 test('session revocation under a rotated key survives further rotations and restoration of the previous key', async () => {
-  const { instance, sessionId, photoId, result, rotate } = await rotationFixture();
+  const { instance, sessionId, photoId, photoIds, result, rotate } = await rotationFixture();
   await rotate('rotation-test-key-b');
   // Revoke before this key has issued any gallery. Revocation must bind the
   // session identity instead of only the token derived from the current key.
@@ -349,7 +358,7 @@ test('session revocation under a rotated key survives further rotations and rest
     await rotate(key);
     assert.equal((await instance.dispatchFetch(result.url)).status, 410);
     assert.equal((await instance.dispatchFetch(`${result.url}/photos/${photoId}?download=1`)).status, 410);
-    assert.equal((await ready(sessionId, [photoId], instance)).status, 410);
+    assert.equal((await ready(sessionId, photoIds, instance)).status, 410);
     assert.equal((await shareRequest(sessionId, {}, instance)).status, 410);
     assert.ok(await (await instance.getR2Bucket('PHOTOS')).head(`sessions/${sessionId}/photos/${photoId}.jpg`));
   }
@@ -369,8 +378,10 @@ test('actual Worker bearer comparison rejects malformed and varied-length creden
   assert.equal((await (await instance.getR2Bucket('PHOTOS')).list()).objects.length, 0);
   const headers = { Authorization: `Bearer ${device}`, 'Content-Type': 'image/jpeg' };
   assert.equal((await instance.dispatchFetch(path, { method: 'PUT', headers, body: jpeg })).status, 201);
+  const photoIds = [photoId, ...fivePhotos().slice(0, 4)];
+  for (const id of photoIds.slice(1)) assert.equal((await instance.dispatchFetch(`https://gallery.example/v1/sessions/${sessionId}/photos/${id}`, { method: 'PUT', headers, body: jpeg })).status, 201);
   const response = await instance.dispatchFetch(`https://gallery.example/v1/sessions/${sessionId}/ready`, {
-    method: 'POST', headers, body: JSON.stringify({ photoIds: [photoId] }),
+    method: 'POST', headers, body: JSON.stringify({ photoIds }),
   });
   assert.equal(response.status, 200);
   assert.equal((await response.json() as Gallery).status, 'ready');
@@ -386,4 +397,20 @@ test('native Worker rate-limit binding enforces its budget before repeated galle
   assert.equal(blocked.status, 429);
   assert.equal(blocked.headers.get('Retry-After'), '60');
   assert.equal(blocked.headers.get('Cache-Control'), 'private, no-store');
+});
+
+
+test('legacy manifest replay remains immutable without allowing new partial galleries', async () => {
+  const result = await gallery();
+  const bucket = await runtime.getR2Bucket('PHOTOS'), key = galleryKey(result.url);
+  const saved = await (await bucket.get(key))!.json<Record<string, unknown>>();
+  const legacy = [result.photoIds[0]!];
+  await bucket.put(key, JSON.stringify({ ...saved, photoIds: legacy }));
+  const replay = await ready(result.sessionId, legacy);
+  assert.equal(replay.status, 200);
+  assert.equal((await replay.json() as Gallery).expiresAt, result.expiresAt);
+  assert.equal((await ready(result.sessionId, result.photoIds)).status, 409);
+  assert.equal((await runtime.dispatchFetch(result.url)).status, 200);
+  assert.equal((await runtime.dispatchFetch(`${result.url}/photos/${legacy[0]}?download=1`)).status, 200);
+  assert.equal((await shareRequest(result.sessionId)).status, 409);
 });

@@ -3,7 +3,7 @@
   // This deliberately contains no account ID, zone ID, secret, or active route.
   // Do not change the existing gizelleandrami Worker, apex or www routes.
   "$schema": "../../node_modules/wrangler/config-schema.json",
-  "name": "wedding-photobooth-proposed",
+  "name": "wedding-photobooth",
   "main": "src/index.ts",
   "compatibility_date": "2026-10-25",
   "workers_dev": false,
@@ -25,11 +25,23 @@
   "vars": {
     "MODE": "production",
     "SMS_MODE": "mock",
+    "PAIRING_ENABLED": "disabled",
+    "PAIRING_TTL_SECONDS": "300",
+    "TEXTBELT_TEST_ENABLED": "disabled",
+    "TEXTBELT_LIVE_APPROVED": "false",
+    "TEXTBELT_ELIGIBILITY_APPROVED": "false",
     "PUBLIC_ORIGIN": "https://photos.gizelleandrami.com",
     "LINK_TTL_SECONDS": "604800"
   },
   // Inject distinct, random secrets DEVICE_TOKEN and LINK_SIGNING_KEY securely.
   // Each must have at least 32 bytes and at least 12 distinct characters.
+  // TEXTBELT_API_KEY is a server-only secret on this isolated Worker. Never
+  // retrieve/copy/change any secret or route on the existing gizelleandrami Worker.
+  // Textbelt test/live modes remain locked until the corresponding owner approvals;
+  // paid credits alone do not establish sender or personal-use eligibility.
+  // Pairing uses the two booth credentials above; no third bootstrap secret exists.
+  // Enabling PAIRING_ENABLED=approved lets any booth-token holder issue a short-lived
+  // single-use pairing code. The app must use OS authentication and Keychain storage.
   // Keep LINK_SIGNING_KEY stable while links are valid. Rotation revokes old links.
   // Guest access is checked in the Worker; never expose the R2 bucket publicly.
   // Gallery tokens occur in URL paths: query redaction alone is insufficient.

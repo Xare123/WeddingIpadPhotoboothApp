@@ -9,6 +9,12 @@ export interface Env {
   LINK_SIGNING_KEY?: string;
   PUBLIC_ORIGIN?: string;
   LINK_TTL_SECONDS?: string;
+  PAIRING_ENABLED?: string;
+  PAIRING_TTL_SECONDS?: string;
+  TEXTBELT_API_KEY?: string;
+  TEXTBELT_TEST_ENABLED?: string;
+  TEXTBELT_LIVE_APPROVED?: string;
+  TEXTBELT_ELIGIBILITY_APPROVED?: string;
   RATE_GALLERY_GLOBAL?: RateLimit;
   RATE_GALLERY_CLIENT?: RateLimit;
   RATE_PHOTO_GLOBAL?: RateLimit;
@@ -21,12 +27,16 @@ export interface Env {
 
 type Config = { deviceToken: string; signingKey: string; origin: string; ttlMs: number };
 type Gallery = { version: 1; sessionId: string; photoIds: string[]; expiresAt: number };
-type ShareRecord = { sessionId: string; recipientFingerprint: string; status: 'pending' | 'mocked' | 'mock_failed' };
+type SmsStatus = 'mocked' | 'mock_failed' | 'accepted' | 'test_accepted' | 'rejected' | 'uncertain';
+type SmsResult = { status: SmsStatus; message: string; retryable: boolean; safeToRetry?: boolean; deliveryStatus?: 'unconfirmed' };
+type ShareRecord = { sessionId: string; recipientFingerprint: string; status: 'pending' | 'sending' | SmsStatus };
+type DeliveryRecord = ShareRecord & { shareId: string; mode: string; attemptId?: string };
+type PairingRecord = { issuanceId: string; expiresAt: number; state: 'issued' | 'consumed'; deviceVersion: string; signingVersion: string };
 export interface SmsProvider {
-  // A future approved adapter must honor this idempotency key on retries. No live
-  // provider is included; selecting any other SMS_MODE fails closed.
+  // Textbelt has no provider-side idempotency guarantee. The caller must claim
+  // a durable delivery fence before calling send, and never retry uncertainty.
   send(input: { idempotencyKey: string; to: string; galleryUrl: string }): Promise<{
-    status: 'mocked' | 'mock_failed'; message: string; retryable: boolean;
+    status: SmsStatus; message: string; retryable: boolean; safeToRetry?: boolean; deliveryStatus?: 'unconfirmed';
   }>;
 }
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -73,7 +83,7 @@ const rateBindings = [
 type RateBand = 'GALLERY' | 'PHOTO' | 'API' | 'SHARE';
 function rateBand(url: URL): RateBand | undefined {
   if (url.pathname.startsWith('/g/')) return /^\/g\/[^/]+\/photos\//.test(url.pathname) ? 'PHOTO' : 'GALLERY';
-  if (url.pathname === '/v1/shares') return 'SHARE';
+  if (url.pathname === '/v1/shares' || url.pathname.startsWith('/v1/pairing/')) return 'SHARE';
   if (url.pathname.startsWith('/v1/')) return 'API';
 }
 function limitResponse(url: URL, status: 429 | 503): Response {
@@ -135,7 +145,7 @@ function configFor(url: URL, env: Env): Config | undefined {
     url.origin !== origin.origin) return;
   return { deviceToken: env.DEVICE_TOKEN, signingKey: env.LINK_SIGNING_KEY, origin: origin.origin, ttlMs: ttl * 1000 };
 }
-async function readLimited(request: Request, limit: number): Promise<Uint8Array | undefined> {
+async function readLimited(request: Pick<Request, 'body'>, limit: number): Promise<Uint8Array | undefined> {
   const reader = request.body?.getReader();
   if (!reader) return new Uint8Array();
   const chunks: Uint8Array[] = [];
@@ -152,8 +162,8 @@ async function readLimited(request: Request, limit: number): Promise<Uint8Array 
   for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
   return bytes;
 }
-async function readJson(request: Request): Promise<Record<string, unknown> | Response> {
-  const bytes = await readLimited(request, 16_384);
+async function readJson(request: Request, limit = 16_384): Promise<Record<string, unknown> | Response> {
+  const bytes = await readLimited(request, limit);
   if (!bytes) return json({ error: 'Request too large' }, 413);
   try {
     const body: unknown = JSON.parse(new TextDecoder().decode(bytes));
@@ -177,6 +187,124 @@ function mockProvider(mode: string): SmsProvider | undefined {
     return mode === 'mock' ? { status: 'mocked', message: 'No text message was sent', retryable: false } :
       { status: 'mock_failed', message: 'Simulated provider failure; no text message was sent', retryable: true };
   } };
+}
+function smsResult(status: SmsStatus): SmsResult {
+  switch (status) {
+    case 'accepted': return { status, message: 'Textbelt accepted the request; delivery is not confirmed', retryable: false, deliveryStatus: 'unconfirmed' };
+    case 'test_accepted': return { status, message: 'Textbelt test accepted; no text message was sent', retryable: false };
+    case 'rejected': return { status, message: 'Textbelt rejected the request; an operator may explicitly retry', retryable: false, safeToRetry: true };
+    case 'uncertain': return { status, message: 'The send outcome is unknown; no automatic resend will occur. Use the gallery link.', retryable: false, safeToRetry: false };
+    case 'mocked': return { status, message: 'No text message was sent', retryable: false };
+    case 'mock_failed': return { status, message: 'Simulated provider failure; no text message was sent', retryable: true };
+  }
+}
+/** Injectable boundary. Tests MUST pass a fake fetch; never call a real provider. */
+export function createTextbeltProvider(apiKey: string, testMode: boolean, fetcher: typeof fetch): SmsProvider {
+  return { async send({ to, galleryUrl }) {
+    try {
+      const response = await fetcher('https://textbelt.com/text', {
+        method: 'POST', redirect: 'manual', signal: AbortSignal.timeout(10_000),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+        body: new URLSearchParams({ phone: to, message: `Your wedding photos are ready: ${galleryUrl}`, key: testMode ? `${apiKey}_test` : apiKey }).toString(),
+      });
+      // A transport/HTTP/parser failure can happen after a provider accepted the
+      // request. Textbelt offers no deduplication contract, so never resend it.
+      if (!response.ok) return smsResult('uncertain');
+      const bytes = await readLimited(response, 4096);
+      if (!bytes) return smsResult('uncertain');
+      const result: unknown = JSON.parse(new TextDecoder().decode(bytes));
+      if (!result || typeof result !== 'object' || !('success' in result)) return smsResult('uncertain');
+      if (result.success === false) return smsResult('rejected');
+      if (result.success !== true) return smsResult('uncertain');
+      // Never persist or echo provider error bodies, quota metadata, phone, key,
+      // message text, or other untrusted provider response fields.
+      return smsResult(testMode ? 'test_accepted' : 'accepted');
+    } catch { return smsResult('uncertain'); }
+  } };
+}
+function smsProvider(env: Env): SmsProvider | undefined {
+  const mock = mockProvider(env.SMS_MODE);
+  if (mock) return mock;
+  const key = env.TEXTBELT_API_KEY;
+  if (!key || key.length > 512 || /\s/.test(key) || key === 'textbelt' || key.endsWith('_test')) return;
+  if (env.SMS_MODE === 'textbelt-test' && env.TEXTBELT_TEST_ENABLED === 'approved') return createTextbeltProvider(key, true, fetch);
+  if (env.SMS_MODE === 'textbelt' && env.TEXTBELT_LIVE_APPROVED === 'true' && env.TEXTBELT_ELIGIBILITY_APPROVED === 'true')
+    return createTextbeltProvider(key, false, fetch);
+}
+function liveSmsAvailable(env: Env): boolean {
+  return env.SMS_MODE === 'textbelt' && !!smsProvider(env);
+}
+async function textbeltShare(env: Env, provider: SmsProvider, shareId: string, fresh: ShareRecord,
+  phone: string, galleryUrl: string, expiresAt: number, explicitRetry: boolean): Promise<Response> {
+  // One recipient per session. This independent session fence survives gallery
+  // signing-key rotation and prevents new share IDs from bypassing uncertainty.
+  const key = `sms-deliveries/textbelt/${fresh.sessionId}.json`;
+  await env.PHOTOS.put(key, JSON.stringify({ ...fresh, shareId, mode: env.SMS_MODE }), { onlyIf: { etagDoesNotMatch: '*' } });
+  const saved = await env.PHOTOS.get(key);
+  if (!saved) throw new Error('Missing delivery fence');
+  const record = await saved.json<DeliveryRecord>();
+  if (record.recipientFingerprint !== fresh.recipientFingerprint || record.mode !== env.SMS_MODE)
+    return json({ error: 'Session SMS is already reserved; use the gallery link', retryable: false }, 409);
+  const respond = (status: SmsStatus) => json({ ...smsResult(status), url: galleryUrl, expiresAt }, status === 'uncertain' ? 202 : 200);
+  if (record.status === 'sending' || record.status === 'uncertain') return respond('uncertain');
+  if (record.status !== 'pending' && record.status !== 'rejected') return respond(record.status);
+  if (record.status === 'rejected' && !explicitRetry) return respond('rejected');
+  if (record.shareId !== shareId) return json({ error: 'Use the original share id for an explicit retry', retryable: false }, 409);
+  // Each claim changes its content-derived R2 ETag, including explicit retries.
+  // An old attempt can never satisfy the current attempt's conditional write.
+  const attempt = { ...record, status: 'sending', attemptId: crypto.randomUUID() };
+  const claimed = await env.PHOTOS.put(key, JSON.stringify(attempt), { onlyIf: { etagMatches: saved.etag } });
+  if (!claimed) return respond('uncertain');
+  // Persisted 'sending' is intentionally never reset by timeout or a new ID.
+  // A process crash, lost response, or failed final write cannot cause a resend.
+  const outcome = await provider.send({ idempotencyKey: shareId, to: phone, galleryUrl });
+  try {
+    const updated = await env.PHOTOS.put(key, JSON.stringify({ ...attempt, status: outcome.status }), { onlyIf: { etagMatches: claimed.etag } });
+    if (!updated) return respond('uncertain');
+  } catch { return respond('uncertain'); }
+  return respond(outcome.status);
+}
+async function pairing(request: Request, env: Env, config: Config, path: string): Promise<Response> {
+  const ttl = env.PAIRING_TTL_SECONDS === undefined ? 300 : Number(env.PAIRING_TTL_SECONDS);
+  if (env.PAIRING_ENABLED !== 'approved' || !Number.isInteger(ttl) || ttl < 60 || ttl > 600)
+    return json({ error: 'Device pairing is disabled' }, 503);
+  if (request.method !== 'POST') return json({ error: 'Not found' }, 404);
+  if (path === '/v1/pairing/codes' && !await deviceAuthorized(request, config.deviceToken)) return json({ error: 'Unauthorized' }, 401);
+  const body = await readJson(request, 1024);
+  if (body instanceof Response) return body;
+  const deviceVersion = await digest(encoder.encode(config.deviceToken));
+  const signingVersion = await digest(encoder.encode(config.signingKey));
+  if (path === '/v1/pairing/codes') {
+    if (typeof body.id !== 'string' || !uuid.test(body.id)) return json({ error: 'Valid issuance id required' }, 400);
+    const issuanceId = body.id.toLowerCase();
+    const code = await signed(`pair:v1:${issuanceId}`, config.signingKey);
+    const key = `pairing/${await digest(encoder.encode(code))}.json`;
+    const fresh: PairingRecord = { issuanceId, expiresAt: Date.now() + ttl * 1000, state: 'issued', deviceVersion, signingVersion };
+    await env.PHOTOS.put(key, JSON.stringify(fresh), { onlyIf: { etagDoesNotMatch: '*' } });
+    const object = await env.PHOTOS.get(key);
+    if (!object) throw new Error('Missing pairing record');
+    const saved = await object.json<PairingRecord>();
+    if (saved.state !== 'issued') return json({ error: 'Pairing code already consumed; issue a new code' }, 409);
+    if (saved.expiresAt <= Date.now() || saved.deviceVersion !== deviceVersion || saved.signingVersion !== signingVersion) return json({ error: 'Pairing code expired or revoked; issue a new code' }, 410);
+    return json({ status: 'issued', code, expiresAt: saved.expiresAt, origin: config.origin });
+  }
+  if (path !== '/v1/pairing/consume') return json({ error: 'Not found' }, 404);
+  if (typeof body.code !== 'string' || !/^[a-f0-9]{64}$/.test(body.code)) return json({ error: 'Valid pairing code required' }, 400);
+  const key = `pairing/${await digest(encoder.encode(body.code))}.json`;
+  const object = await env.PHOTOS.get(key);
+  if (!object) return json({ error: 'Pairing code unavailable' }, 404);
+  const saved = await object.json<PairingRecord>();
+  const currentCode = await signed(`pair:v1:${saved.issuanceId}`, config.signingKey);
+  if (saved.expiresAt <= Date.now() || saved.deviceVersion !== deviceVersion || saved.signingVersion !== signingVersion ||
+    !crypto.subtle.timingSafeEqual(encoder.encode(body.code), encoder.encode(currentCode)))
+    return json({ error: 'Pairing code expired or revoked' }, 410);
+  if (saved.state !== 'issued') return json({ error: 'Pairing code already consumed; issue a new code' }, 409);
+  const consumed = await env.PHOTOS.put(key, JSON.stringify({ ...saved, state: 'consumed' }), { onlyIf: { etagMatches: object.etag } });
+  if (!consumed) return json({ error: 'Pairing code already consumed; issue a new code' }, 409);
+  // Single-use, fail-closed claim. A lost response requires a fresh owner-issued
+  // code; it never replays a credential. OS authentication and Keychain storage
+  // belong to the app; the server does not claim hardware/Face ID attestation.
+  return json({ status: 'paired', deviceToken: config.deviceToken, origin: config.origin });
 }
 const galleryStyles = `
   :root{color-scheme:light;--paper:#f6efe4;--ink:#3b342b;--muted:#6d6256;--line:#dcd1bf;--white:#fbf6ec;--forest:#9a4f32}
@@ -227,7 +355,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
   const protection = await protectStorage(request, url, env);
   if (protection) return protection;
   if (url.pathname === '/health' && request.method === 'GET')
-    return json({ status: 'ok', storage: env.MODE === 'local' ? 'local-r2' : 'private-r2', sms: env.SMS_MODE });
+    return json({ status: 'ok', storage: env.MODE === 'local' ? 'local-r2' : 'private-r2', sms: env.SMS_MODE, smsAvailable: liveSmsAvailable(env) });
 
   const guest = /^\/g\/([a-f0-9]{64})(?:\/photos\/([0-9a-f-]+))?$/.exec(url.pathname);
   if (guest && request.method === 'GET') {
@@ -254,6 +382,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
     } });
   }
   if (!url.pathname.startsWith('/v1/')) return request.method === 'GET' && url.pathname.startsWith('/g/') ? unavailableGallery(404) : json({ error: 'Not found' }, 404);
+  if (url.pathname === '/v1/pairing/codes' || url.pathname === '/v1/pairing/consume') return pairing(request, env, config, url.pathname);
   if (!await deviceAuthorized(request, config.deviceToken)) return json({ error: 'Unauthorized' }, 401);
   const upload = /^\/v1\/sessions\/([0-9a-f-]+)\/photos\/([0-9a-f-]+)$/i.exec(url.pathname);
   if (upload && request.method === 'PUT') {
@@ -298,6 +427,14 @@ async function handle(request: Request, env: Env): Promise<Response> {
       if (new Set(photoIds).size !== photoIds.length) return json({ error: 'Duplicate photo IDs' }, 400);
       if (await env.PHOTOS.head(sessionRevokedKey(sessionId)) || await env.PHOTOS.head(revokedKey(hash)))
         return json({ error: 'Link revoked' }, 410);
+      const existing = await env.PHOTOS.head(galleryKey(hash));
+      if (existing) {
+        const saved = await loadGallery(env, hash);
+        if (saved instanceof Response) return saved;
+        if (!samePhotos(saved.photoIds, photoIds)) return json({ error: 'Ready gallery photo list is immutable' }, 409);
+        return json({ status: 'ready', url: `${config.origin}/g/${token}`, expiresAt: saved.expiresAt });
+      }
+      if (photoIds.length !== 5) return json({ error: 'Exactly five photo IDs are required for a new gallery' }, 400);
       const uploaded = await Promise.all(photoIds.map(id => env.PHOTOS.head(photoKey(sessionId, id))));
       if (uploaded.some(photo => !photo?.customMetadata?.sha256)) return json({ error: 'All photos must finish uploading before gallery is ready' }, 409);
       const manifest: Gallery = { version: 1, sessionId, photoIds, expiresAt: Date.now() + config.ttlMs };
@@ -309,7 +446,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
     }
   }
   if (url.pathname === '/v1/shares' && request.method === 'POST') {
-    const provider = mockProvider(env.SMS_MODE);
+    const provider = smsProvider(env);
     if (!provider) return json({ error: 'Live SMS disabled; an approved provider and sender are required' }, 503);
     const body = await readJson(request);
     if (body instanceof Response) return body;
@@ -322,6 +459,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
     const hash = await digest(encoder.encode(token));
     const gallery = await loadGallery(env, hash);
     if (gallery instanceof Response) return gallery.status === 404 ? json({ error: 'Gallery must be ready before sharing' }, 409) : gallery;
+    if (gallery.photoIds.length !== 5) return json({ error: 'A complete five-photo gallery is required before sharing', retryable: false }, 409);
     const key = `shares/${body.id.toLowerCase()}.json`;
     const fingerprint = await signed(`recipient:v1:${body.phone}`, config.signingKey);
     const fresh: ShareRecord = { sessionId, recipientFingerprint: fingerprint, status: 'pending' };
@@ -332,6 +470,8 @@ async function handle(request: Request, env: Env): Promise<Response> {
     if (record.sessionId !== sessionId || record.recipientFingerprint !== fingerprint) return json({ error: 'Share id already used' }, 409);
     const galleryUrl = `${config.origin}/g/${token}`;
     if (record.status === 'mocked') return json({ status: 'mocked', message: 'No text message was sent', retryable: false, url: galleryUrl, expiresAt: gallery.expiresAt });
+    if (env.SMS_MODE === 'textbelt' || env.SMS_MODE === 'textbelt-test')
+      return textbeltShare(env, provider, body.id.toLowerCase(), fresh, body.phone, galleryUrl, gallery.expiresAt, body.retryRejected === true);
     const result = await provider.send({ idempotencyKey: body.id.toLowerCase(), to: body.phone, galleryUrl });
     // CAS prevents a late retry from overwriting another attempt's successful result.
     const updated = await env.PHOTOS.put(key, JSON.stringify({ ...record, status: result.status }), { onlyIf: { etagMatches: saved.etag } });

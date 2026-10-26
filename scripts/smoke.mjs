@@ -7,20 +7,23 @@ const origin = 'http://127.0.0.1:8787';
 const headers = { Authorization: 'Bearer local-development-only' };
 const jpeg = new Uint8Array([255, 216, 255, 224, 0, 2, 255, 217]);
 assert.deepEqual(await (await fetch(`${origin}/health`)).json(), {
-  status: 'ok', storage: 'local-r2', sms: 'mock',
+  status: 'ok', storage: 'local-r2', sms: 'mock', smsAvailable: false,
 });
-const sessionId = randomUUID(), photoId = randomUUID(), shareId = randomUUID();
+const sessionId = randomUUID(), photoIds = Array.from({ length: 5 }, () => randomUUID()), shareId = randomUUID();
+const photoId = photoIds[0];
 const ready = () => fetch(`${origin}/v1/sessions/${sessionId}/ready`, {
   method: 'POST', headers: { ...headers, 'Content-Type': 'application/json' },
-  body: JSON.stringify({ photoIds: [photoId] }),
+  body: JSON.stringify({ photoIds }),
 });
 assert.equal((await ready()).status, 409);
 assert.equal((await fetch(`${origin}/v1/sessions/${sessionId}/photos/${photoId}`, { method: 'PUT', body: jpeg })).status, 401);
-for (const expected of [201, 200]) {
-  const upload = await fetch(`${origin}/v1/sessions/${sessionId}/photos/${photoId}`, {
-    method: 'PUT', headers: { ...headers, 'Content-Type': 'image/jpeg' }, body: jpeg,
-  });
-  assert.equal(upload.status, expected);
+for (const id of photoIds) {
+  for (const expected of [201, 200]) {
+    const upload = await fetch(`${origin}/v1/sessions/${sessionId}/photos/${id}`, {
+      method: 'PUT', headers: { ...headers, 'Content-Type': 'image/jpeg' }, body: jpeg,
+    });
+    assert.equal(upload.status, expected);
+  }
 }
 const completed = await ready();
 assert.equal(completed.status, 200);
@@ -59,4 +62,4 @@ assert.equal(revoked.status, 200);
 assert.equal((await fetch(result.url)).status, 410);
 assert.equal((await fetch(`${result.url}/photos/${photoId}?download=1`)).status, 410);
 assert.equal((await ready()).status, 410);
-console.log('PASS: local authenticated immutable upload/replay, readiness, scoped private gallery/download, consent, mock sharing, and revocation. No SMS sent.');
+console.log('PASS: local five-photo authenticated immutable upload/replay, readiness, scoped private gallery/download, consent, mock sharing, and revocation. No SMS sent.');

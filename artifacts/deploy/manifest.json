@@ -1,24 +1,40 @@
 {
   "artifact": "worker.mjs",
   "format": "esm",
-  "generatedAt": "2026-10-26T00:14:19.496Z",
-  "sha256": "fa45361fd720d716df92efcc8f4917d53fbba3b55c3d1c00c463604dce8ca870",
-  "sourceSha256": "4801a7cfcc475da2fa2d180b1a01dc5d98b996cf1dd830cf31f66f7dfb9f42b9",
-  "bytes": 24446,
+  "generatedAt": "2026-10-26T05:53:57.301Z",
+  "sha256": "5cc1e7390ecebc05d7815bf0b7819c5aca2478f6db105adac81d10cd9f3672c9",
+  "sourceSha256": "3578656e2ce56933da398a0179c664c77fa788e5c99e267b5d5e0b10ce94cbe1",
+  "bytes": 33225,
   "compatibilityDate": "2026-10-25",
-  "proposedWorker": "wedding-photobooth-proposed",
+  "proposedWorker": "wedding-photobooth",
   "existingPrivateBucket": "gizelleandrami-photoboothphotos",
   "proposedOrigin": "https://photos.gizelleandrami.com",
   "variables": {
     "MODE": "production",
     "SMS_MODE": "mock",
+    "PAIRING_ENABLED": "disabled",
+    "PAIRING_TTL_SECONDS": "300",
+    "TEXTBELT_TEST_ENABLED": "disabled",
+    "TEXTBELT_LIVE_APPROVED": "false",
+    "TEXTBELT_ELIGIBILITY_APPROVED": "false",
     "PUBLIC_ORIGIN": "https://photos.gizelleandrami.com",
     "LINK_TTL_SECONDS": "604800"
   },
   "secretNames": [
     "DEVICE_TOKEN",
+    "LINK_SIGNING_KEY",
+    "TEXTBELT_API_KEY"
+  ],
+  "requiredSecretNames": [
+    "DEVICE_TOKEN",
     "LINK_SIGNING_KEY"
   ],
+  "optionalSecretNames": {
+    "approvedSms": [
+      "TEXTBELT_API_KEY"
+    ]
+  },
+  "pairingUsesExistingBoothAuthority": true,
   "binding": {
     "name": "PHOTOS",
     "type": "r2_bucket",
@@ -111,6 +127,31 @@
       "name": "SMS_MODE",
       "type": "plain_text",
       "text": "mock"
+    },
+    {
+      "name": "PAIRING_ENABLED",
+      "type": "plain_text",
+      "text": "disabled"
+    },
+    {
+      "name": "PAIRING_TTL_SECONDS",
+      "type": "plain_text",
+      "text": "300"
+    },
+    {
+      "name": "TEXTBELT_TEST_ENABLED",
+      "type": "plain_text",
+      "text": "disabled"
+    },
+    {
+      "name": "TEXTBELT_LIVE_APPROVED",
+      "type": "plain_text",
+      "text": "false"
+    },
+    {
+      "name": "TEXTBELT_ELIGIBILITY_APPROVED",
+      "type": "plain_text",
+      "text": "false"
     },
     {
       "name": "PUBLIC_ORIGIN",
@@ -218,6 +259,31 @@
         "text": "mock"
       },
       {
+        "name": "PAIRING_ENABLED",
+        "type": "plain_text",
+        "text": "disabled"
+      },
+      {
+        "name": "PAIRING_TTL_SECONDS",
+        "type": "plain_text",
+        "text": "300"
+      },
+      {
+        "name": "TEXTBELT_TEST_ENABLED",
+        "type": "plain_text",
+        "text": "disabled"
+      },
+      {
+        "name": "TEXTBELT_LIVE_APPROVED",
+        "type": "plain_text",
+        "text": "false"
+      },
+      {
+        "name": "TEXTBELT_ELIGIBILITY_APPROVED",
+        "type": "plain_text",
+        "text": "false"
+      },
+      {
         "name": "PUBLIC_ORIGIN",
         "type": "plain_text",
         "text": "https://photos.gizelleandrami.com"
@@ -249,6 +315,9 @@
         "destinations": []
       }
     },
+    "keep_bindings": [
+      "secret_text"
+    ],
     "logpush": false,
     "tail_consumers": []
   },

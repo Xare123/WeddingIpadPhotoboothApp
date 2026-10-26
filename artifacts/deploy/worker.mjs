@@ -42,7 +42,7 @@ var rateBindings = [
 ];
 function rateBand(url) {
   if (url.pathname.startsWith("/g/")) return /^\/g\/[^/]+\/photos\//.test(url.pathname) ? "PHOTO" : "GALLERY";
-  if (url.pathname === "/v1/shares") return "SHARE";
+  if (url.pathname === "/v1/shares" || url.pathname.startsWith("/v1/pairing/")) return "SHARE";
   if (url.pathname.startsWith("/v1/")) return "API";
 }
 function limitResponse(url, status) {
@@ -121,8 +121,8 @@ async function readLimited(request, limit) {
   }
   return bytes;
 }
-async function readJson(request) {
-  const bytes = await readLimited(request, 16384);
+async function readJson(request, limit = 16384) {
+  const bytes = await readLimited(request, limit);
   if (!bytes) return json({ error: "Request too large" }, 413);
   try {
     const body = JSON.parse(new TextDecoder().decode(bytes));
@@ -147,6 +147,120 @@ function mockProvider(mode) {
   return { async send() {
     return mode === "mock" ? { status: "mocked", message: "No text message was sent", retryable: false } : { status: "mock_failed", message: "Simulated provider failure; no text message was sent", retryable: true };
   } };
+}
+function smsResult(status) {
+  switch (status) {
+    case "accepted":
+      return { status, message: "Textbelt accepted the request; delivery is not confirmed", retryable: false, deliveryStatus: "unconfirmed" };
+    case "test_accepted":
+      return { status, message: "Textbelt test accepted; no text message was sent", retryable: false };
+    case "rejected":
+      return { status, message: "Textbelt rejected the request; an operator may explicitly retry", retryable: false, safeToRetry: true };
+    case "uncertain":
+      return { status, message: "The send outcome is unknown; no automatic resend will occur. Use the gallery link.", retryable: false, safeToRetry: false };
+    case "mocked":
+      return { status, message: "No text message was sent", retryable: false };
+    case "mock_failed":
+      return { status, message: "Simulated provider failure; no text message was sent", retryable: true };
+  }
+}
+function createTextbeltProvider(apiKey, testMode, fetcher) {
+  return { async send({ to, galleryUrl }) {
+    try {
+      const response = await fetcher("https://textbelt.com/text", {
+        method: "POST",
+        redirect: "manual",
+        signal: AbortSignal.timeout(1e4),
+        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+        body: new URLSearchParams({ phone: to, message: `Your wedding photos are ready: ${galleryUrl}`, key: testMode ? `${apiKey}_test` : apiKey }).toString()
+      });
+      if (!response.ok) return smsResult("uncertain");
+      const bytes = await readLimited(response, 4096);
+      if (!bytes) return smsResult("uncertain");
+      const result = JSON.parse(new TextDecoder().decode(bytes));
+      if (!result || typeof result !== "object" || !("success" in result)) return smsResult("uncertain");
+      if (result.success === false) return smsResult("rejected");
+      if (result.success !== true) return smsResult("uncertain");
+      return smsResult(testMode ? "test_accepted" : "accepted");
+    } catch {
+      return smsResult("uncertain");
+    }
+  } };
+}
+function smsProvider(env) {
+  const mock = mockProvider(env.SMS_MODE);
+  if (mock) return mock;
+  const key = env.TEXTBELT_API_KEY;
+  if (!key || key.length > 512 || /\s/.test(key) || key === "textbelt" || key.endsWith("_test")) return;
+  if (env.SMS_MODE === "textbelt-test" && env.TEXTBELT_TEST_ENABLED === "approved") return createTextbeltProvider(key, true, fetch);
+  if (env.SMS_MODE === "textbelt" && env.TEXTBELT_LIVE_APPROVED === "true" && env.TEXTBELT_ELIGIBILITY_APPROVED === "true")
+    return createTextbeltProvider(key, false, fetch);
+}
+function liveSmsAvailable(env) {
+  return env.SMS_MODE === "textbelt" && !!smsProvider(env);
+}
+async function textbeltShare(env, provider, shareId, fresh, phone, galleryUrl, expiresAt, explicitRetry) {
+  const key = `sms-deliveries/textbelt/${fresh.sessionId}.json`;
+  await env.PHOTOS.put(key, JSON.stringify({ ...fresh, shareId, mode: env.SMS_MODE }), { onlyIf: { etagDoesNotMatch: "*" } });
+  const saved = await env.PHOTOS.get(key);
+  if (!saved) throw new Error("Missing delivery fence");
+  const record = await saved.json();
+  if (record.recipientFingerprint !== fresh.recipientFingerprint || record.mode !== env.SMS_MODE)
+    return json({ error: "Session SMS is already reserved; use the gallery link", retryable: false }, 409);
+  const respond = (status) => json({ ...smsResult(status), url: galleryUrl, expiresAt }, status === "uncertain" ? 202 : 200);
+  if (record.status === "sending" || record.status === "uncertain") return respond("uncertain");
+  if (record.status !== "pending" && record.status !== "rejected") return respond(record.status);
+  if (record.status === "rejected" && !explicitRetry) return respond("rejected");
+  if (record.shareId !== shareId) return json({ error: "Use the original share id for an explicit retry", retryable: false }, 409);
+  const attempt = { ...record, status: "sending", attemptId: crypto.randomUUID() };
+  const claimed = await env.PHOTOS.put(key, JSON.stringify(attempt), { onlyIf: { etagMatches: saved.etag } });
+  if (!claimed) return respond("uncertain");
+  const outcome = await provider.send({ idempotencyKey: shareId, to: phone, galleryUrl });
+  try {
+    const updated = await env.PHOTOS.put(key, JSON.stringify({ ...attempt, status: outcome.status }), { onlyIf: { etagMatches: claimed.etag } });
+    if (!updated) return respond("uncertain");
+  } catch {
+    return respond("uncertain");
+  }
+  return respond(outcome.status);
+}
+async function pairing(request, env, config, path) {
+  const ttl = env.PAIRING_TTL_SECONDS === void 0 ? 300 : Number(env.PAIRING_TTL_SECONDS);
+  if (env.PAIRING_ENABLED !== "approved" || !Number.isInteger(ttl) || ttl < 60 || ttl > 600)
+    return json({ error: "Device pairing is disabled" }, 503);
+  if (request.method !== "POST") return json({ error: "Not found" }, 404);
+  if (path === "/v1/pairing/codes" && !await deviceAuthorized(request, config.deviceToken)) return json({ error: "Unauthorized" }, 401);
+  const body = await readJson(request, 1024);
+  if (body instanceof Response) return body;
+  const deviceVersion = await digest(encoder.encode(config.deviceToken));
+  const signingVersion = await digest(encoder.encode(config.signingKey));
+  if (path === "/v1/pairing/codes") {
+    if (typeof body.id !== "string" || !uuid.test(body.id)) return json({ error: "Valid issuance id required" }, 400);
+    const issuanceId = body.id.toLowerCase();
+    const code = await signed(`pair:v1:${issuanceId}`, config.signingKey);
+    const key2 = `pairing/${await digest(encoder.encode(code))}.json`;
+    const fresh = { issuanceId, expiresAt: Date.now() + ttl * 1e3, state: "issued", deviceVersion, signingVersion };
+    await env.PHOTOS.put(key2, JSON.stringify(fresh), { onlyIf: { etagDoesNotMatch: "*" } });
+    const object2 = await env.PHOTOS.get(key2);
+    if (!object2) throw new Error("Missing pairing record");
+    const saved2 = await object2.json();
+    if (saved2.state !== "issued") return json({ error: "Pairing code already consumed; issue a new code" }, 409);
+    if (saved2.expiresAt <= Date.now() || saved2.deviceVersion !== deviceVersion || saved2.signingVersion !== signingVersion) return json({ error: "Pairing code expired or revoked; issue a new code" }, 410);
+    return json({ status: "issued", code, expiresAt: saved2.expiresAt, origin: config.origin });
+  }
+  if (path !== "/v1/pairing/consume") return json({ error: "Not found" }, 404);
+  if (typeof body.code !== "string" || !/^[a-f0-9]{64}$/.test(body.code)) return json({ error: "Valid pairing code required" }, 400);
+  const key = `pairing/${await digest(encoder.encode(body.code))}.json`;
+  const object = await env.PHOTOS.get(key);
+  if (!object) return json({ error: "Pairing code unavailable" }, 404);
+  const saved = await object.json();
+  const currentCode = await signed(`pair:v1:${saved.issuanceId}`, config.signingKey);
+  if (saved.expiresAt <= Date.now() || saved.deviceVersion !== deviceVersion || saved.signingVersion !== signingVersion || !crypto.subtle.timingSafeEqual(encoder.encode(body.code), encoder.encode(currentCode)))
+    return json({ error: "Pairing code expired or revoked" }, 410);
+  if (saved.state !== "issued") return json({ error: "Pairing code already consumed; issue a new code" }, 409);
+  const consumed = await env.PHOTOS.put(key, JSON.stringify({ ...saved, state: "consumed" }), { onlyIf: { etagMatches: object.etag } });
+  if (!consumed) return json({ error: "Pairing code already consumed; issue a new code" }, 409);
+  return json({ status: "paired", deviceToken: config.deviceToken, origin: config.origin });
 }
 var galleryStyles = `
   :root{color-scheme:light;--paper:#f6efe4;--ink:#3b342b;--muted:#6d6256;--line:#dcd1bf;--white:#fbf6ec;--forest:#9a4f32}
@@ -193,7 +307,7 @@ async function handle(request, env) {
   const protection = await protectStorage(request, url, env);
   if (protection) return protection;
   if (url.pathname === "/health" && request.method === "GET")
-    return json({ status: "ok", storage: env.MODE === "local" ? "local-r2" : "private-r2", sms: env.SMS_MODE });
+    return json({ status: "ok", storage: env.MODE === "local" ? "local-r2" : "private-r2", sms: env.SMS_MODE, smsAvailable: liveSmsAvailable(env) });
   const guest = /^\/g\/([a-f0-9]{64})(?:\/photos\/([0-9a-f-]+))?$/.exec(url.pathname);
   if (guest && request.method === "GET") {
     const token = guest[1];
@@ -219,6 +333,7 @@ async function handle(request, env) {
     } });
   }
   if (!url.pathname.startsWith("/v1/")) return request.method === "GET" && url.pathname.startsWith("/g/") ? unavailableGallery(404) : json({ error: "Not found" }, 404);
+  if (url.pathname === "/v1/pairing/codes" || url.pathname === "/v1/pairing/consume") return pairing(request, env, config, url.pathname);
   if (!await deviceAuthorized(request, config.deviceToken)) return json({ error: "Unauthorized" }, 401);
   const upload = /^\/v1\/sessions\/([0-9a-f-]+)\/photos\/([0-9a-f-]+)$/i.exec(url.pathname);
   if (upload && request.method === "PUT") {
@@ -263,6 +378,14 @@ async function handle(request, env) {
       if (new Set(photoIds).size !== photoIds.length) return json({ error: "Duplicate photo IDs" }, 400);
       if (await env.PHOTOS.head(sessionRevokedKey(sessionId)) || await env.PHOTOS.head(revokedKey(hash)))
         return json({ error: "Link revoked" }, 410);
+      const existing = await env.PHOTOS.head(galleryKey(hash));
+      if (existing) {
+        const saved2 = await loadGallery(env, hash);
+        if (saved2 instanceof Response) return saved2;
+        if (!samePhotos(saved2.photoIds, photoIds)) return json({ error: "Ready gallery photo list is immutable" }, 409);
+        return json({ status: "ready", url: `${config.origin}/g/${token}`, expiresAt: saved2.expiresAt });
+      }
+      if (photoIds.length !== 5) return json({ error: "Exactly five photo IDs are required for a new gallery" }, 400);
       const uploaded = await Promise.all(photoIds.map((id) => env.PHOTOS.head(photoKey(sessionId, id))));
       if (uploaded.some((photo) => !photo?.customMetadata?.sha256)) return json({ error: "All photos must finish uploading before gallery is ready" }, 409);
       const manifest = { version: 1, sessionId, photoIds, expiresAt: Date.now() + config.ttlMs };
@@ -274,7 +397,7 @@ async function handle(request, env) {
     }
   }
   if (url.pathname === "/v1/shares" && request.method === "POST") {
-    const provider = mockProvider(env.SMS_MODE);
+    const provider = smsProvider(env);
     if (!provider) return json({ error: "Live SMS disabled; an approved provider and sender are required" }, 503);
     const body = await readJson(request);
     if (body instanceof Response) return body;
@@ -286,6 +409,7 @@ async function handle(request, env) {
     const hash = await digest(encoder.encode(token));
     const gallery = await loadGallery(env, hash);
     if (gallery instanceof Response) return gallery.status === 404 ? json({ error: "Gallery must be ready before sharing" }, 409) : gallery;
+    if (gallery.photoIds.length !== 5) return json({ error: "A complete five-photo gallery is required before sharing", retryable: false }, 409);
     const key = `shares/${body.id.toLowerCase()}.json`;
     const fingerprint = await signed(`recipient:v1:${body.phone}`, config.signingKey);
     const fresh = { sessionId, recipientFingerprint: fingerprint, status: "pending" };
@@ -296,6 +420,8 @@ async function handle(request, env) {
     if (record.sessionId !== sessionId || record.recipientFingerprint !== fingerprint) return json({ error: "Share id already used" }, 409);
     const galleryUrl = `${config.origin}/g/${token}`;
     if (record.status === "mocked") return json({ status: "mocked", message: "No text message was sent", retryable: false, url: galleryUrl, expiresAt: gallery.expiresAt });
+    if (env.SMS_MODE === "textbelt" || env.SMS_MODE === "textbelt-test")
+      return textbeltShare(env, provider, body.id.toLowerCase(), fresh, body.phone, galleryUrl, gallery.expiresAt, body.retryRejected === true);
     const result = await provider.send({ idempotencyKey: body.id.toLowerCase(), to: body.phone, galleryUrl });
     const updated = await env.PHOTOS.put(key, JSON.stringify({ ...record, status: result.status }), { onlyIf: { etagMatches: saved.etag } });
     if (!updated) return json({ error: "Concurrent share attempt; retry with the same id", retryable: true }, 409);
@@ -315,5 +441,6 @@ var index_default = {
   }
 };
 export {
+  createTextbeltProvider,
   index_default as default
 };
