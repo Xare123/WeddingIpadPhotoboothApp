@@ -1,28 +1,33 @@
 import * as SecureStore from 'expo-secure-store';
 import { randomUUID } from 'expo-crypto';
 import type { QueueJob } from '@wedding-booth/core';
+import { RecipientRetention } from './recipient-retention';
 import { normalizePhone } from './sharing';
 import { store, type ActiveCapture, type ActiveSession } from './storage';
 import { sessionGuestPage } from './sharing';
 
 const key = (ref: string) => `wedding-photobooth.recipient.${ref}`;
+const indexKey = 'wedding-photobooth.recipient-index.v1';
+const retention = new RecipientRetention({
+  readIndex: () => SecureStore.getItemAsync(indexKey),
+  writeIndex: value => SecureStore.setItemAsync(indexKey, value, { keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY }),
+  writeSecret: (ref, phone) => SecureStore.setItemAsync(key(ref), phone, { keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY }),
+  deleteSecret: ref => SecureStore.deleteItemAsync(key(ref)),
+  listJobs: () => store.list(),
+  saveJob: job => store.save(job),
+});
 
 export async function queueMockShare(capture: ActiveCapture, input: string, consent: boolean): Promise<void> {
   if (!capture.confirmed || !consent) throw new Error('Confirm the photo and consent before testing phone sharing.');
   const phone = normalizePhone(input);
   const id = randomUUID();
   const recipientRef = randomUUID();
-  await SecureStore.setItemAsync(key(recipientRef), phone, { keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY });
   const now = Date.now();
-  const job: QueueJob = {
+  const job: QueueJob & { kind: 'share' } = {
     id, photoId: capture.id, sessionId: capture.id, kind: 'share', uploadJobId: capture.id,
     recipientRef, consentedAt: now, createdAt: now, attempts: 0, nextAttemptAt: now, state: 'pending',
   };
-  try { await store.save(job); }
-  catch (error) {
-    await SecureStore.deleteItemAsync(key(recipientRef));
-    throw error;
-  }
+  await retention.queue(job, phone);
 }
 
 export async function queueSessionShare(session: ActiveSession, input: string, consent: boolean): Promise<void> {
@@ -34,13 +39,11 @@ export async function queueSessionShare(session: ActiveSession, input: string, c
     throw new Error('A text request already exists for this session. Use the QR code while its outcome is checked.');
   }
   const id = randomUUID(), recipientRef = randomUUID(), now = Date.now();
-  await SecureStore.setItemAsync(key(recipientRef), phone, { keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY });
   try {
-    await store.save({ id, photoId: session.shots[0]!.id, sessionId: session.id, kind: 'share',
+    await retention.queue({ id, photoId: session.shots[0]!.id, sessionId: session.id, kind: 'share',
       uploadJobId: session.shots[0]!.id, recipientRef, consentedAt: now, createdAt: now,
-      attempts: 0, nextAttemptAt: now, state: 'pending', guestExpiresAt: guest.expiresAt });
+      attempts: 0, nextAttemptAt: now, state: 'pending', guestExpiresAt: guest.expiresAt }, phone);
   } catch {
-    await SecureStore.deleteItemAsync(key(recipientRef));
     throw new Error('The text request could not save. Your photos and QR page remain available.');
   }
 }
@@ -52,11 +55,5 @@ export async function resolveRecipient(ref: string): Promise<string> {
 }
 
 export async function removeCompletedRecipients(): Promise<void> {
-  for (const job of await store.list()) {
-    // Completion is already durable. Never delete a pending recipient: retries
-    // resolve this same opaque reference after network errors or process death.
-    if (job.kind === 'share' && job.state !== 'pending') {
-      await SecureStore.deleteItemAsync(key(job.recipientRef));
-    }
-  }
+  await retention.cleanup();
 }

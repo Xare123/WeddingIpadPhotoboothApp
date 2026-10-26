@@ -6,8 +6,8 @@
     "lastPublishedAppSHA256": "a2d8e4f62b855c54e489d8311ba6fb794b59f3e7a71e9dd521827332ab6d5548"
   },
   "timezoneId": "America/Los_Angeles",
-  "generatedAt": "2026-10-26T07:46:36.666Z",
-  "sourceSHA256": "4a68c3dc73d449eac889b4c79defafd2bb190ed9e8932b3672bb8b1fb9dec01e",
+  "generatedAt": "2026-10-26T14:34:36.523Z",
+  "sourceSHA256": "ab233727e41a6ba19e386f485af6ef0dc24373b2518e0da87942bf647669ac99",
   "decoderVersions": {
     "jsQR": "1.4.0",
     "zxingCppWasm": "3.1.6",
@@ -56,24 +56,24 @@
       "targets": [
         {
           "label": "Open host controls",
-          "x": 739.203125,
-          "y": 39,
-          "width": 52.796875,
-          "height": 44,
-          "top": 39,
-          "right": 792,
-          "bottom": 83,
-          "left": 739.203125
+          "x": 740,
+          "y": 70,
+          "width": 60,
+          "height": 48,
+          "top": 70,
+          "right": 800,
+          "bottom": 118,
+          "left": 740
         },
         {
           "label": "Start 5 photos",
           "x": 190,
-          "y": 1074,
+          "y": 1009,
           "width": 440,
           "height": 64,
-          "top": 1074,
+          "top": 1009,
           "right": 630,
-          "bottom": 1138,
+          "bottom": 1073,
           "left": 190
         }
       ],
@@ -90,12 +90,12 @@
         {
           "label": "Pause countdown",
           "x": 190,
-          "y": 1074,
+          "y": 1035,
           "width": 440,
           "height": 64,
-          "top": 1074,
+          "top": 1035,
           "right": 630,
-          "bottom": 1138,
+          "bottom": 1099,
           "left": 190
         }
       ],
@@ -111,35 +111,35 @@
       "targets": [
         {
           "label": "Open host controls",
-          "x": 739.203125,
-          "y": 39,
-          "width": 52.796875,
-          "height": 44,
-          "top": 39,
-          "right": 792,
-          "bottom": 83,
-          "left": 739.203125
+          "x": 740,
+          "y": 70,
+          "width": 60,
+          "height": 48,
+          "top": 70,
+          "right": 800,
+          "bottom": 118,
+          "left": 740
         },
         {
           "label": "Photo 1, saved on this iPad",
-          "x": 237,
-          "y": 981,
-          "width": 62,
-          "height": 76,
-          "top": 981,
-          "right": 299,
-          "bottom": 1057,
-          "left": 237
+          "x": 276,
+          "y": 932,
+          "width": 48,
+          "height": 62,
+          "top": 932,
+          "right": 324,
+          "bottom": 994,
+          "left": 276
         },
         {
           "label": "Continue · photo 2",
           "x": 190,
-          "y": 1074,
+          "y": 1009,
           "width": 440,
           "height": 64,
-          "top": 1074,
+          "top": 1009,
           "right": 630,
-          "bottom": 1138,
+          "bottom": 1073,
           "left": 190
         }
       ],
@@ -595,25 +595,25 @@
       "targets": [
         {
           "label": "Open host controls",
-          "x": 1099.203125,
-          "y": 39,
-          "width": 52.796875,
-          "height": 44,
-          "top": 39,
-          "right": 1152,
-          "bottom": 83,
-          "left": 1099.203125
+          "x": 1100,
+          "y": 70,
+          "width": 60,
+          "height": 48,
+          "top": 70,
+          "right": 1160,
+          "bottom": 118,
+          "left": 1100
         },
         {
           "label": "Start 5 photos",
-          "x": 722,
-          "y": 714,
+          "x": 370,
+          "y": 649,
           "width": 440,
           "height": 64,
-          "top": 714,
-          "right": 1162,
-          "bottom": 778,
-          "left": 722
+          "top": 649,
+          "right": 810,
+          "bottom": 713,
+          "left": 370
         }
       ],
       "smallTargets": [],
@@ -628,14 +628,14 @@
       "targets": [
         {
           "label": "Pause countdown",
-          "x": 722,
-          "y": 714,
-          "width": 440,
+          "x": 521,
+          "y": 675,
+          "width": 430,
           "height": 64,
-          "top": 714,
-          "right": 1162,
-          "bottom": 778,
-          "left": 722
+          "top": 675,
+          "right": 951,
+          "bottom": 739,
+          "left": 521
         }
       ],
       "smallTargets": [],
@@ -650,36 +650,36 @@
       "targets": [
         {
           "label": "Open host controls",
-          "x": 1099.203125,
-          "y": 39,
-          "width": 52.796875,
-          "height": 44,
-          "top": 39,
-          "right": 1152,
-          "bottom": 83,
-          "left": 1099.203125
+          "x": 1100,
+          "y": 70,
+          "width": 60,
+          "height": 48,
+          "top": 70,
+          "right": 1160,
+          "bottom": 118,
+          "left": 1100
         },
         {
           "label": "Photo 1, saved on this iPad",
-          "x": 18,
-          "y": 721,
-          "width": 62,
-          "height": 76,
-          "top": 721,
-          "right": 80,
-          "bottom": 797,
-          "left": 18
+          "x": 229,
+          "y": 686.5,
+          "width": 48,
+          "height": 62,
+          "top": 686.5,
+          "right": 277,
+          "bottom": 748.5,
+          "left": 229
         },
         {
           "label": "Continue · photo 2",
-          "x": 722,
-          "y": 714,
-          "width": 440,
+          "x": 521,
+          "y": 649,
+          "width": 430,
           "height": 64,
-          "top": 714,
-          "right": 1162,
-          "bottom": 778,
-          "left": 722
+          "top": 649,
+          "right": 951,
+          "bottom": 713,
+          "left": 521
         }
       ],
       "smallTargets": [],
@@ -1421,12 +1421,12 @@
         {
           "label": "Pause countdown",
           "x": 190,
-          "y": 1074,
+          "y": 1035,
           "width": 440,
           "height": 64,
-          "top": 1074,
+          "top": 1035,
           "right": 630,
-          "bottom": 1138,
+          "bottom": 1099,
           "left": 190
         }
       ],
@@ -1442,24 +1442,24 @@
       "targets": [
         {
           "label": "Open host controls",
-          "x": 739.203125,
-          "y": 39,
-          "width": 52.796875,
-          "height": 44,
-          "top": 39,
-          "right": 792,
-          "bottom": 83,
-          "left": 739.203125
+          "x": 740,
+          "y": 70,
+          "width": 60,
+          "height": 48,
+          "top": 70,
+          "right": 800,
+          "bottom": 118,
+          "left": 740
         },
         {
           "label": "Start 5 photos",
           "x": 190,
-          "y": 1074,
+          "y": 1009,
           "width": 440,
           "height": 64,
-          "top": 1074,
+          "top": 1009,
           "right": 630,
-          "bottom": 1138,
+          "bottom": 1073,
           "left": 190
         }
       ],
@@ -1475,24 +1475,24 @@
       "targets": [
         {
           "label": "Open host controls",
-          "x": 739.203125,
-          "y": 39,
-          "width": 52.796875,
-          "height": 44,
-          "top": 39,
-          "right": 792,
-          "bottom": 83,
-          "left": 739.203125
+          "x": 740,
+          "y": 70,
+          "width": 60,
+          "height": 48,
+          "top": 70,
+          "right": 800,
+          "bottom": 118,
+          "left": 740
         },
         {
           "label": "Retry saving photo 1",
           "x": 190,
-          "y": 1008,
+          "y": 1035,
           "width": 440,
           "height": 64,
-          "top": 1008,
+          "top": 1035,
           "right": 630,
-          "bottom": 1072,
+          "bottom": 1099,
           "left": 190
         }
       ],
@@ -1749,7 +1749,7 @@
           "left": 28
         },
         {
-          "label": "10/26/2026, 12:47:45 AM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
+          "label": "10/26/2026, 7:35:46 AM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
           "x": 28,
           "y": 284,
           "width": 764,
@@ -1870,7 +1870,7 @@
           "left": 414
         },
         {
-          "label": "10/26/2026, 12:47:45 AM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
+          "label": "10/26/2026, 7:35:46 AM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
           "x": 28,
           "y": 986,
           "width": 764,
@@ -1884,7 +1884,7 @@
       "smallTargets": [],
       "outOfBounds": [
         {
-          "label": "10/26/2026, 12:47:45 AM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
+          "label": "10/26/2026, 7:35:46 AM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
           "x": 28,
           "y": 986,
           "width": 764,
@@ -2135,7 +2135,7 @@
           "left": 67
         },
         {
-          "label": "10/26/2026, 12:47:47 AM5 originals · Photos result unconfirmed · check Photos before retryingOpen saved session →",
+          "label": "10/26/2026, 7:35:48 AM5 originals · Photos result unconfirmed · check Photos before retryingOpen saved session →",
           "x": 28,
           "y": 1221,
           "width": 764,
@@ -2248,7 +2248,7 @@
           "left": 414
         },
         {
-          "label": "10/26/2026, 12:47:47 AM5 originals · Photos result unconfirmed · check Photos before retryingOpen saved session →",
+          "label": "10/26/2026, 7:35:48 AM5 originals · Photos result unconfirmed · check Photos before retryingOpen saved session →",
           "x": 28,
           "y": 1221,
           "width": 764,
@@ -2389,7 +2389,7 @@
           "left": 67
         },
         {
-          "label": "10/26/2026, 12:47:47 AM5 originals · Photos result unconfirmed · check Photos before retryingOpen saved session →",
+          "label": "10/26/2026, 7:35:48 AM5 originals · Photos result unconfirmed · check Photos before retryingOpen saved session →",
           "x": 28,
           "y": 879,
           "width": 764,
@@ -2643,7 +2643,7 @@
           "left": 67
         },
         {
-          "label": "10/26/2026, 12:47:47 AM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
+          "label": "10/26/2026, 7:35:48 AM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
           "x": 28,
           "y": 1433,
           "width": 764,
@@ -2723,7 +2723,7 @@
           "left": 67
         },
         {
-          "label": "10/26/2026, 12:47:47 AM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
+          "label": "10/26/2026, 7:35:48 AM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
           "x": 28,
           "y": 1433,
           "width": 764,
@@ -2864,7 +2864,7 @@
           "left": 67
         },
         {
-          "label": "10/26/2026, 12:47:47 AM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
+          "label": "10/26/2026, 7:35:48 AM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
           "x": 28,
           "y": 1433,
           "width": 764,
@@ -2944,7 +2944,7 @@
           "left": 67
         },
         {
-          "label": "10/26/2026, 12:47:47 AM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
+          "label": "10/26/2026, 7:35:48 AM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
           "x": 28,
           "y": 1433,
           "width": 764,
@@ -2965,24 +2965,24 @@
       "targets": [
         {
           "label": "Open host controls",
-          "x": 739.203125,
-          "y": 39,
-          "width": 52.796875,
-          "height": 44,
-          "top": 39,
-          "right": 792,
-          "bottom": 83,
-          "left": 739.203125
+          "x": 740,
+          "y": 70,
+          "width": 60,
+          "height": 48,
+          "top": 70,
+          "right": 800,
+          "bottom": 118,
+          "left": 740
         },
         {
           "label": "Start 5 photos",
           "x": 190,
-          "y": 1074,
+          "y": 1009,
           "width": 440,
           "height": 64,
-          "top": 1074,
+          "top": 1009,
           "right": 630,
-          "bottom": 1138,
+          "bottom": 1073,
           "left": 190
         }
       ],
@@ -2998,14 +2998,14 @@
       "targets": [
         {
           "label": "Open host controls",
-          "x": 739.203125,
-          "y": 39,
-          "width": 52.796875,
-          "height": 44,
-          "top": 39,
-          "right": 792,
-          "bottom": 83,
-          "left": 739.203125
+          "x": 740,
+          "y": 70,
+          "width": 60,
+          "height": 48,
+          "top": 70,
+          "right": 800,
+          "bottom": 118,
+          "left": 740
         },
         {
           "label": "Done",
@@ -3096,7 +3096,7 @@
           "left": 67
         },
         {
-          "label": "10/26/2026, 12:47:49 AM0 originals · Photos export is separate from your saved originals.1 captures awaiting local save completionOpen saved session →",
+          "label": "10/26/2026, 7:35:51 AM0 originals · Photos export is separate from your saved originals.1 captures awaiting local save completionOpen saved session →",
           "x": 28,
           "y": 1197,
           "width": 764,
@@ -3110,7 +3110,7 @@
       "smallTargets": [],
       "outOfBounds": [
         {
-          "label": "10/26/2026, 12:47:49 AM0 originals · Photos export is separate from your saved originals.1 captures awaiting local save completionOpen saved session →",
+          "label": "10/26/2026, 7:35:51 AM0 originals · Photos export is separate from your saved originals.1 captures awaiting local save completionOpen saved session →",
           "x": 28,
           "y": 1197,
           "width": 764,
@@ -3131,68 +3131,68 @@
       "targets": [
         {
           "label": "Open host controls",
-          "x": 739.203125,
-          "y": 39,
-          "width": 52.796875,
-          "height": 44,
-          "top": 39,
-          "right": 792,
-          "bottom": 83,
-          "left": 739.203125
+          "x": 740,
+          "y": 70,
+          "width": 60,
+          "height": 48,
+          "top": 70,
+          "right": 800,
+          "bottom": 118,
+          "left": 740
         },
         {
           "label": "Photo 1, saved on this iPad",
-          "x": 237,
-          "y": 981,
-          "width": 62,
-          "height": 76,
-          "top": 981,
-          "right": 299,
-          "bottom": 1057,
-          "left": 237
+          "x": 276,
+          "y": 932,
+          "width": 48,
+          "height": 62,
+          "top": 932,
+          "right": 324,
+          "bottom": 994,
+          "left": 276
         },
         {
           "label": "Photo 2, saved on this iPad",
-          "x": 308,
-          "y": 981,
-          "width": 62,
-          "height": 76,
-          "top": 981,
-          "right": 370,
-          "bottom": 1057,
-          "left": 308
+          "x": 331,
+          "y": 932,
+          "width": 48,
+          "height": 62,
+          "top": 932,
+          "right": 379,
+          "bottom": 994,
+          "left": 331
         },
         {
           "label": "Photo 3, saved on this iPad",
-          "x": 379,
-          "y": 981,
-          "width": 62,
-          "height": 76,
-          "top": 981,
-          "right": 441,
-          "bottom": 1057,
-          "left": 379
+          "x": 386,
+          "y": 932,
+          "width": 48,
+          "height": 62,
+          "top": 932,
+          "right": 434,
+          "bottom": 994,
+          "left": 386
         },
         {
           "label": "Photo 4, saved on this iPad",
-          "x": 450,
-          "y": 981,
-          "width": 62,
-          "height": 76,
-          "top": 981,
-          "right": 512,
-          "bottom": 1057,
-          "left": 450
+          "x": 441,
+          "y": 932,
+          "width": 48,
+          "height": 62,
+          "top": 932,
+          "right": 489,
+          "bottom": 994,
+          "left": 441
         },
         {
           "label": "Continue · photo 5",
           "x": 190,
-          "y": 1074,
+          "y": 1009,
           "width": 440,
           "height": 64,
-          "top": 1074,
+          "top": 1009,
           "right": 630,
-          "bottom": 1138,
+          "bottom": 1073,
           "left": 190
         }
       ],
@@ -3208,58 +3208,58 @@
       "targets": [
         {
           "label": "Open host controls",
-          "x": 739.203125,
-          "y": 39,
-          "width": 52.796875,
-          "height": 44,
-          "top": 39,
-          "right": 792,
-          "bottom": 83,
-          "left": 739.203125
+          "x": 740,
+          "y": 70,
+          "width": 60,
+          "height": 48,
+          "top": 70,
+          "right": 800,
+          "bottom": 118,
+          "left": 740
         },
         {
           "label": "Photo 1, saved on this iPad",
-          "x": 237,
-          "y": 981,
-          "width": 62,
-          "height": 76,
-          "top": 981,
-          "right": 299,
-          "bottom": 1057,
-          "left": 237
+          "x": 276,
+          "y": 932,
+          "width": 48,
+          "height": 62,
+          "top": 932,
+          "right": 324,
+          "bottom": 994,
+          "left": 276
         },
         {
           "label": "Photo 2, saved on this iPad",
-          "x": 308,
-          "y": 981,
-          "width": 62,
-          "height": 76,
-          "top": 981,
-          "right": 370,
-          "bottom": 1057,
-          "left": 308
+          "x": 331,
+          "y": 932,
+          "width": 48,
+          "height": 62,
+          "top": 932,
+          "right": 379,
+          "bottom": 994,
+          "left": 331
         },
         {
           "label": "Photo 3, saved on this iPad",
-          "x": 379,
-          "y": 981,
-          "width": 62,
-          "height": 76,
-          "top": 981,
-          "right": 441,
-          "bottom": 1057,
-          "left": 379
+          "x": 386,
+          "y": 932,
+          "width": 48,
+          "height": 62,
+          "top": 932,
+          "right": 434,
+          "bottom": 994,
+          "left": 386
         },
         {
           "label": "Photo 4, saved on this iPad",
-          "x": 450,
-          "y": 981,
-          "width": 62,
-          "height": 76,
-          "top": 981,
-          "right": 512,
-          "bottom": 1057,
-          "left": 450
+          "x": 441,
+          "y": 932,
+          "width": 48,
+          "height": 62,
+          "top": 932,
+          "right": 489,
+          "bottom": 994,
+          "left": 441
         },
         {
           "label": "Done",
@@ -3350,7 +3350,7 @@
           "left": 67
         },
         {
-          "label": "10/26/2026, 12:47:50 AM4 originals · 4 of 4 also saved in Photos1 captures awaiting local save completionOpen saved session →",
+          "label": "10/26/2026, 7:35:52 AM4 originals · 4 of 4 also saved in Photos1 captures awaiting local save completionOpen saved session →",
           "x": 28,
           "y": 1197,
           "width": 764,
@@ -3364,7 +3364,7 @@
       "smallTargets": [],
       "outOfBounds": [
         {
-          "label": "10/26/2026, 12:47:50 AM4 originals · 4 of 4 also saved in Photos1 captures awaiting local save completionOpen saved session →",
+          "label": "10/26/2026, 7:35:52 AM4 originals · 4 of 4 also saved in Photos1 captures awaiting local save completionOpen saved session →",
           "x": 28,
           "y": 1197,
           "width": 764,
@@ -4408,12 +4408,12 @@
       ],
       "status": "passed",
       "cameraStage": {
-        "x": 18,
-        "y": 92,
-        "width": 784,
-        "height": 870,
-        "widthFraction": 0.9560975609756097,
-        "heightFraction": 0.7372881355932204
+        "x": 0,
+        "y": 30,
+        "width": 820,
+        "height": 1150,
+        "widthFraction": 1,
+        "heightFraction": 0.9745762711864406
       },
       "reviewStage": {
         "x": 18,
@@ -4433,159 +4433,159 @@
       "events": [
         {
           "kind": "synthetic-recovery-noop",
-          "at": 1793000797679
+          "at": 1793025277635
         },
         {
           "kind": "session-created",
-          "id": "4ad420d0-6de6-41ac-a9e4-b9a3b1740315",
-          "at": 1793000798672
+          "id": "c5ba0eda-85d5-4a9e-add9-36826d29fbfc",
+          "at": 1793025278722
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 0,
-          "at": 1793000802367
+          "at": 1793025282542
         },
         {
           "kind": "private-save-started",
-          "id": "14b1cde9-e324-42d1-af9a-5dc22eb92bc7",
+          "id": "360693c8-d9c5-46b2-a252-baba82024d32",
           "slot": 0,
-          "at": 1793000802368
+          "at": 1793025282543
         },
         {
           "kind": "private-save-resolved",
-          "id": "14b1cde9-e324-42d1-af9a-5dc22eb92bc7",
+          "id": "360693c8-d9c5-46b2-a252-baba82024d32",
           "slot": 0,
-          "at": 1793000802368
+          "at": 1793025282543
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 1,
-          "at": 1793000806798
+          "at": 1793025287056
         },
         {
           "kind": "private-save-started",
-          "id": "f5042a9d-05cd-4f97-8129-b6e8dab8b406",
+          "id": "be8ebdc0-f889-4481-86b5-b934f18e0e1c",
           "slot": 1,
-          "at": 1793000806798
+          "at": 1793025287056
         },
         {
           "kind": "private-save-resolved",
-          "id": "f5042a9d-05cd-4f97-8129-b6e8dab8b406",
+          "id": "be8ebdc0-f889-4481-86b5-b934f18e0e1c",
           "slot": 1,
-          "at": 1793000806799
+          "at": 1793025287057
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 2,
-          "at": 1793000810100
+          "at": 1793025290359
         },
         {
           "kind": "private-save-started",
-          "id": "5b99c519-9dbe-4c22-b48f-fe740302327e",
+          "id": "b3ed9b56-c95e-44bc-bc79-a548beccf842",
           "slot": 2,
-          "at": 1793000810101
+          "at": 1793025290360
         },
         {
           "kind": "private-save-resolved",
-          "id": "5b99c519-9dbe-4c22-b48f-fe740302327e",
+          "id": "b3ed9b56-c95e-44bc-bc79-a548beccf842",
           "slot": 2,
-          "at": 1793000810101
+          "at": 1793025290360
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 3,
-          "at": 1793000813403
+          "at": 1793025293662
         },
         {
           "kind": "private-save-started",
-          "id": "a02b9c64-03e9-4a5d-8089-a3e543986446",
+          "id": "f059fa24-1aac-450d-82fc-1fc57636ae22",
           "slot": 3,
-          "at": 1793000813403
+          "at": 1793025293662
         },
         {
           "kind": "private-save-resolved",
-          "id": "a02b9c64-03e9-4a5d-8089-a3e543986446",
+          "id": "f059fa24-1aac-450d-82fc-1fc57636ae22",
           "slot": 3,
-          "at": 1793000813403
+          "at": 1793025293662
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 4,
-          "at": 1793000816704
+          "at": 1793025296966
         },
         {
           "kind": "private-save-started",
-          "id": "5eac9931-21ab-464b-aaa1-aae5aca62b7d",
+          "id": "7152a5ea-068d-4990-b948-4457e942f96d",
           "slot": 4,
-          "at": 1793000816705
+          "at": 1793025296967
         },
         {
           "kind": "private-save-resolved",
-          "id": "5eac9931-21ab-464b-aaa1-aae5aca62b7d",
+          "id": "7152a5ea-068d-4990-b948-4457e942f96d",
           "slot": 4,
-          "at": 1793000816705
+          "at": 1793025296967
         },
         {
           "kind": "synthetic-photos-write",
-          "id": "14b1cde9-e324-42d1-af9a-5dc22eb92bc7",
-          "at": 1793000816706
+          "id": "360693c8-d9c5-46b2-a252-baba82024d32",
+          "at": 1793025296968
         },
         {
           "kind": "synthetic-photos-write",
-          "id": "f5042a9d-05cd-4f97-8129-b6e8dab8b406",
-          "at": 1793000816706
+          "id": "be8ebdc0-f889-4481-86b5-b934f18e0e1c",
+          "at": 1793025296968
         },
         {
           "kind": "synthetic-photos-write",
-          "id": "5b99c519-9dbe-4c22-b48f-fe740302327e",
-          "at": 1793000816706
+          "id": "b3ed9b56-c95e-44bc-bc79-a548beccf842",
+          "at": 1793025296968
         },
         {
           "kind": "synthetic-photos-write",
-          "id": "a02b9c64-03e9-4a5d-8089-a3e543986446",
-          "at": 1793000816706
+          "id": "f059fa24-1aac-450d-82fc-1fc57636ae22",
+          "at": 1793025296968
         },
         {
           "kind": "synthetic-photos-write",
-          "id": "5eac9931-21ab-464b-aaa1-aae5aca62b7d",
-          "at": 1793000816706
+          "id": "7152a5ea-068d-4990-b948-4457e942f96d",
+          "at": 1793025296968
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 5,
-          "at": 1793000821956
+          "at": 1793025302269
         },
         {
           "kind": "private-save-started",
-          "id": "901dc8a4-a2b7-4879-a462-ce6320be8618",
+          "id": "5761076f-0a95-4b07-bb6a-2b8f900034cc",
           "slot": 2,
-          "at": 1793000821956
+          "at": 1793025302269
         },
         {
           "kind": "private-save-resolved",
-          "id": "901dc8a4-a2b7-4879-a462-ce6320be8618",
+          "id": "5761076f-0a95-4b07-bb6a-2b8f900034cc",
           "slot": 2,
-          "at": 1793000821956
+          "at": 1793025302269
         },
         {
           "kind": "synthetic-photos-write",
-          "id": "901dc8a4-a2b7-4879-a462-ce6320be8618",
-          "at": 1793000821956
+          "id": "5761076f-0a95-4b07-bb6a-2b8f900034cc",
+          "at": 1793025302270
         },
         {
           "kind": "session-confirmed",
-          "id": "4ad420d0-6de6-41ac-a9e4-b9a3b1740315",
-          "at": 1793000822903
+          "id": "c5ba0eda-85d5-4a9e-add9-36826d29fbfc",
+          "at": 1793025303134
         },
         {
           "kind": "synthetic-all-five-ready-ack",
-          "id": "4ad420d0-6de6-41ac-a9e4-b9a3b1740315",
-          "at": 1793000823379
+          "id": "c5ba0eda-85d5-4a9e-add9-36826d29fbfc",
+          "at": 1793025303600
         },
         {
           "kind": "active-session-cleared",
-          "id": "4ad420d0-6de6-41ac-a9e4-b9a3b1740315",
-          "at": 1793000823996
+          "id": "c5ba0eda-85d5-4a9e-add9-36826d29fbfc",
+          "at": 1793025304236
         }
       ]
     },
@@ -4606,12 +4606,12 @@
       ],
       "status": "passed",
       "cameraStage": {
-        "x": 18,
-        "y": 92,
-        "width": 1144,
-        "height": 606,
-        "widthFraction": 0.9694915254237289,
-        "heightFraction": 0.7390243902439024
+        "x": 0,
+        "y": 30,
+        "width": 1180,
+        "height": 790,
+        "widthFraction": 1,
+        "heightFraction": 0.9634146341463414
       },
       "reviewStage": {
         "x": 18,
@@ -4631,159 +4631,159 @@
       "events": [
         {
           "kind": "synthetic-recovery-noop",
-          "at": 1793000825850
+          "at": 1793025306069
         },
         {
           "kind": "session-created",
-          "id": "37a11d31-349c-4e2e-984a-a7aa8b9610cb",
-          "at": 1793000826867
+          "id": "1bc0f895-c894-440a-8c1a-a646a33e1d84",
+          "at": 1793025307037
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 0,
-          "at": 1793000830549
+          "at": 1793025310737
         },
         {
           "kind": "private-save-started",
-          "id": "ec9edff8-9063-48f1-9e28-b9e170c1f453",
+          "id": "2e4088f8-b882-4d54-bc16-95f7fecd2805",
           "slot": 0,
-          "at": 1793000830549
+          "at": 1793025310737
         },
         {
           "kind": "private-save-resolved",
-          "id": "ec9edff8-9063-48f1-9e28-b9e170c1f453",
+          "id": "2e4088f8-b882-4d54-bc16-95f7fecd2805",
           "slot": 0,
-          "at": 1793000830550
+          "at": 1793025310737
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 1,
-          "at": 1793000834950
+          "at": 1793025315203
         },
         {
           "kind": "private-save-started",
-          "id": "f2d43f26-6681-40e5-a384-e9321ab374dc",
+          "id": "04cb8bb4-482c-4ae1-a6f6-ee31e6262959",
           "slot": 1,
-          "at": 1793000834950
+          "at": 1793025315204
         },
         {
           "kind": "private-save-resolved",
-          "id": "f2d43f26-6681-40e5-a384-e9321ab374dc",
+          "id": "04cb8bb4-482c-4ae1-a6f6-ee31e6262959",
           "slot": 1,
-          "at": 1793000834950
+          "at": 1793025315204
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 2,
-          "at": 1793000838254
+          "at": 1793025318505
         },
         {
           "kind": "private-save-started",
-          "id": "0069ac39-2a2e-47d1-8510-48a225b5bb25",
+          "id": "87abe701-3317-44fe-b99e-2673c840152b",
           "slot": 2,
-          "at": 1793000838254
+          "at": 1793025318506
         },
         {
           "kind": "private-save-resolved",
-          "id": "0069ac39-2a2e-47d1-8510-48a225b5bb25",
+          "id": "87abe701-3317-44fe-b99e-2673c840152b",
           "slot": 2,
-          "at": 1793000838254
+          "at": 1793025318506
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 3,
-          "at": 1793000841556
+          "at": 1793025321808
         },
         {
           "kind": "private-save-started",
-          "id": "eebd7d3d-6309-464f-87da-688a561587f6",
+          "id": "538e4160-1485-4fc5-9975-099daa201cce",
           "slot": 3,
-          "at": 1793000841556
+          "at": 1793025321808
         },
         {
           "kind": "private-save-resolved",
-          "id": "eebd7d3d-6309-464f-87da-688a561587f6",
+          "id": "538e4160-1485-4fc5-9975-099daa201cce",
           "slot": 3,
-          "at": 1793000841556
+          "at": 1793025321808
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 4,
-          "at": 1793000844858
+          "at": 1793025325110
         },
         {
           "kind": "private-save-started",
-          "id": "d3a6e2af-e11e-43bb-8f22-0a57c9459ad8",
+          "id": "8ada9d5f-fbd7-40e9-9bb2-5df0e6a5b1f5",
           "slot": 4,
-          "at": 1793000844858
+          "at": 1793025325110
         },
         {
           "kind": "private-save-resolved",
-          "id": "d3a6e2af-e11e-43bb-8f22-0a57c9459ad8",
+          "id": "8ada9d5f-fbd7-40e9-9bb2-5df0e6a5b1f5",
           "slot": 4,
-          "at": 1793000844858
+          "at": 1793025325110
         },
         {
           "kind": "synthetic-photos-write",
-          "id": "ec9edff8-9063-48f1-9e28-b9e170c1f453",
-          "at": 1793000844859
+          "id": "2e4088f8-b882-4d54-bc16-95f7fecd2805",
+          "at": 1793025325112
         },
         {
           "kind": "synthetic-photos-write",
-          "id": "f2d43f26-6681-40e5-a384-e9321ab374dc",
-          "at": 1793000844860
+          "id": "04cb8bb4-482c-4ae1-a6f6-ee31e6262959",
+          "at": 1793025325112
         },
         {
           "kind": "synthetic-photos-write",
-          "id": "0069ac39-2a2e-47d1-8510-48a225b5bb25",
-          "at": 1793000844860
+          "id": "87abe701-3317-44fe-b99e-2673c840152b",
+          "at": 1793025325112
         },
         {
           "kind": "synthetic-photos-write",
-          "id": "eebd7d3d-6309-464f-87da-688a561587f6",
-          "at": 1793000844860
+          "id": "538e4160-1485-4fc5-9975-099daa201cce",
+          "at": 1793025325112
         },
         {
           "kind": "synthetic-photos-write",
-          "id": "d3a6e2af-e11e-43bb-8f22-0a57c9459ad8",
-          "at": 1793000844860
+          "id": "8ada9d5f-fbd7-40e9-9bb2-5df0e6a5b1f5",
+          "at": 1793025325112
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 5,
-          "at": 1793000850000
+          "at": 1793025330252
         },
         {
           "kind": "private-save-started",
-          "id": "0e638a6d-3855-48c4-8989-2fa6795a3015",
+          "id": "78294e24-cc72-4c36-a194-77a0523fdb13",
           "slot": 2,
-          "at": 1793000850001
+          "at": 1793025330252
         },
         {
           "kind": "private-save-resolved",
-          "id": "0e638a6d-3855-48c4-8989-2fa6795a3015",
+          "id": "78294e24-cc72-4c36-a194-77a0523fdb13",
           "slot": 2,
-          "at": 1793000850001
+          "at": 1793025330252
         },
         {
           "kind": "synthetic-photos-write",
-          "id": "0e638a6d-3855-48c4-8989-2fa6795a3015",
-          "at": 1793000850001
+          "id": "78294e24-cc72-4c36-a194-77a0523fdb13",
+          "at": 1793025330253
         },
         {
           "kind": "session-confirmed",
-          "id": "37a11d31-349c-4e2e-984a-a7aa8b9610cb",
-          "at": 1793000850862
+          "id": "1bc0f895-c894-440a-8c1a-a646a33e1d84",
+          "at": 1793025331115
         },
         {
           "kind": "synthetic-all-five-ready-ack",
-          "id": "37a11d31-349c-4e2e-984a-a7aa8b9610cb",
-          "at": 1793000851328
+          "id": "1bc0f895-c894-440a-8c1a-a646a33e1d84",
+          "at": 1793025331600
         },
         {
           "kind": "active-session-cleared",
-          "id": "37a11d31-349c-4e2e-984a-a7aa8b9610cb",
-          "at": 1793000851930
+          "id": "1bc0f895-c894-440a-8c1a-a646a33e1d84",
+          "at": 1793025332268
         }
       ]
     }
@@ -4805,6 +4805,10 @@
     "Host controls, local-session library and private setup render through synthetic authentication; the pairing field stays blank and no provisioning request is made. Host ScrollViews may require vertical scrolling."
   ],
   "hostChecks": [
+    {
+      "check": "Two synthetic background/foreground cycles redact private originals, leave host controls locked, and require one fresh host-auth call on each explicit reopen.",
+      "scope": "Browser AppState/auth adapters only; no native biometric verification."
+    },
     {
       "check": "Uncertain export requires explicit duplicate-risk confirmation; cancel performs no native SDK write; confirm exports exactly the selected original.",
       "photoId": "10000000-0000-4000-8000-000000000001",
@@ -4849,7 +4853,7 @@
   "settlementChecks": [
     {
       "label": "portrait: static review-swiped",
-      "waitedMilliseconds": 223,
+      "waitedMilliseconds": 647.3999999985099,
       "opacities": [
         1,
         1,
@@ -4866,7 +4870,7 @@
     },
     {
       "label": "portrait: static pending sharing",
-      "waitedMilliseconds": 199.39999999850988,
+      "waitedMilliseconds": 201.60000000149012,
       "opacities": [
         1,
         1,
@@ -4885,7 +4889,7 @@
     },
     {
       "label": "landscape: static review-swiped",
-      "waitedMilliseconds": 225,
+      "waitedMilliseconds": 218.20000000298023,
       "opacities": [
         1,
         1,
@@ -4902,7 +4906,7 @@
     },
     {
       "label": "landscape: static pending sharing",
-      "waitedMilliseconds": 212,
+      "waitedMilliseconds": 190.89999999850988,
       "opacities": [
         1,
         1,
@@ -4941,30 +4945,30 @@
       "requiredRatio": 4.5,
       "foregroundCSS": "rgb(255, 255, 255)",
       "backgroundLayers": [
-        "rgba(16, 33, 23, 0.7)"
+        "rgba(11, 28, 18, 0.9)"
       ],
       "backgroundRGB": [
-        87.70000000000002,
-        99.60000000000001,
-        92.60000000000001
+        35.39999999999999,
+        50.69999999999999,
+        41.69999999999999
       ],
       "model": "Actual nearest overlay over hypothetical white image",
-      "ratio": 6.219961097800414
+      "ratio": 13.340261455045168
     },
     {
-      "label": "portrait: photo progress above countdown shade",
+      "label": "portrait: photo progress over worst white frame",
       "requiredRatio": 4.5,
       "foregroundCSS": "rgb(255, 255, 255)",
       "backgroundLayers": [
-        "rgba(16, 21, 18, 0.85)"
+        "rgb(16, 34, 25)"
       ],
       "backgroundRGB": [
-        51.85000000000001,
-        56.10000000000001,
-        53.550000000000004
+        16,
+        34,
+        25
       ],
       "model": "Actual nearest overlay over hypothetical white image",
-      "ratio": 11.896301043025618
+      "ratio": 16.602362460566813
     },
     {
       "label": "portrait: QR caption",
@@ -5010,30 +5014,30 @@
       "requiredRatio": 4.5,
       "foregroundCSS": "rgb(255, 255, 255)",
       "backgroundLayers": [
-        "rgba(16, 33, 23, 0.7)"
+        "rgba(11, 28, 18, 0.9)"
       ],
       "backgroundRGB": [
-        87.70000000000002,
-        99.60000000000001,
-        92.60000000000001
+        35.39999999999999,
+        50.69999999999999,
+        41.69999999999999
       ],
       "model": "Actual nearest overlay over hypothetical white image",
-      "ratio": 6.219961097800414
+      "ratio": 13.340261455045168
     },
     {
-      "label": "landscape: photo progress above countdown shade",
+      "label": "landscape: photo progress over worst white frame",
       "requiredRatio": 4.5,
       "foregroundCSS": "rgb(255, 255, 255)",
       "backgroundLayers": [
-        "rgba(16, 21, 18, 0.85)"
+        "rgb(16, 34, 25)"
       ],
       "backgroundRGB": [
-        51.85000000000001,
-        56.10000000000001,
-        53.550000000000004
+        16,
+        34,
+        25
       ],
       "model": "Actual nearest overlay over hypothetical white image",
-      "ratio": 11.896301043025618
+      "ratio": 16.602362460566813
     },
     {
       "label": "landscape: QR caption",
@@ -5797,7 +5801,10 @@
   ],
   "unexpectedExternalRequests": [],
   "sourceHashes": {
-    "apps/ipad/App.tsx": "4a68c3dc73d449eac889b4c79defafd2bb190ed9e8932b3672bb8b1fb9dec01e",
+    "apps/ipad/App.tsx": "ab233727e41a6ba19e386f485af6ef0dc24373b2518e0da87942bf647669ac99",
+    "apps/ipad/src/GlassSurface.tsx": "ace64a22e740d69040689495c0aa7147f7456038bbd0ee9aba6f2d52b58af972",
+    "apps/ipad/src/glass-policy.ts": "d3e33995484239887dde90f2743919c17bb2e8ff23093ceb45a804e530499e9e",
+    "apps/ipad/src/host-visibility.ts": "9b8033279a1249c59cd04e3f185792fa2a61c14f892f2cb9cf98953ceab02014",
     "apps/ipad/src/session-capture.ts": "b41f7ee98282fe5661e080a6b4e0b88b17c56e3c1e5908adebbe020ed6323e24",
     "apps/ipad/src/review-selection.ts": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
     "apps/ipad/src/sharing.ts": "00f6890855b5ed5942b23fd10f5f54f88d1bfa62ae541d9c0835c8a7ac9e415f",

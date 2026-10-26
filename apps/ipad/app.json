@@ -19,6 +19,7 @@
       }
     },
     "plugins": [
+      "../../plugins/with-full-photo.cjs",
       [
         "expo-camera",
         {

@@ -7,7 +7,7 @@
   "engines": { "node": ">=24.3.0 <25", "npm": ">=11 <12" },
   "scripts": {
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "test": "node --import tsx --test packages/core/test/*.test.ts apps/ipad/test/*.test.ts services/api/test/*.test.ts",
+    "test": "node --import tsx --test packages/core/test/*.test.ts apps/ipad/test/*.test.ts services/api/test/*.test.ts plugins/test/*.test.cjs",
     "dev:api": "bash scripts/dev-api.sh",
     "dev:ipad": "bash scripts/dev-ipad.sh",
     "bundle:ios": "npm run bundle:ios --workspace @wedding-booth/ipad",

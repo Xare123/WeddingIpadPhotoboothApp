@@ -1,0 +1,125 @@
+name: Release iPad simulator runtime
+
+# Review-branch opt-in: this does not require default-branch registration or a merge.
+on:
+  push:
+    branches:
+      - codex/wedding-photobooth-mvp
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wedding-native-runtime-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  simulator:
+    if: >-
+      github.repository == 'Xare123/WeddingIpadPhotoboothApp' &&
+      github.event.repository.private == false &&
+      contains(github.event.head_commit.message, '[native-runtime-ci]')
+    runs-on: macos-15
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    env:
+      CI: '1'
+      EXPO_NO_TELEMETRY: '1'
+      EXPO_OFFLINE: '1'
+      EXPO_PUBLIC_E2E_FIXTURE: '0'
+      COCOAPODS_DISABLE_STATS: 'true'
+      # The installed macOS-15 image defaults to Xcode 16.4 / Swift 6.1.
+      # ExpoModulesJSI's Swift package requires tools 6.2 or newer.
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+      WEDDING_NATIVE_MODE: release-runtime
+    steps:
+      - id: checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+          ref: ${{ github.sha }}
+      - id: setup_node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Initialize bounded diagnostic files
+        id: bootstrap
+        run: |
+          mkdir -p "$RUNNER_TEMP/wedding-native-diagnostics"
+          test -d "$DEVELOPER_DIR"
+          {
+            node --version
+            ruby --version
+            xcodebuild -version
+            xcrun swift --version
+          } 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/runner-tools.log"
+          node --input-type=module - <<'JS'
+          import {readFileSync} from 'node:fs';
+          import {join} from 'node:path';
+          import {requireSwiftTools62} from './scripts/ci-native-contract.mjs';
+          const version = requireSwiftTools62(readFileSync(join(process.env.RUNNER_TEMP, 'wedding-native-diagnostics/runner-tools.log'), 'utf8'));
+          console.log('Selected Swift ' + version + ' satisfies ExpoModulesJSI before dependency installation.');
+          JS
+      - name: Verify native CI parsing and diagnostic contracts
+        id: contracts
+        run: node --test --test-reporter=tap scripts/ci-native.test.mjs 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/ci-contracts.log"
+      - name: Frozen dependency installation
+        id: npmci
+        timeout-minutes: 10
+        run: npm ci --no-audit --no-fund 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/npm-ci.log"
+      - name: Typecheck application and tests
+        id: typecheck
+        timeout-minutes: 3
+        run: npm run typecheck 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/typecheck.log"
+      - name: Install pinned CocoaPods
+        id: cocoapods
+        timeout-minutes: 5
+        run: |
+          {
+            if ! pod _1.16.2_ --version; then
+              sudo gem install cocoapods -v 1.16.2 --no-document
+              pod _1.16.2_ --version
+            fi
+          } 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/cocoapods-install.log"
+      - name: Verify selected unsigned native target
+        id: native
+        timeout-minutes: 35
+        run: node scripts/ci-native.mjs "$WEDDING_NATIVE_MODE" 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/native-invocation.log"
+      - name: Publish bounded redacted diagnostics in the public job summary
+        if: always()
+        env:
+          WEDDING_JOB_STATUS: ${{ job.status }}
+          WEDDING_FAILED_STEP: >-
+            ${{ steps.checkout.outcome == 'failure' && 'checkout' ||
+                steps.setup_node.outcome == 'failure' && 'node-setup' ||
+                steps.bootstrap.outcome == 'failure' && 'bootstrap' ||
+                steps.contracts.outcome == 'failure' && 'ci-contracts' ||
+                steps.npmci.outcome == 'failure' && 'npm-ci' ||
+                steps.typecheck.outcome == 'failure' && 'typecheck' ||
+                steps.cocoapods.outcome == 'failure' && 'cocoapods-install' ||
+                steps.native.outcome == 'failure' && 'native-invocation' || '' }}
+        run: node scripts/ci-summary.mjs native
+      - name: Bound fresh simulator result bundle (no app binaries)
+        if: always()
+        run: |
+          result="$RUNNER_TEMP/wedding-native-diagnostics/native-tests.xcresult"
+          if test -d "$result"; then
+            xcrun xcresulttool get test-results summary --path "$result" > "$RUNNER_TEMP/wedding-native-diagnostics/xctest-summary.json" || true
+            if test "$(du -sk "$result" | cut -f1)" -gt 65536; then
+              rm -rf "$result"
+              echo 'xcresult exceeded 64 MiB; bounded logs and test summary retained.' > "$RUNNER_TEMP/wedding-native-diagnostics/xcresult-size.log"
+            fi
+          fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: release-runtime-evidence-${{ github.sha }}
+          path: ${{ runner.temp }}/wedding-native-diagnostics
+          if-no-files-found: ignore
+          retention-days: 3
+      - name: Remove generated native build files
+        if: always()
+        run: rm -rf "$RUNNER_TEMP/wedding-native-derived" apps/ipad/ios

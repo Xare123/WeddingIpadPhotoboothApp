@@ -7,6 +7,26 @@ import { readFileSync, realpathSync, statSync } from 'node:fs';
 import { basename, dirname, isAbsolute, resolve, sep } from 'node:path';
 import { createHash } from 'node:crypto';
 
+export function nativeModeSettings(mode) {
+  if (!['release-build', 'ui-tests', 'release-runtime'].includes(mode)) throw new Error('Unknown native verification mode');
+  const runtime = mode === 'release-runtime', fixture = mode === 'ui-tests';
+  return Object.freeze({
+    configuration: runtime ? 'Release' : 'Debug',
+    scheme: runtime ? 'WeddingPhotoboothReleaseRuntime' : 'WeddingPhotoboothNativeTests',
+    fixture: fixture ? 'synthetic-camera-real-native-storage' : 'disabled',
+    fixtureFlag: fixture ? '1' : '0', requiresMetro: fixture,
+  });
+}
+
+export function requireNativeTestPlan(plan, mode) {
+  const expected = nativeModeSettings(mode);
+  if (plan?.scheme !== expected.scheme || plan.configuration !== expected.configuration ||
+    (mode === 'release-runtime' && (plan.fixture !== 'disabled' || plan.metroPort !== null))) {
+    throw new Error('Unexpected native UI test plan');
+  }
+  return plan;
+}
+
 export function requireSwiftTools62(output) {
   const match = /\b(?:Apple )?Swift version\s+(\d+)\.(\d+)(?:\.(\d+))?/.exec(String(output));
   if (!match) throw new Error('The selected Xcode did not report a Swift compiler version');

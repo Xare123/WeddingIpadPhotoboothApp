@@ -1,0 +1,9 @@
+# Device-only recipient retention
+
+Phone numbers remain in device-only Keychain. Before writing a phone, the app durably reserves an opaque reference and timestamp in a separate Keychain index. The SQLite share job stores only that reference, consent time and queue state. A process interruption between reservation, phone and job writes therefore leaves an enumerable reservation, rather than an unindexed phone. No number belongs in logs, reports or these public fixtures.
+
+Queue creation and cleanup serialize within one owner. Cleanup must successfully read SQLite before deleting anything, protects every valid pending reference regardless of age, and removes resolved-job secrets. An indexed reference without a pending job becomes eligible for orphan cleanup after 24 hours. This is not automatic clock expiry: cleanup executes on a later successful foreground drain/queue attempt. Database failure defers deletion; malformed metadata fails closed. Failed secret/index deletion retains enough metadata for another attempt.
+
+The index permits at most 16 unresolved reservations to remain comfortably within a small Keychain value. Capacity failure refuses the new text request truthfully; it does not discard an existing pending recipient. QR sharing remains available. Legacy secrets created before this index with no surviving job cannot be enumerated through SecureStore and are not claimed repaired. Do not clear Keychain/app data to work around this while originals or pending jobs exist.
+
+Ten fault tests cover interruption around durable writes, ambiguous database commit, cleanup failures, database recovery, pending preservation, capacity, corruption and serialized concurrency. They use memory ports and reserved fictional numbers. Actual Keychain process-termination behavior remains a physical-device test; no real SMS is sent.

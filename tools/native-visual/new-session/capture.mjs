@@ -23,7 +23,7 @@ const snapshot = page => page.evaluate(() => window.__NEW_SESSION_FIXTURE__.snap
 const controls = (page, expression) => page.evaluate(expression);
 async function load(page, state, extra = '') {
   await page.goto(`http://127.0.0.1:8791/?state=${state}${extra}`);
-  await page.locator('[data-testid="wedding-identity"], [data-testid="wedding-identity-compact"], [data-testid="wedding-share-identity"]').first().waitFor();
+  await page.locator('[data-testid="wedding-identity"], [data-testid="wedding-identity-compact"], [data-testid="wedding-share-identity"], [data-testid="allow-camera"], [data-testid="camera-stage"]').first().waitFor();
   assert.equal(await page.getByTestId('native-fixture-enabled').count(), 0);
   await page.waitForTimeout(250);
 }
@@ -115,13 +115,14 @@ async function demonstration(orientation, viewport) {
     assert.match(await page.getByTestId('capture-save-status').innerText(), /No photos saved on this iPad yet/);
     const cameraBox = await page.getByTestId('synthetic-browser-camera').boundingBox();
     outcome.cameraStage = { ...cameraBox, widthFraction: cameraBox.width / viewport.width, heightFraction: cameraBox.height / viewport.height };
-    assert.ok(cameraBox.width >= viewport.width * .9 && cameraBox.height >= viewport.height * .6);
+    const appBox = await page.locator('#root').boundingBox();
+    for (const key of ['x', 'y', 'width', 'height']) assert.ok(Math.abs(cameraBox[key] - appBox[key]) <= 1, `Camera ${key} must fill app viewport`);
     await page.getByTestId('take-photo').tap();
-    await page.getByText('Make it a good one.', { exact: true }).waitFor();
-    await contrast(page.getByText('Make it a good one.', { exact: true }), `${orientation}: countdown over worst white frame`, true);
+    await page.locator('[aria-live="assertive"]').waitFor();
+    await contrast(page.locator('[aria-live="assertive"]'), `${orientation}: countdown over worst white frame`, true);
     const progress = page.getByText('PHOTO 1 OF 5', { exact: true });
-    await contrast(progress, `${orientation}: photo progress above countdown shade`, true);
-    assert.ok(Number(await progress.evaluate(element => getComputedStyle(element.parentElement).zIndex)) > 0, 'Photo progress must render above the countdown shade');
+    await contrast(progress, `${orientation}: photo progress over worst white frame`, true);
+    assert.ok(Number(await progress.evaluate(element => getComputedStyle(element.parentElement).zIndex)) > 0, 'Photo progress must render above the camera');
     await page.waitForFunction(() => window.__NEW_SESSION_FIXTURE__.snapshot().active?.shots.length === 1, undefined, { timeout: 7000 });
     await page.waitForTimeout(380);
     assert.match(await page.getByTestId('photo-thumbnail-1').getAttribute('aria-label'), /saved on this iPad/);
@@ -249,8 +250,8 @@ try {
   report.boundedChecks.push('Denied camera permission grants through a synthetic request; blocked permission invokes only the explicit mocked settings marker.');
   await load(page, 'camera');
   await page.getByTestId('take-photo').tap();
-  await page.getByText('Make it a good one.', { exact: true }).waitFor();
-  const digits = await page.getByText('Make it a good one.', { exact: true }).evaluate(element => { const text = element.parentElement.querySelector('[aria-live="assertive"]'); const style = getComputedStyle(text); return { opacity: style.opacity, transform: style.transform, prefersReducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches }; });
+  await page.locator('[aria-live="assertive"]').waitFor();
+  const digits = await page.locator('[aria-live="assertive"]').evaluate(element => { const style = getComputedStyle(element); return { opacity: style.opacity, transform: style.transform, prefersReducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches }; });
   assert.equal(digits.prefersReducedMotion, true);
   assert.equal(Number(digits.opacity), 1);
   assert.ok(['none', 'matrix(1, 0, 0, 1, 0, 0)'].includes(digits.transform));

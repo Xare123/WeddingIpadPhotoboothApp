@@ -1,30 +1,45 @@
 {
-  "scope": "Linux current-source release-mode iOS Hermes source map; not native runtime or native-binary security audit",
-  "app_source_sha256": "4a68c3dc73d449eac889b4c79defafd2bb190ed9e8932b3672bb8b1fb9dec01e",
-  "source_module_count": 1008,
-  "findings": {
+  "scope": "Current Linux release-mode iOS source map only; no native-binary security audit",
+  "app_source_sha256": "ab233727e41a6ba19e386f485af6ef0dc24373b2518e0da87942bf647669ac99",
+  "source_module_count": 1025,
+  "appSourceContentMatched": true,
+  "affectedDependencyRuntimeFindings": {
     "node-forge": [],
     "@expo/code-signing-certificates": [],
-    "node_modules/zod/": [],
-    "react-native-web": [],
-    "react-dom": []
+    "zod": [],
+    "miniflare": [],
+    "sharp": [],
+    "undici": [],
+    "wrangler": []
   },
   "source_map_sha256": [
-    "9c1a4bec080faec34c9261dfa51f743bf4d7865ddeeec64acf85d3fa9c0782f4"
+    "83b7d4b18e5a7cd8e7f835b7b10de962fd5d84d9032bd5cc986cf146c2937cd9"
   ],
-  "native_js_bundle_sha256": "8548b0aeda95bee2f804a1bef6629781635c3637c52fa2a541bd74fcfd63a283",
-  "worker_bundle_sha256": "c1a551870e589676f6b4b37b714381de13e330262bfdca97eec48c000be9205b",
-  "final_app_source_content_matched": true,
-  "remaining_cli_advisories": 2,
-  "audit_dependency_entries_high": 5,
-  "fixture_boundary": "Native test fixture requires __DEV__ plus explicit opt-in. Generated attract artwork is separate from guest originals.",
+  "native_js_bundle_sha256": "887095d64bf819259778244b4061cb97839a976a7f53718c3af6606b31969d33",
+  "auditCounts": {
+    "info": 0,
+    "low": 0,
+    "moderate": 1,
+    "high": 8,
+    "critical": 0,
+    "total": 9
+  },
+  "auditPassed": false,
+  "auditedPackageEntries": [
+    "@expo/cli",
+    "@expo/code-signing-certificates",
+    "expo",
+    "miniflare",
+    "node-forge",
+    "sharp",
+    "undici",
+    "wrangler",
+    "zod"
+  ],
+  "exposure": "Expo certificate/validation CLI plus local Wrangler/Miniflare image/network tooling. Expo Metro require loader is present; do not equate all @expo/cli modules with affected code. No affected library above appears in this inspected app graph. Worker source/bundle unchanged.",
+  "safeFixStatus": "Further bounded compatibility assessment required; do not force Expo downgrade or major dependency overrides. Native CI proceeds on this frozen candidate; findings are not suppressed.",
   "native_release_build": {
-    "current_source_passed": true,
-    "commit": "d3dec720d75bc23fdabe22bb382493f45224d840",
-    "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40333689855",
-    "signed": false,
-    "xctest_executed": false,
-    "native_binary_security_audited": false,
-    "coverage": "Unsigned iPhoneOS Release compile, embedded JavaScript and iPad metadata; no device/runtime security claim"
+    "current_source_passed": false,
+    "status": "pending exact-commit hosted verification"
   }
 }

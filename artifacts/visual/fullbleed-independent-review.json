@@ -1,0 +1,171 @@
+{
+  "scope": "LOCAL UNPUBLISHED independent review of browser opaque fallback; synthetic scene/device adapters; not native Liquid Glass or physical iPad proof",
+  "reviewedAt": "2026-10-26T14:47:02.296747+00:00",
+  "sourceHashChecks": {
+    "apps/ipad/App.tsx": {
+      "expected": "ab233727e41a6ba19e386f485af6ef0dc24373b2518e0da87942bf647669ac99",
+      "actual": "ab233727e41a6ba19e386f485af6ef0dc24373b2518e0da87942bf647669ac99",
+      "matches": true
+    },
+    "apps/ipad/src/GlassSurface.tsx": {
+      "expected": "ace64a22e740d69040689495c0aa7147f7456038bbd0ee9aba6f2d52b58af972",
+      "actual": "ace64a22e740d69040689495c0aa7147f7456038bbd0ee9aba6f2d52b58af972",
+      "matches": true
+    },
+    "apps/ipad/src/glass-policy.ts": {
+      "expected": "d3e33995484239887dde90f2743919c17bb2e8ff23093ceb45a804e530499e9e",
+      "actual": "d3e33995484239887dde90f2743919c17bb2e8ff23093ceb45a804e530499e9e",
+      "matches": true
+    },
+    "apps/ipad/src/host-visibility.ts": {
+      "expected": "9b8033279a1249c59cd04e3f185792fa2a61c14f892f2cb9cf98953ceab02014",
+      "actual": "9b8033279a1249c59cd04e3f185792fa2a61c14f892f2cb9cf98953ceab02014",
+      "matches": true
+    },
+    "apps/ipad/src/session-capture.ts": {
+      "expected": "b41f7ee98282fe5661e080a6b4e0b88b17c56e3c1e5908adebbe020ed6323e24",
+      "actual": "b41f7ee98282fe5661e080a6b4e0b88b17c56e3c1e5908adebbe020ed6323e24",
+      "matches": true
+    },
+    "apps/ipad/src/review-selection.ts": {
+      "expected": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
+      "actual": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
+      "matches": true
+    },
+    "apps/ipad/src/sharing.ts": {
+      "expected": "00f6890855b5ed5942b23fd10f5f54f88d1bfa62ae541d9c0835c8a7ac9e415f",
+      "actual": "00f6890855b5ed5942b23fd10f5f54f88d1bfa62ae541d9c0835c8a7ac9e415f",
+      "matches": true
+    },
+    "apps/ipad/src/SmsShare.tsx": {
+      "expected": "ee2740889c602683049dae6b599bbdd9886fef271bf30df4f18e50dbc6e6b8c2",
+      "actual": "ee2740889c602683049dae6b599bbdd9886fef271bf30df4f18e50dbc6e6b8c2",
+      "matches": true
+    },
+    "apps/ipad/src/sms-state.ts": {
+      "expected": "4c7125d4f710c97848b6690196fa328edc83e85488ce3626dd7e843e2e99497a",
+      "actual": "4c7125d4f710c97848b6690196fa328edc83e85488ce3626dd7e843e2e99497a",
+      "matches": true
+    },
+    "apps/ipad/src/booth-presentation.ts": {
+      "expected": "b6f720f7d9133a0603f847efd0646a9a23f40d409018e9eb757d5326bc43e935",
+      "actual": "b6f720f7d9133a0603f847efd0646a9a23f40d409018e9eb757d5326bc43e935",
+      "matches": true
+    },
+    "apps/ipad/src/host-originals.ts": {
+      "expected": "c2f3e5707832bc96988bd4f91ddbedd22d93b2feb2248266c55454da4256431f",
+      "actual": "c2f3e5707832bc96988bd4f91ddbedd22d93b2feb2248266c55454da4256431f",
+      "matches": true
+    },
+    "apps/ipad/src/photo-export.ts": {
+      "expected": "fcc298173415b25cf15e71757e7c741485ca3b88a44b7422594388a56c447a9b",
+      "actual": "fcc298173415b25cf15e71757e7c741485ca3b88a44b7422594388a56c447a9b",
+      "matches": true
+    },
+    "apps/ipad/src/photo-library.ts": {
+      "expected": "fe2344e73c2d96d42417d201f5464fc72b8093b8bf43339e3011b7ba31942246",
+      "actual": "fe2344e73c2d96d42417d201f5464fc72b8093b8bf43339e3011b7ba31942246",
+      "matches": true
+    },
+    "packages/core/src/index.ts": {
+      "expected": "945d97743a621558369c7029acbc5b61daae85d2c08156368c188aedbbb9a991",
+      "actual": "945d97743a621558369c7029acbc5b61daae85d2c08156368c188aedbbb9a991",
+      "matches": true
+    },
+    "apps/ipad/assets/attract-scene.png": {
+      "expected": "6ca6274beba9483104f19fb35d1ef9b8bfaae458208025e8fb4e8d4890f45cdf",
+      "actual": "6ca6274beba9483104f19fb35d1ef9b8bfaae458208025e8fb4e8d4890f45cdf",
+      "matches": true
+    }
+  },
+  "evidenceSHA256": {
+    "artifacts/visual/new-session-attract-portrait.png": "d9163cbc73990732433fc8bc81dcf03de8753bdc86411e7ac1f3d2a1aacf42cb",
+    "artifacts/visual/new-session-camera-portrait.png": "a96939920dc62899690d4978ebcee419c7c0b6f440ce4fa28b51c236d4b025c0",
+    "artifacts/visual/new-session-camera-progress-portrait.png": "22d8bb185064a24157462e99772dcded628b5031fa4b0ee188875beab7d9fd93",
+    "artifacts/visual/new-session-paused-portrait.png": "fa65f9a737dcbf0ea9932a5565fde2a256e0a1352549ca1afcb4fd79cbe7ea60",
+    "artifacts/visual/new-session-review-portrait.png": "c06a71d9a33f43c0de3e9d893017d20f1aa9d91180a76fee10691a136ee56eaa",
+    "artifacts/visual/new-session-review-swiped-portrait.png": "8dfd927c0154f9b6e32e3127b171eb9e1ff55a42f68065a008fd25c1d5bc477c",
+    "artifacts/visual/new-session-review-retake-portrait.png": "76eaa6e5ec8fd7fcf4fa70db50a24964400468c904706e26b5ad33364b430187",
+    "artifacts/visual/new-session-pending-portrait.png": "25ead06dfcecec7e538ad32775183aa23b19df8041dbdd24a1d6c3c9adb10fe4",
+    "artifacts/visual/new-session-ready-portrait.png": "b569e8da246f7edb1bef84c1c4ff1837359c86db188508010edeb8155d3af0dd",
+    "artifacts/visual/new-session-next-guests-portrait.png": "d9163cbc73990732433fc8bc81dcf03de8753bdc86411e7ac1f3d2a1aacf42cb",
+    "artifacts/visual/new-session-attract-landscape.png": "36e3ae7158e007a14312e496debf4f1a1c36d1ace1c47bef9132bdee5157e954",
+    "artifacts/visual/new-session-camera-landscape.png": "3456c0ff607ca81694e9085df193000be4b015a5a078c12f622fdd06485b8256",
+    "artifacts/visual/new-session-camera-progress-landscape.png": "ef67dc847d710cf0d6875334f6322ddfa74174e3c6579a0a1814f28bf3986f07",
+    "artifacts/visual/new-session-paused-landscape.png": "f62e64faf022af8d3eaf08d8e1f9c99cc7b1bb441c93c7b6b7c409b32e9bfdbc",
+    "artifacts/visual/new-session-review-landscape.png": "34a4c07786f38a911a6c2f101088e1c9b8f5fb2ee9044c75c1cc44cda7fbc61b",
+    "artifacts/visual/new-session-review-swiped-landscape.png": "ea1d3590ec67c8509996cc37f1d6f613e896c945ec88d4ed467825fac224599c",
+    "artifacts/visual/new-session-review-retake-landscape.png": "e03fc72c8d55267245255912f56f66edbe2689aa03e397e80c89ec1e986e3dc1",
+    "artifacts/visual/new-session-pending-landscape.png": "6aeb4fc389a99367bbb38a0ebd5b66a7f98b8ddc71e256e0c4997dcc5156d61c",
+    "artifacts/visual/new-session-ready-landscape.png": "d697520d5c2f9f4f936cbbd66fbcd105eaa5b81b5d85befacfcff36d6fe014d0",
+    "artifacts/visual/new-session-next-guests-landscape.png": "36e3ae7158e007a14312e496debf4f1a1c36d1ace1c47bef9132bdee5157e954",
+    "artifacts/visual/new-session-photos-denied-portrait.png": "ae5fe048f726cdaa3e0c79f07c620be5e70c29a3e16f675449f7e4da37fadde2",
+    "artifacts/visual/new-session-photos-denied-landscape.png": "b319bdc127bafff4a1d9a18342dfa96176a0a2baf35cda071e9c2fae2caaae4b",
+    "artifacts/visual/new-session-photos-uncertain-portrait.png": "22c637a10022cc39a6718945117697a37c4bbc5646f13be42c59e18c266e138f",
+    "artifacts/visual/new-session-reduced-motion-countdown-portrait.png": "73176897292eda6a399c097f68ce2cd008a895ef98f16bd20cfe2d18cc779853",
+    "artifacts/visual/new-session-interrupted-portrait.png": "72fd0efaf05d4db5505afc822268b570664e56a9ba12f1eb68bea450f69e6e04",
+    "artifacts/visual/new-session-save-retry-portrait.png": "e8a1e857a25cda5ab41bef2f405dea08682a8d2b85172765a2f79d9caa043b88",
+    "artifacts/visual/new-session-host-controls-portrait.png": "23f3ab04fd349d48bf9f1f795aea68afd394b6f41ee0504a33182fbc864af50b",
+    "artifacts/visual/new-session-host-library-portrait.png": "211d2732f51d2693bc78d144690e98cfd7e2bbe7caee77fe2d9f80cce4fbde93",
+    "artifacts/visual/new-session-host-library-session-portrait.png": "fa03ecf19ef02725de37a24339895f8e25aaebd865467afce9cfa181a209568b",
+    "artifacts/visual/new-session-host-setup-portrait.png": "46c369e11d67c6c683fd2d3b3d879342941f2a94b5f4269c2468a9a9ad6ee4f0",
+    "artifacts/visual/new-session-host-duplicate-confirmation-portrait.png": "bec1b157ba7a457d899762a608d1802bdd1ae607d1a4f200ef0006718e192ad0",
+    "artifacts/visual/new-session-host-acknowledge-confirmation-portrait.png": "7e7450078b1af370c04395345f9c2b6ebb6f3e1ae4e6fbb3d0ac5333db250007",
+    "artifacts/visual/new-session-host-retained-original-portrait.png": "e01a3e922d75de17c2e30115e7fecb6305eec33b0558e332e54b20d1f920ef55",
+    "artifacts/visual/new-session-host-retained-exported-portrait.png": "a07eeb322e9dc8564d1209e3953bb1a39fbc9de33e0ff093e65f168d2047574d",
+    "artifacts/visual/new-session-staged-0-saved-portrait.png": "a96939920dc62899690d4978ebcee419c7c0b6f440ce4fa28b51c236d4b025c0",
+    "artifacts/visual/new-session-host-staged-0-saved-portrait.png": "f9b2917d9af7e9383cf10720586c00a96cc5c9a127b48cf802d586db759fab06",
+    "artifacts/visual/new-session-staged-4-saved-portrait.png": "68f9985ecb3bbe28d637808f3e2d49767da919c225169f5322fa54dcecb7fb04",
+    "artifacts/visual/new-session-host-staged-4-saved-portrait.png": "951c804aa635a0f02cf53e0606d3182fae7e667bf1ff4794b0cc86651545d029",
+    "artifacts/visual/new-session-host-index-repair-before-portrait.png": "f958a06c2ec2c5376b05f6ed5f4a3673de71662ec8556264f1709248fad64de5",
+    "artifacts/visual/new-session-host-index-repair-after-portrait.png": "a80de54c5e1e32a2a27840d56e932ba00b82b5c7cea51a3a57fb211b543d9d4f",
+    "artifacts/visual/new-session-qr-reserved-1x-portrait.png": "0a22e40f1266649231c0bc46963f4968b00a9cdb44e467cdc5476debfaa0f6ae",
+    "artifacts/visual/new-session-qr-realistic-1x-portrait.png": "d7d77085502f3ebfe9a8973059269fd26423e9acb6f4853dcec21cf0b1e29037",
+    "artifacts/visual/new-session-qr-reserved-numeric-1x-portrait.png": "4e4411f3092f0a1db6fb21bbd8a5bd93e40c1e16e956ccc531555b0cb194e4fe",
+    "artifacts/visual/new-session-qr-realistic-numeric-1x-portrait.png": "323d0695db108222510f722e6879fcb2a047fa44895a3d7b8b0089465142c3f3",
+    "artifacts/visual/new-session-qr-short-numeric-1x-portrait.png": "b6b27488f520ee989e8fb2c370b070e77e30f22ceba6aa830ab86c836252fd04",
+    "artifacts/visual/new-session-qr-reserved-1x-landscape.png": "172aaeb5a85b892b326c42e7c926e7a13d62d4ab2a69eb7ae9271750f66f0664",
+    "artifacts/visual/new-session-qr-realistic-1x-landscape.png": "d8e7eacff69e06db7b7347c05b4186f7e45180507cb430fe48d4eff733f12448",
+    "artifacts/visual/new-session-qr-reserved-numeric-1x-landscape.png": "721bf80279723dc66d0ec5ce3bb0e011b74e6c8f9a365ddbe5c231638030dd8a",
+    "artifacts/visual/new-session-qr-realistic-numeric-1x-landscape.png": "7521a7da174596fc14806ce8cd73b6dd2f9e840669bf2ad0e3514aa9a8224bf0",
+    "artifacts/visual/new-session-qr-short-numeric-1x-landscape.png": "ee4498b517105612de076f3d1eb294b787396cdd8980d6c393b92d1a43730e80",
+    "artifacts/visual/new-session-qr-reserved-2x-portrait.png": "aa7fd2420c49128d4fd2d67b479b7146e404832eb5a4d114c8b7c5ad9cd118fb",
+    "artifacts/visual/new-session-qr-realistic-2x-portrait.png": "46919fa6549e32050c67251035392a1aa9296f11195642991f30ba55183a58f6",
+    "artifacts/visual/new-session-qr-reserved-numeric-2x-portrait.png": "69be823ab8055be489984ae95f1a2221ab926cb41e794dfbf30e3d4c0e0b8f62",
+    "artifacts/visual/new-session-qr-realistic-numeric-2x-portrait.png": "2703b13d5e5bea5a042d17b27814e068c87110281f6cba8479b7b4f73997951c",
+    "artifacts/visual/new-session-qr-short-numeric-2x-portrait.png": "544ed64b0b015147fcf185f57c50ef3a3247629443ece024522e9c2c613d91e5",
+    "artifacts/visual/new-session-qr-reserved-2x-landscape.png": "5740df70d2051f111a62fe7993eb09cc792f3db888959ce3252d835d5fa6d986",
+    "artifacts/visual/new-session-qr-realistic-2x-landscape.png": "fbfa47f2ce54531d60acd4eb7693c020b971ef4a955d9246495900a2226191d2",
+    "artifacts/visual/new-session-qr-reserved-numeric-2x-landscape.png": "1fe7813fce3ea14acdccf370f625e9555804a712557bff19d3fdabb11ee1a719",
+    "artifacts/visual/new-session-qr-realistic-numeric-2x-landscape.png": "03c7d6589af0eed45242740f6502da13ef53b8bebf8c1ee514ed864a9f1753be",
+    "artifacts/visual/new-session-qr-short-numeric-2x-landscape.png": "0e7c7cf001e70643c8c557e99c52205a93a81df28dd72103a0cb511fe1b49231",
+    "artifacts/visual/new-session-demo-portrait.webm": "79767d9c3275f7e05318a496f5fa2868cc42a21117d7f305c70eb8b11da2ead1",
+    "artifacts/visual/new-session-demo-landscape.webm": "b4185b3ec8c8e8f95c36ded8670afff8cdb07b6465ea87a594c40bb5a43a8da2",
+    "artifacts/visual/new-session-checks.json": "3bb73ce7ee1e8ef7b1cded3a39c332d85d9b64aedb3c2a48c9f2288ec147ee54",
+    "artifacts/visual/new-session-fullbleed-checks.json": "5a5813fdc666f2620cb1fcf0dba7cc5f2c3f15fe9ed410844ff18b9f93536d08",
+    "artifacts/visual/new-session-evidence.md": "ce8340251cd675e6743778c7e3fdbb5e2d1e628751c2009f8a6fa2e36baaf26e"
+  },
+  "inspected": {
+    "currentPNGsViaContactSheets": 60,
+    "additionalFullSizeViews": [
+      "camera-portrait",
+      "camera-landscape",
+      "camera-progress-landscape",
+      "save-retry-portrait"
+    ],
+    "currentVideos": 2,
+    "extractedVideoFramesActuallyViewed": 57,
+    "sampling": "1fps:portrait29frames0..28;landscape28frames0..27;contact sheets, not continuous playback",
+    "baselineLocalGitPNGs": 2,
+    "baselineCommit": "d3dec72",
+    "machineRecordsReviewed": "eight full-viewport/accessibilitycases; sevenhostchecks; not independently rerun"
+  },
+  "acceptance": "No blocking visual defect identified in inspected current fixtures. Accept browser opaque-fallback visual candidate within stated scope.",
+  "findings": [],
+  "limits": [
+    "Native glass is not rendered in browser; all eight geometry/preference cases report nativeGlassRendered:false.",
+    "Sampled videos do not establish frame-perfect continuity or native animation performance.",
+    "Host redaction supported by recorded contract checks, not independently induced backgrounding during this review.",
+    "No product edits/tests/harnesschanges, publication, external uploads, credentials, pairing, real guest data or SMS used by reviewer."
+  ]
+}

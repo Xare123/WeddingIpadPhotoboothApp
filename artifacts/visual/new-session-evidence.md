@@ -4,14 +4,14 @@
 
 **Browser fixtures, not iOS screenshots or native-device proof.** The actual [App.tsx](../../apps/ipad/App.tsx), capture/review controllers, wedding/count presenter, host original actions, photo exporter, readiness helper and SMS capability component execute through React Native Web. Camera, private files, SQLite, the native MediaLibrary SDK, authentication and sync use explicit synthetic adapters. Every screenshot and video retains the browser-fixture banner.
 
-Current UNPUBLISHED App source SHA-256: `4a68c3dc73d449eac889b4c79defafd2bb190ed9e8932b3672bb8b1fb9dec01e`.
+Current UNPUBLISHED App source SHA-256: `ab233727e41a6ba19e386f485af6ef0dc24373b2518e0da87942bf647669ac99`.
 
 [Machine-readable checks](new-session-checks.json) contain matching hashes for the App, capture/review helpers, sharing/SMS sources and generated scene, verified before and after recording. [Bundle boundary evidence](new-session-bundle-boundary.json) records excluded native implementations and the disabled native XCTest fixture. All views use `America/Los_Angeles`.
 
 ## Watch the actual interaction
 
-- [Local portrait WebM — 28.5 seconds, 820×1180](new-session-demo-portrait.webm)
-- [Local landscape WebM — 28.3 seconds, 1180×820](new-session-demo-landscape.webm)
+- [Local portrait WebM — 28.84 seconds, 820×1180](new-session-demo-portrait.webm)
+- [Local landscape WebM — 28.40 seconds, 1180×820](new-session-demo-landscape.webm)
 
 Both recordings show the unaccelerated three-second automatic five-photo sequence, pause/continue, trusted touch swipe, immediate thumbnail 3 → Retake, offline sharing, synthetic all-five readiness, and Next guests. The files are VP8 WebM at 25 fps, inspected with FFprobe; a recorded countdown frame was also visually inspected. No camera/audio feed or real guest data is used.
 
@@ -37,7 +37,7 @@ New host reliability views: [duplicate-risk confirmation](new-session-host-dupli
 
 ## Findings and verified repairs
 
-The local run passed both complete recorded workflows, six bounded adapter checks, six new host reliability checks, eight selected contrast checks, and 22 exact full-frame QR decodes in **both jsQR 1.4.0 and ZXing-C++ through zxing-wasm 3.1.6**. It recorded zero browser errors and zero unexpected external requests. All 60 screenshots were captured from the actual JSX, with enabled button bounds at least 44 × 44 CSS pixels and no horizontal overflow. Longer host-original lists intentionally scroll vertically.
+The local run passed both complete recorded workflows, six bounded adapter checks, seven host reliability checks, eight selected contrast checks, and 22 exact full-frame QR decodes in **both jsQR 1.4.0 and ZXing-C++ through zxing-wasm 3.1.6**. It recorded zero browser errors and zero unexpected external requests. All 60 screenshots were captured from the actual JSX, with enabled button bounds at least 44 × 44 CSS pixels and no horizontal overflow. Longer host-original lists intentionally scroll vertically.
 
 Wedding identity is now “Gizelle & Rami · November 1, 2026”, saved thumbnails visibly retain numbers 1–5, and review teaches “Swipe photos · tap a thumbnail”. The zero-saved failure footer explicitly says “Photo 1 still needs saving · No photos saved on this iPad yet”. Offline sharing explicitly says “No download link yet”. Assertions use rendered text and the actual saved count. The pending-sharing PNGs wait until every ancestor fade is opaque; review-swiped PNGs wait for the exact second-page offset. Both require four stable rendered frames. These static waits occur before the fast thumbnail-selection action and do not alter its no-wait regression.
 
@@ -45,7 +45,7 @@ The camera occupies 95.6% of portrait width and 96.9% of landscape width, with a
 
 A real fast-selection race was found and fixed in the App. Historical reports preserve [the original failure](new-session-fast-retake-before-fix.json) and [the first source fix](new-session-fast-retake-after-fix.json). The current unpublished run repeats that exact action block: thumbnail 3 is tapped and Retake is requested immediately, **without an actor offset wait or settling sleep**. The label/camera action remain “Retake photo 3”, only slot 3 changes, and the other four selected IDs and previous in-memory exposure remain intact in both orientations. The current results and exact source hashes are in `new-session-checks.json`; the historical reports deliberately retain their older hashes. This verifies the browser-native-JSX event flow, not physical iPad touch timing.
 
-Progress chips were also moved above the countdown shade. Computed styles give contrast 8.100:1 for the attract eyebrow over a hypothetical white image, 6.220:1 for countdown text over its actual shade plus a white frame, 11.896:1 for photo progress above the shade, and 8.960:1 for the QR caption. All exceed 4.5:1. Reduced-motion digits remain at scale/opacity 1; a synthetic background event prevents exposure after the countdown and returns to a paused camera. These bounded checks are not a full native accessibility audit.
+The camera now fills the entire app viewport beneath the fixture banner, with no header/footer gutter or rounded camera corners. One opaque bottom control island floats over the scene; native Liquid Glass is not tested here. Computed styles give contrast 8.100:1 for the attract eyebrow over a hypothetical white image, 13.340:1 for countdown text over its actual countdown disc plus a white frame, 16.602:1 for photo progress over white, and 8.960:1 for the QR caption. All exceed 4.5:1. Reduced-motion digits remain at scale/opacity 1; a synthetic background event prevents exposure after the countdown and returns to a paused camera. These bounded checks are not a full native accessibility audit.
 
 The actual JavaScript flow awaits each synthetic private-save promise before advancing, exposes only the saved slots in the strip, retains five selected originals on Photos denial, and reports unconfirmed Photos results without a no-op retry. A simulated private-save failure retries the same exposure without another camera-adapter call. Five upload acknowledgments alone do not reveal a QR; the synthetic all-five session-ready acknowledgment is also required. Next guests removes the prior session, shot routes and QR from the guest screen while keeping the in-memory host history.
 
@@ -60,3 +60,5 @@ The generated [attract scene](../../apps/ipad/assets/attract-scene.png) is used 
 Reproduce with the tracked [new-session harness](../../tools/native-visual/new-session/README.md). Earlier `ipad-*` and `qr-*` artifacts describe the prior one-shot UI and remain historical evidence. The earlier failed QR decoding report was not rewritten.
 
 Actual installed-iPad camera/mirroring, native filesystem and SQLite durability/recovery, Photos permission/export, native VoiceOver/status bar, real backgrounding, hosted macOS/iOS tests, physical phone scanning conditions and live upload/download remain separate validation gates. None is claimed by this browser fixture.
+
+[Full-bleed geometry and accessibility checks](new-session-fullbleed-checks.json) passed eight browser cases across portrait/landscape with supplied safe-area insets, reduced transparency, increased contrast, and synthetic glass availability. Dynamic preference events update actual component hint text. Both availability settings remain opaque in the browser. Two repeated synthetic background/foreground cycles hide host originals and require fresh explicit host authentication. Native safe areas, OS accessibility behavior, biometric prompts, and Liquid Glass appearance require device verification.

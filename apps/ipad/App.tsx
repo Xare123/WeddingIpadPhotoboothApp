@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   AccessibilityInfo, Animated, AppState, Easing, Image, ImageBackground, Linking, Modal,
-  Platform, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Switch, Text, TextInput,
+  Platform, Pressable, ScrollView, StatusBar, StyleSheet, Switch, Text, TextInput,
   useWindowDimensions, View,
 } from 'react-native';
 import type { ScrollViewInstance } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import type { CameraCapturedPicture, CameraPictureOptions } from 'expo-camera';
+import { requireOptionalNativeModule } from 'expo';
+import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { randomUUID } from 'expo-crypto';
 import QRCode from 'react-native-qrcode-svg';
 import type { QueueJob } from '@wedding-booth/core';
@@ -24,6 +27,8 @@ import { captureErrorMessage, captureSaveStatus, WEDDING_DATE, WEDDING_IDENTITY,
 import { createHostOriginalActions, hostOriginalStatus, INDEX_REPAIR_DIAGNOSTIC, indexRepairSessions, queueIndexStatus, type HostOriginalRequest } from './src/host-originals';
 import { createReviewSelection } from './src/review-selection';
 import { createSessionCaptureRunner, nextPhotoSlot, screenForSession, sessionIsComplete, type PendingPhoto } from './src/session-capture';
+import { GlassSurface } from './src/GlassSurface';
+import { createHostVisibility } from './src/host-visibility';
 
 const pause = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
 const TIMERS = [2, 3, 5, 8, 10] as const;
@@ -93,8 +98,11 @@ function Thumbnails({ session, active, onSelect, dark = true, reduceMotion = tru
     onSelect={onSelect} dark={dark} reduceMotion={reduceMotion} compact={compact} />)}</View>;
 }
 
-export default function App() {
+export default function App() { return <SafeAreaProvider><Photobooth /></SafeAreaProvider>; }
+
+function Photobooth() {
   const { width, height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
   const landscape = width > height;
   const [permission, requestPermission] = useCameraPermissions();
   const camera = useRef<CameraView>(null);
@@ -108,6 +116,7 @@ export default function App() {
   const pairingLock = useRef(false);
   const hostOriginalLock = useRef(false);
   const hostVisibleRef = useRef(false);
+  const hostVisibility = useRef(createHostVisibility());
   const librarySessionRef = useRef<ActiveSession | null>(null);
   const screenFade = useRef(new Animated.Value(1)).current;
   const countdownReveal = useRef(new Animated.Value(1)).current;
@@ -149,6 +158,9 @@ export default function App() {
   const [exporting, setExporting] = useState(false);
   const [libraryPermission, setLibraryPermission] = useState('undetermined');
   const [fixtureStatus, setFixtureStatus] = useState('');
+  const [fullPhotoSupported, setFullPhotoSupported] = useState(() => {
+    try { return Platform.OS === 'ios' && requireOptionalNativeModule<{ preserveFullPhotoAvailable?: boolean }>('ExpoCamera')?.preserveFullPhotoAvailable === true; } catch { return false; }
+  });
 
   function focusReview(slot: number) {
     reviewSelection.current.select(slot);
@@ -178,8 +190,9 @@ export default function App() {
     if (mounted.current) setLibrarySession(value);
   }
   async function refreshLibrary() {
+    const lease = hostVisibility.current.epoch();
     const values = await listLocalSessions();
-    if (mounted.current) {
+    if (mounted.current && hostVisibleRef.current && hostVisibility.current.current(lease)) {
       setSavedSessions([...values].sort((a, b) => b.createdAt - a.createdAt));
       const currentId = librarySessionRef.current?.id;
       const current = values.find(value => value.id === currentId);
@@ -294,8 +307,14 @@ export default function App() {
     wait: pause,
     isActive: () => AppState.currentState === 'active',
     async capture() {
-      const photo = nativeFixtureEnabled ? await takeNativeFixturePhoto() : await camera.current?.takePictureAsync({ quality: 1, skipProcessing: false });
+      const options: CameraPictureOptions & { preserveFullPhoto?: boolean } = { quality: 1, skipProcessing: false, ...(fullPhotoSupported ? { preserveFullPhoto: true } : {}) };
+      const photo = nativeFixtureEnabled ? await takeNativeFixturePhoto() : await camera.current?.takePictureAsync(options);
       if (!photo?.uri) throw new Error('The camera did not return a photo.');
+      if (fullPhotoSupported && !nativeFixtureEnabled && !(photo as CameraCapturedPicture & { originalPreserved?: boolean }).originalPreserved) {
+        setFullPhotoSupported(false);
+        setMessage('Camera framing needs host attention. This captured file will still be saved.');
+        diagnose(new Error('Native full-photo preservation was not acknowledged. Keep the captured file and verify the installed native build.'));
+      }
       if (!reduceMotionRef.current) {
         exposureFlash.stopAnimation(); exposureFlash.setValue(0.2);
         Animated.timing(exposureFlash, { toValue: 0, duration: 130, useNativeDriver: true }).start();
@@ -351,7 +370,12 @@ export default function App() {
     const motion = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduceMotion);
     const lifecycle = AppState.addEventListener('change', state => {
       setForeground(state === 'active');
-      if (state !== 'active') { setScanningSetup(false); setPairingCode(''); runner.current?.interrupt(); screenFade.stopAnimation(); screenFade.setValue(1); countdownReveal.stopAnimation(); exposureFlash.stopAnimation(); exposureFlash.setValue(0); }
+      if (state !== 'active') {
+        hostVisibility.current.suspend(state);
+        hostVisibleRef.current = false; setHostVisible(false); setHostDecision(null);
+        librarySessionRef.current = null; setLibrarySession(null); setSavedSessions([]); setLibraryMode('selected'); setHostPage('controls'); setHostMessage('');
+        setScanningSetup(false); setPairingCode(''); runner.current?.interrupt(); screenFade.stopAnimation(); screenFade.setValue(1); countdownReveal.stopAnimation(); exposureFlash.stopAnimation(); exposureFlash.setValue(0);
+      }
       else { void retrySharing(); void refreshCapability(); }
     });
     const timer = setInterval(() => {
@@ -465,13 +489,17 @@ export default function App() {
   }
   async function openHost() {
     if (hostBusy || busy || saving) return;
+    const ticket = hostVisibility.current.begin();
+    if (ticket === null) return;
     setHostBusy(true);
     try {
-      await authenticateHost(); setCameraReady(false); setScanningSetup(false); setHostPage('controls'); setHostMessage(''); hostVisibleRef.current = true; setHostVisible(true); setHostDecision(null); setPairingCode('');
+      await authenticateHost();
+      if (!hostVisibility.current.finish(ticket) || AppState.currentState !== 'active') return;
+      setCameraReady(false); setScanningSetup(false); setHostPage('controls'); setHostMessage(''); hostVisibleRef.current = true; setHostVisible(true); setHostDecision(null); setPairingCode('');
       await refreshLibrary(); await refreshCapability();
-      try { setPaired(!!await loadConnection()); } catch (error) { diagnose(error); }
+      try { const connection = await loadConnection(); if (hostVisibleRef.current && hostVisibility.current.current(ticket)) setPaired(!!connection); } catch (error) { diagnose(error); }
     } catch (error) { setMessage(error instanceof Error ? error.message : 'Host authentication is unavailable.'); }
-    finally { setHostBusy(false); }
+    finally { hostVisibility.current.finish(ticket); setHostBusy(false); }
   }
   async function savePreferences() {
     setHostBusy(true); setHostMessage('');
@@ -492,7 +520,7 @@ export default function App() {
     finally { pairingLock.current = false; setPairingCode(''); setScanningSetup(false); setHostBusy(false); }
   }
 
-  function closeHost() { hostVisibleRef.current = false; setHostVisible(false); setHostDecision(null); setPairingCode(''); setScanningSetup(false); }
+  function closeHost() { hostVisibility.current.close(); hostVisibleRef.current = false; setHostVisible(false); setHostDecision(null); librarySessionRef.current = null; setLibrarySession(null); setSavedSessions([]); setPairingCode(''); setScanningSetup(false); }
   async function scanPrivateSetup() {
     setHostMessage('');
     if (!permission?.granted) {
@@ -509,9 +537,9 @@ export default function App() {
   const decisionSession = hostDecision ? [librarySession, ...savedSessions].find(value => value?.id === hostDecision.sessionId) : null;
   const decisionPhoto = hostDecision && decisionSession ? (hostDecision.retained ? decisionSession.retakes ?? [] : decisionSession.shots).find(photo => photo.id === hostDecision.photoId) : null;
   const lightScreen = screen === 'attract' || screen === 'share';
-  return <SafeAreaView style={[styles.page, lightScreen && styles.lightPage]}>
-    <StatusBar barStyle={lightScreen ? 'dark-content' : 'light-content'} />
-    <Animated.View style={[styles.app, { opacity: screenFade }]}>
+  return <SafeAreaView edges={screen === 'camera' ? [] : ['top', 'right', 'bottom', 'left']} style={[styles.page, lightScreen && styles.lightPage]}>
+    <StatusBar hidden={screen === 'camera'} barStyle={lightScreen ? 'dark-content' : 'light-content'} />
+    <Animated.View style={[styles.app, { opacity: screen === 'camera' ? 1 : screenFade }]}>
       {screen === 'attract' ? <ImageBackground source={require('./assets/attract-scene.png')} resizeMode="cover" style={styles.attract} imageStyle={styles.attractImage}>
         <View style={styles.attractShade} />
         <View style={styles.attractTop}><Text testID="wedding-identity" style={[styles.brand, styles.weddingIdentity]}>{WEDDING_IDENTITY}</Text><Pressable accessibilityRole="button" accessibilityLabel="Open host controls" onPress={() => void openHost()} disabled={hostBusy}><Text style={styles.attractHost}>Host</Text></Pressable></View>
@@ -523,30 +551,38 @@ export default function App() {
           <Text style={styles.attractFootnote}>Five photos, one moment together.</Text>
         </View>
       </ImageBackground> : <>
-        <View style={[styles.topbar, lightScreen && styles.topbarLight]}>
+        {screen !== 'camera' && <View style={[styles.topbar, lightScreen && styles.topbarLight]}>
           <>{screen === 'share' ? <Text testID="wedding-share-identity" style={[styles.brand, styles.weddingIdentity, styles.brandDark]}>{WEDDING_IDENTITY}</Text> : <View accessible accessibilityLabel={WEDDING_IDENTITY} testID="wedding-identity-compact" style={styles.compactIdentity}><Text style={styles.brand}>{WEDDING_NAMES}</Text><Text style={styles.compactDate}>{WEDDING_DATE}</Text></View>}</>
           <Pressable accessibilityRole="button" accessibilityLabel="Open host controls" disabled={busy || hostBusy} onPress={() => void openHost()}><Text style={[styles.hostLink, lightScreen && styles.hostLinkDark]}>Host</Text></Pressable>
-        </View>
+        </View>}
         {screen === 'camera' && session && <View style={styles.capturePage}>
-          <View style={styles.cameraStage}>
+          <View testID="camera-stage" style={styles.cameraStage}>
             {permission?.granted ? hostVisible ? <View style={StyleSheet.absoluteFill} /> : nativeFixtureEnabled
-              ? <Image source={nativeFixtureImage()} resizeMode="cover" style={StyleSheet.absoluteFill} onLoad={() => setCameraReady(true)} accessibilityLabel="Synthetic native camera scene" />
-              : <CameraView ref={camera} facing="front" mirror={false} style={StyleSheet.absoluteFill} onCameraReady={() => setCameraReady(true)} onMountError={() => { setCameraReady(false); setMessage('The front camera is unavailable. Please ask the host.'); }} />
+              ? <Image testID="camera-surface" source={nativeFixtureImage()} resizeMode="cover" style={StyleSheet.absoluteFill} onLoad={() => setCameraReady(true)} accessibilityLabel="Synthetic native camera scene" />
+              : <CameraView testID="camera-surface" ref={camera} facing="front" mirror={false} style={StyleSheet.absoluteFill} onCameraReady={() => setCameraReady(true)} onMountError={() => { setCameraReady(false); setMessage('The front camera is unavailable. Please ask the host.'); }} />
               : <View style={styles.permission}><Text style={styles.permissionTitle}>You bring the smiles.</Text><Text style={styles.permissionBody}>We just need the camera.</Text><Button title={permission?.canAskAgain === false ? 'Open iPad Settings' : 'Enable camera'} testID="allow-camera" light onPress={() => void (permission?.canAskAgain === false ? Linking.openSettings() : requestPermission())} /></View>}
             <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: '#fff', opacity: exposureFlash }]} />
-            <View style={styles.cameraTop}><Text style={styles.progressText}>{retakeSlot !== undefined ? 'RETAKE' : 'PHOTO'} {activeSlot + 1} <Text style={styles.progressMuted}>OF {total}</Text></Text><Text style={styles.cameraSaved}>{session.shots.length} saved here</Text></View>
-            {countdown !== undefined && <View pointerEvents="none" style={styles.countdownShade}><Animated.Text accessibilityLiveRegion="assertive" style={[styles.countdown, { opacity: countdownReveal.interpolate({ inputRange: [0, 1], outputRange: [0.78, 1] }), transform: [{ scale: countdownReveal.interpolate({ inputRange: [0, 1], outputRange: [0.92, 1] }) }] }]}>{countdown}</Animated.Text><Text style={styles.countdownNote}>Make it a good one.</Text></View>}
-            {saving && <View style={styles.savingBadge}><Text style={styles.savingText}>Saving original…</Text></View>}
+            <View style={[styles.cameraTop, { top: insets.top + 16, left: insets.left + 20, right: insets.right + 20 }]}>
+              <View style={styles.cameraIdentity}><Text style={styles.cameraNames}>{WEDDING_NAMES}</Text><Text style={styles.cameraDate}>{WEDDING_DATE}</Text></View>
+              <Text style={styles.progressText}>{retakeSlot !== undefined ? 'RETAKE' : 'PHOTO'} {activeSlot + 1} <Text style={styles.progressMuted}>OF {total}</Text></Text>
+              <Pressable accessibilityRole="button" accessibilityLabel="Open host controls" disabled={busy || hostBusy} onPress={() => void openHost()} style={styles.cameraHost}><Text style={styles.cameraHostText}>Host</Text></Pressable>
+            </View>
+            {countdown !== undefined && <View pointerEvents="none" style={styles.countdownShade}><View style={styles.countdownDisc}><Animated.Text accessibilityLiveRegion="assertive" style={[styles.countdown, { opacity: countdownReveal.interpolate({ inputRange: [0, 1], outputRange: [0.92, 1] }), transform: [{ scale: countdownReveal.interpolate({ inputRange: [0, 1], outputRange: [0.96, 1] }) }] }]}>{countdown}</Animated.Text></View></View>}
           </View>
-          <View style={[styles.captureBottom, landscape && styles.captureBottomWide]}>
-            <Thumbnails reduceMotion={reduceMotion || !foreground} session={session} active={activeSlot} onSelect={!busy && !failedPhoto ? selectReview : undefined} />
+          <View pointerEvents="box-none" style={[styles.captureFloating, { bottom: insets.bottom + 16, left: insets.left + 18, right: insets.right + 18 }]}>
+          <GlassSurface testID="camera-action-glass" style={styles.captureIsland}>
+            <View testID="camera-controls" style={[styles.captureBottom, landscape && styles.captureBottomWide]}>
+            {session.shots.length > 0 && <View style={styles.captureFilmstrip}><Text style={styles.cameraSaved}>{session.shots.length} saved here</Text><Thumbnails compact reduceMotion={reduceMotion || !foreground} session={session} active={activeSlot} onSelect={!busy && !failedPhoto ? selectReview : undefined} /></View>}
             <View style={styles.captureActions}>
               {busy ? <Button title={saving ? 'Saving original…' : 'Pause countdown'} testID="cancel-countdown" secondary disabled={saving} onPress={cancelPhotos} />
                 : failedPhoto ? <Button title={`Retry saving photo ${failedPhoto.slot + 1}`} testID="retry-save" onPress={() => void retrySave()} />
                 : <Button title={retakeSlot !== undefined ? `Retake photo ${retakeSlot + 1}` : session.shots.length ? `Continue · photo ${(nextPhotoSlot(session) ?? 0) + 1}` : `Start ${total} photos`} testID="take-photo" disabled={!cameraReady || !initialized} onPress={() => void startPhotos()} />}
               {retakeSlot !== undefined && !saving && !failedPhoto && <Pressable accessibilityRole="button" style={styles.textAction} onPress={leaveRetake}><Text style={styles.mutedButtonText}>Back to review</Text></Pressable>}
               <Text testID="capture-save-status" style={styles.cameraHint}>{captureSaveStatus({ savedCount: session.shots.length, targetCount: total, seconds: preferencesRef.current.countdownSeconds, saving, failedSlot: failedPhoto?.slot })}</Text>
+              {!busy && !failedPhoto && <Text testID="capture-framing-hint" style={styles.cameraHint}>{fullPhotoSupported ? 'Full original kept · screen preview crops the edges' : 'Preview fills the screen · check your full photo in review'}</Text>}
             </View>
+            </View>
+          </GlassSurface>
           </View>
         </View>}
         {screen === 'review' && session && <View style={[styles.reviewPage, landscape && styles.reviewPageWide]}>
@@ -577,10 +613,10 @@ export default function App() {
           </View>
         </ScrollView>}
       </>}
-      {!!message && <View accessibilityLiveRegion="polite" style={styles.message}><Text style={styles.messageText}>{message}</Text></View>}
+      {!!message && <View accessibilityLiveRegion="polite" style={[styles.message, screen === 'camera' && styles.cameraMessage, screen === 'camera' && { left: insets.left + 18, right: insets.right + 18, top: insets.top + 80 }]}><Text style={styles.messageText}>{message}</Text></View>}
       {nativeFixtureEnabled && <View style={styles.fixture}><Text testID="native-fixture-enabled" style={styles.fixtureText}>SYNTHETIC CAMERA · REAL LOCAL STORAGE · OFFLINE SHARING</Text><Text testID="native-fixture-storage" style={styles.fixtureText}>{fixtureStatus}</Text></View>}
     </Animated.View>
-    <Modal visible={hostVisible} animationType={reduceMotion ? 'none' : 'slide'} presentationStyle="pageSheet" onRequestClose={closeHost}>
+    <Modal visible={hostVisible && foreground} animationType={reduceMotion || !foreground ? 'none' : 'slide'} presentationStyle="pageSheet" onRequestClose={closeHost}>
       <SafeAreaView style={styles.hostPage}><ScrollView contentContainerStyle={styles.hostContent} keyboardShouldPersistTaps="handled">
         <View style={styles.hostHeader}><Text style={styles.hostTitle}>{hostPage === 'library' ? 'On this iPad' : hostPage === 'setup' ? 'Private setup' : 'Booth controls'}</Text><Pressable accessibilityRole="button" onPress={closeHost}><Text style={styles.closeHost}>Done</Text></Pressable></View>
         <View style={styles.hostTabs}>{(['controls', 'library', 'setup'] as HostPage[]).map(page => <Pressable key={page} accessibilityRole="button" accessibilityState={{ selected: hostPage === page }} style={[styles.hostTab, hostPage === page && styles.hostTabActive]} onPress={() => { setHostPage(page); setHostMessage(''); setScanningSetup(false); setPairingCode(''); }}><Text style={styles.hostTabText}>{page === 'controls' ? 'Controls' : page === 'library' ? 'Saved sessions' : 'Private setup'}</Text></Pressable>)}</View>
@@ -654,17 +690,22 @@ const styles = StyleSheet.create({
   weddingIdentity: { fontSize: 12, letterSpacing: 1 }, compactIdentity: { gap: 5 }, compactDate: { color: '#D7DBD1', fontSize: 10, letterSpacing: 1 },
   attractContent: { padding: 36, paddingTop: 26, gap: 20, backgroundColor: '#101B13D9' }, attractContentWide: { width: '53%', maxWidth: 620, margin: 32, borderRadius: 24, padding: 34 }, attractEyebrow: { color: '#F0D8B0', fontSize: 11, letterSpacing: 2.5, fontWeight: '600' }, attractTitle: { color: '#fffaf0', fontSize: 72, lineHeight: 73, fontFamily: 'Georgia', letterSpacing: -2 }, attractTitleWide: { fontSize: 68, lineHeight: 69 }, attractSubtitle: { color: '#EEE8D9', fontSize: 19 }, attractFootnote: { color: '#D5D7CA', fontSize: 13, textAlign: 'center' },
   topbar: { height: 62, paddingHorizontal: 28, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }, topbarLight: { backgroundColor: '#F5F0E8' }, hostLink: { color: '#D7DBD1', padding: 12, minHeight: 44, fontSize: 14 }, hostLinkDark: { color: '#4D594D' },
-  capturePage: { flex: 1, paddingHorizontal: 18, paddingBottom: 16, gap: 16 }, cameraStage: { flex: 1, minHeight: 250, borderRadius: 22, overflow: 'hidden', backgroundColor: '#222B24' }, cameraTop: { zIndex: 1, position: 'absolute', left: 18, right: 18, top: 18, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }, progressText: { backgroundColor: '#101512D9', color: '#fff', paddingHorizontal: 16, paddingVertical: 11, borderRadius: 24, fontWeight: '700', letterSpacing: 1, fontSize: 13 }, progressMuted: { color: '#CDD1C7' }, cameraSaved: { backgroundColor: '#101512D9', color: '#E7ECDF', padding: 11, borderRadius: 20, fontSize: 12 },
-  countdownShade: { ...StyleSheet.absoluteFill, backgroundColor: '#102117B3', justifyContent: 'center', alignItems: 'center' }, countdown: { color: '#fff', fontSize: 170, fontWeight: '200', fontVariant: ['tabular-nums'] }, countdownNote: { color: '#fff', fontSize: 20, marginTop: 8 }, savingBadge: { position: 'absolute', alignSelf: 'center', bottom: 25, backgroundColor: '#101512EB', borderRadius: 24, padding: 15 }, savingText: { color: '#fff', fontSize: 15, fontWeight: '600' },
+  capturePage: { flex: 1 }, cameraStage: { ...StyleSheet.absoluteFill, overflow: 'hidden', backgroundColor: '#111A14' },
+  cameraTop: { zIndex: 1, position: 'absolute', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 12 },
+  cameraIdentity: { backgroundColor: '#102219', borderRadius: 18, paddingHorizontal: 15, paddingVertical: 10, gap: 3 }, cameraNames: { color: '#FAF7EF', fontSize: 12, fontWeight: '600', letterSpacing: 1 }, cameraDate: { color: '#D4DECF', fontSize: 10 },
+  cameraHost: { minHeight: 48, minWidth: 60, padding: 14, borderRadius: 24, backgroundColor: '#102219', alignItems: 'center', justifyContent: 'center' }, cameraHostText: { color: '#F4F8EF', fontWeight: '600', fontSize: 13 },
+  progressText: { backgroundColor: '#102219', color: '#fff', paddingHorizontal: 16, paddingVertical: 13, borderRadius: 24, fontWeight: '700', letterSpacing: 1, fontSize: 13 }, progressMuted: { color: '#D9E4D3' }, cameraSaved: { color: '#E7ECDF', fontSize: 12, fontWeight: '600', textAlign: 'center' },
+  countdownShade: { ...StyleSheet.absoluteFill, justifyContent: 'center', alignItems: 'center' }, countdownDisc: { backgroundColor: '#0B1C12E6', width: 208, height: 208, borderRadius: 104, alignItems: 'center', justifyContent: 'center' }, countdown: { color: '#fff', fontSize: 156, lineHeight: 185, fontWeight: '200', fontVariant: ['tabular-nums'], textAlign: 'center' },
   permission: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 40, gap: 22 }, permissionTitle: { color: '#fff', fontFamily: 'Georgia', fontSize: 34, textAlign: 'center' }, permissionBody: { color: '#E4E9DB', fontSize: 19 },
-  captureBottom: { gap: 14, alignItems: 'center' }, captureBottomWide: { flexDirection: 'row', justifyContent: 'space-between', gap: 28 }, captureActions: { width: '100%', maxWidth: 440, alignItems: 'center', gap: 8, flexShrink: 1 }, cameraHint: { color: '#B8C0B0', fontSize: 12, lineHeight: 18, textAlign: 'center' },
+  captureFloating: { position: 'absolute', alignItems: 'center' }, captureIsland: { borderRadius: 30, padding: 18, width: '100%', maxWidth: 760, overflow: 'hidden' }, captureFilmstrip: { gap: 7, alignItems: 'center' },
+  captureBottom: { gap: 12, alignItems: 'center', justifyContent: 'center' }, captureBottomWide: { flexDirection: 'row', gap: 24 }, captureActions: { width: '100%', maxWidth: 440, alignItems: 'center', gap: 8, flexShrink: 1 }, cameraHint: { color: '#E0E7D9', fontSize: 12, lineHeight: 18, textAlign: 'center' },
   thumbnailCompact: { width: 48, height: 62 }, thumbnailsCompact: { gap: 7 },
   thumbnails: { flexDirection: 'row', gap: 9, justifyContent: 'center', paddingVertical: 3 }, thumbnail: { width: 62, height: 76, borderRadius: 10, borderWidth: 1, borderColor: '#65715F', backgroundColor: '#263027', overflow: 'hidden', justifyContent: 'center', alignItems: 'center' }, thumbnailLight: { backgroundColor: '#E6E8DF', borderColor: '#8B9381' }, thumbnailSelected: { borderColor: '#E8D3AA', borderWidth: 3 }, thumbnailNumber: { fontSize: 19, color: '#D5DDCD', fontVariant: ['tabular-nums'] }, thumbnailNumberLight: { color: '#4A5947' }, thumbnailTick: { position: 'absolute', right: 3, bottom: 3, width: 17, height: 17, borderRadius: 9, backgroundColor: '#FCF9EE', alignItems: 'center', justifyContent: 'center' }, thumbnailTickText: { fontSize: 11, color: '#26432A', fontWeight: '700' },
   button: { minHeight: 64, paddingHorizontal: 25, paddingVertical: 18, borderRadius: 16, backgroundColor: '#D3A06E', flexShrink: 1, justifyContent: 'center', alignItems: 'center', width: '100%' }, buttonText: { color: '#182319', fontSize: 19, fontWeight: '700', textAlign: 'center' }, secondaryButton: { backgroundColor: 'transparent', borderWidth: 1, borderColor: '#899581' }, secondaryButtonText: { color: '#DCE4D4' }, lightButton: { backgroundColor: '#FAF4E8' }, lightButtonText: { color: '#172719' }, disabled: { opacity: 0.4 }, pressed: { opacity: 0.8 }, textAction: { paddingVertical: 10, paddingHorizontal: 8, minHeight: 44, justifyContent: 'center' }, mutedButtonText: { color: '#CFD7C5', fontSize: 14, textAlign: 'center' },
   reviewPageWide: { flexDirection: 'row', gap: 24 }, reviewSideRail: { width: 300, flexShrink: 0, justifyContent: 'center', gap: 14 }, reviewRailHeading: { gap: 12, width: '100%', paddingBottom: 14 },
   reviewPage: { flex: 1, paddingHorizontal: 18, paddingBottom: 12, gap: 12 }, reviewHeading: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10 }, reviewEyebrow: { color: '#B6C2AB', fontSize: 10, letterSpacing: 2, marginBottom: 6 }, reviewTitle: { color: '#FAF7EF', fontSize: 27, fontFamily: 'Georgia' }, reviewCount: { color: '#D0D8C8', fontSize: 17, fontVariant: ['tabular-nums'] }, reviewStage: { flex: 1, minHeight: 250, borderRadius: 20, overflow: 'hidden', backgroundColor: '#080C09' }, reviewSlide: { height: '100%' }, reviewBottom: { alignItems: 'center', gap: 8 }, reviewActions: { width: '100%', gap: 10, maxWidth: 700, flexDirection: 'row' }, reviewActionsWide: { flexDirection: 'column', width: '100%' }, localSaved: { color: '#E8EDDF', fontSize: 13, fontWeight: '600', marginTop: 2 }, libraryStatus: { color: '#B8C0B0', fontSize: 12, textAlign: 'center' },
   sharePage: { flexGrow: 1, padding: 30, gap: 26, alignItems: 'center', justifyContent: 'center' }, sharePageWide: { flexDirection: 'row', gap: 48, paddingHorizontal: 46 }, shareStory: { alignItems: 'center', gap: 17, flexShrink: 1, maxWidth: 510 }, shareEyebrow: { fontSize: 11, color: '#5A6954', letterSpacing: 1, fontWeight: '700', textAlign: 'center' }, shareTitle: { fontSize: 46, fontFamily: 'Georgia', color: '#263426', textAlign: 'center' }, shareBody: { fontSize: 17, color: '#53614D', lineHeight: 26, textAlign: 'center', maxWidth: 430 }, shareLocal: { color: '#2F482E', fontWeight: '700', fontSize: 14, marginTop: 4 }, shareLibrary: { color: '#53614D', fontSize: 13, textAlign: 'center' }, shareCard: { width: '100%', maxWidth: 350, backgroundColor: '#fff', padding: 22, borderRadius: 24, gap: 20 }, qrContent: { alignItems: 'center', gap: 12 }, qrCaption: { color: '#394F35', fontSize: 10, letterSpacing: 1.8, fontWeight: '700' }, expiry: { color: '#34462F', fontSize: 14, lineHeight: 21, fontWeight: '600', textAlign: 'center' }, sharePrivacy: { color: '#586451', fontSize: 12, lineHeight: 19, textAlign: 'center' }, offlineCard: { alignItems: 'center', gap: 17, paddingVertical: 12 }, offlineGlyph: { color: '#385B34', fontSize: 38 }, offlineTitle: { fontSize: 28, fontFamily: 'Georgia', color: '#2D452A', textAlign: 'center' }, lightTextAction: { color: '#385731', fontSize: 14, fontWeight: '600', textAlign: 'center' },
-  message: { padding: 16, backgroundColor: '#652E25', marginHorizontal: 18, marginBottom: 12, borderRadius: 12 }, messageText: { color: '#fff', fontSize: 15, lineHeight: 22, textAlign: 'center' },
+  message: { padding: 16, backgroundColor: '#652E25', marginHorizontal: 18, marginBottom: 12, borderRadius: 12 }, cameraMessage: { position: 'absolute', margin: 0, marginHorizontal: 0, marginBottom: 0, zIndex: 3 }, messageText: { color: '#fff', fontSize: 15, lineHeight: 22, textAlign: 'center' },
   hostPage: { flex: 1, backgroundColor: '#F3F1E9' }, hostContent: { padding: 28, gap: 20, maxWidth: 850, width: '100%', alignSelf: 'center' }, hostHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 16 }, hostTitle: { fontSize: 30, color: '#253D25', fontWeight: '600' }, closeHost: { color: '#385731', fontSize: 18, padding: 12 }, hostTabs: { flexDirection: 'row', gap: 8 }, hostTab: { flex: 1, padding: 14, borderRadius: 12, backgroundColor: '#E6E9DE' }, hostTabActive: { backgroundColor: '#D2DDC7' }, hostTabText: { color: '#2E482B', fontSize: 14, textAlign: 'center', fontWeight: '600' }, hostCard: { backgroundColor: '#fff', borderRadius: 20, padding: 22, gap: 16 }, hostSectionTitle: { color: '#263D25', fontSize: 20, fontWeight: '600' }, hostBody: { color: '#53634D', fontSize: 15, lineHeight: 23 }, hostSmall: { color: '#5E6A57', fontSize: 13, lineHeight: 20 }, timerOptions: { flexDirection: 'row', gap: 9 }, timerOption: { flex: 1, minHeight: 61, borderWidth: 1, borderColor: '#ACB99E', borderRadius: 13, alignItems: 'center', justifyContent: 'center' }, timerOptionSelected: { backgroundColor: '#314D2D', borderColor: '#314D2D' }, timerNumber: { fontSize: 22, fontWeight: '600', color: '#314D2D' }, timerNumberSelected: { color: '#fff' }, switchRow: { flexDirection: 'row', gap: 20, alignItems: 'center' }, switchText: { flex: 1, gap: 8 }, pairingInput: { borderWidth: 1, borderColor: '#9BA78E', borderRadius: 12, minHeight: 60, padding: 17, color: '#263D25', backgroundColor: '#FCFDF8', fontSize: 18 }, hostNotice: { color: '#395B31', fontSize: 16, lineHeight: 23 }, diagnostic: { color: '#733C2B', fontSize: 12, lineHeight: 19 }, libraryStrip: { flexDirection: 'row', gap: 7 }, libraryThumb: { width: 62, height: 76, borderRadius: 9 },
   hostWarning: { color: '#713D20', fontSize: 14, lineHeight: 22 }, hostOriginalCard: { borderWidth: 1, borderColor: '#C8D0BF', borderRadius: 16, padding: 16, gap: 14, backgroundColor: '#F8FAF3' }, hostOriginalPreview: { width: '100%', height: 260, borderRadius: 10, backgroundColor: '#172219' }, hostDecisionOverlay: { ...StyleSheet.absoluteFill, backgroundColor: '#102117D9', zIndex: 5, alignItems: 'center', justifyContent: 'center', padding: 24 }, hostDecisionCard: { width: '100%', maxWidth: 540, borderRadius: 22, padding: 24, gap: 18, backgroundColor: '#fff' }, hostDecisionPreview: { width: '100%', height: 170, backgroundColor: '#172219', borderRadius: 10 },
   setupScanner: { height: 330, backgroundColor: '#172219', borderRadius: 18, overflow: 'hidden' },

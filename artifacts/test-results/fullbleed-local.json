@@ -1,0 +1,131 @@
+{
+  "scope": "Frozen full-bleed camera/privacy candidate, separate from forthcoming filters; local checks pass, hosted native verification pending",
+  "generatedAt": "2026-10-26T14:50:32.948180+00:00",
+  "publicationApproved": true,
+  "sourceCommit": null,
+  "baselineTestedCommit": "d3dec720d75bc23fdabe22bb382493f45224d840",
+  "sourceHashes": {
+    ".github/workflows/ios-release-runtime.yml": "06fc049bbbb08c38714194dd626adb6799808ea906a43bce8fcefcf45b01be8d",
+    "apps/ipad/App.tsx": "ab233727e41a6ba19e386f485af6ef0dc24373b2518e0da87942bf647669ac99",
+    "apps/ipad/app.json": "55225e6c55ea9f009825d97ca5c5b1b3193be5ba8d5ba2c854dd9fd9cfee4a01",
+    "apps/ipad/native-tests/WeddingPhotoboothReleaseSmokeTests.swift": "c5a6b71bf5864d1f0326d0dce274ebd5f5001d055d1551b1aa49c824a1ba494f",
+    "apps/ipad/package.json": "c38c54aa8cedec22eb0e18e7abc1930f22fa59134ebd841b7346613757cb5cbe",
+    "apps/ipad/src/GlassSurface.tsx": "ace64a22e740d69040689495c0aa7147f7456038bbd0ee9aba6f2d52b58af972",
+    "apps/ipad/src/glass-policy.ts": "d3e33995484239887dde90f2743919c17bb2e8ff23093ceb45a804e530499e9e",
+    "apps/ipad/src/host-visibility.ts": "9b8033279a1249c59cd04e3f185792fa2a61c14f892f2cb9cf98953ceab02014",
+    "apps/ipad/src/recipient-retention.ts": "9956155c952418fd5ad31976b09e830a48d1d91443a963fa85253e42f0d7d842",
+    "apps/ipad/src/recipients.ts": "cb81025fc3b003cecdd485f0fc85dd47424d5e1f1eecc43419e5cd27a70c2bda",
+    "apps/ipad/test/glass-policy.test.ts": "937e9e8610c68bace03277e7d099cdd09536c737b295f7495abe217c05399a82",
+    "apps/ipad/test/host-visibility.test.ts": "85667e32e346afd678d1c4f696eaae186a9a4bccccaec0651a512b56974ac7d5",
+    "apps/ipad/test/recipient-retention.test.ts": "3f099ea23723ba6bb6dd5f3b5cb5c2a83d550a9e5d33547eb597034a8d34b80e",
+    "package-lock.json": "1cdd546c539c694b6612b748cb27627aeea87e951a859f162b087dd7becdc2b6",
+    "package.json": "21ab07c98e468f97bf05dc8789ab508bb3ee18ae9fbdd724f2cfadb42bf90a30",
+    "plugins/test/fixtures/expo-camera-58.0.12/ios/CameraViewModule.swift": "383e39a5262a31624039055fbd074e3ce5579883cb26eec12c5d2bccfe60f742",
+    "plugins/test/fixtures/expo-camera-58.0.12/ios/Common/PictureOptions.swift": "318736c97915d28290aaec001c818f1ffa2ab0150aef499a9177501f0ab435e3",
+    "plugins/test/fixtures/expo-camera-58.0.12/ios/Current/CameraPhotoCapture.swift": "032170efecad59a2902659d9cfa7959cf77f45c24c39f9c9272eadaf0f81a394",
+    "plugins/test/full-photo.test.cjs": "9a55cd929e7c01306886f9ed3862e8f895d8a21ae90b9596d854bba23d15628b",
+    "plugins/with-full-photo.cjs": "1d16c909a06a4011401addd5185d69afcf30255365fd6e40d853f2545e4ca816",
+    "scripts/ci-native-contract.mjs": "56d1f8fa1cf46345794decb1ecde4d21b930d29b6ef0074ba8a044b8e1101c12",
+    "scripts/ci-native.mjs": "ba9dc87cd1f381984170ed2a68da782f38687a34f9a22abce4dc273e3784d1ce",
+    "scripts/ci-native.test.mjs": "7ea73d63cc97c1604041f869b0b12b5245cff3042c13435f3e6fe1043a4e5470",
+    "scripts/ci-summary.mjs": "49500581e183f4ec0fff9603414556260380cc426032e8b86a9daca9197e36e9",
+    "scripts/prepare-ios-tests.mjs": "9f4d29c576d79c605f98844f3cf2349418c4f0d805023b33db8cd8f9b82985be",
+    "tools/native-visual/new-session/capture.mjs": "d9ba06708a7ffad27a482ae4f03df148faed47e9e65f986416c17ae555428b95",
+    "tools/native-visual/new-session/fixture-controls.ts": "3ccb432653d15695f29738054ae552a6dcb1d9e8b95a8642ff504350e433471e",
+    "tools/native-visual/new-session/fullbleed-checks.mjs": "e04527dbb2766cf5aa8bac961359885891b03e7cb41217a8d7617aa64a64d048",
+    "tools/native-visual/new-session/glass-stub.tsx": "3712d3272cb137bfba9c4d19cf4913a0cbafd53a6b43225c6876cf19f97b8e7f",
+    "tools/native-visual/new-session/host-checks.mjs": "af87c5a5a0cb7662f3f7d3b1e2fdf5d96b9bfcf6c887e91c8f01dc152c90ea8f",
+    "tools/native-visual/new-session/native-runtime.ts": "8300038ab7e5a83455727f2afb42775e5d6963670e4b17179065f00cface4985",
+    "tools/native-visual/new-session/safe-area-stub.tsx": "4b9fc1218f6a64c71ff6bbb51a57c50826ccca1a957c5d021bd5dc9643e505f7",
+    "tools/native-visual/new-session/serve.mjs": "98aa1d40b93dd9630661be48fed4442cf4dd85804a2d26aa1c9ea057bc24904e",
+    "tools/native-visual/new-session/stubs.tsx": "9cee598649a22c6713a2bebe396f3bff56a485fa175a8fa3837be2a0df58ea61"
+  },
+  "sourceManifestSha256": "dbea577e5cdb9049e1da79d79b587064e0851cd7d612fae99c636c566b558000",
+  "local": {
+    "frozenSetupPassed": true,
+    "frozenPackages": 590,
+    "workspaceTypechecks": "passed",
+    "suite": {
+      "tests": 190,
+      "passed": 190,
+      "failed": 0,
+      "skipped": 0
+    },
+    "ciContracts": {
+      "tests": 46,
+      "passed": 46
+    },
+    "additionalIndependentRecoveryFaults": {
+      "tests": 4,
+      "passed": 4
+    },
+    "nativeProjectGeneration": "passed with version/hash-guarded full-photo plugin",
+    "iosJavascriptExport": {
+      "passed": true,
+      "modules": 1040,
+      "assets": 2
+    }
+  },
+  "browser": {
+    "scope": "Actual native JSX through explicit synthetic boundaries; not native glass or iPad proof",
+    "screenshots": 60,
+    "videos": 2,
+    "boundedChecks": 6,
+    "hostChecks": 7,
+    "fullbleedAndAccessibilityCases": 8,
+    "contrastChecks": 8,
+    "fullFrameQrMatchesPerDecoder": 22,
+    "errors": [],
+    "unexpectedExternalRequests": [],
+    "sourceHashes": {
+      "apps/ipad/App.tsx": "ab233727e41a6ba19e386f485af6ef0dc24373b2518e0da87942bf647669ac99",
+      "apps/ipad/src/GlassSurface.tsx": "ace64a22e740d69040689495c0aa7147f7456038bbd0ee9aba6f2d52b58af972",
+      "apps/ipad/src/glass-policy.ts": "d3e33995484239887dde90f2743919c17bb2e8ff23093ceb45a804e530499e9e",
+      "apps/ipad/src/host-visibility.ts": "9b8033279a1249c59cd04e3f185792fa2a61c14f892f2cb9cf98953ceab02014",
+      "apps/ipad/src/session-capture.ts": "b41f7ee98282fe5661e080a6b4e0b88b17c56e3c1e5908adebbe020ed6323e24",
+      "apps/ipad/src/review-selection.ts": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
+      "apps/ipad/src/sharing.ts": "00f6890855b5ed5942b23fd10f5f54f88d1bfa62ae541d9c0835c8a7ac9e415f",
+      "apps/ipad/src/SmsShare.tsx": "ee2740889c602683049dae6b599bbdd9886fef271bf30df4f18e50dbc6e6b8c2",
+      "apps/ipad/src/sms-state.ts": "4c7125d4f710c97848b6690196fa328edc83e85488ce3626dd7e843e2e99497a",
+      "apps/ipad/src/booth-presentation.ts": "b6f720f7d9133a0603f847efd0646a9a23f40d409018e9eb757d5326bc43e935",
+      "apps/ipad/src/host-originals.ts": "c2f3e5707832bc96988bd4f91ddbedd22d93b2feb2248266c55454da4256431f",
+      "apps/ipad/src/photo-export.ts": "fcc298173415b25cf15e71757e7c741485ca3b88a44b7422594388a56c447a9b",
+      "apps/ipad/src/photo-library.ts": "fe2344e73c2d96d42417d201f5464fc72b8093b8bf43339e3011b7ba31942246",
+      "packages/core/src/index.ts": "945d97743a621558369c7029acbc5b61daae85d2c08156368c188aedbbb9a991",
+      "apps/ipad/assets/attract-scene.png": "6ca6274beba9483104f19fb35d1ef9b8bfaae458208025e8fb4e8d4890f45cdf"
+    },
+    "independentReview": "artifacts/visual/fullbleed-independent-review.md"
+  },
+  "nativeRelease": {
+    "status": "pending exact-commit hosted run",
+    "sdk": "iphoneos",
+    "configuration": "Release",
+    "signed": false,
+    "deviceTested": false
+  },
+  "nativeReleaseRuntime": {
+    "status": "pending first hosted run",
+    "sdk": "iphonesimulator",
+    "configuration": "Release",
+    "fixture": "disabled",
+    "metroServer": false,
+    "scope": "attract launch/relaunch/rotation/accessibility smoke; no camera/Photos/Keychain proof"
+  },
+  "hostedLinux": {
+    "status": "pending exact-commit hosted run"
+  },
+  "nativeGlassOnWeddingIpad": "NOT VERIFIED; actual installed iPadOS and runtime materials remain owner checks",
+  "cameraOriginalPreservation": "Project-specific opt-in JPEG byte preservation is version/hash guarded and locally prepared; Swift compilation and actual iPad pixel/orientation/parity tests remain separate",
+  "recipientPrivacy": "Indexed Keychain reservation before phone write; bounded16 reservations,24h orphan eligibility; no legacy orphan enumeration or native termination proof",
+  "retainedOriginalsAndRecovery": "Original durable storage/recovery/five selections unchanged; previous four fault reproductions rerun and passed",
+  "production": "No deployment, credential change, pairing or real SMS by this executor; coordinator owns live integration",
+  "filters": "Separate upcoming change; no filter dependencies or filter previews included in this frozen candidate",
+  "remainingGates": [
+    "fresh physical-SDK compilation and Release simulator smoke",
+    "coordinator production provisioning/private pairing and live synthetic storage tests",
+    "owner same-team/bundle standalone iPad save/Photos/reboot/parity/full-edge/QR rehearsal",
+    "SMS provider eligibility and coordinator-owned approved capped test",
+    "environment configuration publication/fresh-task restore"
+  ],
+  "projectFinished": false
+}

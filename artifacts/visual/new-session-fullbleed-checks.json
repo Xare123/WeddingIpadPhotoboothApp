@@ -1,0 +1,562 @@
+{
+  "scope": "Browser fixtures: synthetic safe-area and accessibility values; no native Liquid Glass verification.",
+  "mockedHealthRequests": [],
+  "unexpectedExternalRequests": [],
+  "errors": [],
+  "checks": [
+    {
+      "orientation": "portrait",
+      "preference": "default",
+      "insets": {
+        "top": 24,
+        "right": 0,
+        "bottom": 34,
+        "left": 0
+      },
+      "geometry": {
+        "viewport": {
+          "x": 0,
+          "y": 30,
+          "width": 820,
+          "height": 1150,
+          "top": 30,
+          "right": 820,
+          "bottom": 1180,
+          "left": 0
+        },
+        "banner": {
+          "x": 0,
+          "y": 0,
+          "width": 820,
+          "height": 30,
+          "top": 0,
+          "right": 820,
+          "bottom": 30,
+          "left": 0
+        },
+        "stage": {
+          "x": 0,
+          "y": 30,
+          "width": 820,
+          "height": 1150,
+          "top": 30,
+          "right": 820,
+          "bottom": 1180,
+          "left": 0
+        },
+        "surface": {
+          "x": 0,
+          "y": 30,
+          "width": 820,
+          "height": 1150,
+          "top": 30,
+          "right": 820,
+          "bottom": 1180,
+          "left": 0
+        },
+        "controls": {
+          "x": 49,
+          "y": 995,
+          "width": 722,
+          "height": 116,
+          "top": 995,
+          "right": 771,
+          "bottom": 1111,
+          "left": 49
+        },
+        "radius": "0px"
+      },
+      "dynamicPreferenceEvents": [
+        "reduceTransparencyChanged",
+        "highTextContrastChanged",
+        "reduceMotionChanged"
+      ],
+      "nativeGlassRendered": false
+    },
+    {
+      "orientation": "portrait",
+      "preference": "reducedTransparency",
+      "insets": {
+        "top": 24,
+        "right": 0,
+        "bottom": 34,
+        "left": 0
+      },
+      "geometry": {
+        "viewport": {
+          "x": 0,
+          "y": 30,
+          "width": 820,
+          "height": 1150,
+          "top": 30,
+          "right": 820,
+          "bottom": 1180,
+          "left": 0
+        },
+        "banner": {
+          "x": 0,
+          "y": 0,
+          "width": 820,
+          "height": 30,
+          "top": 0,
+          "right": 820,
+          "bottom": 30,
+          "left": 0
+        },
+        "stage": {
+          "x": 0,
+          "y": 30,
+          "width": 820,
+          "height": 1150,
+          "top": 30,
+          "right": 820,
+          "bottom": 1180,
+          "left": 0
+        },
+        "surface": {
+          "x": 0,
+          "y": 30,
+          "width": 820,
+          "height": 1150,
+          "top": 30,
+          "right": 820,
+          "bottom": 1180,
+          "left": 0
+        },
+        "controls": {
+          "x": 49,
+          "y": 995,
+          "width": 722,
+          "height": 116,
+          "top": 995,
+          "right": 771,
+          "bottom": 1111,
+          "left": 49
+        },
+        "radius": "0px"
+      },
+      "dynamicPreferenceEvents": [
+        "reduceTransparencyChanged",
+        "highTextContrastChanged",
+        "reduceMotionChanged"
+      ],
+      "nativeGlassRendered": false
+    },
+    {
+      "orientation": "portrait",
+      "preference": "highContrast",
+      "insets": {
+        "top": 24,
+        "right": 0,
+        "bottom": 34,
+        "left": 0
+      },
+      "geometry": {
+        "viewport": {
+          "x": 0,
+          "y": 30,
+          "width": 820,
+          "height": 1150,
+          "top": 30,
+          "right": 820,
+          "bottom": 1180,
+          "left": 0
+        },
+        "banner": {
+          "x": 0,
+          "y": 0,
+          "width": 820,
+          "height": 30,
+          "top": 0,
+          "right": 820,
+          "bottom": 30,
+          "left": 0
+        },
+        "stage": {
+          "x": 0,
+          "y": 30,
+          "width": 820,
+          "height": 1150,
+          "top": 30,
+          "right": 820,
+          "bottom": 1180,
+          "left": 0
+        },
+        "surface": {
+          "x": 0,
+          "y": 30,
+          "width": 820,
+          "height": 1150,
+          "top": 30,
+          "right": 820,
+          "bottom": 1180,
+          "left": 0
+        },
+        "controls": {
+          "x": 49,
+          "y": 995,
+          "width": 722,
+          "height": 116,
+          "top": 995,
+          "right": 771,
+          "bottom": 1111,
+          "left": 49
+        },
+        "radius": "0px"
+      },
+      "dynamicPreferenceEvents": [
+        "reduceTransparencyChanged",
+        "highTextContrastChanged",
+        "reduceMotionChanged"
+      ],
+      "nativeGlassRendered": false
+    },
+    {
+      "orientation": "portrait",
+      "preference": "syntheticGlassAvailable",
+      "insets": {
+        "top": 24,
+        "right": 0,
+        "bottom": 34,
+        "left": 0
+      },
+      "geometry": {
+        "viewport": {
+          "x": 0,
+          "y": 30,
+          "width": 820,
+          "height": 1150,
+          "top": 30,
+          "right": 820,
+          "bottom": 1180,
+          "left": 0
+        },
+        "banner": {
+          "x": 0,
+          "y": 0,
+          "width": 820,
+          "height": 30,
+          "top": 0,
+          "right": 820,
+          "bottom": 30,
+          "left": 0
+        },
+        "stage": {
+          "x": 0,
+          "y": 30,
+          "width": 820,
+          "height": 1150,
+          "top": 30,
+          "right": 820,
+          "bottom": 1180,
+          "left": 0
+        },
+        "surface": {
+          "x": 0,
+          "y": 30,
+          "width": 820,
+          "height": 1150,
+          "top": 30,
+          "right": 820,
+          "bottom": 1180,
+          "left": 0
+        },
+        "controls": {
+          "x": 49,
+          "y": 995,
+          "width": 722,
+          "height": 116,
+          "top": 995,
+          "right": 771,
+          "bottom": 1111,
+          "left": 49
+        },
+        "radius": "0px"
+      },
+      "dynamicPreferenceEvents": [
+        "reduceTransparencyChanged",
+        "highTextContrastChanged",
+        "reduceMotionChanged"
+      ],
+      "nativeGlassRendered": false
+    },
+    {
+      "orientation": "landscape",
+      "preference": "default",
+      "insets": {
+        "top": 0,
+        "right": 44,
+        "bottom": 21,
+        "left": 44
+      },
+      "geometry": {
+        "viewport": {
+          "x": 0,
+          "y": 30,
+          "width": 1180,
+          "height": 790,
+          "top": 30,
+          "right": 1180,
+          "bottom": 820,
+          "left": 0
+        },
+        "banner": {
+          "x": 0,
+          "y": 0,
+          "width": 1180,
+          "height": 30,
+          "top": 0,
+          "right": 1180,
+          "bottom": 30,
+          "left": 0
+        },
+        "stage": {
+          "x": 0,
+          "y": 30,
+          "width": 1180,
+          "height": 790,
+          "top": 30,
+          "right": 1180,
+          "bottom": 820,
+          "left": 0
+        },
+        "surface": {
+          "x": 0,
+          "y": 30,
+          "width": 1180,
+          "height": 790,
+          "top": 30,
+          "right": 1180,
+          "bottom": 820,
+          "left": 0
+        },
+        "controls": {
+          "x": 229,
+          "y": 648,
+          "width": 722,
+          "height": 116,
+          "top": 648,
+          "right": 951,
+          "bottom": 764,
+          "left": 229
+        },
+        "radius": "0px"
+      },
+      "dynamicPreferenceEvents": [
+        "reduceTransparencyChanged",
+        "highTextContrastChanged",
+        "reduceMotionChanged"
+      ],
+      "nativeGlassRendered": false
+    },
+    {
+      "orientation": "landscape",
+      "preference": "reducedTransparency",
+      "insets": {
+        "top": 0,
+        "right": 44,
+        "bottom": 21,
+        "left": 44
+      },
+      "geometry": {
+        "viewport": {
+          "x": 0,
+          "y": 30,
+          "width": 1180,
+          "height": 790,
+          "top": 30,
+          "right": 1180,
+          "bottom": 820,
+          "left": 0
+        },
+        "banner": {
+          "x": 0,
+          "y": 0,
+          "width": 1180,
+          "height": 30,
+          "top": 0,
+          "right": 1180,
+          "bottom": 30,
+          "left": 0
+        },
+        "stage": {
+          "x": 0,
+          "y": 30,
+          "width": 1180,
+          "height": 790,
+          "top": 30,
+          "right": 1180,
+          "bottom": 820,
+          "left": 0
+        },
+        "surface": {
+          "x": 0,
+          "y": 30,
+          "width": 1180,
+          "height": 790,
+          "top": 30,
+          "right": 1180,
+          "bottom": 820,
+          "left": 0
+        },
+        "controls": {
+          "x": 229,
+          "y": 648,
+          "width": 722,
+          "height": 116,
+          "top": 648,
+          "right": 951,
+          "bottom": 764,
+          "left": 229
+        },
+        "radius": "0px"
+      },
+      "dynamicPreferenceEvents": [
+        "reduceTransparencyChanged",
+        "highTextContrastChanged",
+        "reduceMotionChanged"
+      ],
+      "nativeGlassRendered": false
+    },
+    {
+      "orientation": "landscape",
+      "preference": "highContrast",
+      "insets": {
+        "top": 0,
+        "right": 44,
+        "bottom": 21,
+        "left": 44
+      },
+      "geometry": {
+        "viewport": {
+          "x": 0,
+          "y": 30,
+          "width": 1180,
+          "height": 790,
+          "top": 30,
+          "right": 1180,
+          "bottom": 820,
+          "left": 0
+        },
+        "banner": {
+          "x": 0,
+          "y": 0,
+          "width": 1180,
+          "height": 30,
+          "top": 0,
+          "right": 1180,
+          "bottom": 30,
+          "left": 0
+        },
+        "stage": {
+          "x": 0,
+          "y": 30,
+          "width": 1180,
+          "height": 790,
+          "top": 30,
+          "right": 1180,
+          "bottom": 820,
+          "left": 0
+        },
+        "surface": {
+          "x": 0,
+          "y": 30,
+          "width": 1180,
+          "height": 790,
+          "top": 30,
+          "right": 1180,
+          "bottom": 820,
+          "left": 0
+        },
+        "controls": {
+          "x": 229,
+          "y": 648,
+          "width": 722,
+          "height": 116,
+          "top": 648,
+          "right": 951,
+          "bottom": 764,
+          "left": 229
+        },
+        "radius": "0px"
+      },
+      "dynamicPreferenceEvents": [
+        "reduceTransparencyChanged",
+        "highTextContrastChanged",
+        "reduceMotionChanged"
+      ],
+      "nativeGlassRendered": false
+    },
+    {
+      "orientation": "landscape",
+      "preference": "syntheticGlassAvailable",
+      "insets": {
+        "top": 0,
+        "right": 44,
+        "bottom": 21,
+        "left": 44
+      },
+      "geometry": {
+        "viewport": {
+          "x": 0,
+          "y": 30,
+          "width": 1180,
+          "height": 790,
+          "top": 30,
+          "right": 1180,
+          "bottom": 820,
+          "left": 0
+        },
+        "banner": {
+          "x": 0,
+          "y": 0,
+          "width": 1180,
+          "height": 30,
+          "top": 0,
+          "right": 1180,
+          "bottom": 30,
+          "left": 0
+        },
+        "stage": {
+          "x": 0,
+          "y": 30,
+          "width": 1180,
+          "height": 790,
+          "top": 30,
+          "right": 1180,
+          "bottom": 820,
+          "left": 0
+        },
+        "surface": {
+          "x": 0,
+          "y": 30,
+          "width": 1180,
+          "height": 790,
+          "top": 30,
+          "right": 1180,
+          "bottom": 820,
+          "left": 0
+        },
+        "controls": {
+          "x": 229,
+          "y": 648,
+          "width": 722,
+          "height": 116,
+          "top": 648,
+          "right": 951,
+          "bottom": 764,
+          "left": 229
+        },
+        "radius": "0px"
+      },
+      "dynamicPreferenceEvents": [
+        "reduceTransparencyChanged",
+        "highTextContrastChanged",
+        "reduceMotionChanged"
+      ],
+      "nativeGlassRendered": false
+    }
+  ],
+  "sourceSHA256": "ab233727e41a6ba19e386f485af6ef0dc24373b2518e0da87942bf647669ac99",
+  "status": "passed"
+}

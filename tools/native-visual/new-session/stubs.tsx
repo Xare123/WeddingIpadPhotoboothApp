@@ -153,12 +153,15 @@ export const useCameraPermissions = () => {
     return { granted: mode !== 'blocked' };
   }] as const;
 };
-export const CameraView = forwardRef(function SyntheticCamera({ onCameraReady, style }: { onCameraReady?: () => void; style?: object }, ref) {
+export const CameraView = forwardRef(function SyntheticCamera({ onCameraReady, style, testID }: { onCameraReady?: () => void; style?: object; testID?: string }, ref) {
   useImperativeHandle(ref, () => ({ takePictureAsync: async () => {
     fixtureControls.cameraCalls++;
     event('synthetic-camera-exposure', undefined, fixtureControls.cameraCalls - 1);
     return { uri: '/attract-scene.png' };
   } }), []);
   useEffect(() => { onCameraReady?.(); }, []);
-  return <View testID="synthetic-browser-camera" style={style}><Image source={{ uri: '/attract-scene.png' }} style={StyleSheet.absoluteFill} resizeMode="cover" accessibilityLabel="Generated synthetic camera scene; no live camera" /></View>;
+  return <View testID={testID} style={style}><View testID="synthetic-browser-camera" style={StyleSheet.absoluteFill}><Image source={{ uri: '/attract-scene.png' }} style={StyleSheet.absoluteFill} resizeMode="cover" accessibilityLabel="Generated synthetic camera scene; no live camera" /></View></View>;
 });
+
+// Browser has no Expo native-module capability; never claim native preservation.
+export const requireOptionalNativeModule = (_name: string) => undefined;

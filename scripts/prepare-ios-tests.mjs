@@ -8,9 +8,14 @@ const require = createRequire(import.meta.url);
 const xcode = require('xcode');
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ios = resolve(root, 'apps/ipad/ios');
-const source = resolve(root, 'apps/ipad/native-tests/WeddingPhotoboothUITests.swift');
-const targetName = 'WeddingPhotoboothUITests';
-const scheme = 'WeddingPhotoboothNativeTests';
+const runtime = process.argv[2] === 'release-runtime';
+if (process.argv[2] && !runtime) throw new Error('Unknown native test preparation mode');
+const sourceName = runtime ? 'WeddingPhotoboothReleaseSmokeTests' : 'WeddingPhotoboothUITests';
+const source = resolve(root, `apps/ipad/native-tests/${sourceName}.swift`);
+const targetName = sourceName;
+const scheme = runtime ? 'WeddingPhotoboothReleaseRuntime' : 'WeddingPhotoboothNativeTests';
+const configuration = runtime ? 'Release' : 'Debug';
+const testBundleSuffix = runtime ? 'releaseruntimetests' : 'uitests';
 const unquote = value => typeof value === 'string' ? value.replace(/^"|"$/g, '') : value;
 const xml = value => String(value).replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 
@@ -45,7 +50,7 @@ if (!testEntry) {
   // addTarget defaults to app->newtarget: restore that edge, then add the correct
   // UI-test->application dependency to avoid a generated build cycle.
   const previousDependencies = [...(application.dependencies ?? [])];
-  const added = project.addTarget(targetName, 'unit_test_bundle', 'NativeTests', `${appBundleId}.uitests`);
+  const added = project.addTarget(targetName, 'unit_test_bundle', 'NativeTests', `${appBundleId}.${testBundleSuffix}`);
   const unwanted = application.dependencies.filter(dependency => !previousDependencies.some(previous => previous.value === dependency.value));
   application.dependencies = previousDependencies;
   for (const dependency of unwanted) {
@@ -63,7 +68,7 @@ if (!testEntry) {
   product.path = `"${targetName}.xctest"`;
   product.name = `"${targetName}.xctest"`;
   product.explicitFileType = '"wrapper.cfbundle"';
-  project.addBuildPhase(['NativeTests/WeddingPhotoboothUITests.swift'], 'PBXSourcesBuildPhase', 'Sources', added.uuid);
+  project.addBuildPhase([`NativeTests/${sourceName}.swift`], 'PBXSourcesBuildPhase', 'Sources', added.uuid);
   project.addBuildPhase([], 'PBXFrameworksBuildPhase', 'Frameworks', added.uuid);
   project.addBuildPhase([], 'PBXResourcesBuildPhase', 'Resources', added.uuid);
   testEntry = [added.uuid, target];
@@ -80,7 +85,7 @@ for (const config of objects.XCConfigurationList[testTarget.buildConfigurationLi
   delete settings.INFOPLIST_FILE;
   Object.assign(settings, {
     GENERATE_INFOPLIST_FILE: 'YES',
-    PRODUCT_BUNDLE_IDENTIFIER: `"${appBundleId}.uitests"`,
+    PRODUCT_BUNDLE_IDENTIFIER: `"${appBundleId}.${testBundleSuffix}"`,
     PRODUCT_NAME: '"$(TARGET_NAME)"',
     SWIFT_VERSION: '5.0',
     IPHONEOS_DEPLOYMENT_TARGET: appSettings.IPHONEOS_DEPLOYMENT_TARGET ?? '16.4',
@@ -97,7 +102,7 @@ for (const config of objects.XCConfigurationList[testTarget.buildConfigurationLi
 const attributes = project.getFirstProject().firstProject.attributes;
 if (attributes.TargetAttributes) delete attributes.TargetAttributes.undefined;
 project.addTargetAttribute('TestTargetID', appUUID, { uuid: testUUID });
-const sourceReference = Object.values(objects.PBXFileReference).find(value => value && typeof value === 'object' && unquote(value.path) === 'NativeTests/WeddingPhotoboothUITests.swift');
+const sourceReference = Object.values(objects.PBXFileReference).find(value => value && typeof value === 'object' && unquote(value.path) === `NativeTests/${sourceName}.swift`);
 if (!sourceReference) throw new Error('Native XCTest source reference is missing');
 sourceReference.sourceTree = 'SOURCE_ROOT';
 const productReference = objects.PBXFileReference[testTarget.productReference];
@@ -114,7 +119,7 @@ function removeUndefined(value) {
 }
 removeUndefined(objects);
 await mkdir(resolve(ios, 'NativeTests'), { recursive: true });
-await copyFile(source, resolve(ios, 'NativeTests/WeddingPhotoboothUITests.swift'));
+await copyFile(source, resolve(ios, `NativeTests/${sourceName}.swift`));
 await writeFile(projectPath, project.writeSync());
 
 const reference = (uuid, name, product) => `<BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="${xml(uuid)}" BuildableName="${xml(product)}" BlueprintName="${xml(name)}" ReferencedContainer="container:${xml(basename(projectDirectory))}"/>`;
@@ -126,11 +131,11 @@ const schemeXML = `<?xml version="1.0" encoding="UTF-8"?>
     <BuildActionEntry buildForTesting="YES" buildForRunning="YES" buildForProfiling="NO" buildForArchiving="NO" buildForAnalyzing="YES">${appReference}</BuildActionEntry>
     <BuildActionEntry buildForTesting="YES" buildForRunning="NO" buildForProfiling="NO" buildForArchiving="NO" buildForAnalyzing="YES">${testReference}</BuildActionEntry>
   </BuildActionEntries></BuildAction>
-  <TestAction buildConfiguration="Debug" selectedDebuggerIdentifier="Xcode.DebuggerFoundation.Debugger.LLDB" selectedLauncherIdentifier="Xcode.IDEFoundation.Launcher.PosixSpawn" shouldUseLaunchSchemeArgsEnv="YES">
+  <TestAction buildConfiguration="${configuration}" selectedDebuggerIdentifier="Xcode.DebuggerFoundation.Debugger.LLDB" selectedLauncherIdentifier="Xcode.IDEFoundation.Launcher.PosixSpawn" shouldUseLaunchSchemeArgsEnv="YES">
     <Testables><TestableReference skipped="NO" parallelizable="NO">${testReference}</TestableReference></Testables>
   </TestAction>
-  <LaunchAction buildConfiguration="Debug" selectedDebuggerIdentifier="Xcode.DebuggerFoundation.Debugger.LLDB" selectedLauncherIdentifier="Xcode.IDEFoundation.Launcher.PosixSpawn" launchStyle="0" useCustomWorkingDirectory="NO" ignoresPersistentStateOnLaunch="NO" debugDocumentVersioning="YES"><BuildableProductRunnable runnableDebuggingMode="0">${appReference}</BuildableProductRunnable></LaunchAction>
-  <AnalyzeAction buildConfiguration="Debug"/>
+  <LaunchAction buildConfiguration="${configuration}" selectedDebuggerIdentifier="Xcode.DebuggerFoundation.Debugger.LLDB" selectedLauncherIdentifier="Xcode.IDEFoundation.Launcher.PosixSpawn" launchStyle="0" useCustomWorkingDirectory="NO" ignoresPersistentStateOnLaunch="NO" debugDocumentVersioning="YES"><BuildableProductRunnable runnableDebuggingMode="0">${appReference}</BuildableProductRunnable></LaunchAction>
+  <AnalyzeAction buildConfiguration="${configuration}"/>
 </Scheme>
 `;
 const schemes = resolve(projectDirectory, 'xcshareddata/xcschemes');
@@ -140,9 +145,9 @@ const relativeRoot = path => relative(root, path).replaceAll('\\', '/');
 const plan = {
   project: relativeRoot(projectDirectory),
   workspace: relativeRoot(resolve(ios, `${basename(projectDirectory, '.xcodeproj')}.xcworkspace`)),
-  scheme, targetName, appBundleId, testBundleId: `${appBundleId}.uitests`,
-  configuration: 'Debug', deploymentTarget: unquote(appSettings.IPHONEOS_DEPLOYMENT_TARGET ?? '16.4'),
-  metroPort: 8081, fixture: 'synthetic-camera-real-native-storage',
+  scheme, targetName, appBundleId, testBundleId: `${appBundleId}.${testBundleSuffix}`,
+  configuration, deploymentTarget: unquote(appSettings.IPHONEOS_DEPLOYMENT_TARGET ?? '16.4'),
+  metroPort: runtime ? null : 8081, fixture: runtime ? 'disabled' : 'synthetic-camera-real-native-storage',
   testSource: relativeRoot(source),
 };
 await writeFile(resolve(ios, 'native-test-plan.json'), JSON.stringify(plan, null, 2) + '\n');

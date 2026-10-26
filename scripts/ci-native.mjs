@@ -3,14 +3,15 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { bounded, redact } from './ci-summary.mjs';
-import { commandStreams, parseNamedJSON, passingXCTestCounts, selectIpadSimulator, waitForMetro, metroErrorCodes, resolveExpoEntry, ownedProcessTree, verifyReleaseApp, requireSwiftTools62 } from './ci-native-contract.mjs';
+import { nativeModeSettings, requireNativeTestPlan, commandStreams, parseNamedJSON, passingXCTestCounts, selectIpadSimulator, waitForMetro, metroErrorCodes, resolveExpoEntry, ownedProcessTree, verifyReleaseApp, requireSwiftTools62 } from './ci-native-contract.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const diagnostics = process.env.WEDDING_DIAGNOSTICS_DIR ?? join(process.env.RUNNER_TEMP ?? '/tmp', 'wedding-native-diagnostics');
 const derived = join(process.env.RUNNER_TEMP ?? '/tmp', 'wedding-native-derived');
 const resultBundle = join(diagnostics, 'native-tests.xcresult');
 const mode = process.argv[2] ?? 'ui-tests';
-const status = { mode, nativeBuild: 'unrun', result: 'running', stages: [], fixture: mode === 'release-build' ? 'disabled' : 'synthetic-camera-real-native-storage' };
+const settings = nativeModeSettings(mode);
+const status = { mode, nativeBuild: 'unrun', result: 'running', stages: [], fixture: settings.fixture };
 mkdirSync(diagnostics, { recursive: true });
 const saveStatus = () => writeFileSync(join(diagnostics, 'status.json'), JSON.stringify(status, null, 2));
 let metro, simulator, createdHere = false, bootedHere = false;
@@ -30,7 +31,7 @@ for (const [signal, code] of [['SIGINT', 130], ['SIGTERM', 143]]) {
 }
 // No credentials are required by the public native test. Avoid propagating
 // token/secret variables into native build scripts or XCTest result bundles.
-const fixtureEnv = { ...process.env, EXPO_PUBLIC_E2E_FIXTURE: mode === 'ui-tests' ? '1' : '0', EXPO_OFFLINE: '1', EXPO_NO_TELEMETRY: '1', COCOAPODS_DISABLE_STATS: 'true' };
+const fixtureEnv = { ...process.env, EXPO_PUBLIC_E2E_FIXTURE: settings.fixtureFlag, EXPO_OFFLINE: '1', EXPO_NO_TELEMETRY: '1', COCOAPODS_DISABLE_STATS: 'true' };
 for (const name of Object.keys(fixtureEnv)) if (/TOKEN|SECRET|PASSWORD|PRIVATE_KEY|ACCESS_KEY/i.test(name)) delete fixtureEnv[name];
 
 function command(name, binary, args, { cwd = root, timeout = 180_000, allowFailure = false, env = fixtureEnv, structured, stdoutLimit } = {}) {
@@ -115,7 +116,7 @@ async function cleanup() {
   }
 }
 async function main() {
-  if (!['release-build', 'ui-tests'].includes(mode)) throw new Error('Native mode must be release-build or ui-tests');
+  if (!['release-build', 'ui-tests', 'release-runtime'].includes(mode)) throw new Error('Native mode must be release-build, release-runtime or ui-tests');
   if (process.platform !== 'darwin') throw new Error('Native verification requires the standard macOS runner');
   const expoEntry = validationStage('expo-entrypoint', () => resolveExpoEntry(join(root, 'apps/ipad')));
   const tools = await command('toolchain', 'xcodebuild', ['-version']);
@@ -124,13 +125,13 @@ async function main() {
   writeFileSync(join(diagnostics, 'toolchain.txt'), `Node ${process.version}\n${tools.output}\n${swift.output}\n`);
   await command('prebuild', process.execPath, [expoEntry.cli, 'prebuild', '--platform', 'ios', '--no-install'], { cwd: join(root, 'apps/ipad') });
   if (!existsSync(join(root, 'scripts/prepare-ios-tests.mjs'))) throw new Error('Native UI test preparation script is missing; tests were not run');
-  await command('prepare-tests', process.execPath, ['scripts/prepare-ios-tests.mjs']);
+  await command('prepare-tests', process.execPath, ['scripts/prepare-ios-tests.mjs', ...(mode === 'release-runtime' ? ['release-runtime'] : [])]);
   await command('pods', 'pod', ['_1.16.2_', 'install', '--project-directory=ios'], { cwd: join(root, 'apps/ipad'), timeout: 600_000 });
   const planPath = join(root, 'apps/ipad/ios/native-test-plan.json');
   const { plan, workspace, appScheme } = validationStage('native-test-plan', () => {
     if (!existsSync(planPath)) throw new Error('Native UI test plan was not generated');
     const plan = parseNamedJSON('native-test-plan', readFileSync(planPath, 'utf8'));
-    if (plan.scheme !== 'WeddingPhotoboothNativeTests' || plan.configuration !== 'Debug') throw new Error('Unexpected native UI test plan');
+    requireNativeTestPlan(plan, mode);
     const workspace = isAbsolute(plan.workspace) ? plan.workspace : resolve(root, plan.workspace);
     if (!workspace.startsWith(join(root, 'apps/ipad/ios/')) || !existsSync(workspace)) throw new Error('Native test workspace is outside the generated project or missing');
     const project = typeof plan.project === 'string' ? resolve(root, plan.project) : '';
@@ -172,66 +173,69 @@ async function main() {
   status.simulator = { name: simulator.name, runtime: simulator.runtime, udid: simulator.udid }; saveStatus();
   await command('simulator-boot', 'xcrun', ['simctl', 'boot', simulator.udid]); bootedHere = true;
   await command('simulator-ready', 'xcrun', ['simctl', 'bootstatus', simulator.udid, '-b']);
-  writeFileSync(join(diagnostics, 'metro.log'), 'Metro startup requested.\n');
-  const metroEntry = expoEntry;
-  const metroLog = ['Metro startup requested.\n'];
-  let metroSpawnError;
-  const metroOutput = data => {
-    metroLog.push(redact(data.toString()));
-    if (metroLog.length > 100) metroLog.shift();
-    writeFileSync(join(diagnostics, 'metro.log'), bounded(metroLog.join(''), 400, 96_000));
-  };
-  await asyncValidationStage('metro-startup', () => new Promise((resolveSpawn, reject) => {
-    metro = spawn(process.execPath, [metroEntry.cli, 'start', '--localhost', '--port', '8081'], {
-      cwd: join(root, 'apps/ipad'), env: fixtureEnv, detached: true, stdio: ['ignore', 'pipe', 'pipe'],
-    });
-    metro.stdout.on('data', metroOutput); metro.stderr.on('data', metroOutput);
-    for (const event of ['exit', 'close']) metro.on(event, (code, signal) => {
-      const safeSignal = typeof signal === 'string' && /^SIG[A-Z0-9]+$/.test(signal) ? signal : 'none';
-      metroOutput(Buffer.from('Metro lifecycle: ' + event + '; pid ' + metro.pid + '; code ' +
-        (Number.isInteger(code) ? code : 'none') + '; signal ' + safeSignal + '; executable ' +
-        basename(process.execPath).replace(/[^A-Za-z0-9._-]/g, '_').slice(0, 60) + '\n'));
-    });
-    metro.once('spawn', () => {
-      const message = 'Expo ' + metroEntry.version + ' direct Node CLI spawned; pid ' + metro.pid + '.\n';
-      writeFileSync(join(diagnostics, 'metro-startup.log'), message);
-      metroOutput(Buffer.from('Metro lifecycle: ' + message));
-      resolveSpawn();
-    });
-    metro.on('error', error => {
-      metroSpawnError = metroErrorCodes(error).split(',')[0];
-      const safe = 'metro-startup: Expo CLI spawn failed; code ' + metroSpawnError;
-      metroOutput(Buffer.from('Error: ' + safe + '\n'));
-      writeFileSync(join(diagnostics, 'metro-startup.log'), 'Error: ' + safe + '\n');
-      reject(new Error(safe));
-    });
-  }));
-  await asyncValidationStage('metro-ready', async () => {
-    try {
-      const ready = await waitForMetro({
-        childState: () => ({ exitCode: metro.exitCode, signal: metro.signalCode, spawnError: metroSpawnError }),
-        onObservation: info => {
-          status.metro = info;
-          writeFileSync(join(diagnostics, 'metro-ready.log'), 'Metro readiness observations: ' + JSON.stringify(info) + '\n');
-          saveStatus();
-        },
+  if (settings.requiresMetro) {
+    writeFileSync(join(diagnostics, 'metro.log'), 'Metro startup requested.\n');
+    const metroEntry = expoEntry;
+    const metroLog = ['Metro startup requested.\n'];
+    let metroSpawnError;
+    const metroOutput = data => {
+      metroLog.push(redact(data.toString()));
+      if (metroLog.length > 100) metroLog.shift();
+      writeFileSync(join(diagnostics, 'metro.log'), bounded(metroLog.join(''), 400, 96_000));
+    };
+    await asyncValidationStage('metro-startup', () => new Promise((resolveSpawn, reject) => {
+      metro = spawn(process.execPath, [metroEntry.cli, 'start', '--localhost', '--port', '8081'], {
+        cwd: join(root, 'apps/ipad'), env: fixtureEnv, detached: true, stdio: ['ignore', 'pipe', 'pipe'],
       });
-      status.metro = ready;
-      writeFileSync(join(diagnostics, 'metro-ready.log'), 'Metro ready via ' + ready.family + ' after ' + ready.seconds + ' seconds.\n');
-    } catch (error) {
-      status.metro = error.metro;
-      writeFileSync(join(diagnostics, 'metro-ready.log'), 'Error: ' + redact(error.message) + '\n');
-      throw error;
-    }
-  });
+      metro.stdout.on('data', metroOutput); metro.stderr.on('data', metroOutput);
+      for (const event of ['exit', 'close']) metro.on(event, (code, signal) => {
+        const safeSignal = typeof signal === 'string' && /^SIG[A-Z0-9]+$/.test(signal) ? signal : 'none';
+        metroOutput(Buffer.from('Metro lifecycle: ' + event + '; pid ' + metro.pid + '; code ' +
+          (Number.isInteger(code) ? code : 'none') + '; signal ' + safeSignal + '; executable ' +
+          basename(process.execPath).replace(/[^A-Za-z0-9._-]/g, '_').slice(0, 60) + '\n'));
+      });
+      metro.once('spawn', () => {
+        const message = 'Expo ' + metroEntry.version + ' direct Node CLI spawned; pid ' + metro.pid + '.\n';
+        writeFileSync(join(diagnostics, 'metro-startup.log'), message);
+        metroOutput(Buffer.from('Metro lifecycle: ' + message));
+        resolveSpawn();
+      });
+      metro.on('error', error => {
+        metroSpawnError = metroErrorCodes(error).split(',')[0];
+        const safe = 'metro-startup: Expo CLI spawn failed; code ' + metroSpawnError;
+        metroOutput(Buffer.from('Error: ' + safe + '\n'));
+        writeFileSync(join(diagnostics, 'metro-startup.log'), 'Error: ' + safe + '\n');
+        reject(new Error(safe));
+      });
+    }));
+    await asyncValidationStage('metro-ready', async () => {
+      try {
+        const ready = await waitForMetro({
+          childState: () => ({ exitCode: metro.exitCode, signal: metro.signalCode, spawnError: metroSpawnError }),
+          onObservation: info => {
+            status.metro = info;
+            writeFileSync(join(diagnostics, 'metro-ready.log'), 'Metro readiness observations: ' + JSON.stringify(info) + '\n');
+            saveStatus();
+          },
+        });
+        status.metro = ready;
+        writeFileSync(join(diagnostics, 'metro-ready.log'), 'Metro ready via ' + ready.family + ' after ' + ready.seconds + ' seconds.\n');
+      } catch (error) {
+        status.metro = error.metro;
+        writeFileSync(join(diagnostics, 'metro-ready.log'), 'Error: ' + redact(error.message) + '\n');
+        throw error;
+      }
+    });
+  }
   const test = await command('xcode-test', 'xcodebuild', [
-    '-workspace', workspace, '-scheme', plan.scheme, '-configuration', 'Debug', '-sdk', 'iphonesimulator',
+    '-workspace', workspace, '-scheme', plan.scheme, '-configuration', plan.configuration, '-sdk', 'iphonesimulator',
     '-destination', `platform=iOS Simulator,id=${simulator.udid}`, '-derivedDataPath', derived,
     '-resultBundlePath', resultBundle, '-parallel-testing-enabled', 'NO', '-jobs', '3',
     '-test-timeouts-enabled', 'YES', '-default-test-execution-time-allowance', '180',
     '-maximum-test-execution-time-allowance', '300', 'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO', 'test',
   ], { timeout: 1_500_000 });
   status.tests = passingXCTestCounts(test.output);
+  if (mode === 'release-runtime') status.runtimeEvidence = { configuration: 'Release', sdk: 'iphonesimulator', fixture: 'disabled', metroServer: false, scope: 'attract-ui-launch-relaunch-orientation' };
   status.result = 'passed';
 }
 try { await main(); }

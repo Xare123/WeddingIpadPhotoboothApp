@@ -2,6 +2,8 @@
 
 The latest revision adds independently reviewed recovery repairs and visual refinements. See [the refinement and publication status](docs/LOCAL_REFINEMENTS.md). Hosted Release results apply only to their exact commit; physical-iPad saving and Photos behavior still require the owner's rehearsal.
 
+The current full-bleed candidate removes the camera's inset stage and fixed header/footer. It adds a single floating native-glass control island with an opaque accessibility fallback, explicit uncropped-camera-file preservation, host relocking and bounded recipient cleanup. See [the design and framing contract](docs/FULL_BLEED_CAMERA.md). Earlier hosted results do not verify later working-tree changes; fresh exact-commit results are recorded in the validation report.
+
 A native iOS photobooth for a personal wedding on November 1, 2026: five front-camera photos at a physical backdrop, a private guest page, original downloads, and one QR code when the complete session is ready. Digital photos only. The provisional device is an M1 iPad Air (5th generation); confirm its model, iPadOS version, and stand fit before rehearsal.
 
 The owner reported a saving failure in the earlier build. This revision fixes SDK 58 native file-awaiting, replaces local recovery and the single-shot interface, and is **not yet verified on the wedding iPad**. Earlier synthetic checks and unsigned compilation did not establish device usability. A preceding backend was reported deployed fail-closed; the regenerated current handoff awaits coordinator deployment review and initial secure device provisioning. Production storage, installation, camera/Photos behavior and venue sharing remain gates in [the launch checklist](docs/LAUNCH.md).

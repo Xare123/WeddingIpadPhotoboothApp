@@ -14,6 +14,21 @@ export async function hostReliabilityChecks({ browser, report, load, save, snaps
   const evidence = (state) => save(page, state, 'portrait', { allowVerticalScroll: true });
   try {
     await openLibrary('host-uncertain');
+    for (let cycle = 0; cycle < 2; cycle++) {
+      const authBefore = await page.evaluate(() => window.__NEW_SESSION_FIXTURE__.events.filter(event => event.kind === 'synthetic-host-auth').length);
+      await controls(page, () => window.__NEW_SESSION_FIXTURE__.setAppState('background'));
+      await page.getByTestId('host-selected-originals').waitFor({ state: 'detached' });
+      await page.getByText('Booth controls', { exact: true }).waitFor({ state: 'detached' });
+      await controls(page, () => window.__NEW_SESSION_FIXTURE__.setAppState('active'));
+      assert.equal(await page.getByTestId('host-selected-originals').count(), 0);
+      assert.equal(await page.evaluate(() => window.__NEW_SESSION_FIXTURE__.events.filter(event => event.kind === 'synthetic-host-auth').length), authBefore);
+      await openHost();
+      assert.equal(await page.evaluate(() => window.__NEW_SESSION_FIXTURE__.events.filter(event => event.kind === 'synthetic-host-auth').length), authBefore + 1);
+      await page.getByRole('button', { name: 'Saved sessions', exact: true }).tap();
+      await page.getByText('Open saved session →', { exact: true }).tap();
+      await page.getByTestId('host-selected-originals').waitFor();
+    }
+    report.hostChecks.push({ check: 'Two synthetic background/foreground cycles redact private originals, leave host controls locked, and require one fresh host-auth call on each explicit reopen.', scope: 'Browser AppState/auth adapters only; no native biometric verification.' });
     const original = (await snapshot(page)).active;
     const selectedIds = original.shots.map(photo => photo.id);
     const [first, second] = original.shots;

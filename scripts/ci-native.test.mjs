@@ -5,7 +5,7 @@ import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createServer } from 'node:http';
-import { commandStreams, MAX_MACHINE_STDOUT, metroErrorCodes, metroHTTPStatus, ownedProcessTree, parseNamedJSON, passingXCTestCounts, requireSwiftTools62, resolveExpoEntry, selectIpadSimulator, verifyReleaseApp, waitForMetro } from './ci-native-contract.mjs';
+import { nativeModeSettings, requireNativeTestPlan, commandStreams, MAX_MACHINE_STDOUT, metroErrorCodes, metroHTTPStatus, ownedProcessTree, parseNamedJSON, passingXCTestCounts, requireSwiftTools62, resolveExpoEntry, selectIpadSimulator, verifyReleaseApp, waitForMetro } from './ci-native-contract.mjs';
 import { annotationText, bounded, diagnosticLines, publicAnnotations, redact, workflowData } from './ci-summary.mjs';
 
 const ipad = { udid: '11111111-1111-4111-8111-111111111111', name: 'iPad Pro 13-inch (M4)',
@@ -492,6 +492,42 @@ test('Release success is labeled as unsigned compilation and embedded JavaScript
     { ...status, releaseEvidence: { ...releaseEvidence, fixture: 'enabled' } },
     { ...status, releaseEvidence: { ...releaseEvidence, sdk: 'iphonesimulator' } },
     { ...status, releaseEvidence: undefined, tests: { executed: 1, failures: 0, skipped: 0 } }]) {
+    assert.deepEqual(publicAnnotations({ status: invalid, jobStatus: 'success' }), []);
+  }
+});
+
+
+test('Release simulator runtime forces fixture off and never starts a Metro server; legacy modes remain distinct', () => {
+  const runtime = nativeModeSettings('release-runtime');
+  assert.equal(runtime.configuration, 'Release');
+  assert.equal(runtime.fixtureFlag, '0');
+  assert.equal(runtime.fixture, 'disabled');
+  assert.equal(runtime.requiresMetro, false);
+  assert.equal(nativeModeSettings('release-build').fixtureFlag, '0');
+  assert.equal(nativeModeSettings('release-build').requiresMetro, false);
+  assert.equal(nativeModeSettings('ui-tests').fixtureFlag, '1');
+  assert.equal(nativeModeSettings('ui-tests').requiresMetro, true);
+  assert.throws(() => nativeModeSettings('release-fixture'));
+});
+
+test('Release runtime rejects Debug, fixture and Metro-contaminated generated plans', () => {
+  const valid = { scheme: 'WeddingPhotoboothReleaseRuntime', configuration: 'Release', fixture: 'disabled', metroPort: null };
+  assert.equal(requireNativeTestPlan(valid, 'release-runtime'), valid);
+  for (const wrong of [{ ...valid, configuration: 'Debug' }, { ...valid, fixture: 'synthetic-camera-real-native-storage' },
+    { ...valid, metroPort: 8081 }, { ...valid, scheme: 'WeddingPhotoboothNativeTests' }]) {
+    assert.throws(() => requireNativeTestPlan(wrong, 'release-runtime'));
+  }
+});
+
+test('Release runtime notice requires executed passing XCTest and never claims camera/storage or Metro coverage', () => {
+  const status = { mode: 'release-runtime', result: 'passed', fixture: 'disabled', tests: { executed: 1, failures: 0, skipped: 0 } };
+  const [notice] = publicAnnotations({ status, jobStatus: 'success' });
+  assert.ok(notice.includes('Release simulator runtime evidence'));
+  assert.ok(notice.includes('embedded JavaScript without Metro'));
+  assert.ok(notice.includes('Camera, saving, Photos, signing and physical devices untested'));
+  assert.ok(!notice.includes('Synthetic camera') && !notice.includes('Debug JavaScript'));
+  for (const invalid of [{ ...status, fixture: 'enabled' }, { ...status, tests: { executed: 0, failures: 0 } },
+    { ...status, tests: { executed: 1, failures: 0, skipped: 1 } }, { ...status, tests: undefined }]) {
     assert.deepEqual(publicAnnotations({ status: invalid, jobStatus: 'success' }), []);
   }
 });

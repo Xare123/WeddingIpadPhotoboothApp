@@ -64,3 +64,14 @@ xcodebuild \
 Use a new result-bundle path for repeat runs. Reset only by uninstalling the test app from the dedicated simulator; do not erase an event iPad or delete its files. `prepare-ios-tests.mjs` adds the isolated UI-test target/shared scheme, copies the committed Swift source, and writes `apps/ipad/ios/native-test-plan.json` in the ignored generated project. It does not modify tracked application native source or the Podfile.
 
 A macOS/Xcode run must compile the source and complete the assertions before anyone describes these native UI tests as passing. Linux source review, TypeScript tests, prebuild, and Metro export do not establish XCTest readiness or simulator behavior.
+
+
+## Release simulator offline-launch smoke lane
+
+The separate `[native-runtime-ci]` review-branch opt-in runs `node scripts/ci-native.mjs release-runtime` on the same pinned macOS/Xcode toolchain. This source is **UNRUN** until its own hosted result proves a nonzero passing XCTest execution. It does not replace `[native-ci]`, which continues to compile the unsigned physical iPhoneOS Release app without XCTest.
+
+The runner builds the genuine Release app and isolated `WeddingPhotoboothReleaseRuntime` scheme, with `EXPO_PUBLIC_E2E_FIXTURE=0` explicitly supplied during prebuild and bundling. It creates a fresh dedicated iPad simulator and starts no Metro server. `WeddingPhotoboothReleaseSmokeTests.swift` checks embedded-JavaScript cold launch and termination/relaunch, visible wedding identity, enabled and hittable accessible Start/Host controls, actual portrait/landscape geometry, and absence of fixture/private photo UI. It never enters the camera or changes host settings.
+
+The test retains labeled screenshots of the actual empty simulator attract screen. Bounded diagnostics and an `.xcresult` up to 64 MiB are retained for three days; oversized result bundles are omitted with a size note and test-summary metadata. App binaries and DerivedData are not uploaded. A passing source-contract check or generated Xcode scheme does not establish runtime success.
+
+On an owner Mac with the prerequisites above, run `node scripts/ci-native.mjs release-runtime` from the repository root. The runner owns simulator creation and cleanup. No service, account or signing credential is required. This smoke test cannot establish camera output, photo preservation/saving, Photos export, Keychain/biometrics, guest sharing, physical iPad layouts or signing readiness.
