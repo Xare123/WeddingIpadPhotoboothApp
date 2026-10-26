@@ -1,4 +1,4 @@
-name: Native iPad simulator verification
+name: Native iOS verification
 
 # Review-branch opt-in: this does not require default-branch registration or a merge.
 on:
@@ -18,7 +18,7 @@ jobs:
     if: >-
       github.repository == 'Xare123/WeddingIpadPhotoboothApp' &&
       github.event.repository.private == false &&
-      contains(github.event.head_commit.message, '[native-ci]')
+      (contains(github.event.head_commit.message, '[native-ci]') || contains(github.event.head_commit.message, '[native-ui]'))
     runs-on: macos-15
     timeout-minutes: 45
     defaults:
@@ -28,8 +28,9 @@ jobs:
       CI: '1'
       EXPO_NO_TELEMETRY: '1'
       EXPO_OFFLINE: '1'
-      EXPO_PUBLIC_E2E_FIXTURE: '1'
+      EXPO_PUBLIC_E2E_FIXTURE: '0'
       COCOAPODS_DISABLE_STATS: 'true'
+      WEDDING_NATIVE_MODE: ${{ contains(github.event.head_commit.message, '[native-ui]') && 'ui-tests' || 'release-build' }}
     steps:
       - id: checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -71,10 +72,10 @@ jobs:
               pod _1.16.2_ --version
             fi
           } 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/cocoapods-install.log"
-      - name: Build and run actual simulator XCTest suite
+      - name: Verify selected unsigned native target
         id: native
         timeout-minutes: 35
-        run: node scripts/ci-native.mjs 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/native-invocation.log"
+        run: node scripts/ci-native.mjs "$WEDDING_NATIVE_MODE" 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/native-invocation.log"
       - name: Publish bounded redacted diagnostics in the public job summary
         if: always()
         env:
@@ -92,7 +93,7 @@ jobs:
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:
-          name: native-simulator-evidence-${{ github.sha }}
+          name: native-evidence-${{ github.sha }}
           path: ${{ runner.temp }}/wedding-native-diagnostics
           if-no-files-found: ignore
           retention-days: 3

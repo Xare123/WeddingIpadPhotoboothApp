@@ -4,7 +4,7 @@
     "command": "bash scripts/setup-cloud.sh",
     "passed": true,
     "packages": 587,
-    "hosted_run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40253365792"
+    "hosted_run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40253752308"
   },
   "tests": {
     "command": "npm test",
@@ -48,7 +48,7 @@
   "gallery_worker_source_sha256": "4801a7cfcc475da2fa2d180b1a01dc5d98b996cf1dd830cf31f66f7dfb9f42b9",
   "ci_contract_tests": {
     "command": "node --test scripts/ci-native.test.mjs",
-    "passed": 38,
+    "passed": 41,
     "failed": 0,
     "skipped": 0
   },
@@ -130,6 +130,19 @@
       "commit": "ad8adc811cb3e9e76b2e0574df911367eeca9ae7",
       "result": "failed",
       "diagnosis": "Resolverfixture35 expected a rawtemporarypath ratherthan canonicalpath onmacOS; stopped beforeinstallation/Metro. Canonicalpath assertion and actualworkspace-symlink coverage now pass in all38isolated preinstall checks. Functionalrunner unchanged; newhostedattemptrequired."
+    },
+    {
+      "lane": "linux",
+      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40253752308",
+      "commit": "d1f69864d6a90f6ca1640c4276478045b06b9593",
+      "result": "passed"
+    },
+    {
+      "lane": "native-ui",
+      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40253752322",
+      "commit": "d1f69864d6a90f6ca1640c4276478045b06b9593",
+      "result": "failed",
+      "diagnosis": "DirectExpoCLI reachedprojectinitialization; Metrodeadlineexpired. Coordinatorinspectedartifact; SIGKILLfromcleanupnotprovenOOM; emptyps inconclusive. Releasephysical-SDKcompile is now independent ofMetro; UItestsremainunrun."
     }
   ],
   "firebase": {
@@ -137,7 +150,7 @@
     "reason": "No usable configured Google identity or signed iOS XCTest package; bounded assessment completed and Firebase deferred"
   },
   "native_xctest_passed": false,
-  "last_successful_hosted_linux_commit": "ad8adc811cb3e9e76b2e0574df911367eeca9ae7",
+  "last_successful_hosted_linux_commit": "d1f69864d6a90f6ca1640c4276478045b06b9593",
   "metro_entry_checks": {
     "passed": true,
     "native_test_flag": true,
@@ -149,7 +162,7 @@
   "native_compilation_executed": false,
   "native_xctest_executed": false,
   "isolated_preinstall_contracts": {
-    "passed": 38,
+    "passed": 41,
     "failed": 0,
     "skipped": 0,
     "project_dependencies_available": false
@@ -160,5 +173,14 @@
     "http_status": 200,
     "owned_process_group_stopped": true,
     "macos_result": "pending_hosted_run"
+  },
+  "native_release_build": {
+    "result": "pending_hosted_run",
+    "configuration": "Release",
+    "sdk": "iphoneos",
+    "signed": false,
+    "metro_required": false,
+    "xctest_executed": false,
+    "embedded_javascript_check_configured": true
   }
 }

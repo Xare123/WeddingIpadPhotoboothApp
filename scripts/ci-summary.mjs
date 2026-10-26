@@ -82,9 +82,9 @@ export function diagnosticLines(logs, stages = [], limit = 3) {
 }
 
 const workflowSteps = new Set(['checkout', 'node-setup', 'bootstrap', 'ci-contracts', 'npm-ci', 'typecheck', 'cocoapods-install', 'native-invocation']);
-export function publicAnnotations({ kind = 'native', jobStatus, status, sha, logs = {}, failedStep }) {
+export function publicAnnotations({ kind = 'native', jobStatus, status, sha, logs = {}, failedStep, nativeMode }) {
   const exactSha = /^[a-f0-9]{40}$/i.test(sha ?? '') ? sha : 'unavailable';
-  const title = kind === 'native' ? 'Native simulator diagnostics' : 'Linux verification diagnostics';
+  const title = kind === 'native' ? ((status?.mode ?? nativeMode) === 'release-build' ? 'Unsigned Release iOS diagnostics' : 'Native simulator diagnostics') : 'Linux verification diagnostics';
   const failed = ['failure', 'failed'].includes(jobStatus) || status?.result === 'failed';
   if (failed) {
     const safeStep = workflowSteps.has(failedStep) ? failedStep : undefined;
@@ -101,7 +101,15 @@ export function publicAnnotations({ kind = 'native', jobStatus, status, sha, log
     return ['::error title=' + title + '::' + workflowData(context)];
   }
   const succeeded = jobStatus === 'success' || status?.result === 'passed';
-  if (succeeded && kind === 'native' && status?.result === 'passed' &&
+  const release = status?.releaseEvidence;
+  if (succeeded && kind === 'native' && status?.result === 'passed' && status.mode === 'release-build' &&
+    status.nativeBuild === 'passed' && release?.configuration === 'Release' && release.sdk === 'iphoneos' &&
+    release.signed === false && release.fixture === 'disabled' && release.bundleBytes > 0 && release.executableBytes > 0 &&
+    /^[a-f0-9]{64}$/.test(release.bundleSha256 ?? '')) {
+    return ['::notice title=Unsigned Release iOS build evidence::' + workflowData(
+      'Commit: ' + exactSha + '; unsigned Release iPhoneOS app compiled; embedded JavaScript and iPad bundle metadata verified. No XCTest executed; no signing, installation or device testing.')];
+  }
+  if (succeeded && kind === 'native' && status?.result === 'passed' && status.mode !== 'release-build' &&
     status.tests?.executed > 0 && status.tests.failures === 0 && (status.tests.skipped ?? 0) === 0) {
     return ['::notice title=Native simulator XCTest evidence::' + workflowData(
       'Commit: ' + exactSha + '; executed XCTest tests: ' + status.tests.executed + '; failures: 0; skipped: 0. Synthetic camera and real native storage; Debug JavaScript supplied by Metro.')];
@@ -120,6 +128,7 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(new URL(import.meta.
   if (existsSync(nativeStatus)) {
     try { status = JSON.parse(readFileSync(nativeStatus, 'utf8')); } catch { /* Show job status below. */ }
   }
+  const nativeMode = status?.mode ?? process.env.WEDDING_NATIVE_MODE;
   // Only these bounded, redacted text files are included in the public summary.
   const files = readdirSync(directory).filter(name => name.endsWith('.log') || name === 'toolchain.txt');
   for (const name of files) {
@@ -127,7 +136,7 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(new URL(import.meta.
     writeFileSync(path, bounded(readFileSync(path, 'utf8'), 400, 96_000));
   }
   const summary = [
-    `## ${kind === 'native' ? 'Native iPad simulator verification' : 'Linux verification'}`,
+    '## ' + (kind === 'native' ? (nativeMode === 'release-build' ? 'Unsigned Release iOS build verification' : 'Native iPad simulator verification') : 'Linux verification'),
     '', `Commit: \`${process.env.GITHUB_SHA ?? 'local-validation'}\``,
     `Job result: **${process.env.WEDDING_JOB_STATUS ?? status?.result ?? 'unknown'}**`, '',
   ];
@@ -138,9 +147,14 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(new URL(import.meta.
     summary.push('');
     if (status.simulator) summary.push(`Simulator: ${status.simulator.name}; runtime ${status.simulator.runtime}.`, '');
     if (status.tests) summary.push(`Executed XCTest tests: **${status.tests.executed}**; failures: **${status.tests.failures}**; skipped: **${status.tests.skipped ?? 0}**.`, '');
+    if (status.releaseEvidence) summary.push('Release build: **' + status.nativeBuild + '**; SDK: **iphoneos**; embedded JavaScript: **' + status.releaseEvidence.bundleBytes + ' bytes**; SHA-256: ' + status.releaseEvidence.bundleSha256 + '.', '');
     if (status.error) summary.push(`Failure: ${bounded(status.error, 8, 2000).replaceAll('`', "'")}`, '');
   }
-  if (kind === 'native') summary.push(
+  if (kind === 'native' && nativeMode === 'release-build') summary.push(
+    'Unsigned Release build with embedded JavaScript and the synthetic fixture disabled. No Metro development server or simulator is used.',
+    'This verifies compilation and bundle contents. No XCTest executed; signing, installation and real-device behavior remain unverified.', '',
+  );
+  else if (kind === 'native') summary.push(
     'This unsigned Debug build uses a synthetic camera fixture and real native storage. Metro supplies JavaScript on loopback.',
     'Offline checks cover an unavailable photo API and persistence across app restarts. Standalone offline JavaScript, the physical camera, Apple signing and a real iPad remain untested.', '',
   );
@@ -152,7 +166,7 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(new URL(import.meta.
   if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary.join('\n'));
   else process.stdout.write(summary.join('\n'));
   const logs = Object.fromEntries(files.map(name => [name, readFileSync(join(directory, name), 'utf8')]));
-  for (const annotation of publicAnnotations({ kind, jobStatus: process.env.WEDDING_JOB_STATUS, failedStep: process.env.WEDDING_FAILED_STEP, status, sha: process.env.GITHUB_SHA, logs })) {
+  for (const annotation of publicAnnotations({ kind, jobStatus: process.env.WEDDING_JOB_STATUS, failedStep: process.env.WEDDING_FAILED_STEP, nativeMode, status, sha: process.env.GITHUB_SHA, logs })) {
     process.stdout.write(annotation + '\n');
   }
 }

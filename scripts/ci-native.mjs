@@ -3,13 +3,14 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { bounded, redact } from './ci-summary.mjs';
-import { commandStreams, parseNamedJSON, passingXCTestCounts, selectIpadSimulator, waitForMetro, metroErrorCodes, resolveExpoEntry, ownedProcessTree } from './ci-native-contract.mjs';
+import { commandStreams, parseNamedJSON, passingXCTestCounts, selectIpadSimulator, waitForMetro, metroErrorCodes, resolveExpoEntry, ownedProcessTree, verifyReleaseApp } from './ci-native-contract.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const diagnostics = process.env.WEDDING_DIAGNOSTICS_DIR ?? join(process.env.RUNNER_TEMP ?? '/tmp', 'wedding-native-diagnostics');
 const derived = join(process.env.RUNNER_TEMP ?? '/tmp', 'wedding-native-derived');
 const resultBundle = join(diagnostics, 'native-tests.xcresult');
-const status = { result: 'running', stages: [], fixture: 'synthetic-camera-real-native-storage' };
+const mode = process.argv[2] ?? 'ui-tests';
+const status = { mode, nativeBuild: 'unrun', result: 'running', stages: [], fixture: mode === 'release-build' ? 'disabled' : 'synthetic-camera-real-native-storage' };
 mkdirSync(diagnostics, { recursive: true });
 const saveStatus = () => writeFileSync(join(diagnostics, 'status.json'), JSON.stringify(status, null, 2));
 let metro, simulator, createdHere = false, bootedHere = false;
@@ -29,7 +30,7 @@ for (const [signal, code] of [['SIGINT', 130], ['SIGTERM', 143]]) {
 }
 // No credentials are required by the public native test. Avoid propagating
 // token/secret variables into native build scripts or XCTest result bundles.
-const fixtureEnv = { ...process.env, EXPO_PUBLIC_E2E_FIXTURE: '1', EXPO_OFFLINE: '1', EXPO_NO_TELEMETRY: '1', COCOAPODS_DISABLE_STATS: 'true' };
+const fixtureEnv = { ...process.env, EXPO_PUBLIC_E2E_FIXTURE: mode === 'ui-tests' ? '1' : '0', EXPO_OFFLINE: '1', EXPO_NO_TELEMETRY: '1', COCOAPODS_DISABLE_STATS: 'true' };
 for (const name of Object.keys(fixtureEnv)) if (/TOKEN|SECRET|PASSWORD|PRIVATE_KEY|ACCESS_KEY/i.test(name)) delete fixtureEnv[name];
 
 function command(name, binary, args, { cwd = root, timeout = 180_000, allowFailure = false, env = fixtureEnv, structured, stdoutLimit } = {}) {
@@ -114,22 +115,39 @@ async function cleanup() {
   }
 }
 async function main() {
+  if (!['release-build', 'ui-tests'].includes(mode)) throw new Error('Native mode must be release-build or ui-tests');
   if (process.platform !== 'darwin') throw new Error('Native verification requires the standard macOS runner');
+  const expoEntry = validationStage('expo-entrypoint', () => resolveExpoEntry(join(root, 'apps/ipad')));
   const tools = await command('toolchain', 'xcodebuild', ['-version']);
   writeFileSync(join(diagnostics, 'toolchain.txt'), `Node ${process.version}\n${tools.output}\n`);
-  await command('prebuild', 'npx', ['--no-install', 'expo', 'prebuild', '--platform', 'ios', '--no-install'], { cwd: join(root, 'apps/ipad') });
+  await command('prebuild', process.execPath, [expoEntry.cli, 'prebuild', '--platform', 'ios', '--no-install'], { cwd: join(root, 'apps/ipad') });
   if (!existsSync(join(root, 'scripts/prepare-ios-tests.mjs'))) throw new Error('Native UI test preparation script is missing; tests were not run');
   await command('prepare-tests', process.execPath, ['scripts/prepare-ios-tests.mjs']);
   await command('pods', 'pod', ['_1.16.2_', 'install', '--project-directory=ios'], { cwd: join(root, 'apps/ipad'), timeout: 600_000 });
   const planPath = join(root, 'apps/ipad/ios/native-test-plan.json');
-  const { plan, workspace } = validationStage('native-test-plan', () => {
+  const { plan, workspace, appScheme } = validationStage('native-test-plan', () => {
     if (!existsSync(planPath)) throw new Error('Native UI test plan was not generated');
     const plan = parseNamedJSON('native-test-plan', readFileSync(planPath, 'utf8'));
     if (plan.scheme !== 'WeddingPhotoboothNativeTests' || plan.configuration !== 'Debug') throw new Error('Unexpected native UI test plan');
     const workspace = isAbsolute(plan.workspace) ? plan.workspace : resolve(root, plan.workspace);
     if (!workspace.startsWith(join(root, 'apps/ipad/ios/')) || !existsSync(workspace)) throw new Error('Native test workspace is outside the generated project or missing');
-    return { plan, workspace };
+    const project = typeof plan.project === 'string' ? resolve(root, plan.project) : '';
+    if (!project.startsWith(join(root, 'apps/ipad/ios/')) || !existsSync(project)) throw new Error('Native app project metadata is missing');
+    return { plan, workspace, appScheme: basename(project, '.xcodeproj') };
   });
+  if (mode === 'release-build') {
+    await command('release-build', 'xcodebuild', [
+      '-workspace', workspace, '-scheme', appScheme, '-configuration', 'Release',
+      '-sdk', 'iphoneos', '-destination', 'generic/platform=iOS', '-derivedDataPath', derived,
+      '-jobs', '3', 'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO', 'build',
+    ], { timeout: 1_500_000 });
+    const app = join(derived, 'Build/Products/Release-iphoneos', appScheme + '.app');
+    const info = await command('release-info', 'plutil', ['-convert', 'json', '-o', '-', join(app, 'Info.plist')], { structured: 'json' });
+    status.releaseEvidence = validationStage('release-evidence', () => verifyReleaseApp(app, info.json, plan.appBundleId));
+    writeFileSync(join(diagnostics, 'release-evidence.json'), JSON.stringify(status.releaseEvidence, null, 2) + '\n');
+    status.nativeBuild = 'passed'; status.result = 'passed';
+    return;
+  }
   const deviceOutput = await command('simulator-list', 'xcrun', ['simctl', 'list', 'devices', 'available', '--json'], { structured: 'json' });
   const template = validationStage('simulator-select', () => selectIpadSimulator(deviceOutput.json.devices));
   let deviceType = template.deviceTypeIdentifier;
@@ -152,7 +170,7 @@ async function main() {
   await command('simulator-boot', 'xcrun', ['simctl', 'boot', simulator.udid]); bootedHere = true;
   await command('simulator-ready', 'xcrun', ['simctl', 'bootstatus', simulator.udid, '-b']);
   writeFileSync(join(diagnostics, 'metro.log'), 'Metro startup requested.\n');
-  const metroEntry = validationStage('metro-entrypoint', () => resolveExpoEntry(join(root, 'apps/ipad')));
+  const metroEntry = expoEntry;
   const metroLog = ['Metro startup requested.\n'];
   let metroSpawnError;
   const metroOutput = data => {

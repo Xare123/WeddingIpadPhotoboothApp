@@ -5,6 +5,29 @@ import { spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { readFileSync, realpathSync, statSync } from 'node:fs';
 import { basename, dirname, isAbsolute, resolve, sep } from 'node:path';
+import { createHash } from 'node:crypto';
+
+export function verifyReleaseApp(directory, info, expectedBundleId) {
+  if (info?.CFBundleIdentifier !== expectedBundleId) throw new Error('Release app bundle identifier does not match the generated plan');
+  if (!Array.isArray(info.UIDeviceFamily) || !info.UIDeviceFamily.includes(2)) throw new Error('Release app does not support the iPad device family');
+  if (!Array.isArray(info.CFBundleSupportedPlatforms) || !info.CFBundleSupportedPlatforms.includes('iPhoneOS')) throw new Error('Release app was not built for the physical iOS SDK');
+  const executable = info.CFBundleExecutable;
+  if (typeof executable !== 'string' || !executable || basename(executable) !== executable) throw new Error('Release executable name is invalid');
+  const root = realpathSync(directory);
+  const file = name => {
+    const path = realpathSync(resolve(root, name));
+    const stat = statSync(path);
+    if (!path.startsWith(root + sep) || !stat.isFile() || stat.size < 1) throw new Error('Release app is missing a nonempty ' + name);
+    return { path, bytes: stat.size };
+  };
+  const binary = file(executable), bundle = file('main.jsbundle');
+  return {
+    configuration: 'Release', sdk: 'iphoneos', signed: false, fixture: 'disabled',
+    bundleId: expectedBundleId, deviceFamilies: info.UIDeviceFamily,
+    executable: executable, executableBytes: binary.bytes, bundleBytes: bundle.bytes,
+    bundleSha256: createHash('sha256').update(readFileSync(bundle.path)).digest('hex'),
+  };
+}
 
 export function resolveExpoEntry(workspace) {
   const manifestPath = resolve(workspace, 'package.json');

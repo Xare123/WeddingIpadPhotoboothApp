@@ -32,7 +32,7 @@ The API binds to loopback port 8787, uses local disk-backed R2, and never sends 
 | `apps/ipad` | Expo SDK 58 / React Native iOS app, camera, local preservation, queue, QR |
 | `packages/core` | Persistable upload/share queue, dependency ordering, retries |
 | `services/api` | Cloudflare Worker, private R2 objects, session guest galleries and mock SMS |
-| `.github/workflows` | Automated Linux checks and review-branch opt-in unsigned macOS XCTest lane |
+| `.github/workflows` | Automated Linux checks, unsigned iOS Release build and separate Debug UI test mode |
 | `docs` | Architecture, native installation, SMS decision, launch gates, validation evidence |
 
 ## Use on a Mac / iPad

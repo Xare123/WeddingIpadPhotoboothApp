@@ -5,7 +5,7 @@ import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createServer } from 'node:http';
-import { commandStreams, MAX_MACHINE_STDOUT, metroErrorCodes, metroHTTPStatus, ownedProcessTree, parseNamedJSON, passingXCTestCounts, resolveExpoEntry, selectIpadSimulator, waitForMetro } from './ci-native-contract.mjs';
+import { commandStreams, MAX_MACHINE_STDOUT, metroErrorCodes, metroHTTPStatus, ownedProcessTree, parseNamedJSON, passingXCTestCounts, resolveExpoEntry, selectIpadSimulator, verifyReleaseApp, waitForMetro } from './ci-native-contract.mjs';
 import { annotationText, bounded, diagnosticLines, publicAnnotations, redact, workflowData } from './ci-summary.mjs';
 
 const ipad = { udid: '11111111-1111-4111-8111-111111111111', name: 'iPad Pro 13-inch (M4)',
@@ -430,4 +430,55 @@ test('process diagnostics enforce their own-PID and process-count bounds without
   assert.equal(result.processes.length, 2);
   assert.equal(result.truncated, true);
   assert.ok(calls <= 4);
+});
+
+function releaseFixture(t) {
+  const directory = mkdtempSync(join(tmpdir(), 'wedding-release-app-'));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  writeFileSync(join(directory, 'WeddingPhotobooth'), 'synthetic executable fixture');
+  writeFileSync(join(directory, 'main.jsbundle'), 'abc');
+  const info = { CFBundleIdentifier: 'com.example.weddingphotobooth', CFBundleExecutable: 'WeddingPhotobooth',
+    UIDeviceFamily: [1, 2], CFBundleSupportedPlatforms: ['iPhoneOS'] };
+  return { directory, info };
+}
+
+test('Release evidence requires real nonempty app files and hashes the embedded bundle', t => {
+  const { directory, info } = releaseFixture(t);
+  const result = verifyReleaseApp(directory, info, 'com.example.weddingphotobooth');
+  assert.equal(result.sdk, 'iphoneos');
+  assert.equal(result.configuration, 'Release');
+  assert.equal(result.fixture, 'disabled');
+  assert.equal(result.bundleBytes, 3);
+  assert.ok(result.executableBytes > 0);
+  assert.equal(result.bundleSha256, 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad');
+});
+
+test('Release evidence rejects a simulator/wrong app, missing iPad support and empty embedded artifacts', t => {
+  const { directory, info } = releaseFixture(t);
+  for (const wrong of [{ ...info, CFBundleIdentifier: 'com.wrong.app' }, { ...info, UIDeviceFamily: [1] },
+    { ...info, CFBundleSupportedPlatforms: ['iPhoneSimulator'] }, { ...info, CFBundleExecutable: '../outside' }]) {
+    assert.throws(() => verifyReleaseApp(directory, wrong, 'com.example.weddingphotobooth'));
+  }
+  writeFileSync(join(directory, 'main.jsbundle'), '');
+  assert.throws(() => verifyReleaseApp(directory, info, 'com.example.weddingphotobooth'));
+  writeFileSync(join(directory, 'main.jsbundle'), 'abc');
+  writeFileSync(join(directory, 'WeddingPhotobooth'), '');
+  assert.throws(() => verifyReleaseApp(directory, info, 'com.example.weddingphotobooth'));
+});
+
+test('Release success is labeled as unsigned compilation and embedded JavaScript, never XCTest execution', t => {
+  const { directory, info } = releaseFixture(t);
+  const releaseEvidence = verifyReleaseApp(directory, info, 'com.example.weddingphotobooth');
+  const status = { mode: 'release-build', result: 'passed', nativeBuild: 'passed', releaseEvidence };
+  const [notice] = publicAnnotations({ status, jobStatus: 'success', sha: 'c'.repeat(40) });
+  assert.ok(notice.startsWith('::notice title=Unsigned Release iOS build evidence::'));
+  assert.ok(notice.includes('embedded JavaScript'));
+  assert.ok(notice.includes('No XCTest executed'));
+  assert.ok(notice.includes('no signing, installation or device testing'));
+  for (const invalid of [{ ...status, nativeBuild: 'unrun' },
+    { ...status, releaseEvidence: { ...releaseEvidence, fixture: 'enabled' } },
+    { ...status, releaseEvidence: { ...releaseEvidence, sdk: 'iphonesimulator' } },
+    { ...status, releaseEvidence: undefined, tests: { executed: 1, failures: 0, skipped: 0 } }]) {
+    assert.deepEqual(publicAnnotations({ status: invalid, jobStatus: 'success' }), []);
+  }
 });
