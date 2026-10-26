@@ -1,0 +1,120 @@
+{
+  "scope": "UNPUBLISHED local working-tree refinements and reliability repairs",
+  "generatedAt": "2026-10-26T07:54:48.491104+00:00",
+  "publicationHold": true,
+  "baselinePublishedHead": "5ef615eaf228776dcdedc0df3f0fe65ba55976f9",
+  "localCommitsCreated": 0,
+  "actionsByThisTask": {
+    "push": 0,
+    "deployment": 0,
+    "externalEvidenceUpload": 0,
+    "remoteCiTrigger": 0,
+    "productionCredentialChange": 0,
+    "livePairing": 0,
+    "realSms": 0
+  },
+  "sourceHashes": {
+    "apps/ipad/App.tsx": "4a68c3dc73d449eac889b4c79defafd2bb190ed9e8932b3672bb8b1fb9dec01e",
+    "apps/ipad/src/booth-presentation.ts": "b6f720f7d9133a0603f847efd0646a9a23f40d409018e9eb757d5326bc43e935",
+    "apps/ipad/src/host-originals.ts": "c2f3e5707832bc96988bd4f91ddbedd22d93b2feb2248266c55454da4256431f",
+    "apps/ipad/src/local-paths.ts": "15be650f8a2e7f3c91441ecc2e559ac38feba76fa26a01d5038776dfe6d31e9a",
+    "apps/ipad/src/local-persistence.ts": "8d69abf388849b14c4df3b269ff64926bf9b4ed18e94fc4c8928df844797cccd",
+    "apps/ipad/src/local-types.ts": "956dc8ebfc309d50b103cce09cdcfbcbda4a5a18ada2d5363bdde67f41f388a3",
+    "apps/ipad/src/photo-export.ts": "fcc298173415b25cf15e71757e7c741485ca3b88a44b7422594388a56c447a9b",
+    "apps/ipad/src/photo-library.ts": "fe2344e73c2d96d42417d201f5464fc72b8093b8bf43339e3011b7ba31942246",
+    "apps/ipad/src/queue-index.ts": "02d23ad2dadeb024cfb9f0eb8ce8d6f908b35a4f447f01d9a17d854a93708623",
+    "apps/ipad/src/sharing.ts": "00f6890855b5ed5942b23fd10f5f54f88d1bfa62ae541d9c0835c8a7ac9e415f",
+    "apps/ipad/src/storage.ts": "4031f8844d196f2e7d293b9135e7e4f955aea21eaae5e0d0215f02251016a58f",
+    "apps/ipad/src/sync.ts": "38c2481ab7154e33fb62e712facbea695578d0b9d721e5903aa1ee2ab558f672",
+    "apps/ipad/test/booth-presentation.test.ts": "eb48971eb520f3563ad8cfaac068d4b2a9de0ed09f4fdea091a4bc62f16f93cb",
+    "apps/ipad/test/host-originals.test.ts": "c946c4f09b0f72cbe7e7c6a3af2ba65b58eae6ce8840be2460f9da45668831f2",
+    "packages/core/src/index.ts": "945d97743a621558369c7029acbc5b61daae85d2c08156368c188aedbbb9a991",
+    "packages/core/test/consumer.test.ts": "7c9ff40aa04582af127e512adbb5514672bb3108e3a07186469732b7d1f04c0c",
+    "packages/core/test/local-disk-sqlite.test.ts": "3f804c214e8535f1e8a78614a050c2b05fa5ec46ae5628c435567f0e543183b6",
+    "packages/core/test/local-persistence.test.ts": "49984cba0dfd23c00a510dc4bd0d0e6a3b6e71bf7ad1960f769e50a045ad68fe",
+    "packages/core/test/session-sync.test.ts": "953185d36b3e2e48968b21d4bf100bc568220dbd285a146adde5466bea621480",
+    "scripts/visual-evidence.cjs": "8594faf8e187cf5d6925a51fd9d777d7e1496c6d72590a92569f6851fbb2437e",
+    "services/api/src/index.ts": "a737bd19cbca0c2e30b19e3bb6b43554580881019069075a07252b55a244f9e5",
+    "services/api/test/api.test.ts": "b55c4ca8ebc6997da9103d0f587767a1592754c189e1469c9f17aada458b6e80",
+    "tools/native-visual/new-session/capture.mjs": "dada1f9b2e5acf1c9176c27202a0e6885accdc8da40caf61dca4a4cf80c82f83",
+    "tools/native-visual/new-session/fixture-controls.ts": "8bb1992ebdefb90c243415c637cb8e296dd70bdf107b8ae66f2f8c5ad7f1080e",
+    "tools/native-visual/new-session/host-checks.mjs": "1b61e5a1a9fb7cfe9c7c6be505d86ad1470a59d6b0d6204a7f132dda3c081adb",
+    "tools/native-visual/new-session/native-runtime.ts": "3bd9c3bd48a3138bae599b30c95f2507642a3e08ec384bbd6fd0544b581d3e93",
+    "tools/native-visual/new-session/serve.mjs": "4d396fced27260d1aed3afd2b6e7842702dc10dfe30a4bf25fa6e07939765e0a",
+    "tools/native-visual/new-session/stubs.tsx": "663dd492c8c92e9715d6cc6493a9bf0e4ec1c1477d13c4e460bd67dcb96eeffe"
+  },
+  "sourceManifestSha256": "f0354194d08744437ab42d6864511bf6868ec843c61fa802af050dbe294c6457",
+  "checks": {
+    "workspaceTypecheck": "passed",
+    "fullLocalSuite": {
+      "passed": 167,
+      "failed": 0,
+      "skipped": 0
+    },
+    "focusedStorageAndRealFilesSqlite": 47,
+    "focusedApp": 28,
+    "iosJavascriptExport": {
+      "passed": true,
+      "modules": 1022,
+      "bundleSha256": "2c67e42456cbe5e47ea4fe110223dc99c4d691c5b95940adb9de679bd8119da4"
+    },
+    "actualJsxBrowser": {
+      "passed": true,
+      "screenshots": 60,
+      "videos": 2,
+      "boundedChecks": 6,
+      "hostChecks": 6,
+      "contrastChecks": 8,
+      "fullFrameQrMatchesPerDecoder": 22,
+      "browserErrors": [],
+      "unexpectedExternalRequests": [],
+      "fastRetakeActorByteIdenticalToBaseline": true
+    },
+    "galleryBrowser": {
+      "passed": true,
+      "groups": 6,
+      "originalDownloads": 5,
+      "byteIdentical": true,
+      "apiSourceSha256": "a737bd19cbca0c2e30b19e3bb6b43554580881019069075a07252b55a244f9e5"
+    },
+    "independentSourceReview": "No new concrete blockers found after identity/path CAS, staging/retake, orphan and Photos review"
+  },
+  "repairs": [
+    "Canonical JPEG before saved-photo acknowledgment, queueing or Photos export; staged bytes remain recoverable through a host retry",
+    "Bounded fair pre-drain reconciliation repairs transient missing jobs without relaunch",
+    "Malformed/unmatched/mismatched-path rows quarantined and reported; valid completion/backoff/guest metadata preserved by CAS",
+    "Warm selection sequences and staged retry preserve the chosen retake; unselected originals stay outside guest publication",
+    "Host-only per-photo uncertain Photos acknowledgment or explicit duplicate-risk retry; individual retained-original viewing/export",
+    "Wedding names/date identity, truthful saved counts, numbered thumbnails, swipe hints, explicit no-download-link offline wording",
+    "Static evidence waits for fade/scroll settlement; no-wait fast-retake regression remains unchanged"
+  ],
+  "evidence": "artifacts/visual/new-session-evidence.md",
+  "freshNativeCompile": "NOT RUN: publication/remote-CI approval is pending",
+  "physicalIpadCameraPhotosRecoveryQr": "NOT RUN",
+  "publishedDeploymentBundleChanged": false,
+  "environmentDraftChanged": false,
+  "remainingGate": "Owner publication approval before push/deployment/remote CI; actual-iPad acceptance remains separate",
+  "trackedDiffSha256": "4157b4df1512c434095d21a5d4393aa2b7a799259b8cadd52e477b5dbc776c5f",
+  "finalReview": "Independent read-only review completed; root inspected saving error, duplicate confirmation and settled offline sharing pixels.",
+  "freshIndependentAcceptance": {
+    "reliability": {
+      "report": "artifacts/test-results/fresh-reliability-acceptance.json",
+      "independentFaultSequences": 4,
+      "executionsPassed": 33,
+      "executionsFailed": 0,
+      "finding": "No blocker in requested real Linux tmpfiles/SQLite boundary scope; reviewer made no production edits"
+    },
+    "visual": {
+      "report": "artifacts/visual/fresh-visual-acceptance.md",
+      "currentSessionPngsInspected": 60,
+      "currentGalleryPngsInspected": 8,
+      "videoFramesInspected": 168,
+      "localBaselinePngsCompared": 5,
+      "finding": "Static visuals pass; brief browser image mounting plus intended220ms screen fade, no wrong scroll or decoded-image removal; no production UI fix recommended",
+      "probe": "artifacts/visual/fresh-visual-transition-probe.json"
+    },
+    "sourceUnchangedDuringReview": true,
+    "physicalDeviceProof": false,
+    "publicationHold": true
+  }
+}

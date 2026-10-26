@@ -1,5 +1,7 @@
 # Wedding iPad Photobooth
 
+The latest revision adds independently reviewed recovery repairs and visual refinements. See [the refinement and publication status](docs/LOCAL_REFINEMENTS.md). Hosted Release results apply only to their exact commit; physical-iPad saving and Photos behavior still require the owner's rehearsal.
+
 A native iOS photobooth for a personal wedding on November 1, 2026: five front-camera photos at a physical backdrop, a private guest page, original downloads, and one QR code when the complete session is ready. Digital photos only. The provisional device is an M1 iPad Air (5th generation); confirm its model, iPadOS version, and stand fit before rehearsal.
 
 The owner reported a saving failure in the earlier build. This revision fixes SDK 58 native file-awaiting, replaces local recovery and the single-shot interface, and is **not yet verified on the wedding iPad**. Earlier synthetic checks and unsigned compilation did not establish device usability. The coordinator reports this revision's backend deployed fail-closed; initial secure device provisioning is still required. Production storage, installation, camera/Photos behavior and venue sharing remain gates in [the launch checklist](docs/LAUNCH.md).

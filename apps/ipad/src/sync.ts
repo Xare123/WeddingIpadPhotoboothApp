@@ -3,7 +3,7 @@ import { createQueueConsumer, type QueueTransport } from '@wedding-booth/core';
 import { loadConnection } from './config';
 import { sessionGuestPage } from './sharing';
 import { removeCompletedRecipients, resolveRecipient } from './recipients';
-import { listLocalSessions, store } from './storage';
+import { listLocalSessions, reconcileConfirmedPhotos, store } from './storage';
 import { nativeFixtureEnabled } from './native-fixture';
 import { finalizeReadySessions } from './session-sync';
 import { smsRequestExpired } from './sms-state';
@@ -69,7 +69,7 @@ const consumer = createQueueConsumer(store, transport, async () => {
     },
   });
   await removeCompletedRecipients();
-});
+}, Date.now, reconcileConfirmedPhotos);
 
 export const syncPending = () => consumer.sync();
 

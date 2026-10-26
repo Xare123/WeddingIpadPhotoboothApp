@@ -5,7 +5,7 @@ export type ActiveCapture = {
 };
 export type ActiveSession = {
   id: string; createdAt: number; targetCount: number; shots: ActiveCapture[]; confirmed: boolean;
-  retakes?: ActiveCapture[]; storageWarning?: 'index-repair-pending';
+  retakes?: ActiveCapture[]; stagedOriginals?: ActiveCapture[]; storageWarning?: 'index-repair-pending' | 'original-commit-pending';
 };
 export type PhotoLibraryCapability = {
   available: boolean; permission: 'granted' | 'denied' | 'undetermined'; canAskAgain: boolean; writeOnly: true;

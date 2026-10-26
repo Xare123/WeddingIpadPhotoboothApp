@@ -1,0 +1,80 @@
+{
+  "reviewer": "Independent acceptance reviewer; no production implementation edits",
+  "timestampUTC": "2026-10-26T08:17:43.736031+00:00",
+  "decision": "No blocker found in requested Linux boundary acceptance scope",
+  "baselineHEAD": "5ef615eaf228776dcdedc0df3f0fe65ba55976f9",
+  "runtime": "Node v24.19.0 Linux; actual temporary files and node:sqlite; production LocalRepository/native-file-ports/queue-index/exporter/host action/core consumer/finalization",
+  "command": "node --import tsx --test .cache/fresh-reliability/independent.test.ts packages/core/test/local-disk-sqlite.test.ts apps/ipad/test/host-originals.test.ts",
+  "finalResults": {
+    "tests": 33,
+    "passed": 33,
+    "failed": 0,
+    "skipped": 0,
+    "independentFaultSequences": 4,
+    "existingTargetedTests": 29
+  },
+  "sequences": [
+    {
+      "id": 1,
+      "result": "pass",
+      "evidence": "Copy completed then first File.move substitute failed once. Verified .partial on disk before fallback. getActiveSession safely retried normalization and returned readable canonical .jpg, not .partial; no upload jobs before confirmation. Finished all five shots; confirm/recover twice retained five readable JPEG-byte jobs. Existing persistent move failure test independently verifies staged state, zero selected shots, warning and refused incomplete confirmation."
+    },
+    {
+      "id": 2,
+      "result": "pass",
+      "evidence": "ensureJob failed during confirmation; index-repair-pending visible. Restored same database without recreating repository. Production consumer.retry predrain reconcile reached exactly five distinct readable uploads and one ready call; subsequent sync caused no repeat uploads/ready; all five complete guest expiry records and warning cleared."
+    },
+    {
+      "id": 3,
+      "result": "pass",
+      "evidence": "One uncertain + four saved: automatic exporter made zero saves. Host per-photo action required duplicate confirmation before authentication; injected authentication failure made zero saves, explicit authorized retry made exactly one save. Acknowledge-existing made zero additional saves. Retained old original viewed in repository and individually exported through host controller; confirmation/recovery queued five selected IDs and excluded retained original."
+    },
+    {
+      "id": 4,
+      "result": "pass",
+      "evidence": "Existing selected row replaced by invalid JSON; usable rows showed one invalid row and repository warning. Reconcile twice restored same ID and five usable jobs, preserved exact complete/backoff/guestURL/expiry/extra data, cleared warning after index recount, and retained corrupt JSON quarantine. Injected concurrent completion during corrupt-row replacement won CAS with all acknowledgement fields preserved."
+    },
+    {
+      "id": "cross-photo",
+      "result": "pass",
+      "evidence": "Existing real-disk/SQLite regression executed: pending A referencing B.jpg was quarantined, never uploaded B under A; unrelated C still uploaded. Completed A acknowledgement preserved during canonical A-path repair."
+    }
+  ],
+  "actualWiringReviewed": [
+    "storage.ts hydrates via uploadDocumentPhotoPath and usableQueueRows, serializes relative paths, exports repository reconciliation",
+    "sync.ts passes reconciliation as createQueueConsumer beforeDrain, exports retryPendingNow from consumer.retry, finalizes ready after drain",
+    "local-persistence.ts filters selected to .jpg, retains .partial as staged, repairs only confirmed selected identities, exposes queue diagnostics",
+    "queue-index.ts quarantines observed corrupt payload and replaces with compare-and-swap, preserves matching valid row fields",
+    "photo-export.ts skips saved/uncertain automatically and journals uncertainty before native save",
+    "host-originals.ts reloads after authentication, scopes one selected/retained photo, requires explicit duplicate acceptance",
+    "App.tsx binds host controller to authenticateHost/getLocalSession/updatePhotoExport/exportSessionPhotos/retryStagedPhotos and displays per-photo confirmation; retained view labels and export use retained collection"
+  ],
+  "limitations": [
+    "No physical iPad, actual Expo File/SQLite native APIs, iOS Photos, system authentication, camera, pairing, real uploads, real SMS or deployment tested.",
+    "Expo boundary substitutes operate on actual Linux tmpfiles and SQLite; HTTP upload/ready and Photos save are local port substitutes.",
+    "The full 167-test suite, typecheck and native JS export reported by parent were not rerun by this reviewer; this report claims only the 33 freshly executed tests.",
+    "First independent harness attempt had 32 passes and one overstrict assertion that fallback must remain staged after one-shot failure clears. Source inspection and observed real bytes showed fallback safely normalizes. Corrected harness assertion then all 33 passed. No production change made."
+  ],
+  "localOnly": true,
+  "sourceSHA256": {
+    "apps/ipad/App.tsx": "4a68c3dc73d449eac889b4c79defafd2bb190ed9e8932b3672bb8b1fb9dec01e",
+    "apps/ipad/src/storage.ts": "4031f8844d196f2e7d293b9135e7e4f955aea21eaae5e0d0215f02251016a58f",
+    "apps/ipad/src/sync.ts": "38c2481ab7154e33fb62e712facbea695578d0b9d721e5903aa1ee2ab558f672",
+    "apps/ipad/src/queue-index.ts": "02d23ad2dadeb024cfb9f0eb8ce8d6f908b35a4f447f01d9a17d854a93708623",
+    "apps/ipad/src/local-persistence.ts": "8d69abf388849b14c4df3b269ff64926bf9b4ed18e94fc4c8928df844797cccd",
+    "apps/ipad/src/local-paths.ts": "15be650f8a2e7f3c91441ecc2e559ac38feba76fa26a01d5038776dfe6d31e9a",
+    "apps/ipad/src/photo-export.ts": "fcc298173415b25cf15e71757e7c741485ca3b88a44b7422594388a56c447a9b",
+    "apps/ipad/src/host-originals.ts": "c2f3e5707832bc96988bd4f91ddbedd22d93b2feb2248266c55454da4256431f",
+    "apps/ipad/src/session-sync.ts": "11eececfb849a324888d631002729f8d4c85b6bb689762fa936b5d530f54655e",
+    "apps/ipad/src/native-file-ports.ts": "49107b78dd8d96b75375b588d7c68af3fcc1858ecaa63046847008314996af14",
+    "packages/core/src/index.ts": "945d97743a621558369c7029acbc5b61daae85d2c08156368c188aedbbb9a991",
+    ".cache/fresh-reliability/independent.test.ts": "018d7477795ebd95eb031d7307f87624ac38d0d5269dafdb955fb5cabe5abe9e",
+    "packages/core/test/local-disk-sqlite.test.ts": "3f804c214e8535f1e8a78614a050c2b05fa5ec46ae5628c435567f0e543183b6",
+    "apps/ipad/test/host-originals.test.ts": "c946c4f09b0f72cbe7e7c6a3af2ba65b58eae6ce8840be2460f9da45668831f2"
+  },
+  "artifacts": {
+    "harness": ".cache/fresh-reliability/independent.test.ts",
+    "transcript": ".cache/fresh-reliability/results.tap"
+  },
+  "changesByReviewer": "Only new temporary .cache harness/transcript and this report. No production source edits, commits, pushes, publishing, credentials, remote CI, pairing, external uploads or SMS."
+}

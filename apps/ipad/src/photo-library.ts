@@ -1,5 +1,5 @@
 import * as MediaLibrary from 'expo-media-library/legacy';
-import { createPhotoExporter } from './photo-export';
+import { createPhotoExporter, type PhotoExportOptions } from './photo-export';
 import { getLocalSession, updatePhotoExport } from './storage';
 import type { ActiveSession, PhotoLibraryCapability } from './local-types';
 
@@ -14,4 +14,4 @@ async function capability(request = false): Promise<PhotoLibraryCapability> {
 const exporter = createPhotoExporter({ capability: () => capability(), requestAddPermission: () => capability(true),
   save: uri => MediaLibrary.saveToLibraryAsync(uri) }, { get: getLocalSession, update: updatePhotoExport });
 export const getPhotoLibraryCapability = () => exporter.capability();
-export const exportSessionPhotos = (session: ActiveSession, options: { requestPermission?: boolean; retryUncertain?: boolean } = {}) => exporter.exportSession(session, options);
+export const exportSessionPhotos = (session: ActiveSession, options: PhotoExportOptions = {}) => exporter.exportSession(session, options);

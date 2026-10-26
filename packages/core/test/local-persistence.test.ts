@@ -298,3 +298,17 @@ test('the Photos uncertainty marker is durable before native saving and survives
   const restored = f.make(); await restored.recover();
   assert.ok((await restored.getSession(session.id))?.shots.every(photo => photo.exportStatus === 'saved'));
 });
+
+test('priority repair cannot starve a fixed archived session across forty-session rotation', async () => {
+  const f = fixture(), repository = f.make();
+  for (let i = 0; i < 40; i++) {
+    const { session } = await five(f, repository, 'rotation-' + i);
+    await repository.confirmSession(session);
+  }
+  f.jobs.delete('rotation-19-photo-0');
+  await repository.reconcileConfirmedPhotos();
+  await repository.reconcileConfirmedPhotos();
+  await repository.reconcileConfirmedPhotos();
+  assert.equal(f.jobs.get('rotation-19-photo-0')?.sessionId, 'rotation-19');
+  assert.equal((await repository.getActiveSession())?.id, 'rotation-39');
+});

@@ -18,7 +18,7 @@ const result = await build({
   resolveExtensions: ['.web.tsx', '.web.ts', '.web.jsx', '.web.js', '.tsx', '.ts', '.jsx', '.js', '.json'],
   alias: { 'react-native': path.join(here, 'native-runtime.ts'), 'react-native-svg': path.join(root, 'node_modules/react-native-svg/lib/module/ReactNativeSVG.web.js'), '@react-native/assets-registry/registry': path.join(root, 'node_modules/react-native-web/dist/modules/AssetRegistry/index.js') },
   plugins: [{ name: 'explicit-synthetic-device-boundaries', setup(api) {
-    api.onResolve({ filter: /^(expo-camera|expo-crypto|expo-secure-store|expo-media-library|\.\/src\/(config|host-auth|storage|sync|photo-library)|\.\/storage|\.\/config)$/ }, args => {
+    api.onResolve({ filter: /^(expo-camera|expo-crypto|expo-secure-store|expo-media-library(?:\/legacy)?|\.\/src\/(config|host-auth|storage|sync)|\.\/storage|\.\/config)$/ }, args => {
       if (args.path.startsWith('.') && !args.importer.startsWith(path.join(root, 'apps/ipad/'))) return;
       return { path: path.join(here, 'stubs.tsx') };
     });
@@ -30,10 +30,10 @@ const result = await build({
   } }],
 });
 const inputs = Object.keys(result.metafile.inputs);
-const forbiddenInputs = inputs.filter(input => /(^|\/)(expo-file-system|expo-sqlite|expo-media-library)\/|(^|\/)apps\/ipad\/src\/(native-fixture|storage|sync|config|photo-library)\.(ts|tsx)$|native-tests\/fixtures\//.test(input));
+const forbiddenInputs = inputs.filter(input => /(^|\/)(expo-file-system|expo-sqlite|expo-media-library)\/|(^|\/)apps\/ipad\/src\/(native-fixture|storage|sync|config)\.(ts|tsx)$|native-tests\/fixtures\//.test(input));
 if (forbiddenInputs.length) throw new Error('Native device implementation leaked into the browser fixture: ' + forbiddenInputs.join(', '));
 const sourceHashes = {};
-for (const file of ['apps/ipad/App.tsx', 'apps/ipad/src/session-capture.ts', 'apps/ipad/src/review-selection.ts', 'apps/ipad/src/sharing.ts', 'apps/ipad/src/SmsShare.tsx', 'apps/ipad/src/sms-state.ts', 'apps/ipad/assets/attract-scene.png']) sourceHashes[file] = createHash('sha256').update(await readFile(path.join(root, file))).digest('hex');
+for (const file of ['apps/ipad/App.tsx', 'apps/ipad/src/session-capture.ts', 'apps/ipad/src/review-selection.ts', 'apps/ipad/src/sharing.ts', 'apps/ipad/src/SmsShare.tsx', 'apps/ipad/src/sms-state.ts', 'apps/ipad/src/booth-presentation.ts', 'apps/ipad/src/host-originals.ts', 'apps/ipad/src/photo-export.ts', 'apps/ipad/src/photo-library.ts', 'packages/core/src/index.ts', 'apps/ipad/assets/attract-scene.png']) sourceHashes[file] = createHash('sha256').update(await readFile(path.join(root, file))).digest('hex');
 const sourceSHA256 = sourceHashes['apps/ipad/App.tsx'];
 const boundary = { scope: 'DEV-ONLY browser rendering of actual native JSX; synthetic device adapters, not iOS verification.', sourceSHA256, sourceHashes, developmentUI, nativeFixtureEnabled: false, forbiddenInputs, inputs };
 await writeFile(path.join(temporary, 'fixture.js'), result.outputFiles[0].contents);

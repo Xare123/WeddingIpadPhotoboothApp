@@ -1,0 +1,16 @@
+{
+  "scope": "Publication review of the reviewed candidate plus result/documentation packaging; no deployment or device verification",
+  "publicationApproved": true,
+  "reviewedSourceManifestSha256": "f0354194d08744437ab42d6864511bf6868ec843c61fa802af050dbe294c6457",
+  "reviewedSourceFilesMatched": 28,
+  "visualSourceAssetsMatched": 12,
+  "reviewedEvidenceFilesMatched": 73,
+  "changedFilesInspectedBeforeReportCreation": 124,
+  "highConfidenceCredentialPatternFindings": 0,
+  "forbiddenCredentialFileFindings": 0,
+  "phoneLiterals": "Only reserved fictional North American 555-01xx test numbers, all in API tests",
+  "emailLiteralsInChangedFiles": 0,
+  "binaryScope": "Previously accepted generated/synthetic PNG/WebM assets and the local Worker handoff ZIP",
+  "limitations": "Pattern and source review is not a proof that every possible secret format can be detected. No real guest data or production credentials were introduced by this task.",
+  "evidenceLabels": "Local/unpublished labels in acceptance reports describe capture time before approval; underlying source/asset/evidence hashes remain unchanged."
+}

@@ -90,3 +90,40 @@ test('a failed reset releases the reservation without upload or recipient cleanu
   assert.equal(cleanups, 1);
   assert.equal((await memory.list())[0]?.state, 'complete');
 });
+
+test('foreground retry repairs missing confirmed jobs before draining without a relaunch', async () => {
+  const rows = new Map<string, QueueJob>();
+  const store: QueueStore = { async list() { return [...rows.values()].map(value => structuredClone(value)); }, async save(job) { rows.set(job.id, structuredClone(job)); } };
+  let available = false, uploads = 0;
+  const consumer = createQueueConsumer(store, {
+    async upload() { uploads++; return guest; }, async share() { return 'mocked'; },
+  }, undefined, () => 100, async () => {
+    if (!available) throw new Error('Index still unavailable');
+    if (!rows.has(original.id)) rows.set(original.id, structuredClone(original));
+  });
+  await assert.rejects(consumer.sync(), /Index still unavailable/);
+  assert.equal(uploads, 0);
+  available = true;
+  await consumer.retry();
+  assert.equal(uploads, 1);
+  assert.equal(rows.get(original.id)?.state, 'complete');
+  await consumer.sync();
+  assert.equal(uploads, 1);
+  assert.equal(rows.get(original.id)?.guestUrl, guest.guestUrl);
+});
+
+test('repair shares the reservation with timers and cannot overwrite completion from a concurrent drain', async () => {
+  const store = memoryStore(original); const entered = deferred(), release = deferred();
+  let repairs = 0, uploads = 0;
+  const consumer = createQueueConsumer(store, {
+    async upload() { uploads++; return guest; }, async share() { return 'mocked'; },
+  }, undefined, () => 100, async () => { repairs++; entered.resolve(); await release.promise; });
+  const retry = consumer.retry(); await entered.promise;
+  assert.strictEqual(consumer.sync(), retry);
+  assert.strictEqual(consumer.retry(), retry);
+  assert.equal(uploads, 0);
+  release.resolve(); await retry;
+  assert.equal(repairs, 1); assert.equal(uploads, 1);
+  assert.equal((await store.list())[0]?.state, 'complete');
+  assert.equal((await store.list())[0]?.guestExpiresAt, guest.guestExpiresAt);
+});

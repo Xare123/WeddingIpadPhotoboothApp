@@ -61,11 +61,12 @@ export function normalizePhone(input: string): string {
 }
 
 export function sessionGuestPage(
-  session: { id: string; confirmed: boolean; shots: { id: string }[] } | null | undefined,
+  session: { id: string; confirmed: boolean; targetCount?: number; shots: { id: string }[] } | null | undefined,
   jobs: { kind: string; state: string; sessionId: string; photoId: string; guestUrl?: string; guestExpiresAt?: number }[],
   now = Date.now(),
 ): { url: string; expiresAt: number } | null {
   if (!session?.confirmed || !session.shots.length || new Set(session.shots.map(s => s.id)).size !== session.shots.length) return null;
+  if (session.targetCount !== undefined && session.shots.length !== session.targetCount) return null;
   const selected = session.shots.map(shot => jobs.find(job => job.kind === 'upload' && job.sessionId === session.id && job.photoId === shot.id));
   const first = selected[0];
   const url = qrForJob(first, now);

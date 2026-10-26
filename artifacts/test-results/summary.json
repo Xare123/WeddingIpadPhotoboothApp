@@ -1,72 +1,137 @@
 {
-  "scope": "Five-photo saving repair and premium native kiosk revision; source checks are distinct from deployment/device acceptance",
-  "generatedAt": "2026-10-26T06:36:29.244925+00:00",
-  "appVersion": "0.2.0",
-  "iosBuildNumber": "2",
+  "scope": "Reviewed recovery repairs and personal wedding UI refinement; publication approved, new hosted results pending",
+  "generatedAt": "2026-10-26T13:46:27.452989+00:00",
+  "publicationApproved": true,
+  "sourceCommit": null,
+  "sourceCommitResolution": "Will be recorded by the result-only handoff commit after exact-SHA CI finishes",
+  "baselineSourceCommit": "c0d6f4dd4ae51e7bb5827e3bf9fb6a06bf8ba900",
+  "sourceManifestSha256": "f0354194d08744437ab42d6864511bf6868ec843c61fa802af050dbe294c6457",
   "sourceHashes": {
-    "apps/ipad/App.tsx": "a2d8e4f62b855c54e489d8311ba6fb794b59f3e7a71e9dd521827332ab6d5548",
-    "apps/ipad/src/storage.ts": "0aaf80c9483099448395286e9b6990aacfab2c3ff8eecb337bdd715b3ab961aa",
-    "apps/ipad/src/native-file-ports.ts": "49107b78dd8d96b75375b588d7c68af3fcc1858ecaa63046847008314996af14",
-    "apps/ipad/src/local-persistence.ts": "15b5c6e2083a91cfde34a34433964c60c290e8e608961beee9fe995ba047c049",
-    "apps/ipad/src/photo-export.ts": "937800017be4108f18ea99d4333104a821d1fd3ad61af71713c99c3f1cb89999",
-    "apps/ipad/src/photo-library.ts": "b352f4c5c002838f36325d8d6150f9521eba9979515b3a97bc814674376f12bc",
-    "apps/ipad/src/session-capture.ts": "b41f7ee98282fe5661e080a6b4e0b88b17c56e3c1e5908adebbe020ed6323e24",
-    "apps/ipad/src/review-selection.ts": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
-    "apps/ipad/src/sharing.ts": "fc0579c2c93a04707a437b995554b3abb3430062a695bbfdc1b08064b281d755",
-    "apps/ipad/src/sync.ts": "f7d2171f74cff468129200cdf1d1ac0b25deb48a3db0f70cc6d265a89e7e46ec",
-    "apps/ipad/app.json": "11076a77d973779f03140127522c9451532d1e52af0d6309c873c54fbe263ffb",
-    "package-lock.json": "4757632ae553208c948e62b93c2f80e662e840ac4924d1a9c2e438a31af535b8"
+    "apps/ipad/App.tsx": "4a68c3dc73d449eac889b4c79defafd2bb190ed9e8932b3672bb8b1fb9dec01e",
+    "apps/ipad/src/booth-presentation.ts": "b6f720f7d9133a0603f847efd0646a9a23f40d409018e9eb757d5326bc43e935",
+    "apps/ipad/src/host-originals.ts": "c2f3e5707832bc96988bd4f91ddbedd22d93b2feb2248266c55454da4256431f",
+    "apps/ipad/src/local-paths.ts": "15be650f8a2e7f3c91441ecc2e559ac38feba76fa26a01d5038776dfe6d31e9a",
+    "apps/ipad/src/local-persistence.ts": "8d69abf388849b14c4df3b269ff64926bf9b4ed18e94fc4c8928df844797cccd",
+    "apps/ipad/src/local-types.ts": "956dc8ebfc309d50b103cce09cdcfbcbda4a5a18ada2d5363bdde67f41f388a3",
+    "apps/ipad/src/photo-export.ts": "fcc298173415b25cf15e71757e7c741485ca3b88a44b7422594388a56c447a9b",
+    "apps/ipad/src/photo-library.ts": "fe2344e73c2d96d42417d201f5464fc72b8093b8bf43339e3011b7ba31942246",
+    "apps/ipad/src/queue-index.ts": "02d23ad2dadeb024cfb9f0eb8ce8d6f908b35a4f447f01d9a17d854a93708623",
+    "apps/ipad/src/sharing.ts": "00f6890855b5ed5942b23fd10f5f54f88d1bfa62ae541d9c0835c8a7ac9e415f",
+    "apps/ipad/src/storage.ts": "4031f8844d196f2e7d293b9135e7e4f955aea21eaae5e0d0215f02251016a58f",
+    "apps/ipad/src/sync.ts": "38c2481ab7154e33fb62e712facbea695578d0b9d721e5903aa1ee2ab558f672",
+    "apps/ipad/test/booth-presentation.test.ts": "eb48971eb520f3563ad8cfaac068d4b2a9de0ed09f4fdea091a4bc62f16f93cb",
+    "apps/ipad/test/host-originals.test.ts": "c946c4f09b0f72cbe7e7c6a3af2ba65b58eae6ce8840be2460f9da45668831f2",
+    "packages/core/src/index.ts": "945d97743a621558369c7029acbc5b61daae85d2c08156368c188aedbbb9a991",
+    "packages/core/test/consumer.test.ts": "7c9ff40aa04582af127e512adbb5514672bb3108e3a07186469732b7d1f04c0c",
+    "packages/core/test/local-disk-sqlite.test.ts": "3f804c214e8535f1e8a78614a050c2b05fa5ec46ae5628c435567f0e543183b6",
+    "packages/core/test/local-persistence.test.ts": "49984cba0dfd23c00a510dc4bd0d0e6a3b6e71bf7ad1960f769e50a045ad68fe",
+    "packages/core/test/session-sync.test.ts": "953185d36b3e2e48968b21d4bf100bc568220dbd285a146adde5466bea621480",
+    "scripts/visual-evidence.cjs": "8594faf8e187cf5d6925a51fd9d777d7e1496c6d72590a92569f6851fbb2437e",
+    "services/api/src/index.ts": "a737bd19cbca0c2e30b19e3bb6b43554580881019069075a07252b55a244f9e5",
+    "services/api/test/api.test.ts": "b55c4ca8ebc6997da9103d0f587767a1592754c189e1469c9f17aada458b6e80",
+    "tools/native-visual/new-session/capture.mjs": "dada1f9b2e5acf1c9176c27202a0e6885accdc8da40caf61dca4a4cf80c82f83",
+    "tools/native-visual/new-session/fixture-controls.ts": "8bb1992ebdefb90c243415c637cb8e296dd70bdf107b8ae66f2f8c5ad7f1080e",
+    "tools/native-visual/new-session/host-checks.mjs": "1b61e5a1a9fb7cfe9c7c6be505d86ad1470a59d6b0d6204a7f132dda3c081adb",
+    "tools/native-visual/new-session/native-runtime.ts": "3bd9c3bd48a3138bae599b30c95f2507642a3e08ec384bbd6fd0544b581d3e93",
+    "tools/native-visual/new-session/serve.mjs": "4d396fced27260d1aed3afd2b6e7842702dc10dfe30a4bf25fa6e07939765e0a",
+    "tools/native-visual/new-session/stubs.tsx": "663dd492c8c92e9715d6cc6493a9bf0e4ec1c1477d13c4e460bd67dcb96eeffe"
   },
-  "frozenInstall": {
-    "passed": true,
-    "packages": 588,
-    "command": "bash scripts/setup-cloud.sh"
+  "checks": {
+    "workspaceTypecheck": "passed",
+    "fullLocalSuite": {
+      "passed": 167,
+      "failed": 0,
+      "skipped": 0
+    },
+    "focusedStorageAndRealFilesSqlite": 47,
+    "focusedApp": 28,
+    "iosJavascriptExport": {
+      "passed": true,
+      "modules": 1022,
+      "bundleSha256": "2c67e42456cbe5e47ea4fe110223dc99c4d691c5b95940adb9de679bd8119da4"
+    },
+    "actualJsxBrowser": {
+      "passed": true,
+      "screenshots": 60,
+      "videos": 2,
+      "boundedChecks": 6,
+      "hostChecks": 6,
+      "contrastChecks": 8,
+      "fullFrameQrMatchesPerDecoder": 22,
+      "browserErrors": [],
+      "unexpectedExternalRequests": [],
+      "fastRetakeActorByteIdenticalToBaseline": true
+    },
+    "galleryBrowser": {
+      "passed": true,
+      "groups": 6,
+      "originalDownloads": 5,
+      "byteIdentical": true,
+      "apiSourceSha256": "a737bd19cbca0c2e30b19e3bb6b43554580881019069075a07252b55a244f9e5"
+    },
+    "independentSourceReview": "No new concrete blockers found after identity/path CAS, staging/retake, orphan and Photos review"
   },
-  "typecheck": "passed",
-  "appCoreApiTests": {
-    "passed": 130,
+  "independentFaultHarness": {
+    "tests": 4,
+    "passed": 4,
     "failed": 0,
     "skipped": 0,
-    "evidence": "artifacts/test-results/save-rework-final-tests.tap"
+    "path": "tools/acceptance/recovery-faults.test.ts",
+    "sha256": "018d7477795ebd95eb031d7307f87624ac38d0d5269dafdb955fb5cabe5abe9e",
+    "byteIdenticalToReviewedLocalHarness": true,
+    "ciRunsSeparately": true
   },
-  "nativeAdapterStorageTests": {
-    "passed": 29,
-    "note": "Includes deferred/rejected production native adapter methods and truncated staging retry"
+  "freshIndependentAcceptance": {
+    "reliability": {
+      "report": "artifacts/test-results/fresh-reliability-acceptance.json",
+      "independentFaultSequences": 4,
+      "executionsPassed": 33,
+      "executionsFailed": 0,
+      "finding": "No blocker in requested real Linux tmpfiles/SQLite boundary scope; reviewer made no production edits"
+    },
+    "visual": {
+      "report": "artifacts/visual/fresh-visual-acceptance.md",
+      "currentSessionPngsInspected": 60,
+      "currentGalleryPngsInspected": 8,
+      "videoFramesInspected": 168,
+      "localBaselinePngsCompared": 5,
+      "finding": "Static visuals pass; brief browser image mounting plus intended220ms screen fade, no wrong scroll or decoded-image removal; no production UI fix recommended",
+      "probe": "artifacts/visual/fresh-visual-transition-probe.json"
+    },
+    "sourceUnchangedDuringReview": true,
+    "physicalDeviceProof": false,
+    "publicationHoldAtReviewTime": true
   },
-  "captureReviewTests": {
-    "passed": 12,
-    "note": "Includes synchronous thumbnail intent and stale-animation cancellation"
-  },
-  "ciRunnerContracts": {
+  "nativeCiContracts": {
+    "tests": 43,
     "passed": 43,
     "failed": 0,
     "skipped": 0
   },
-  "nativePrebuild": {
-    "passed": true,
-    "photosAddOnlyUsageKeyVerified": true,
-    "bundleIdentifierUnchanged": "com.example.weddingphotobooth",
-    "actualNativeCompile": false
+  "nativeRelease": {
+    "status": "pending exact-commit hosted CI",
+    "signed": false,
+    "xctestExecuted": false,
+    "physicalDeviceTested": false
   },
-  "browserNativeJsx": {
-    "passed": true,
-    "report": "artifacts/visual/new-session-checks.json",
-    "index": "artifacts/visual/new-session-evidence.md",
-    "screenshots": 50,
-    "videos": 2,
-    "boundedChecks": 6,
-    "selectedContrasts": 8,
-    "fullFrameExactQrDecodesPerIndependentDecoder": 22,
-    "physicalDeviceProof": false
+  "hostedLinux": {
+    "status": "pending exact-commit hosted CI"
   },
-  "galleryBrowser": {
+  "iosJavascriptExport": {
     "passed": true,
-    "groups": 6,
-    "photos": 5,
-    "downloadsByteIdentical": true
+    "modules": 1022,
+    "assets": 2,
+    "bundleSha256": "8548b0aeda95bee2f804a1bef6629781635c3637c52fa2a541bd74fcfd63a283",
+    "finalAppSourceHashMatchedInSourceMap": true,
+    "sourceMapModules": 1008
   },
-  "localHttpSmoke": "passed five-photo upload/replay/readiness/private download/consent/mock/revocation",
-  "productionWorkerDryRun": "passed with repository cloud-env helper",
+  "workerArtifact": {
+    "sha256": "c1a551870e589676f6b4b37b714381de13e330262bfdca97eec48c000be9205b",
+    "sourceSha256": "a737bd19cbca0c2e30b19e3bb6b43554580881019069075a07252b55a244f9e5",
+    "bytes": 33189,
+    "deployedByThisExecutor": false,
+    "manifest": "artifacts/deploy/manifest.json"
+  },
   "dependencyAudit": {
     "passed": false,
     "underlyingExpoCliAdvisories": 2,
@@ -74,24 +139,7 @@
     "report": "artifacts/security/save-rework-audit.json",
     "incompatibleFixNotForced": true
   },
-  "nativeRelease": {
-    "status": "passed",
-    "commit": "c0d6f4dd4ae51e7bb5827e3bf9fb6a06bf8ba900",
-    "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40281388626",
-    "job": "121435249579",
-    "duration": "9m10s",
-    "configuration": "Release",
-    "sdk": "iphoneos",
-    "selectedXcode": "26.3",
-    "swiftToolsMinimumGate": "6.2",
-    "executableEmbeddedJsAndIpadMetadataVerified": true,
-    "signed": false,
-    "xctestExecuted": false,
-    "physicalDeviceTested": false,
-    "artifact": "native-evidence-c0d6f4dd4ae51e7bb5827e3bf9fb6a06bf8ba900",
-    "inspectionBoundary": "Public exact-SHA success annotation and guarded verification source inspected. Raw hosted JSON/toolchain files require coordinator GitHub connector; no native bundle size/hash invented."
-  },
-  "coordinatorDeployment": {
+  "historicalCoordinatorDeployment": {
     "reportedVerified": true,
     "worker": "wedding-photobooth",
     "version": "e11f1d52-24ce-49cf-83a5-c9b6aa035de9",
@@ -109,20 +157,6 @@
   ],
   "firebase": "deferred; no authorized Google identity/project or signed supported test package; no paid run or grant created",
   "projectFinished": false,
-  "iosJavascriptExport": {
-    "passed": true,
-    "modules": 1019,
-    "assets": 2,
-    "finalAppSourceHashMatchedInSourceMap": true,
-    "bundleSha256": "d8e8b1dca3cc1ba4c2bcf2bb94eb8531a86b07d350cdc1255173e4e909a613ee",
-    "sourceMapModules": 1005
-  },
-  "manualEnvironmentCorrection": "One direct npm run check reached 130 passing tests but its bundle step failed because the cloud helper/telemetry environment was omitted. Rerunning the affected export with the documented environment passed. The saved setup script already sources that helper.",
-  "sourceCommit": "c0d6f4dd4ae51e7bb5827e3bf9fb6a06bf8ba900",
-  "hostedLinux": {
-    "status": "passed",
-    "commit": "c0d6f4dd4ae51e7bb5827e3bf9fb6a06bf8ba900",
-    "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40281388547",
-    "duration": "56s"
-  }
+  "captureTimeReports": "local-refinement-summary and independent acceptance retain historical local/unpublished labels and original hashes; publication approval came afterward",
+  "privacy": "Source and generated/synthetic evidence only. No real guest photos, private contact data or production credentials are intentionally included."
 }

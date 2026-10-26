@@ -2,7 +2,8 @@ import { Directory, File, Paths } from 'expo-file-system';
 import * as SQLite from 'expo-sqlite';
 import { randomUUID } from 'expo-crypto';
 import { type QueueJob, type QueueStore } from '@wedding-booth/core';
-import { relativeDocumentPhotoPath } from './local-paths';
+import { ensureUploadJob, usableQueueRows } from './queue-index';
+import { relativeDocumentPhotoPath, uploadDocumentPhotoPath } from './local-paths';
 import { createNativeFilePorts } from './native-file-ports';
 import { LocalRepository, type LocalIndex } from './local-persistence';
 import type { ActiveCapture, ActiveSession, PhotoExportStatus } from './local-types';
@@ -15,6 +16,7 @@ function database(): Promise<SQLite.SQLiteDatabase> {
     const attempt = SQLite.openDatabaseAsync('photobooth.db').then(async db => {
       await db.execAsync(`PRAGMA journal_mode=WAL;
         CREATE TABLE IF NOT EXISTS jobs (id TEXT PRIMARY KEY NOT NULL, payload TEXT NOT NULL);
+        CREATE TABLE IF NOT EXISTS job_quarantine (job_id TEXT NOT NULL, payload TEXT NOT NULL, PRIMARY KEY(job_id, payload));
         CREATE TABLE IF NOT EXISTS metadata (key TEXT PRIMARY KEY NOT NULL, payload TEXT NOT NULL);`);
       return db;
     });
@@ -30,10 +32,10 @@ export function documentPhotoURI(path: string): string {
 const relativePhotoPath = relativeDocumentPhotoPath;
 function hydrateJob(job: QueueJob): QueueJob {
   if (job.kind !== 'upload') return job;
-  let path = relativePhotoPath(job.fileUri);
+  let path = uploadDocumentPhotoPath(job.photoId, job.fileUri);
   if (!new File(documentPhotoURI(path)).exists) {
-    const alternate = path.endsWith('.draft.jpg') ? path.replace(/\.draft\.jpg$/, '.jpg') : path.replace(/\.jpg$/, '.draft.jpg');
-    if (new File(documentPhotoURI(alternate)).exists) path = alternate;
+    const candidates = [path.endsWith('.draft.jpg') ? path.replace(/\.draft\.jpg$/, '.jpg') : path.replace(/\.jpg$/, '.draft.jpg')];
+    for (const alternate of candidates) if (new File(documentPhotoURI(alternate)).exists) { path = alternate; break; }
   }
   return { ...job, fileUri: documentPhotoURI(path) };
 }
@@ -42,10 +44,10 @@ function serializeJob(job: QueueJob): QueueJob {
 }
 export const store: QueueStore = {
   async list() {
-    const rows = await (await database()).getAllAsync<{ payload: string }>('SELECT payload FROM jobs');
-    const result: QueueJob[] = [];
-    for (const row of rows) { try { result.push(hydrateJob(JSON.parse(row.payload) as QueueJob)); } catch { /* Originals remain in the file-backed library if an old index row is corrupt. */ } }
-    return result;
+    const rows = await (await database()).getAllAsync<{ id: string; payload: string }>('SELECT id, payload FROM jobs');
+    const result = await usableQueueRows(await database(), rows, hydrateJob);
+    repository.reportQueueIndexIssues(result.invalidRows);
+    return result.jobs;
   },
   async save(job) {
     await (await database()).runAsync('INSERT INTO jobs(id, payload) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET payload=excluded.payload', job.id, JSON.stringify(serializeJob(job)));
@@ -64,8 +66,7 @@ const index: LocalIndex = {
     await (await database()).runAsync('INSERT INTO metadata(key, payload) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET payload=excluded.payload', key, JSON.stringify(value));
   },
   async ensureJob(job) {
-    // Recovery cannot overwrite a completed upload while repairing its index.
-    await (await database()).runAsync('INSERT INTO jobs(id, payload) VALUES (?, ?) ON CONFLICT(id) DO NOTHING', job.id, JSON.stringify(serializeJob(job)));
+    await ensureUploadJob(await database(), serializeJob(job));
   },
 };
 const repository = new LocalRepository(files, index, randomUUID);
@@ -75,8 +76,11 @@ export const getLocalSession = (id: string) => repository.getSession(id);
 export const saveShot = (session: ActiveSession | string, photoId: string, temporaryUri: string, index?: number) => repository.saveShot(session, photoId, temporaryUri, index);
 export const confirmSession = (session: ActiveSession | string) => repository.confirmSession(session);
 export const clearActiveSession = () => repository.clearActiveSession();
+export const getQueueIndexDiagnostics = () => repository.queueIndexDiagnostics();
 export const listLocalSessions = () => repository.listLocalSessions();
 export const updatePhotoExport = (sessionId: string, photoId: string, status: PhotoExportStatus) => repository.updateExport(sessionId, photoId, status);
+export const retryStagedPhotos = (sessionId: string) => repository.retryStagedPhotos(sessionId);
+export const reconcileConfirmedPhotos = (): Promise<void> => repository.reconcileConfirmedPhotos();
 export const recoverPreservedPhotos = () => repository.recover();
 export const getActiveCapture = () => repository.getActiveCapture();
 export const setActiveCapture = (capture: ActiveCapture | null) => repository.setActiveCapture(capture);

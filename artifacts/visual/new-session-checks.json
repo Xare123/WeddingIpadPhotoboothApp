@@ -1,8 +1,13 @@
 {
   "scope": "Actual five-shot App.tsx native JSX through RN-web. Generated synthetic scene, in-memory camera/files/SQLite/Photos/auth/sync. Not iOS, real durability, camera, Photos, native accessibility, phone scanning, network, or SMS verification.",
+  "publication": {
+    "status": "LOCAL UNPUBLISHED working-tree evidence; no commit or remote action",
+    "lastPublishedCommit": "5ef615eaf228776dcdedc0df3f0fe65ba55976f9",
+    "lastPublishedAppSHA256": "a2d8e4f62b855c54e489d8311ba6fb794b59f3e7a71e9dd521827332ab6d5548"
+  },
   "timezoneId": "America/Los_Angeles",
-  "generatedAt": "2026-10-26T06:14:31.974Z",
-  "sourceSHA256": "a2d8e4f62b855c54e489d8311ba6fb794b59f3e7a71e9dd521827332ab6d5548",
+  "generatedAt": "2026-10-26T07:46:36.666Z",
+  "sourceSHA256": "4a68c3dc73d449eac889b4c79defafd2bb190ed9e8932b3672bb8b1fb9dec01e",
   "decoderVersions": {
     "jsQR": "1.4.0",
     "zxingCppWasm": "3.1.6",
@@ -459,23 +464,23 @@
         {
           "label": "Retry sharing",
           "x": 257,
-          "y": 819,
+          "y": 804,
           "width": 306,
           "height": 64,
-          "top": 819,
+          "top": 804,
           "right": 563,
-          "bottom": 883,
+          "bottom": 868,
           "left": 257
         },
         {
           "label": "Next guests",
           "x": 257,
-          "y": 915,
+          "y": 900,
           "width": 306,
           "height": 64,
-          "top": 915,
+          "top": 900,
           "right": 563,
-          "bottom": 979,
+          "bottom": 964,
           "left": 257
         }
       ],
@@ -503,12 +508,12 @@
         {
           "label": "Next guests",
           "x": 257,
-          "y": 938,
+          "y": 938.5,
           "width": 306,
           "height": 64,
-          "top": 938,
+          "top": 938.5,
           "right": 563,
-          "bottom": 1002,
+          "bottom": 1002.5,
           "left": 257
         }
       ],
@@ -997,25 +1002,25 @@
         },
         {
           "label": "Retry sharing",
-          "x": 676,
-          "y": 467,
+          "x": 634,
+          "y": 464.5,
           "width": 306,
           "height": 64,
-          "top": 467,
-          "right": 982,
-          "bottom": 531,
-          "left": 676
+          "top": 464.5,
+          "right": 940,
+          "bottom": 528.5,
+          "left": 634
         },
         {
           "label": "Next guests",
-          "x": 676,
-          "y": 563,
+          "x": 634,
+          "y": 560.5,
           "width": 306,
           "height": 64,
-          "top": 563,
-          "right": 982,
-          "bottom": 627,
-          "left": 676
+          "top": 560.5,
+          "right": 940,
+          "bottom": 624.5,
+          "left": 634
         }
       ],
       "smallTargets": [],
@@ -1515,12 +1520,12 @@
         {
           "label": "Next guests",
           "x": 257,
-          "y": 938,
+          "y": 938.5,
           "width": 306,
           "height": 64,
-          "top": 938,
+          "top": 938.5,
           "right": 563,
-          "bottom": 1002,
+          "bottom": 1002.5,
           "left": 257
         },
         {
@@ -1680,12 +1685,12 @@
         {
           "label": "Next guests",
           "x": 257,
-          "y": 938,
+          "y": 938.5,
           "width": 306,
           "height": 64,
-          "top": 938,
+          "top": 938.5,
           "right": 563,
-          "bottom": 1002,
+          "bottom": 1002.5,
           "left": 257
         },
         {
@@ -1744,7 +1749,7 @@
           "left": 28
         },
         {
-          "label": "10/25/2026, 11:15:38 PM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
+          "label": "10/26/2026, 12:47:45 AM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
           "x": 28,
           "y": 284,
           "width": 764,
@@ -1779,12 +1784,12 @@
         {
           "label": "Next guests",
           "x": 257,
-          "y": 938,
+          "y": 938.5,
           "width": 306,
           "height": 64,
-          "top": 938,
+          "top": 938.5,
           "right": 563,
-          "bottom": 1002,
+          "bottom": 1002.5,
           "left": 257
         },
         {
@@ -1843,19 +1848,53 @@
           "left": 28
         },
         {
-          "label": "10/25/2026, 11:15:38 PM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
+          "label": "Guest selections",
+          "x": 50,
+          "y": 345,
+          "width": 356,
+          "height": 44,
+          "top": 345,
+          "right": 406,
+          "bottom": 389,
+          "left": 50
+        },
+        {
+          "label": "Retained originals (0)",
+          "x": 414,
+          "y": 345,
+          "width": 356,
+          "height": 44,
+          "top": 345,
+          "right": 770,
+          "bottom": 389,
+          "left": 414
+        },
+        {
+          "label": "10/26/2026, 12:47:45 AM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
           "x": 28,
-          "y": 926,
+          "y": 986,
           "width": 764,
           "height": 230,
-          "top": 926,
+          "top": 986,
           "right": 792,
-          "bottom": 1156,
+          "bottom": 1216,
           "left": 28
         }
       ],
       "smallTargets": [],
-      "outOfBounds": [],
+      "outOfBounds": [
+        {
+          "label": "10/26/2026, 12:47:45 AM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
+          "x": 28,
+          "y": 986,
+          "width": 764,
+          "height": 230,
+          "top": 986,
+          "right": 792,
+          "bottom": 1216,
+          "left": 28
+        }
+      ],
       "horizontalOverflow": false
     },
     {
@@ -1878,12 +1917,12 @@
         {
           "label": "Next guests",
           "x": 257,
-          "y": 938,
+          "y": 938.5,
           "width": 306,
           "height": 64,
-          "top": 938,
+          "top": 938.5,
           "right": 563,
-          "bottom": 1002,
+          "bottom": 1002.5,
           "left": 257
         },
         {
@@ -1947,6 +1986,1750 @@
       "horizontalOverflow": false
     },
     {
+      "file": "artifacts/visual/new-session-host-duplicate-confirmation-portrait.png",
+      "state": "host-duplicate-confirmation",
+      "orientation": "portrait",
+      "allowVerticalScroll": true,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 938.5,
+          "width": 306,
+          "height": 64,
+          "top": 938.5,
+          "right": 563,
+          "bottom": 1002.5,
+          "left": 257
+        },
+        {
+          "label": "Done",
+          "x": 724.96875,
+          "y": -877,
+          "width": 67.03125,
+          "height": 45,
+          "top": -877,
+          "right": 792,
+          "bottom": -832,
+          "left": 724.96875
+        },
+        {
+          "label": "Controls",
+          "x": 28,
+          "y": -812,
+          "width": 249.328125,
+          "height": 44,
+          "top": -812,
+          "right": 277.328125,
+          "bottom": -768,
+          "left": 28
+        },
+        {
+          "label": "Saved sessions",
+          "x": 285.328125,
+          "y": -812,
+          "width": 249.34375,
+          "height": 44,
+          "top": -812,
+          "right": 534.671875,
+          "bottom": -768,
+          "left": 285.328125
+        },
+        {
+          "label": "Private setup",
+          "x": 542.671875,
+          "y": -812,
+          "width": 249.328125,
+          "height": 44,
+          "top": -812,
+          "right": 792,
+          "bottom": -768,
+          "left": 542.671875
+        },
+        {
+          "label": "Refresh local sessions",
+          "x": 28,
+          "y": -705,
+          "width": 764,
+          "height": 64,
+          "top": -705,
+          "right": 792,
+          "bottom": -641,
+          "left": 28
+        },
+        {
+          "label": "Guest selections",
+          "x": 50,
+          "y": -560,
+          "width": 356,
+          "height": 44,
+          "top": -560,
+          "right": 406,
+          "bottom": -516,
+          "left": 50
+        },
+        {
+          "label": "Retained originals (2)",
+          "x": 414,
+          "y": -560,
+          "width": 356,
+          "height": 44,
+          "top": -560,
+          "right": 770,
+          "bottom": -516,
+          "left": 414
+        },
+        {
+          "label": "Already in Photos",
+          "x": 67,
+          "y": 480,
+          "width": 686,
+          "height": 64,
+          "top": 480,
+          "right": 753,
+          "bottom": 544,
+          "left": 67
+        },
+        {
+          "label": "Export this copy again",
+          "x": 67,
+          "y": 558,
+          "width": 686,
+          "height": 64,
+          "top": 558,
+          "right": 753,
+          "bottom": 622,
+          "left": 67
+        },
+        {
+          "label": "Already in Photos",
+          "x": 67,
+          "y": 1020,
+          "width": 686,
+          "height": 64,
+          "top": 1020,
+          "right": 753,
+          "bottom": 1084,
+          "left": 67
+        },
+        {
+          "label": "Export this copy again",
+          "x": 67,
+          "y": 1098,
+          "width": 686,
+          "height": 64,
+          "top": 1098,
+          "right": 753,
+          "bottom": 1162,
+          "left": 67
+        },
+        {
+          "label": "10/26/2026, 12:47:47 AM5 originals · Photos result unconfirmed · check Photos before retryingOpen saved session →",
+          "x": 28,
+          "y": 1221,
+          "width": 764,
+          "height": 230,
+          "top": 1221,
+          "right": 792,
+          "bottom": 1451,
+          "left": 28
+        },
+        {
+          "label": "Export again anyway",
+          "x": 164,
+          "y": 675,
+          "width": 492,
+          "height": 64,
+          "top": 675,
+          "right": 656,
+          "bottom": 739,
+          "left": 164
+        },
+        {
+          "label": "Cancel",
+          "x": 164,
+          "y": 757,
+          "width": 492,
+          "height": 64,
+          "top": 757,
+          "right": 656,
+          "bottom": 821,
+          "left": 164
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [
+        {
+          "label": "Done",
+          "x": 724.96875,
+          "y": -877,
+          "width": 67.03125,
+          "height": 45,
+          "top": -877,
+          "right": 792,
+          "bottom": -832,
+          "left": 724.96875
+        },
+        {
+          "label": "Controls",
+          "x": 28,
+          "y": -812,
+          "width": 249.328125,
+          "height": 44,
+          "top": -812,
+          "right": 277.328125,
+          "bottom": -768,
+          "left": 28
+        },
+        {
+          "label": "Saved sessions",
+          "x": 285.328125,
+          "y": -812,
+          "width": 249.34375,
+          "height": 44,
+          "top": -812,
+          "right": 534.671875,
+          "bottom": -768,
+          "left": 285.328125
+        },
+        {
+          "label": "Private setup",
+          "x": 542.671875,
+          "y": -812,
+          "width": 249.328125,
+          "height": 44,
+          "top": -812,
+          "right": 792,
+          "bottom": -768,
+          "left": 542.671875
+        },
+        {
+          "label": "Refresh local sessions",
+          "x": 28,
+          "y": -705,
+          "width": 764,
+          "height": 64,
+          "top": -705,
+          "right": 792,
+          "bottom": -641,
+          "left": 28
+        },
+        {
+          "label": "Guest selections",
+          "x": 50,
+          "y": -560,
+          "width": 356,
+          "height": 44,
+          "top": -560,
+          "right": 406,
+          "bottom": -516,
+          "left": 50
+        },
+        {
+          "label": "Retained originals (2)",
+          "x": 414,
+          "y": -560,
+          "width": 356,
+          "height": 44,
+          "top": -560,
+          "right": 770,
+          "bottom": -516,
+          "left": 414
+        },
+        {
+          "label": "10/26/2026, 12:47:47 AM5 originals · Photos result unconfirmed · check Photos before retryingOpen saved session →",
+          "x": 28,
+          "y": 1221,
+          "width": 764,
+          "height": 230,
+          "top": 1221,
+          "right": 792,
+          "bottom": 1451,
+          "left": 28
+        }
+      ],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-host-acknowledge-confirmation-portrait.png",
+      "state": "host-acknowledge-confirmation",
+      "orientation": "portrait",
+      "allowVerticalScroll": true,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 938.5,
+          "width": 306,
+          "height": 64,
+          "top": 938.5,
+          "right": 563,
+          "bottom": 1002.5,
+          "left": 257
+        },
+        {
+          "label": "Done",
+          "x": 724.96875,
+          "y": -679,
+          "width": 67.03125,
+          "height": 45,
+          "top": -679,
+          "right": 792,
+          "bottom": -634,
+          "left": 724.96875
+        },
+        {
+          "label": "Controls",
+          "x": 28,
+          "y": -614,
+          "width": 249.328125,
+          "height": 44,
+          "top": -614,
+          "right": 277.328125,
+          "bottom": -570,
+          "left": 28
+        },
+        {
+          "label": "Saved sessions",
+          "x": 285.328125,
+          "y": -614,
+          "width": 249.34375,
+          "height": 44,
+          "top": -614,
+          "right": 534.671875,
+          "bottom": -570,
+          "left": 285.328125
+        },
+        {
+          "label": "Private setup",
+          "x": 542.671875,
+          "y": -614,
+          "width": 249.328125,
+          "height": 44,
+          "top": -614,
+          "right": 792,
+          "bottom": -570,
+          "left": 542.671875
+        },
+        {
+          "label": "Refresh local sessions",
+          "x": 28,
+          "y": -507,
+          "width": 764,
+          "height": 64,
+          "top": -507,
+          "right": 792,
+          "bottom": -443,
+          "left": 28
+        },
+        {
+          "label": "Guest selections",
+          "x": 50,
+          "y": -362,
+          "width": 356,
+          "height": 44,
+          "top": -362,
+          "right": 406,
+          "bottom": -318,
+          "left": 50
+        },
+        {
+          "label": "Retained originals (2)",
+          "x": 414,
+          "y": -362,
+          "width": 356,
+          "height": 44,
+          "top": -362,
+          "right": 770,
+          "bottom": -318,
+          "left": 414
+        },
+        {
+          "label": "Already in Photos",
+          "x": 67,
+          "y": 678,
+          "width": 686,
+          "height": 64,
+          "top": 678,
+          "right": 753,
+          "bottom": 742,
+          "left": 67
+        },
+        {
+          "label": "Export this copy again",
+          "x": 67,
+          "y": 756,
+          "width": 686,
+          "height": 64,
+          "top": 756,
+          "right": 753,
+          "bottom": 820,
+          "left": 67
+        },
+        {
+          "label": "10/26/2026, 12:47:47 AM5 originals · Photos result unconfirmed · check Photos before retryingOpen saved session →",
+          "x": 28,
+          "y": 879,
+          "width": 764,
+          "height": 230,
+          "top": 879,
+          "right": 792,
+          "bottom": 1109,
+          "left": 28
+        },
+        {
+          "label": "I checked · mark as saved",
+          "x": 164,
+          "y": 663.5,
+          "width": 492,
+          "height": 64,
+          "top": 663.5,
+          "right": 656,
+          "bottom": 727.5,
+          "left": 164
+        },
+        {
+          "label": "Cancel",
+          "x": 164,
+          "y": 745.5,
+          "width": 492,
+          "height": 64,
+          "top": 745.5,
+          "right": 656,
+          "bottom": 809.5,
+          "left": 164
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [
+        {
+          "label": "Done",
+          "x": 724.96875,
+          "y": -679,
+          "width": 67.03125,
+          "height": 45,
+          "top": -679,
+          "right": 792,
+          "bottom": -634,
+          "left": 724.96875
+        },
+        {
+          "label": "Controls",
+          "x": 28,
+          "y": -614,
+          "width": 249.328125,
+          "height": 44,
+          "top": -614,
+          "right": 277.328125,
+          "bottom": -570,
+          "left": 28
+        },
+        {
+          "label": "Saved sessions",
+          "x": 285.328125,
+          "y": -614,
+          "width": 249.34375,
+          "height": 44,
+          "top": -614,
+          "right": 534.671875,
+          "bottom": -570,
+          "left": 285.328125
+        },
+        {
+          "label": "Private setup",
+          "x": 542.671875,
+          "y": -614,
+          "width": 249.328125,
+          "height": 44,
+          "top": -614,
+          "right": 792,
+          "bottom": -570,
+          "left": 542.671875
+        },
+        {
+          "label": "Refresh local sessions",
+          "x": 28,
+          "y": -507,
+          "width": 764,
+          "height": 64,
+          "top": -507,
+          "right": 792,
+          "bottom": -443,
+          "left": 28
+        },
+        {
+          "label": "Guest selections",
+          "x": 50,
+          "y": -362,
+          "width": 356,
+          "height": 44,
+          "top": -362,
+          "right": 406,
+          "bottom": -318,
+          "left": 50
+        },
+        {
+          "label": "Retained originals (2)",
+          "x": 414,
+          "y": -362,
+          "width": 356,
+          "height": 44,
+          "top": -362,
+          "right": 770,
+          "bottom": -318,
+          "left": 414
+        }
+      ],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-host-retained-original-portrait.png",
+      "state": "host-retained-original",
+      "orientation": "portrait",
+      "allowVerticalScroll": true,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 938.5,
+          "width": 306,
+          "height": 64,
+          "top": 938.5,
+          "right": 563,
+          "bottom": 1002.5,
+          "left": 257
+        },
+        {
+          "label": "Done",
+          "x": 724.96875,
+          "y": -79,
+          "width": 67.03125,
+          "height": 45,
+          "top": -79,
+          "right": 792,
+          "bottom": -34,
+          "left": 724.96875
+        },
+        {
+          "label": "Controls",
+          "x": 28,
+          "y": -14,
+          "width": 249.328125,
+          "height": 44,
+          "top": -14,
+          "right": 277.328125,
+          "bottom": 30,
+          "left": 28
+        },
+        {
+          "label": "Saved sessions",
+          "x": 285.328125,
+          "y": -14,
+          "width": 249.34375,
+          "height": 44,
+          "top": -14,
+          "right": 534.671875,
+          "bottom": 30,
+          "left": 285.328125
+        },
+        {
+          "label": "Private setup",
+          "x": 542.671875,
+          "y": -14,
+          "width": 249.328125,
+          "height": 44,
+          "top": -14,
+          "right": 792,
+          "bottom": 30,
+          "left": 542.671875
+        },
+        {
+          "label": "Refresh local sessions",
+          "x": 28,
+          "y": 93,
+          "width": 764,
+          "height": 64,
+          "top": 93,
+          "right": 792,
+          "bottom": 157,
+          "left": 28
+        },
+        {
+          "label": "Guest selections",
+          "x": 50,
+          "y": 238,
+          "width": 356,
+          "height": 44,
+          "top": 238,
+          "right": 406,
+          "bottom": 282,
+          "left": 50
+        },
+        {
+          "label": "Retained originals (2)",
+          "x": 414,
+          "y": 238,
+          "width": 356,
+          "height": 44,
+          "top": 238,
+          "right": 770,
+          "bottom": 282,
+          "left": 414
+        },
+        {
+          "label": "Export this original to Photos",
+          "x": 67,
+          "y": 736,
+          "width": 686,
+          "height": 64,
+          "top": 736,
+          "right": 753,
+          "bottom": 800,
+          "left": 67
+        },
+        {
+          "label": "Already in Photos",
+          "x": 67,
+          "y": 1232,
+          "width": 686,
+          "height": 64,
+          "top": 1232,
+          "right": 753,
+          "bottom": 1296,
+          "left": 67
+        },
+        {
+          "label": "Export this copy again",
+          "x": 67,
+          "y": 1310,
+          "width": 686,
+          "height": 64,
+          "top": 1310,
+          "right": 753,
+          "bottom": 1374,
+          "left": 67
+        },
+        {
+          "label": "10/26/2026, 12:47:47 AM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
+          "x": 28,
+          "y": 1433,
+          "width": 764,
+          "height": 230,
+          "top": 1433,
+          "right": 792,
+          "bottom": 1663,
+          "left": 28
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [
+        {
+          "label": "Done",
+          "x": 724.96875,
+          "y": -79,
+          "width": 67.03125,
+          "height": 45,
+          "top": -79,
+          "right": 792,
+          "bottom": -34,
+          "left": 724.96875
+        },
+        {
+          "label": "Controls",
+          "x": 28,
+          "y": -14,
+          "width": 249.328125,
+          "height": 44,
+          "top": -14,
+          "right": 277.328125,
+          "bottom": 30,
+          "left": 28
+        },
+        {
+          "label": "Saved sessions",
+          "x": 285.328125,
+          "y": -14,
+          "width": 249.34375,
+          "height": 44,
+          "top": -14,
+          "right": 534.671875,
+          "bottom": 30,
+          "left": 285.328125
+        },
+        {
+          "label": "Private setup",
+          "x": 542.671875,
+          "y": -14,
+          "width": 249.328125,
+          "height": 44,
+          "top": -14,
+          "right": 792,
+          "bottom": 30,
+          "left": 542.671875
+        },
+        {
+          "label": "Already in Photos",
+          "x": 67,
+          "y": 1232,
+          "width": 686,
+          "height": 64,
+          "top": 1232,
+          "right": 753,
+          "bottom": 1296,
+          "left": 67
+        },
+        {
+          "label": "Export this copy again",
+          "x": 67,
+          "y": 1310,
+          "width": 686,
+          "height": 64,
+          "top": 1310,
+          "right": 753,
+          "bottom": 1374,
+          "left": 67
+        },
+        {
+          "label": "10/26/2026, 12:47:47 AM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
+          "x": 28,
+          "y": 1433,
+          "width": 764,
+          "height": 230,
+          "top": 1433,
+          "right": 792,
+          "bottom": 1663,
+          "left": 28
+        }
+      ],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-host-retained-exported-portrait.png",
+      "state": "host-retained-exported",
+      "orientation": "portrait",
+      "allowVerticalScroll": true,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 938.5,
+          "width": 306,
+          "height": 64,
+          "top": 938.5,
+          "right": 563,
+          "bottom": 1002.5,
+          "left": 257
+        },
+        {
+          "label": "Done",
+          "x": 724.96875,
+          "y": -79,
+          "width": 67.03125,
+          "height": 45,
+          "top": -79,
+          "right": 792,
+          "bottom": -34,
+          "left": 724.96875
+        },
+        {
+          "label": "Controls",
+          "x": 28,
+          "y": -14,
+          "width": 249.328125,
+          "height": 44,
+          "top": -14,
+          "right": 277.328125,
+          "bottom": 30,
+          "left": 28
+        },
+        {
+          "label": "Saved sessions",
+          "x": 285.328125,
+          "y": -14,
+          "width": 249.34375,
+          "height": 44,
+          "top": -14,
+          "right": 534.671875,
+          "bottom": 30,
+          "left": 285.328125
+        },
+        {
+          "label": "Private setup",
+          "x": 542.671875,
+          "y": -14,
+          "width": 249.328125,
+          "height": 44,
+          "top": -14,
+          "right": 792,
+          "bottom": 30,
+          "left": 542.671875
+        },
+        {
+          "label": "Refresh local sessions",
+          "x": 28,
+          "y": 93,
+          "width": 764,
+          "height": 64,
+          "top": 93,
+          "right": 792,
+          "bottom": 157,
+          "left": 28
+        },
+        {
+          "label": "Guest selections",
+          "x": 50,
+          "y": 238,
+          "width": 356,
+          "height": 44,
+          "top": 238,
+          "right": 406,
+          "bottom": 282,
+          "left": 50
+        },
+        {
+          "label": "Retained originals (2)",
+          "x": 414,
+          "y": 238,
+          "width": 356,
+          "height": 44,
+          "top": 238,
+          "right": 770,
+          "bottom": 282,
+          "left": 414
+        },
+        {
+          "label": "Already in Photos",
+          "x": 67,
+          "y": 1232,
+          "width": 686,
+          "height": 64,
+          "top": 1232,
+          "right": 753,
+          "bottom": 1296,
+          "left": 67
+        },
+        {
+          "label": "Export this copy again",
+          "x": 67,
+          "y": 1310,
+          "width": 686,
+          "height": 64,
+          "top": 1310,
+          "right": 753,
+          "bottom": 1374,
+          "left": 67
+        },
+        {
+          "label": "10/26/2026, 12:47:47 AM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
+          "x": 28,
+          "y": 1433,
+          "width": 764,
+          "height": 230,
+          "top": 1433,
+          "right": 792,
+          "bottom": 1663,
+          "left": 28
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [
+        {
+          "label": "Done",
+          "x": 724.96875,
+          "y": -79,
+          "width": 67.03125,
+          "height": 45,
+          "top": -79,
+          "right": 792,
+          "bottom": -34,
+          "left": 724.96875
+        },
+        {
+          "label": "Controls",
+          "x": 28,
+          "y": -14,
+          "width": 249.328125,
+          "height": 44,
+          "top": -14,
+          "right": 277.328125,
+          "bottom": 30,
+          "left": 28
+        },
+        {
+          "label": "Saved sessions",
+          "x": 285.328125,
+          "y": -14,
+          "width": 249.34375,
+          "height": 44,
+          "top": -14,
+          "right": 534.671875,
+          "bottom": 30,
+          "left": 285.328125
+        },
+        {
+          "label": "Private setup",
+          "x": 542.671875,
+          "y": -14,
+          "width": 249.328125,
+          "height": 44,
+          "top": -14,
+          "right": 792,
+          "bottom": 30,
+          "left": 542.671875
+        },
+        {
+          "label": "Already in Photos",
+          "x": 67,
+          "y": 1232,
+          "width": 686,
+          "height": 64,
+          "top": 1232,
+          "right": 753,
+          "bottom": 1296,
+          "left": 67
+        },
+        {
+          "label": "Export this copy again",
+          "x": 67,
+          "y": 1310,
+          "width": 686,
+          "height": 64,
+          "top": 1310,
+          "right": 753,
+          "bottom": 1374,
+          "left": 67
+        },
+        {
+          "label": "10/26/2026, 12:47:47 AM5 originals · 5 of 5 also saved in PhotosOpen saved session →",
+          "x": 28,
+          "y": 1433,
+          "width": 764,
+          "height": 230,
+          "top": 1433,
+          "right": 792,
+          "bottom": 1663,
+          "left": 28
+        }
+      ],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-staged-0-saved-portrait.png",
+      "state": "staged-0-saved",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Start 5 photos",
+          "x": 190,
+          "y": 1074,
+          "width": 440,
+          "height": 64,
+          "top": 1074,
+          "right": 630,
+          "bottom": 1138,
+          "left": 190
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-host-staged-0-saved-portrait.png",
+      "state": "host-staged-0-saved",
+      "orientation": "portrait",
+      "allowVerticalScroll": true,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Done",
+          "x": 724.96875,
+          "y": 28,
+          "width": 67.03125,
+          "height": 45,
+          "top": 28,
+          "right": 792,
+          "bottom": 73,
+          "left": 724.96875
+        },
+        {
+          "label": "Controls",
+          "x": 28,
+          "y": 93,
+          "width": 249.328125,
+          "height": 44,
+          "top": 93,
+          "right": 277.328125,
+          "bottom": 137,
+          "left": 28
+        },
+        {
+          "label": "Saved sessions",
+          "x": 285.328125,
+          "y": 93,
+          "width": 249.34375,
+          "height": 44,
+          "top": 93,
+          "right": 534.671875,
+          "bottom": 137,
+          "left": 285.328125
+        },
+        {
+          "label": "Private setup",
+          "x": 542.671875,
+          "y": 93,
+          "width": 249.328125,
+          "height": 44,
+          "top": 93,
+          "right": 792,
+          "bottom": 137,
+          "left": 542.671875
+        },
+        {
+          "label": "Refresh local sessions",
+          "x": 28,
+          "y": 200,
+          "width": 764,
+          "height": 64,
+          "top": 200,
+          "right": 792,
+          "bottom": 264,
+          "left": 28
+        },
+        {
+          "label": "Guest selections",
+          "x": 50,
+          "y": 345,
+          "width": 356,
+          "height": 44,
+          "top": 345,
+          "right": 406,
+          "bottom": 389,
+          "left": 50
+        },
+        {
+          "label": "Retained originals (0)",
+          "x": 414,
+          "y": 345,
+          "width": 356,
+          "height": 44,
+          "top": 345,
+          "right": 770,
+          "bottom": 389,
+          "left": 414
+        },
+        {
+          "label": "Finish local save",
+          "x": 67,
+          "y": 519,
+          "width": 686,
+          "height": 64,
+          "top": 519,
+          "right": 753,
+          "bottom": 583,
+          "left": 67
+        },
+        {
+          "label": "10/26/2026, 12:47:49 AM0 originals · Photos export is separate from your saved originals.1 captures awaiting local save completionOpen saved session →",
+          "x": 28,
+          "y": 1197,
+          "width": 764,
+          "height": 192,
+          "top": 1197,
+          "right": 792,
+          "bottom": 1389,
+          "left": 28
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [
+        {
+          "label": "10/26/2026, 12:47:49 AM0 originals · Photos export is separate from your saved originals.1 captures awaiting local save completionOpen saved session →",
+          "x": 28,
+          "y": 1197,
+          "width": 764,
+          "height": 192,
+          "top": 1197,
+          "right": 792,
+          "bottom": 1389,
+          "left": 28
+        }
+      ],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-staged-4-saved-portrait.png",
+      "state": "staged-4-saved",
+      "orientation": "portrait",
+      "allowVerticalScroll": false,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Photo 1, saved on this iPad",
+          "x": 237,
+          "y": 981,
+          "width": 62,
+          "height": 76,
+          "top": 981,
+          "right": 299,
+          "bottom": 1057,
+          "left": 237
+        },
+        {
+          "label": "Photo 2, saved on this iPad",
+          "x": 308,
+          "y": 981,
+          "width": 62,
+          "height": 76,
+          "top": 981,
+          "right": 370,
+          "bottom": 1057,
+          "left": 308
+        },
+        {
+          "label": "Photo 3, saved on this iPad",
+          "x": 379,
+          "y": 981,
+          "width": 62,
+          "height": 76,
+          "top": 981,
+          "right": 441,
+          "bottom": 1057,
+          "left": 379
+        },
+        {
+          "label": "Photo 4, saved on this iPad",
+          "x": 450,
+          "y": 981,
+          "width": 62,
+          "height": 76,
+          "top": 981,
+          "right": 512,
+          "bottom": 1057,
+          "left": 450
+        },
+        {
+          "label": "Continue · photo 5",
+          "x": 190,
+          "y": 1074,
+          "width": 440,
+          "height": 64,
+          "top": 1074,
+          "right": 630,
+          "bottom": 1138,
+          "left": 190
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-host-staged-4-saved-portrait.png",
+      "state": "host-staged-4-saved",
+      "orientation": "portrait",
+      "allowVerticalScroll": true,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Photo 1, saved on this iPad",
+          "x": 237,
+          "y": 981,
+          "width": 62,
+          "height": 76,
+          "top": 981,
+          "right": 299,
+          "bottom": 1057,
+          "left": 237
+        },
+        {
+          "label": "Photo 2, saved on this iPad",
+          "x": 308,
+          "y": 981,
+          "width": 62,
+          "height": 76,
+          "top": 981,
+          "right": 370,
+          "bottom": 1057,
+          "left": 308
+        },
+        {
+          "label": "Photo 3, saved on this iPad",
+          "x": 379,
+          "y": 981,
+          "width": 62,
+          "height": 76,
+          "top": 981,
+          "right": 441,
+          "bottom": 1057,
+          "left": 379
+        },
+        {
+          "label": "Photo 4, saved on this iPad",
+          "x": 450,
+          "y": 981,
+          "width": 62,
+          "height": 76,
+          "top": 981,
+          "right": 512,
+          "bottom": 1057,
+          "left": 450
+        },
+        {
+          "label": "Done",
+          "x": 724.96875,
+          "y": 28,
+          "width": 67.03125,
+          "height": 45,
+          "top": 28,
+          "right": 792,
+          "bottom": 73,
+          "left": 724.96875
+        },
+        {
+          "label": "Controls",
+          "x": 28,
+          "y": 93,
+          "width": 249.328125,
+          "height": 44,
+          "top": 93,
+          "right": 277.328125,
+          "bottom": 137,
+          "left": 28
+        },
+        {
+          "label": "Saved sessions",
+          "x": 285.328125,
+          "y": 93,
+          "width": 249.34375,
+          "height": 44,
+          "top": 93,
+          "right": 534.671875,
+          "bottom": 137,
+          "left": 285.328125
+        },
+        {
+          "label": "Private setup",
+          "x": 542.671875,
+          "y": 93,
+          "width": 249.328125,
+          "height": 44,
+          "top": 93,
+          "right": 792,
+          "bottom": 137,
+          "left": 542.671875
+        },
+        {
+          "label": "Refresh local sessions",
+          "x": 28,
+          "y": 200,
+          "width": 764,
+          "height": 64,
+          "top": 200,
+          "right": 792,
+          "bottom": 264,
+          "left": 28
+        },
+        {
+          "label": "Guest selections",
+          "x": 50,
+          "y": 345,
+          "width": 356,
+          "height": 44,
+          "top": 345,
+          "right": 406,
+          "bottom": 389,
+          "left": 50
+        },
+        {
+          "label": "Retained originals (0)",
+          "x": 414,
+          "y": 345,
+          "width": 356,
+          "height": 44,
+          "top": 345,
+          "right": 770,
+          "bottom": 389,
+          "left": 414
+        },
+        {
+          "label": "Finish local save",
+          "x": 67,
+          "y": 519,
+          "width": 686,
+          "height": 64,
+          "top": 519,
+          "right": 753,
+          "bottom": 583,
+          "left": 67
+        },
+        {
+          "label": "10/26/2026, 12:47:50 AM4 originals · 4 of 4 also saved in Photos1 captures awaiting local save completionOpen saved session →",
+          "x": 28,
+          "y": 1197,
+          "width": 764,
+          "height": 268,
+          "top": 1197,
+          "right": 792,
+          "bottom": 1465,
+          "left": 28
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [
+        {
+          "label": "10/26/2026, 12:47:50 AM4 originals · 4 of 4 also saved in Photos1 captures awaiting local save completionOpen saved session →",
+          "x": 28,
+          "y": 1197,
+          "width": 764,
+          "height": 268,
+          "top": 1197,
+          "right": 792,
+          "bottom": 1465,
+          "left": 28
+        }
+      ],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-host-index-repair-before-portrait.png",
+      "state": "host-index-repair-before",
+      "orientation": "portrait",
+      "allowVerticalScroll": true,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Retry sharing",
+          "x": 257,
+          "y": 804,
+          "width": 306,
+          "height": 64,
+          "top": 804,
+          "right": 563,
+          "bottom": 868,
+          "left": 257
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 900,
+          "width": 306,
+          "height": 64,
+          "top": 900,
+          "right": 563,
+          "bottom": 964,
+          "left": 257
+        },
+        {
+          "label": "Done",
+          "x": 724.96875,
+          "y": 28,
+          "width": 67.03125,
+          "height": 45,
+          "top": 28,
+          "right": 792,
+          "bottom": 73,
+          "left": 724.96875
+        },
+        {
+          "label": "Controls",
+          "x": 28,
+          "y": 93,
+          "width": 249.328125,
+          "height": 44,
+          "top": 93,
+          "right": 277.328125,
+          "bottom": 137,
+          "left": 28
+        },
+        {
+          "label": "Saved sessions",
+          "x": 285.328125,
+          "y": 93,
+          "width": 249.34375,
+          "height": 44,
+          "top": 93,
+          "right": 534.671875,
+          "bottom": 137,
+          "left": 285.328125
+        },
+        {
+          "label": "Private setup",
+          "x": 542.671875,
+          "y": 93,
+          "width": 249.328125,
+          "height": 44,
+          "top": 93,
+          "right": 792,
+          "bottom": 137,
+          "left": 542.671875
+        },
+        {
+          "label": "2s",
+          "x": 50,
+          "y": 257,
+          "width": 136.796875,
+          "height": 61,
+          "top": 257,
+          "right": 186.796875,
+          "bottom": 318,
+          "left": 50
+        },
+        {
+          "label": "3s",
+          "x": 195.796875,
+          "y": 257,
+          "width": 136.8125,
+          "height": 61,
+          "top": 257,
+          "right": 332.609375,
+          "bottom": 318,
+          "left": 195.796875
+        },
+        {
+          "label": "5s",
+          "x": 341.609375,
+          "y": 257,
+          "width": 136.796875,
+          "height": 61,
+          "top": 257,
+          "right": 478.40625,
+          "bottom": 318,
+          "left": 341.609375
+        },
+        {
+          "label": "8s",
+          "x": 487.40625,
+          "y": 257,
+          "width": 136.796875,
+          "height": 61,
+          "top": 257,
+          "right": 624.203125,
+          "bottom": 318,
+          "left": 487.40625
+        },
+        {
+          "label": "10s",
+          "x": 633.203125,
+          "y": 257,
+          "width": 136.796875,
+          "height": 61,
+          "top": 257,
+          "right": 770,
+          "bottom": 318,
+          "left": 633.203125
+        },
+        {
+          "label": "Open iPad permission settings",
+          "x": 50,
+          "y": 488,
+          "width": 720,
+          "height": 44,
+          "top": 488,
+          "right": 770,
+          "bottom": 532,
+          "left": 50
+        },
+        {
+          "label": "Save booth settings",
+          "x": 28,
+          "y": 574,
+          "width": 764,
+          "height": 64,
+          "top": 574,
+          "right": 792,
+          "bottom": 638,
+          "left": 28
+        },
+        {
+          "label": "Repair index & retry sharing",
+          "x": 50,
+          "y": 818,
+          "width": 720,
+          "height": 44,
+          "top": 818,
+          "right": 770,
+          "bottom": 862,
+          "left": 50
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
+      "file": "artifacts/visual/new-session-host-index-repair-after-portrait.png",
+      "state": "host-index-repair-after",
+      "orientation": "portrait",
+      "allowVerticalScroll": true,
+      "targets": [
+        {
+          "label": "Open host controls",
+          "x": 739.203125,
+          "y": 39,
+          "width": 52.796875,
+          "height": 44,
+          "top": 39,
+          "right": 792,
+          "bottom": 83,
+          "left": 739.203125
+        },
+        {
+          "label": "Retry sharing",
+          "x": 257,
+          "y": 804,
+          "width": 306,
+          "height": 64,
+          "top": 804,
+          "right": 563,
+          "bottom": 868,
+          "left": 257
+        },
+        {
+          "label": "Next guests",
+          "x": 257,
+          "y": 900,
+          "width": 306,
+          "height": 64,
+          "top": 900,
+          "right": 563,
+          "bottom": 964,
+          "left": 257
+        },
+        {
+          "label": "Done",
+          "x": 724.96875,
+          "y": 28,
+          "width": 67.03125,
+          "height": 45,
+          "top": 28,
+          "right": 792,
+          "bottom": 73,
+          "left": 724.96875
+        },
+        {
+          "label": "Controls",
+          "x": 28,
+          "y": 93,
+          "width": 249.328125,
+          "height": 44,
+          "top": 93,
+          "right": 277.328125,
+          "bottom": 137,
+          "left": 28
+        },
+        {
+          "label": "Saved sessions",
+          "x": 285.328125,
+          "y": 93,
+          "width": 249.34375,
+          "height": 44,
+          "top": 93,
+          "right": 534.671875,
+          "bottom": 137,
+          "left": 285.328125
+        },
+        {
+          "label": "Private setup",
+          "x": 542.671875,
+          "y": 93,
+          "width": 249.328125,
+          "height": 44,
+          "top": 93,
+          "right": 792,
+          "bottom": 137,
+          "left": 542.671875
+        },
+        {
+          "label": "2s",
+          "x": 50,
+          "y": 257,
+          "width": 136.796875,
+          "height": 61,
+          "top": 257,
+          "right": 186.796875,
+          "bottom": 318,
+          "left": 50
+        },
+        {
+          "label": "3s",
+          "x": 195.796875,
+          "y": 257,
+          "width": 136.8125,
+          "height": 61,
+          "top": 257,
+          "right": 332.609375,
+          "bottom": 318,
+          "left": 195.796875
+        },
+        {
+          "label": "5s",
+          "x": 341.609375,
+          "y": 257,
+          "width": 136.796875,
+          "height": 61,
+          "top": 257,
+          "right": 478.40625,
+          "bottom": 318,
+          "left": 341.609375
+        },
+        {
+          "label": "8s",
+          "x": 487.40625,
+          "y": 257,
+          "width": 136.796875,
+          "height": 61,
+          "top": 257,
+          "right": 624.203125,
+          "bottom": 318,
+          "left": 487.40625
+        },
+        {
+          "label": "10s",
+          "x": 633.203125,
+          "y": 257,
+          "width": 136.796875,
+          "height": 61,
+          "top": 257,
+          "right": 770,
+          "bottom": 318,
+          "left": 633.203125
+        },
+        {
+          "label": "Open iPad permission settings",
+          "x": 50,
+          "y": 488,
+          "width": 720,
+          "height": 44,
+          "top": 488,
+          "right": 770,
+          "bottom": 532,
+          "left": 50
+        },
+        {
+          "label": "Save booth settings",
+          "x": 28,
+          "y": 574,
+          "width": 764,
+          "height": 64,
+          "top": 574,
+          "right": 792,
+          "bottom": 638,
+          "left": 28
+        },
+        {
+          "label": "Retry pending sharing",
+          "x": 50,
+          "y": 758,
+          "width": 720,
+          "height": 44,
+          "top": 758,
+          "right": 770,
+          "bottom": 802,
+          "left": 50
+        }
+      ],
+      "smallTargets": [],
+      "outOfBounds": [],
+      "horizontalOverflow": false
+    },
+    {
       "file": "artifacts/visual/new-session-qr-reserved-1x-portrait.png",
       "state": "qr-reserved-1x",
       "orientation": "portrait",
@@ -1966,12 +3749,12 @@
         {
           "label": "Next guests",
           "x": 257,
-          "y": 938,
+          "y": 938.5,
           "width": 306,
           "height": 64,
-          "top": 938,
+          "top": 938.5,
           "right": 563,
-          "bottom": 1002,
+          "bottom": 1002.5,
           "left": 257
         }
       ],
@@ -1999,12 +3782,12 @@
         {
           "label": "Next guests",
           "x": 257,
-          "y": 938,
+          "y": 938.5,
           "width": 306,
           "height": 64,
-          "top": 938,
+          "top": 938.5,
           "right": 563,
-          "bottom": 1002,
+          "bottom": 1002.5,
           "left": 257
         }
       ],
@@ -2032,12 +3815,12 @@
         {
           "label": "Next guests",
           "x": 257,
-          "y": 938,
+          "y": 938.5,
           "width": 306,
           "height": 64,
-          "top": 938,
+          "top": 938.5,
           "right": 563,
-          "bottom": 1002,
+          "bottom": 1002.5,
           "left": 257
         }
       ],
@@ -2065,12 +3848,12 @@
         {
           "label": "Next guests",
           "x": 257,
-          "y": 938,
+          "y": 938.5,
           "width": 306,
           "height": 64,
-          "top": 938,
+          "top": 938.5,
           "right": 563,
-          "bottom": 1002,
+          "bottom": 1002.5,
           "left": 257
         }
       ],
@@ -2098,12 +3881,12 @@
         {
           "label": "Next guests",
           "x": 257,
-          "y": 938,
+          "y": 938.5,
           "width": 306,
           "height": 64,
-          "top": 938,
+          "top": 938.5,
           "right": 563,
-          "bottom": 1002,
+          "bottom": 1002.5,
           "left": 257
         }
       ],
@@ -2296,12 +4079,12 @@
         {
           "label": "Next guests",
           "x": 257,
-          "y": 938,
+          "y": 938.5,
           "width": 306,
           "height": 64,
-          "top": 938,
+          "top": 938.5,
           "right": 563,
-          "bottom": 1002,
+          "bottom": 1002.5,
           "left": 257
         }
       ],
@@ -2329,12 +4112,12 @@
         {
           "label": "Next guests",
           "x": 257,
-          "y": 938,
+          "y": 938.5,
           "width": 306,
           "height": 64,
-          "top": 938,
+          "top": 938.5,
           "right": 563,
-          "bottom": 1002,
+          "bottom": 1002.5,
           "left": 257
         }
       ],
@@ -2362,12 +4145,12 @@
         {
           "label": "Next guests",
           "x": 257,
-          "y": 938,
+          "y": 938.5,
           "width": 306,
           "height": 64,
-          "top": 938,
+          "top": 938.5,
           "right": 563,
-          "bottom": 1002,
+          "bottom": 1002.5,
           "left": 257
         }
       ],
@@ -2395,12 +4178,12 @@
         {
           "label": "Next guests",
           "x": 257,
-          "y": 938,
+          "y": 938.5,
           "width": 306,
           "height": 64,
-          "top": 938,
+          "top": 938.5,
           "right": 563,
-          "bottom": 1002,
+          "bottom": 1002.5,
           "left": 257
         }
       ],
@@ -2428,12 +4211,12 @@
         {
           "label": "Next guests",
           "x": 257,
-          "y": 938,
+          "y": 938.5,
           "width": 306,
           "height": 64,
-          "top": 938,
+          "top": 938.5,
           "right": 563,
-          "bottom": 1002,
+          "bottom": 1002.5,
           "left": 257
         }
       ],
@@ -2650,139 +4433,159 @@
       "events": [
         {
           "kind": "synthetic-recovery-noop",
-          "at": 1792995272900
+          "at": 1793000797679
         },
         {
           "kind": "session-created",
-          "id": "dcf39d2d-f962-489c-9395-6e9b42fd37b5",
-          "at": 1792995273839
+          "id": "4ad420d0-6de6-41ac-a9e4-b9a3b1740315",
+          "at": 1793000798672
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 0,
-          "at": 1792995277505
+          "at": 1793000802367
         },
         {
           "kind": "private-save-started",
-          "id": "a8f3f9f7-78df-4708-9741-c598546a5cf1",
+          "id": "14b1cde9-e324-42d1-af9a-5dc22eb92bc7",
           "slot": 0,
-          "at": 1792995277506
+          "at": 1793000802368
         },
         {
           "kind": "private-save-resolved",
-          "id": "a8f3f9f7-78df-4708-9741-c598546a5cf1",
+          "id": "14b1cde9-e324-42d1-af9a-5dc22eb92bc7",
           "slot": 0,
-          "at": 1792995277506
+          "at": 1793000802368
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 1,
-          "at": 1792995281869
+          "at": 1793000806798
         },
         {
           "kind": "private-save-started",
-          "id": "f105d8d1-5746-413b-ba46-a80c892b68ea",
+          "id": "f5042a9d-05cd-4f97-8129-b6e8dab8b406",
           "slot": 1,
-          "at": 1792995281869
+          "at": 1793000806798
         },
         {
           "kind": "private-save-resolved",
-          "id": "f105d8d1-5746-413b-ba46-a80c892b68ea",
+          "id": "f5042a9d-05cd-4f97-8129-b6e8dab8b406",
           "slot": 1,
-          "at": 1792995281870
+          "at": 1793000806799
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 2,
-          "at": 1792995285171
+          "at": 1793000810100
         },
         {
           "kind": "private-save-started",
-          "id": "c246f4ab-dfdf-4c8d-aced-3286301c3c7c",
+          "id": "5b99c519-9dbe-4c22-b48f-fe740302327e",
           "slot": 2,
-          "at": 1792995285172
+          "at": 1793000810101
         },
         {
           "kind": "private-save-resolved",
-          "id": "c246f4ab-dfdf-4c8d-aced-3286301c3c7c",
+          "id": "5b99c519-9dbe-4c22-b48f-fe740302327e",
           "slot": 2,
-          "at": 1792995285172
+          "at": 1793000810101
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 3,
-          "at": 1792995288473
+          "at": 1793000813403
         },
         {
           "kind": "private-save-started",
-          "id": "4a52a06f-b95e-4795-84e6-d52399bccfd2",
+          "id": "a02b9c64-03e9-4a5d-8089-a3e543986446",
           "slot": 3,
-          "at": 1792995288473
+          "at": 1793000813403
         },
         {
           "kind": "private-save-resolved",
-          "id": "4a52a06f-b95e-4795-84e6-d52399bccfd2",
+          "id": "a02b9c64-03e9-4a5d-8089-a3e543986446",
           "slot": 3,
-          "at": 1792995288474
+          "at": 1793000813403
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 4,
-          "at": 1792995291775
+          "at": 1793000816704
         },
         {
           "kind": "private-save-started",
-          "id": "a48ecd0f-1a48-4295-9da7-0f94c3182084",
+          "id": "5eac9931-21ab-464b-aaa1-aae5aca62b7d",
           "slot": 4,
-          "at": 1792995291775
+          "at": 1793000816705
         },
         {
           "kind": "private-save-resolved",
-          "id": "a48ecd0f-1a48-4295-9da7-0f94c3182084",
+          "id": "5eac9931-21ab-464b-aaa1-aae5aca62b7d",
           "slot": 4,
-          "at": 1792995291775
+          "at": 1793000816705
         },
         {
-          "kind": "synthetic-photos-export",
-          "id": "dcf39d2d-f962-489c-9395-6e9b42fd37b5",
-          "at": 1792995291776
+          "kind": "synthetic-photos-write",
+          "id": "14b1cde9-e324-42d1-af9a-5dc22eb92bc7",
+          "at": 1793000816706
+        },
+        {
+          "kind": "synthetic-photos-write",
+          "id": "f5042a9d-05cd-4f97-8129-b6e8dab8b406",
+          "at": 1793000816706
+        },
+        {
+          "kind": "synthetic-photos-write",
+          "id": "5b99c519-9dbe-4c22-b48f-fe740302327e",
+          "at": 1793000816706
+        },
+        {
+          "kind": "synthetic-photos-write",
+          "id": "a02b9c64-03e9-4a5d-8089-a3e543986446",
+          "at": 1793000816706
+        },
+        {
+          "kind": "synthetic-photos-write",
+          "id": "5eac9931-21ab-464b-aaa1-aae5aca62b7d",
+          "at": 1793000816706
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 5,
-          "at": 1792995296756
+          "at": 1793000821956
         },
         {
           "kind": "private-save-started",
-          "id": "8535ae94-daed-4a88-8688-ec9e3a8b5a47",
+          "id": "901dc8a4-a2b7-4879-a462-ce6320be8618",
           "slot": 2,
-          "at": 1792995296756
+          "at": 1793000821956
         },
         {
           "kind": "private-save-resolved",
-          "id": "8535ae94-daed-4a88-8688-ec9e3a8b5a47",
+          "id": "901dc8a4-a2b7-4879-a462-ce6320be8618",
           "slot": 2,
-          "at": 1792995296756
+          "at": 1793000821956
         },
         {
-          "kind": "synthetic-photos-export",
-          "id": "dcf39d2d-f962-489c-9395-6e9b42fd37b5",
-          "at": 1792995296756
+          "kind": "synthetic-photos-write",
+          "id": "901dc8a4-a2b7-4879-a462-ce6320be8618",
+          "at": 1793000821956
         },
         {
           "kind": "session-confirmed",
-          "id": "dcf39d2d-f962-489c-9395-6e9b42fd37b5",
-          "at": 1792995297648
+          "id": "4ad420d0-6de6-41ac-a9e4-b9a3b1740315",
+          "at": 1793000822903
         },
         {
           "kind": "synthetic-all-five-ready-ack",
-          "id": "dcf39d2d-f962-489c-9395-6e9b42fd37b5",
-          "at": 1792995297950
+          "id": "4ad420d0-6de6-41ac-a9e4-b9a3b1740315",
+          "at": 1793000823379
         },
         {
           "kind": "active-session-cleared",
-          "id": "dcf39d2d-f962-489c-9395-6e9b42fd37b5",
-          "at": 1792995298586
+          "id": "4ad420d0-6de6-41ac-a9e4-b9a3b1740315",
+          "at": 1793000823996
         }
       ]
     },
@@ -2828,145 +4631,165 @@
       "events": [
         {
           "kind": "synthetic-recovery-noop",
-          "at": 1792995300340
+          "at": 1793000825850
         },
         {
           "kind": "session-created",
-          "id": "a55052a1-80cb-45a2-8cc9-1da844bc0171",
-          "at": 1792995301270
+          "id": "37a11d31-349c-4e2e-984a-a7aa8b9610cb",
+          "at": 1793000826867
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 0,
-          "at": 1792995304919
+          "at": 1793000830549
         },
         {
           "kind": "private-save-started",
-          "id": "1d7ac1df-d105-4f96-8a4c-f4f97d54585b",
+          "id": "ec9edff8-9063-48f1-9e28-b9e170c1f453",
           "slot": 0,
-          "at": 1792995304920
+          "at": 1793000830549
         },
         {
           "kind": "private-save-resolved",
-          "id": "1d7ac1df-d105-4f96-8a4c-f4f97d54585b",
+          "id": "ec9edff8-9063-48f1-9e28-b9e170c1f453",
           "slot": 0,
-          "at": 1792995304920
+          "at": 1793000830550
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 1,
-          "at": 1792995309252
+          "at": 1793000834950
         },
         {
           "kind": "private-save-started",
-          "id": "b7a4ab0f-2a35-48d4-ae8a-c2dd2eabbf85",
+          "id": "f2d43f26-6681-40e5-a384-e9321ab374dc",
           "slot": 1,
-          "at": 1792995309252
+          "at": 1793000834950
         },
         {
           "kind": "private-save-resolved",
-          "id": "b7a4ab0f-2a35-48d4-ae8a-c2dd2eabbf85",
+          "id": "f2d43f26-6681-40e5-a384-e9321ab374dc",
           "slot": 1,
-          "at": 1792995309252
+          "at": 1793000834950
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 2,
-          "at": 1792995312554
+          "at": 1793000838254
         },
         {
           "kind": "private-save-started",
-          "id": "674ba6df-85b1-4b55-b2a3-71523c1ab317",
+          "id": "0069ac39-2a2e-47d1-8510-48a225b5bb25",
           "slot": 2,
-          "at": 1792995312554
+          "at": 1793000838254
         },
         {
           "kind": "private-save-resolved",
-          "id": "674ba6df-85b1-4b55-b2a3-71523c1ab317",
+          "id": "0069ac39-2a2e-47d1-8510-48a225b5bb25",
           "slot": 2,
-          "at": 1792995312554
+          "at": 1793000838254
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 3,
-          "at": 1792995315856
+          "at": 1793000841556
         },
         {
           "kind": "private-save-started",
-          "id": "379ac977-197e-41a2-8a27-f544e69b8192",
+          "id": "eebd7d3d-6309-464f-87da-688a561587f6",
           "slot": 3,
-          "at": 1792995315856
+          "at": 1793000841556
         },
         {
           "kind": "private-save-resolved",
-          "id": "379ac977-197e-41a2-8a27-f544e69b8192",
+          "id": "eebd7d3d-6309-464f-87da-688a561587f6",
           "slot": 3,
-          "at": 1792995315856
+          "at": 1793000841556
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 4,
-          "at": 1792995319157
+          "at": 1793000844858
         },
         {
           "kind": "private-save-started",
-          "id": "f8714087-5b13-493d-90dc-8690f47a8c19",
+          "id": "d3a6e2af-e11e-43bb-8f22-0a57c9459ad8",
           "slot": 4,
-          "at": 1792995319157
+          "at": 1793000844858
         },
         {
           "kind": "private-save-resolved",
-          "id": "f8714087-5b13-493d-90dc-8690f47a8c19",
+          "id": "d3a6e2af-e11e-43bb-8f22-0a57c9459ad8",
           "slot": 4,
-          "at": 1792995319157
+          "at": 1793000844858
         },
         {
-          "kind": "synthetic-photos-export",
-          "id": "a55052a1-80cb-45a2-8cc9-1da844bc0171",
-          "at": 1792995319158
+          "kind": "synthetic-photos-write",
+          "id": "ec9edff8-9063-48f1-9e28-b9e170c1f453",
+          "at": 1793000844859
+        },
+        {
+          "kind": "synthetic-photos-write",
+          "id": "f2d43f26-6681-40e5-a384-e9321ab374dc",
+          "at": 1793000844860
+        },
+        {
+          "kind": "synthetic-photos-write",
+          "id": "0069ac39-2a2e-47d1-8510-48a225b5bb25",
+          "at": 1793000844860
+        },
+        {
+          "kind": "synthetic-photos-write",
+          "id": "eebd7d3d-6309-464f-87da-688a561587f6",
+          "at": 1793000844860
+        },
+        {
+          "kind": "synthetic-photos-write",
+          "id": "d3a6e2af-e11e-43bb-8f22-0a57c9459ad8",
+          "at": 1793000844860
         },
         {
           "kind": "synthetic-camera-exposure",
           "slot": 5,
-          "at": 1792995324030
+          "at": 1793000850000
         },
         {
           "kind": "private-save-started",
-          "id": "3b0798f6-944d-466f-8f8e-74e9fa886e56",
+          "id": "0e638a6d-3855-48c4-8989-2fa6795a3015",
           "slot": 2,
-          "at": 1792995324030
+          "at": 1793000850001
         },
         {
           "kind": "private-save-resolved",
-          "id": "3b0798f6-944d-466f-8f8e-74e9fa886e56",
+          "id": "0e638a6d-3855-48c4-8989-2fa6795a3015",
           "slot": 2,
-          "at": 1792995324030
+          "at": 1793000850001
         },
         {
-          "kind": "synthetic-photos-export",
-          "id": "a55052a1-80cb-45a2-8cc9-1da844bc0171",
-          "at": 1792995324030
+          "kind": "synthetic-photos-write",
+          "id": "0e638a6d-3855-48c4-8989-2fa6795a3015",
+          "at": 1793000850001
         },
         {
           "kind": "session-confirmed",
-          "id": "a55052a1-80cb-45a2-8cc9-1da844bc0171",
-          "at": 1792995324847
+          "id": "37a11d31-349c-4e2e-984a-a7aa8b9610cb",
+          "at": 1793000850862
         },
         {
           "kind": "synthetic-all-five-ready-ack",
-          "id": "a55052a1-80cb-45a2-8cc9-1da844bc0171",
-          "at": 1792995325083
+          "id": "37a11d31-349c-4e2e-984a-a7aa8b9610cb",
+          "at": 1793000851328
         },
         {
           "kind": "active-session-cleared",
-          "id": "a55052a1-80cb-45a2-8cc9-1da844bc0171",
-          "at": 1792995325635
+          "id": "37a11d31-349c-4e2e-984a-a7aa8b9610cb",
+          "at": 1793000851930
         }
       ]
     }
   ],
   "boundedChecks": [
-    "Synthetic denied Photos export is reported separately from five private originals; retrying the mocked permission request keeps all five IDs. No OS Photos export is verified.",
+    "Denied Photos export is reported separately from five private originals; the actual exporter keeps all five IDs and makes no permission prompt or native SDK write when permission is already denied. Native SDK is mocked.",
     "All-uncertain Photos results display a check-Photos notice and omit the no-op guest export retry.",
     "Denied camera permission grants through a synthetic request; blocked permission invokes only the explicit mocked settings marker.",
     {
@@ -2980,6 +4803,122 @@
     },
     "Synthetic private-save failure shows retry; retry saves the same exposure without a second camera-adapter call. Native journal/filesystem guarantees are not verified.",
     "Host controls, local-session library and private setup render through synthetic authentication; the pairing field stays blank and no provisioning request is made. Host ScrollViews may require vertical scrolling."
+  ],
+  "hostChecks": [
+    {
+      "check": "Uncertain export requires explicit duplicate-risk confirmation; cancel performs no native SDK write; confirm exports exactly the selected original.",
+      "photoId": "10000000-0000-4000-8000-000000000001",
+      "nativePort": "mock MediaLibrary SDK only"
+    },
+    {
+      "check": "Already in Photos requires host confirmation, cancel leaves uncertainty, and confirmed acknowledgment changes one status without making a native SDK copy.",
+      "photoId": "10000000-0000-4000-8000-000000000002"
+    },
+    {
+      "check": "A retained earlier take can be viewed/exported individually; it changes no guest selection and receives no guest upload job.",
+      "retainedPhotoId": "20000000-0000-4000-8000-000000000001",
+      "guestPhotoIds": [
+        "10000000-0000-4000-8000-000000000001",
+        "10000000-0000-4000-8000-000000000002",
+        "10000000-0000-4000-8000-000000000003",
+        "10000000-0000-4000-8000-000000000004",
+        "10000000-0000-4000-8000-000000000005"
+      ]
+    },
+    {
+      "check": "Staged exposure is not counted as saved, is not offered to Photos, and becomes one saved selected original only after Finish local save.",
+      "initialSavedCount": 0,
+      "stagedPhotoId": "30000000-0000-4000-8000-000000000001",
+      "initialStatus": "3 seconds per photo · No photos saved on this iPad yet",
+      "finalSavedCount": 1
+    },
+    {
+      "check": "Staged exposure is not counted as saved, is not offered to Photos, and becomes one saved selected original only after Finish local save.",
+      "initialSavedCount": 4,
+      "stagedPhotoId": "30000000-0000-4000-8000-000000000001",
+      "initialStatus": "3 seconds per photo · 4 of 5 originals saved on this iPad",
+      "finalSavedCount": 5
+    },
+    {
+      "check": "A zero queue with pending index repair remains visibly incomplete; simulated local index recovery recreates five pending selected jobs while the network remains offline.",
+      "initialWarning": "1 saved session needs upload-index repair. Originals remain on this iPad. A zero visible queue does not mean sharing is complete.",
+      "recreatedPendingJobs": 5,
+      "nativeRepair": "simulated in-memory port; actual filesystem/SQLite recovery unverified here"
+    }
+  ],
+  "settlementChecks": [
+    {
+      "label": "portrait: static review-swiped",
+      "waitedMilliseconds": 223,
+      "opacities": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "scrollLeft": 784,
+      "expectedOffset": 784,
+      "stableFrames": 4
+    },
+    {
+      "label": "portrait: static pending sharing",
+      "waitedMilliseconds": 199.39999999850988,
+      "opacities": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "scrollLeft": 0,
+      "expectedOffset": null,
+      "stableFrames": 4
+    },
+    {
+      "label": "landscape: static review-swiped",
+      "waitedMilliseconds": 225,
+      "opacities": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "scrollLeft": 820,
+      "expectedOffset": 820,
+      "stableFrames": 4
+    },
+    {
+      "label": "landscape: static pending sharing",
+      "waitedMilliseconds": 212,
+      "opacities": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "scrollLeft": 0,
+      "expectedOffset": null,
+      "stableFrames": 4
+    }
   ],
   "contrastChecks": [
     {
@@ -3143,12 +5082,12 @@
         "viewBox": "-32 -32 288 288",
         "box": {
           "x": 298,
-          "y": 588,
+          "y": 588.5,
           "width": 224,
           "height": 224,
-          "top": 588,
+          "top": 588.5,
           "right": 522,
-          "bottom": 812,
+          "bottom": 812.5,
           "left": 298
         }
       },
@@ -3207,12 +5146,12 @@
         "viewBox": "-32 -32 288 288",
         "box": {
           "x": 298,
-          "y": 588,
+          "y": 588.5,
           "width": 224,
           "height": 224,
-          "top": 588,
+          "top": 588.5,
           "right": 522,
-          "bottom": 812,
+          "bottom": 812.5,
           "left": 298
         }
       },
@@ -3239,12 +5178,12 @@
         "viewBox": "-32 -32 288 288",
         "box": {
           "x": 298,
-          "y": 588,
+          "y": 588.5,
           "width": 224,
           "height": 224,
-          "top": 588,
+          "top": 588.5,
           "right": 522,
-          "bottom": 812,
+          "bottom": 812.5,
           "left": 298
         }
       },
@@ -3271,12 +5210,12 @@
         "viewBox": "-32 -32 288 288",
         "box": {
           "x": 298,
-          "y": 588,
+          "y": 588.5,
           "width": 224,
           "height": 224,
-          "top": 588,
+          "top": 588.5,
           "right": 522,
-          "bottom": 812,
+          "bottom": 812.5,
           "left": 298
         }
       },
@@ -3303,12 +5242,12 @@
         "viewBox": "-32 -32 288 288",
         "box": {
           "x": 298,
-          "y": 588,
+          "y": 588.5,
           "width": 224,
           "height": 224,
-          "top": 588,
+          "top": 588.5,
           "right": 522,
-          "bottom": 812,
+          "bottom": 812.5,
           "left": 298
         }
       },
@@ -3335,12 +5274,12 @@
         "viewBox": "-32 -32 288 288",
         "box": {
           "x": 298,
-          "y": 588,
+          "y": 588.5,
           "width": 224,
           "height": 224,
-          "top": 588,
+          "top": 588.5,
           "right": 522,
-          "bottom": 812,
+          "bottom": 812.5,
           "left": 298
         }
       },
@@ -3527,12 +5466,12 @@
         "viewBox": "-32 -32 288 288",
         "box": {
           "x": 298,
-          "y": 588,
+          "y": 588.5,
           "width": 224,
           "height": 224,
-          "top": 588,
+          "top": 588.5,
           "right": 522,
-          "bottom": 812,
+          "bottom": 812.5,
           "left": 298
         }
       },
@@ -3559,12 +5498,12 @@
         "viewBox": "-32 -32 288 288",
         "box": {
           "x": 298,
-          "y": 588,
+          "y": 588.5,
           "width": 224,
           "height": 224,
-          "top": 588,
+          "top": 588.5,
           "right": 522,
-          "bottom": 812,
+          "bottom": 812.5,
           "left": 298
         }
       },
@@ -3591,12 +5530,12 @@
         "viewBox": "-32 -32 288 288",
         "box": {
           "x": 298,
-          "y": 588,
+          "y": 588.5,
           "width": 224,
           "height": 224,
-          "top": 588,
+          "top": 588.5,
           "right": 522,
-          "bottom": 812,
+          "bottom": 812.5,
           "left": 298
         }
       },
@@ -3623,12 +5562,12 @@
         "viewBox": "-32 -32 288 288",
         "box": {
           "x": 298,
-          "y": 588,
+          "y": 588.5,
           "width": 224,
           "height": 224,
-          "top": 588,
+          "top": 588.5,
           "right": 522,
-          "bottom": 812,
+          "bottom": 812.5,
           "left": 298
         }
       },
@@ -3655,12 +5594,12 @@
         "viewBox": "-32 -32 288 288",
         "box": {
           "x": 298,
-          "y": 588,
+          "y": 588.5,
           "width": 224,
           "height": 224,
-          "top": 588,
+          "top": 588.5,
           "right": 522,
-          "bottom": 812,
+          "bottom": 812.5,
           "left": 298
         }
       },
@@ -3852,16 +5791,23 @@
     "https://photobooth.example/health",
     "https://photobooth.example/health",
     "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
     "https://photobooth.example/health"
   ],
   "unexpectedExternalRequests": [],
   "sourceHashes": {
-    "apps/ipad/App.tsx": "a2d8e4f62b855c54e489d8311ba6fb794b59f3e7a71e9dd521827332ab6d5548",
+    "apps/ipad/App.tsx": "4a68c3dc73d449eac889b4c79defafd2bb190ed9e8932b3672bb8b1fb9dec01e",
     "apps/ipad/src/session-capture.ts": "b41f7ee98282fe5661e080a6b4e0b88b17c56e3c1e5908adebbe020ed6323e24",
     "apps/ipad/src/review-selection.ts": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
-    "apps/ipad/src/sharing.ts": "fc0579c2c93a04707a437b995554b3abb3430062a695bbfdc1b08064b281d755",
+    "apps/ipad/src/sharing.ts": "00f6890855b5ed5942b23fd10f5f54f88d1bfa62ae541d9c0835c8a7ac9e415f",
     "apps/ipad/src/SmsShare.tsx": "ee2740889c602683049dae6b599bbdd9886fef271bf30df4f18e50dbc6e6b8c2",
     "apps/ipad/src/sms-state.ts": "4c7125d4f710c97848b6690196fa328edc83e85488ce3626dd7e843e2e99497a",
+    "apps/ipad/src/booth-presentation.ts": "b6f720f7d9133a0603f847efd0646a9a23f40d409018e9eb757d5326bc43e935",
+    "apps/ipad/src/host-originals.ts": "c2f3e5707832bc96988bd4f91ddbedd22d93b2feb2248266c55454da4256431f",
+    "apps/ipad/src/photo-export.ts": "fcc298173415b25cf15e71757e7c741485ca3b88a44b7422594388a56c447a9b",
+    "apps/ipad/src/photo-library.ts": "fe2344e73c2d96d42417d201f5464fc72b8093b8bf43339e3011b7ba31942246",
+    "packages/core/src/index.ts": "945d97743a621558369c7029acbc5b61daae85d2c08156368c188aedbbb9a991",
     "apps/ipad/assets/attract-scene.png": "6ca6274beba9483104f19fb35d1ef9b8bfaae458208025e8fb4e8d4890f45cdf"
   },
   "status": "passed"

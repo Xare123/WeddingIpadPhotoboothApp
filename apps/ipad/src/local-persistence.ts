@@ -39,6 +39,10 @@ export class LocalRepository {
   private sequence = 0;
   private cached: Model | undefined;
   private indexPending = new Set<string>();
+  private reconcileCursor = 0;
+  private invalidQueueRows = 0;
+  reportQueueIndexIssues(count: number): void { this.invalidQueueRows = count; }
+  queueIndexDiagnostics(): { invalidRows: number } { return { invalidRows: this.invalidQueueRows }; }
   constructor(private files: LocalFiles, private index: LocalIndex, private id: () => string, private now = Date.now) {}
   private serial<T>(action: () => Promise<T>): Promise<T> {
     const operation = this.tail.then(action, action); this.tail = operation.catch(() => { this.cached = undefined; }); return operation;
@@ -55,6 +59,23 @@ export class LocalRepository {
     }
     return undefined;
   }
+  private canonical(capture: CaptureRecord, session?: SessionRecord): string {
+    return filename(capture.id, session?.targetCount === 5 || session?.confirmed === true || capture.confirmed);
+  }
+  private async normalize(capture: CaptureRecord, model: Model): Promise<CaptureRecord> {
+    const destination = this.canonical(capture, model.sessions.get(capture.sessionId));
+    if (capture.relativePath === destination) {
+      if (!await this.verified(destination, capture.bytes)) throw new LocalSaveError('original-readback');
+      return capture;
+    }
+    try { await this.files.move(capture.relativePath, destination); }
+    catch { if (!await this.verified(destination, capture.bytes)) throw new LocalSaveError('original-commit'); }
+    if (!await this.verified(destination, capture.bytes)) throw new LocalSaveError('original-readback');
+    const normalized = { ...capture, relativePath: destination };
+    await this.append({ kind: 'capture', capture: normalized }, model);
+    model.captures.set(capture.id, normalized);
+    return normalized;
+  }
   private async append(data: RecordData, model: Model): Promise<number> {
     const sequence = Math.max(this.sequence, model.sequence, this.now()) + 1;
     this.sequence = sequence; model.sequence = sequence;
@@ -66,6 +87,7 @@ export class LocalRepository {
       await this.files.write(path, text);
       if (!await this.verified(path) || await this.files.read(path) !== text) throw new Error('Journal readback mismatch');
     } catch { throw new LocalSaveError('journal-write'); }
+    if (record.kind === 'session') model.sessionSequences.set(record.session.id, sequence);
     return sequence;
   }
   private async readModel(): Promise<Model> {
@@ -104,13 +126,17 @@ export class LocalRepository {
     }
     const repairedSessions = new Set<string>();
     for (const [id, capture] of model.captures) {
-      const found = await this.locate(capture);
+      let found = await this.locate(capture);
       if (!found) { model.captures.delete(id); continue; }
+      if (found.relativePath !== capture.relativePath && !found.relativePath.endsWith('.partial')) await this.append({ kind: 'capture', capture: found }, model);
+      if (found.relativePath.endsWith('.partial')) {
+        try { found = await this.normalize(found, model); } catch { /* Retain bytes as staged, never acknowledge a JPEG. */ }
+      }
       if (found.legacy && found.relativePath === filename(found.id, true)) found.confirmed = true;
       model.captures.set(id, found);
       const session = model.sessions.get(found.sessionId);
       if (session && found.legacy && found.confirmed && !session.confirmed) { session.confirmed = true; repairedSessions.add(session.id); }
-      if (session && !session.confirmed && found.selectionSequence > (model.sessionSequences.get(session.id) ?? 0)) {
+      if (session && !session.confirmed && found.relativePath.endsWith('.jpg') && found.selectionSequence > (model.sessionSequences.get(session.id) ?? 0)) {
         session.selected[found.shotIndex] = found.id;
         repairedSessions.add(session.id);
       }
@@ -133,11 +159,12 @@ export class LocalRepository {
   }
   private session(model: Model, id: string): ActiveSession | null {
     const data = model.sessions.get(id); if (!data) return null;
-    const selected = data.selected.map(photoId => model.captures.get(photoId)).filter((photo): photo is CaptureRecord => !!photo);
+    const selected = data.selected.map(photoId => model.captures.get(photoId)).filter((photo): photo is CaptureRecord => !!photo && photo.relativePath.endsWith('.jpg'));
+    const staged = [...model.captures.values()].filter(photo => photo.sessionId === id && photo.relativePath.endsWith('.partial'));
     return { id: data.id, createdAt: data.createdAt, targetCount: data.targetCount, confirmed: data.confirmed,
       shots: selected.map(photo => this.hydrate(photo)),
-      ...(this.indexPending.has(id) ? { storageWarning: 'index-repair-pending' as const } : {}),
-      retakes: [...model.captures.values()].filter(photo => photo.sessionId === id && !data.selected.includes(photo.id)).map(photo => this.hydrate(photo)) };
+      ...(staged.length ? { stagedOriginals: staged.map(photo => this.hydrate(photo)), storageWarning: 'original-commit-pending' as const } : (this.indexPending.has(id) || this.invalidQueueRows > 0) ? { storageWarning: 'index-repair-pending' as const } : {}),
+      retakes: [...model.captures.values()].filter(photo => photo.sessionId === id && photo.relativePath.endsWith('.jpg') && !data.selected.includes(photo.id)).map(photo => this.hydrate(photo)) };
   }
   private async indexSession(model: Model, id: string): Promise<boolean> {
     try {
@@ -163,7 +190,7 @@ export class LocalRepository {
   }
   getActiveSession(): Promise<ActiveSession | null> { return this.serial(async () => { const model = await this.readModel(); return model.active?.sessionId ? this.session(model, model.active.sessionId) : null; }); }
   getSession(id: string): Promise<ActiveSession | null> { return this.serial(async () => this.session(await this.readModel(), id)); }
-  listLocalSessions(): Promise<ActiveSession[]> { return this.serial(async () => { const model = await this.readModel(); return [...model.sessions.keys()].map(id => this.session(model, id)!).filter(session => session.shots.length > 0).sort((a, b) => b.createdAt - a.createdAt); }); }
+  listLocalSessions(): Promise<ActiveSession[]> { return this.serial(async () => { const model = await this.readModel(); return [...model.sessions.keys()].map(id => this.session(model, id)!).filter(session => session.shots.length > 0 || !!session.stagedOriginals?.length).sort((a, b) => b.createdAt - a.createdAt); }); }
   saveShot(sessionOrId: ActiveSession | string, id: string, temporaryUri: string, shotIndex?: number): Promise<ActiveSession> {
     return this.serial(async () => {
       const sessionId = typeof sessionOrId === 'string' ? sessionOrId : sessionOrId.id;
@@ -174,6 +201,10 @@ export class LocalRepository {
       const existing = model.captures.get(id);
       if (existing) {
         if (existing.sessionId !== sessionId || existing.shotIndex !== index) throw new LocalSaveError('photo-id-reused');
+        const normalized = await this.normalize(existing, model);
+        if (session.selected[index] !== normalized.id && normalized.selectionSequence > (model.sessionSequences.get(sessionId) ?? 0)) {
+          session.selected[index] = normalized.id; await this.append({ kind: 'session', session }, model);
+        }
         return this.session(model, sessionId)!;
       }
       let source;
@@ -208,7 +239,11 @@ export class LocalRepository {
       const model = await this.readModel(), session = model.sessions.get(id);
       if (!session || session.selected.filter(Boolean).length !== session.targetCount ||
         Array.from({ length: session.targetCount }, (_, index) => !model.captures.has(session.selected[index] ?? '')).some(Boolean)) throw new LocalSaveError('incomplete-session');
-      for (const photoId of session.selected) if (!await this.locate(model.captures.get(photoId)!)) throw new LocalSaveError('confirm-original');
+      for (const photoId of session.selected) {
+        const found = await this.locate(model.captures.get(photoId)!);
+        if (!found) throw new LocalSaveError('confirm-original');
+        await this.normalize(found, model);
+      }
       if (!session.confirmed) { session.confirmed = true; await this.append({ kind: 'session', session }, model); }
       const queued = await this.repairConfirmed(model, session);
       const result = this.session(model, id)!;
@@ -220,15 +255,16 @@ export class LocalRepository {
   private async repairConfirmed(model: Model, session: SessionRecord): Promise<boolean> {
     let indexed = true;
     for (const id of session.selected) {
-      let capture = model.captures.get(id); if (!capture) continue;
-      let destination = session.targetCount === 1 ? filename(id, true) : capture.relativePath;
-      if (capture.relativePath !== destination) {
-        try { await this.files.move(capture.relativePath, destination); }
-        catch { if (!await this.verified(destination, capture.bytes)) { if (await this.verified(capture.relativePath, capture.bytes)) destination = capture.relativePath; else throw new LocalSaveError('confirm-original'); } }
+      let capture = model.captures.get(id); if (!capture) { indexed = false; continue; }
+      const destination = filename(id, true);
+      try { capture = await this.normalize(capture, model); }
+      catch { indexed = false; continue; }
+      if (capture.relativePath !== destination || !await this.verified(destination, capture.bytes)) { indexed = false; continue; }
+      if (!capture.confirmed) {
+        capture = { ...capture, confirmed: true };
+        try { await this.append({ kind: 'capture', capture }, model); model.captures.set(id, capture); }
+        catch { indexed = false; continue; }
       }
-      if (!await this.verified(destination, capture.bytes)) { indexed = false; continue; }
-      capture = { ...capture, confirmed: true, relativePath: destination }; model.captures.set(id, capture);
-      await this.append({ kind: 'capture', capture }, model);
       try { await this.index.ensureJob(uploadJob(id, this.files.uri(destination), capture.createdAt, session.id)); }
       catch { indexed = false; /* The confirmed filesystem manifest retries queue insertion after relaunch. */ }
     }
@@ -247,7 +283,7 @@ export class LocalRepository {
     const model = await this.readModel();
     if (!model.active?.sessionId) return null;
     const capture = model.active.captureId ? model.captures.get(model.active.captureId) : undefined;
-    return capture ? this.hydrate(capture) : this.session(model, model.active.sessionId)?.shots.at(-1) ?? null;
+    return capture && capture.relativePath.endsWith('.jpg') ? this.hydrate(capture) : this.session(model, model.active.sessionId)?.shots.at(-1) ?? null;
   }); }
   updateExport(sessionId: string, photoId: string, exportStatus: PhotoExportStatus): Promise<ActiveSession | null> { return this.serial(async () => {
     const model = await this.readModel(), capture = model.captures.get(photoId);
@@ -255,17 +291,54 @@ export class LocalRepository {
     capture.exportStatus = exportStatus; await this.append({ kind: 'capture', capture }, model);
     return this.session(model, sessionId);
   }); }
+  retryStagedPhotos(sessionId: string): Promise<ActiveSession | null> { return this.serial(async () => {
+    const model = await this.readModel();
+    const session = model.sessions.get(sessionId);
+    const previousSequence = model.sessionSequences.get(sessionId) ?? 0;
+    let selectionChanged = false;
+    for (const capture of model.captures.values()) if (capture.sessionId === sessionId && capture.relativePath.endsWith('.partial')) {
+      const normalized = await this.normalize(capture, model);
+      const selected = session ? model.captures.get(session.selected[normalized.shotIndex] ?? '') : undefined;
+      if (session && !session.confirmed && normalized.selectionSequence > previousSequence &&
+        (!selected || normalized.selectionSequence > selected.selectionSequence)) {
+        session.selected[normalized.shotIndex] = normalized.id; selectionChanged = true;
+      }
+    }
+    if (session && selectionChanged) await this.append({ kind: 'session', session }, model);
+    if (session) {
+      const queued = !session.confirmed || await this.repairConfirmed(model, session);
+      const indexed = await this.indexSession(model, sessionId);
+      if (!queued || !indexed) this.indexPending.add(sessionId);
+    }
+    return this.session(model, sessionId);
+  }); }
+  reconcileConfirmedPhotos(): Promise<void> { return this.serial(async () => {
+    const model = await this.readModel();
+    const sessions = [...model.sessions.values()].filter(session => session.confirmed);
+    // A rotating bounded pass repairs missing/corrupt rows without relaunch or
+    // rescanning journals. Healthy passes append no filesystem records.
+    const active = sessions.find(session => session.id === model.active?.sessionId);
+    const priority = [...(active ? [active] : []), ...sessions.filter(session => this.indexPending.has(session.id))];
+    // Reserve archive capacity even when many pending sessions cannot repair.
+    const batch = [...new Map(priority.map(session => [session.id, session])).values()].slice(0, 10);
+    const included = new Set(batch.map(session => session.id));
+    for (let visited = 0; visited < sessions.length && batch.length < 20; visited++) {
+      const session = sessions[this.reconcileCursor % sessions.length]!;
+      this.reconcileCursor = (this.reconcileCursor + 1) % sessions.length;
+      if (!included.has(session.id)) { batch.push(session); included.add(session.id); }
+    }
+    for (const session of batch) {
+      const queued = await this.repairConfirmed(model, session);
+      if (!queued) this.indexPending.add(session.id);
+      else if (this.indexPending.has(session.id)) await this.indexSession(model, session.id);
+    }
+  }); }
   recover(): Promise<void> { return this.serial(async () => {
     this.cached = undefined;
     const model = await this.readModel();
     if (!model.hasActiveJournal && model.active) { await this.append({ kind: 'active', ...model.active }, model); model.hasActiveJournal = true; }
     for (const [id, capture] of model.captures) {
-      let moved = false;
-      if (capture.relativePath.endsWith('.partial')) {
-        const destination = filename(id);
-        try { await this.files.move(capture.relativePath, destination); capture.relativePath = destination; moved = true; } catch { /* Keep the verified staged original accessible. */ }
-      }
-      if (!model.journaled.has(id) || moved) await this.append({ kind: 'capture', capture }, model);
+      if (!model.journaled.has(id)) await this.append({ kind: 'capture', capture }, model);
     }
     for (const session of model.sessions.values()) {
       if (!model.sessionSequences.has(session.id)) await this.append({ kind: 'session', session }, model);

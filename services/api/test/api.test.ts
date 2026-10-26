@@ -172,6 +172,8 @@ test('opaque gallery renders only its own photos and offers private downloads', 
   assert.match(response.headers.get('Content-Security-Policy')!, /img-src 'self'/);
   assert.equal(response.headers.get('X-Robots-Tag'), 'noindex, nofollow, noarchive');
   const html = await response.text();
+  assert.ok(html.includes('<span class="brand">Gizelle &amp; Rami · November 1, 2026</span>'));
+  assert.ok(html.includes('<p class="intro">A little joy to take home.</p>'));
   assert.match(html, /name="viewport" content="width=device-width,initial-scale=1"/);
   assert.match(html, /prefers-reduced-motion:reduce/);
   assert.match(html, /animation:none!important;transition:none!important/);
@@ -204,6 +206,7 @@ test('expired galleries deny both page and download without extending expiry on 
   assert.equal(expiredPage.status, 410);
   assert.match(expiredPage.headers.get('Content-Type')!, /text\/html/);
   const expiredHtml = await expiredPage.text();
+  assert.ok(expiredHtml.includes('Gizelle &amp; Rami · November 1, 2026'));
   assert.match(expiredHtml, /This link has expired/);
   assert.ok(!expiredHtml.includes(`/photos/${result.photoIds[0]}`));
   assert.equal((await runtime.dispatchFetch(`${result.url}/photos/${result.photoIds[0]}?download=1`)).status, 410);

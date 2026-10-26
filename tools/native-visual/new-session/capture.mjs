@@ -2,8 +2,10 @@
 import assert from 'node:assert/strict';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import { launchBrowser, createContext, swipeLeft } from './browser.mjs';
 import { decodeFullFrame, decoderVersions } from './qr-decode.mjs';
+import { hostReliabilityChecks } from './host-checks.mjs';
 const viewportSizes = { portrait: { width: 820, height: 1180 }, landscape: { width: 1180, height: 820 } };
 const urls = {
   reserved: 'https://photobooth.example/g/' + 'a7'.repeat(32),
@@ -12,16 +14,40 @@ const urls = {
   'realistic-numeric': 'https://photos.gizelleandrami.com/g/' + '1'.repeat(64),
   'short-numeric': 'https://a.example/g/' + '1'.repeat(64),
 };
-const report = { scope: 'Actual five-shot App.tsx native JSX through RN-web. Generated synthetic scene, in-memory camera/files/SQLite/Photos/auth/sync. Not iOS, real durability, camera, Photos, native accessibility, phone scanning, network, or SMS verification.', timezoneId: 'America/Los_Angeles', generatedAt: new Date().toISOString(), sourceSHA256: createHash('sha256').update(await readFile('apps/ipad/App.tsx')).digest('hex'), decoderVersions, screenshots: [], demonstrations: [], boundedChecks: [], contrastChecks: [], qrChecks: [], errors: [], failures: [], mockedHealthRequests: [], unexpectedExternalRequests: [] };
+const baselineCommit = '5ef615eaf228776dcdedc0df3f0fe65ba55976f9';
+const publication = { status: 'LOCAL UNPUBLISHED working-tree evidence; no commit or remote action', lastPublishedCommit: baselineCommit, lastPublishedAppSHA256: createHash('sha256').update(execFileSync('git', ['show', `${baselineCommit}:apps/ipad/App.tsx`])).digest('hex') };
+const report = { scope: 'Actual five-shot App.tsx native JSX through RN-web. Generated synthetic scene, in-memory camera/files/SQLite/Photos/auth/sync. Not iOS, real durability, camera, Photos, native accessibility, phone scanning, network, or SMS verification.', publication, timezoneId: 'America/Los_Angeles', generatedAt: new Date().toISOString(), sourceSHA256: createHash('sha256').update(await readFile('apps/ipad/App.tsx')).digest('hex'), decoderVersions, screenshots: [], demonstrations: [], boundedChecks: [], hostChecks: [], settlementChecks: [], contrastChecks: [], qrChecks: [], errors: [], failures: [], mockedHealthRequests: [], unexpectedExternalRequests: [] };
 await mkdir('.cache/new-session-visual/videos', { recursive: true });
 const browser = await launchBrowser();
 const snapshot = page => page.evaluate(() => window.__NEW_SESSION_FIXTURE__.snapshot());
 const controls = (page, expression) => page.evaluate(expression);
 async function load(page, state, extra = '') {
   await page.goto(`http://127.0.0.1:8791/?state=${state}${extra}`);
-  await page.getByText('THE PHOTO STUDIO', { exact: true }).waitFor();
+  await page.locator('[data-testid="wedding-identity"], [data-testid="wedding-identity-compact"], [data-testid="wedding-share-identity"]').first().waitFor();
   assert.equal(await page.getByTestId('native-fixture-enabled').count(), 0);
   await page.waitForTimeout(250);
+}
+async function settleStatic(locator, label, expectedReviewIndex) {
+  const result = await locator.evaluate((element, expectedReviewIndex) => new Promise((resolve, reject) => {
+    const started = performance.now(); let stableFrames = 0; let previous = '';
+    function sample() {
+      if (!element.isConnected) return reject(new Error('Static screenshot target detached'));
+      const opacities = [];
+      for (let node = element; node; node = node.parentElement) opacities.push(Number(getComputedStyle(node).opacity));
+      const rect = element.getBoundingClientRect();
+      const offset = element.scrollLeft;
+      const expectedOffset = expectedReviewIndex === null ? null : element.clientWidth * expectedReviewIndex;
+      const signature = [rect.x, rect.y, rect.width, rect.height, offset].map(value => value.toFixed(2)).join(',');
+      const ready = opacities.every(value => value >= .999) && (expectedOffset === null || Math.abs(offset - expectedOffset) <= .5);
+      stableFrames = ready && signature === previous ? stableFrames + 1 : 0;
+      previous = signature;
+      if (stableFrames >= 4) return resolve({ waitedMilliseconds: performance.now() - started, opacities, scrollLeft: offset, expectedOffset, stableFrames });
+      if (performance.now() - started > 6000) return reject(new Error('Fade or review scroll did not settle'));
+      requestAnimationFrame(sample);
+    }
+    sample();
+  }), expectedReviewIndex ?? null);
+  report.settlementChecks.push({ label, ...result });
 }
 async function save(page, state, orientation, { allowVerticalScroll = false } = {}) {
   const file = `artifacts/visual/new-session-${state}-${orientation}.png`;
@@ -79,12 +105,14 @@ async function demonstration(orientation, viewport) {
     assert.equal(provenance.sourceSHA256, report.sourceSHA256);
     report.sourceHashes = provenance.sourceHashes;
     await page.waitForTimeout(250);
+    assert.equal(await page.getByTestId('wedding-identity').innerText(), 'Gizelle & Rami · November 1, 2026');
     await save(page, 'attract', orientation);
     await contrast(page.getByText('FIVE FRAMES. ALL YOURS.', { exact: true }), `${orientation}: attract eyebrow over white image`, true);
     await page.getByTestId('start-session').tap();
     await page.getByTestId('take-photo').waitFor();
     await page.waitForTimeout(300);
     await save(page, 'camera', orientation);
+    assert.match(await page.getByTestId('capture-save-status').innerText(), /No photos saved on this iPad yet/);
     const cameraBox = await page.getByTestId('synthetic-browser-camera').boundingBox();
     outcome.cameraStage = { ...cameraBox, widthFraction: cameraBox.width / viewport.width, heightFraction: cameraBox.height / viewport.height };
     assert.ok(cameraBox.width >= viewport.width * .9 && cameraBox.height >= viewport.height * .6);
@@ -111,12 +139,15 @@ async function demonstration(orientation, viewport) {
     assert.equal(state.jobs.length, 0);
     outcome.checks.push('One Start action runs the five-shot sequence; pause/continue preserves the first saved slot; five distinct IDs and no upload jobs before confirmation.');
     await save(page, 'review', orientation);
+    assert.equal(await page.getByTestId('review-navigation-hint').innerText(), 'Swipe photos · tap a thumbnail');
+    for (let slot = 1; slot <= 5; slot++) assert.equal(await page.getByTestId(`thumbnail-number-${slot}`).innerText(), String(slot));
     const reviewBox = await page.getByTestId('review-gallery').boundingBox();
     outcome.reviewStage = { ...reviewBox, widthFraction: reviewBox.width / viewport.width, heightFraction: reviewBox.height / viewport.height };
     assert.ok(reviewBox.height >= viewport.height * (orientation === 'landscape' ? .7 : .6));
     await swipeLeft(page, page.getByTestId('review-gallery'));
     await page.getByTestId('retake-photo').filter({ hasText: 'Retake photo 2' }).waitFor({ timeout: 4000 });
     outcome.checks.push('Trusted Chromium touch swipe advances actual horizontal review from photo 1 to photo 2.');
+    await settleStatic(page.getByTestId('review-gallery'), `${orientation}: static review-swiped`, 1);
     await save(page, 'review-swiped', orientation);
     await page.getByTestId('photo-thumbnail-3').tap();
     outcome.fastRetake = { intendedSlot: 3, labelImmediatelyAfterThumbnail: await page.getByTestId('retake-photo').innerText(), disabledImmediatelyAfterThumbnail: await page.getByTestId('retake-photo').getAttribute('aria-disabled'), actorSleepBeforeRetake: false };
@@ -142,6 +173,8 @@ async function demonstration(orientation, viewport) {
     assert.equal(await page.getByTestId('guest-qr').count(), 0);
     state = await snapshot(page);
     assert.equal(state.jobs.filter(job => job.kind === 'upload' && job.state === 'pending').length, 5);
+    assert.equal(await page.getByTestId('share-link-unavailable').innerText(), 'No download link yet');
+    await settleStatic(page.getByTestId('retry-sharing'), `${orientation}: static pending sharing`);
     await save(page, 'pending', orientation);
     await controls(page, () => { window.__NEW_SESSION_FIXTURE__.acknowledgeReady(false); window.__NEW_SESSION_FIXTURE__.setOnline(true); });
     await page.getByTestId('retry-sharing').tap();
@@ -195,10 +228,11 @@ try {
     const before = (await snapshot(page)).active.shots.map(photo => photo.id);
     await page.getByRole('button', { name: 'Save a copy to Photos', exact: true }).tap();
     assert.deepEqual((await snapshot(page)).active.shots.map(photo => photo.id), before);
-    assert.equal(await page.evaluate(() => window.__NEW_SESSION_FIXTURE__.photoPermissionRequests), 1);
+    assert.equal(await page.evaluate(() => window.__NEW_SESSION_FIXTURE__.photoPermissionRequests), 0);
+    assert.equal(await page.evaluate(() => window.__NEW_SESSION_FIXTURE__.photoExportCalls.length), 0);
     await save(page, 'photos-denied', orientation);
   }
-  report.boundedChecks.push('Synthetic denied Photos export is reported separately from five private originals; retrying the mocked permission request keeps all five IDs. No OS Photos export is verified.');
+  report.boundedChecks.push('Denied Photos export is reported separately from five private originals; the actual exporter keeps all five IDs and makes no permission prompt or native SDK write when permission is already denied. Native SDK is mocked.');
   await page.setViewportSize(viewportSizes.portrait);
   await load(page, 'photos-uncertain');
   await page.getByText('Photos result unconfirmed · check Photos before retrying', { exact: true }).waitFor();
@@ -233,6 +267,9 @@ try {
   await page.getByTestId('take-photo').tap();
   await page.getByTestId('retry-save').waitFor({ timeout: 7000 });
   assert.equal((await snapshot(page)).active.shots.length, 0);
+  const zeroSavedFailureStatus = await page.getByTestId('capture-save-status').innerText();
+  assert.equal(zeroSavedFailureStatus, 'Photo 1 still needs saving · No photos saved on this iPad yet');
+  assert.ok(!zeroSavedFailureStatus.includes('originals saved on this iPad'));
   await save(page, 'save-retry', 'portrait');
   await page.getByTestId('retry-save').tap();
   await page.getByTestId('take-photo').waitFor();
@@ -256,6 +293,7 @@ try {
   await page.getByRole('button', { name: 'Done', exact: true }).tap();
   report.boundedChecks.push('Host controls, local-session library and private setup render through synthetic authentication; the pairing field stays blank and no provisioning request is made. Host ScrollViews may require vertical scrolling.');
   await context.close();
+  await hostReliabilityChecks({ browser, report, load, save, snapshot, controls });
   for (const dpr of [1, 2]) {
     const qrContext = await createContext(browser, report, { deviceScaleFactor: dpr, reducedMotion: 'reduce' });
     const qrPage = await qrContext.newPage();

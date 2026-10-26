@@ -70,11 +70,16 @@ export function createQueueConsumer(
   transport: QueueTransport,
   afterDrain: () => Promise<void> = async () => {},
   clock: () => number = Date.now,
+  beforeDrain: () => Promise<void> = async () => {},
 ): { sync(): Promise<void>; retry(): Promise<void> } {
   let running: Promise<void> | undefined;
   let retrying: Promise<void> | undefined;
 
   async function consume(resetBackoff: boolean) {
+    // Rebuild missing/invalid queue entries from durable confirmed manifests
+    // inside this same reservation, before reading/resetting any pending jobs.
+    // A concurrent timer must not race repair against completion writes.
+    await beforeDrain();
     // Reset and drain share the same reservation. A timer/foreground sync must
     // never complete a job while an older retry snapshot can still overwrite it.
     if (resetBackoff) {

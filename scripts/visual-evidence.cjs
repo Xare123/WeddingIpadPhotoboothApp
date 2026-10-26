@@ -84,6 +84,7 @@ async function api(route, options = {}) {
     for (const sample of samples) await api(`/v1/sessions/${session}/photos/${sample.photoId}`, { method: 'PUT', headers: { 'Content-Type': 'image/jpeg' }, body: sample.bytes });
     const ready = await api(`/v1/sessions/${session}/ready`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ photoIds: samples.map(s => s.photoId) }) });
     const galleryUrl = ready.url;
+    assert.equal(new URL(galleryUrl).origin, base.origin);
     passed('Health confirmed local R2, mock SMS and smsAvailable:false. Uploaded five original labeled synthetic 1200 × 1500 JPEGs to the local R2 emulator and finalized a real gallery. No messaging request was made.');
     const screenshots = [];
     for (const size of [{ name: 'phone', width: 390, height: 844 }, { name: 'tablet', width: 820, height: 1180 }, { name: 'desktop', width: 1440, height: 1000 }]) {
@@ -91,6 +92,7 @@ async function api(route, options = {}) {
       const page = await context.newPage();
       const errors = [];
       let externalRequests = 0;
+      await context.route('**/*', route => new URL(route.request().url()).origin === base.origin ? route.continue() : route.abort());
       page.on('pageerror', () => errors.push('pageerror'));
       page.on('request', r => { if (new URL(r.url()).origin !== base.origin) externalRequests++; });
       const response = await page.goto(galleryUrl, { waitUntil: 'networkidle' });
@@ -99,6 +101,9 @@ async function api(route, options = {}) {
       assert.equal(response.headers()['referrer-policy'], 'no-referrer');
       assert.equal(await page.locator('main').count(), 1);
       assert.equal(await page.locator('h1').count(), 1);
+      assert.match(await page.locator('.masthead').innerText(), /Gizelle\s*&\s*Rami/);
+      assert.match(await page.locator('.masthead').innerText(), /November\s+1,\s*2026/);
+      assert.equal(await page.locator('.hero .intro').innerText(), 'A little joy to take home.');
       assert.equal(await page.evaluate(() => Intl.DateTimeFormat().resolvedOptions().timeZone), 'America/Los_Angeles');
       const expiry = page.locator('.expiry time');
       assert.equal(await expiry.getAttribute('datetime'), new Date(ready.expiresAt).toISOString());
@@ -138,7 +143,7 @@ async function api(route, options = {}) {
       assert(await page.evaluate(() => [...document.querySelectorAll('.reveal')].every(e => getComputedStyle(e).animationName === 'none')));
       assert.equal(await page.locator('.download').first().evaluate(e => getComputedStyle(e).transitionDuration), '0s');
       assert.equal(errors.length, 0); assert.equal(externalRequests, 0);
-      passed(`${size.width} × ${size.height}: five images decoded at original dimensions; no horizontal overflow; named download controls ≥44 px; full-resolution labels; keyboard focus visible; entrance animations complete; reduced motion removes animation/transitions; exact UTC expiry with semantic time element remains consistent in America/Los_Angeles browser timezone; photo-retention copy visible; zero page errors or external requests.`);
+      passed(`${size.width} × ${size.height}: Gizelle & Rami and November 1, 2026 identity verified; five images decoded at original dimensions; no horizontal overflow; named download controls ≥44 px; full-resolution labels; keyboard focus visible; entrance animations complete; reduced motion removes animation/transitions; exact UTC expiry with semantic time element remains consistent in America/Los_Angeles browser timezone; photo-retention copy visible; zero page errors or external requests.`);
       await context.close();
     }
     for (const sample of samples) {
@@ -149,6 +154,9 @@ async function api(route, options = {}) {
     passed('All five served downloads were byte-identical to their uploaded JPEGs. Actual browser download of the first JPEG also matched and used wedding-photo-1.jpg.');
     await api(`/v1/sessions/${session}/gallery`, { method: 'DELETE' }); revoked = true;
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, timezoneId: 'America/Los_Angeles' });
+    let unavailableExternalRequests = 0;
+    page.on('request', r => { if (new URL(r.url()).origin !== base.origin) unavailableExternalRequests++; });
+    await page.route('**/*', route => new URL(route.request().url()).origin === base.origin ? route.continue() : route.abort());
     const closed = await page.goto(galleryUrl, { waitUntil: 'networkidle' });
     assert.equal(closed.status(), 410);
     await page.getByRole('heading', { name: 'This gallery is closed.' }).waitFor();
@@ -160,12 +168,13 @@ async function api(route, options = {}) {
     assert.equal(missing.status(), 404);
     await page.getByRole('heading', { name: 'A moment, out of reach.' }).waitFor();
     await page.screenshot({ path: path.join(output, 'gallery-missing-phone.png'), fullPage: true, animations: 'disabled' });
+    assert.equal(unavailableExternalRequests, 0);
     passed('Revoked gallery returned a real HTTP 410 page, hid all photos/download controls, and blocked its photo download. Missing link returned a real HTTP 404 page.');
     assert.equal(hash(await fs.readFile(sourcePath)), sourceSha256, 'Worker source changed during browser evidence capture');
     const manifest = {
       generatedAt: new Date().toISOString(), engine: `Chromium ${browser.version()}`, command: 'node scripts/visual-evidence.cjs (local Worker required)',
-      source: { path: 'services/api/src/index.ts', sha256: sourceSha256, stableDuringCapture: true }, browserTimezone: 'America/Los_Angeles',
-      scope: 'Actual local Worker guest gallery rendered in desktop Chromium at responsive viewport sizes. Native iPad / iOS Safari / physical camera / native animations were not executed.',
+      source: { path: 'services/api/src/index.ts', sha256: sourceSha256, stableDuringCapture: true, publication: 'Current unpublished local working-tree source; this capture does not establish any published or deployed version.' }, browserTimezone: 'America/Los_Angeles',
+      scope: 'Unpublished local evidence of the current working-tree source. Actual local Worker guest gallery rendered in desktop Chromium at responsive viewport sizes. These artifacts remain uncommitted; this run performs no publication, push, deployment, external upload, remote CI, or provider request. Native iPad / iOS Safari / physical camera / native animations were not executed.',
       sampleCount: samples.length, samples: 'Five original synthetic illustrations created with browser canvas; labeled SAMPLE SCENE in every image. No private photos, phone numbers, or messaging used.',
       capabilityHandling: 'Capability URLs and session identifiers omitted from artifacts and stdout. Gallery revoked after captures. Emulator photo bytes remain local.', screenshots, checks,
     };

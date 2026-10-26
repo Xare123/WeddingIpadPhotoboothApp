@@ -1,5 +1,11 @@
 # Validation and progress
 
+## Reviewed recovery refinements awaiting fresh hosted results
+
+The current candidate has **167 passing app/core/API tests**, 47 targeted storage checks, 28 app checks, passing typechecks and a 1,022-module iOS JavaScript export. Four additional independently authored fault sequences pass from their new tracked harness; Linux CI runs them separately. Fresh read-only reliability and visual acceptance found no blocker within their stated Linux/browser boundaries. Publication approval is granted; fresh exact-commit hosted results are recorded in [summary.json](../artifacts/test-results/summary.json) as they become available. The reports below describe earlier milestones until explicitly superseded. See [the refinement details](LOCAL_REFINEMENTS.md), [independent recovery report](../artifacts/test-results/fresh-reliability-acceptance.json), and [visual acceptance](../artifacts/visual/fresh-visual-acceptance.md).
+
+The source/asset hashes and 60 session screenshots, eight gallery screenshots and two demonstrations remain unchanged from the accepted local candidate. Capture-time local/unpublished labels are historical records. Real-iPad native saving and Photos interruption behavior remain unverified; the owner's P0 report stays open pending rehearsal.
+
 ## Current five-photo saving repair
 
 The owner reported real saving failures after the earlier checkpoint. Source review found a concrete native bug: SDK 58 file copy/move/write promises were not awaited. The production adapter now waits for native completion and propagates errors; delayed/rejected bridge tests cover that boundary. Retrying a truncated owned staging file is permitted without overwriting originals. File journals, an offline host library, independent add-only Photos export, and the five-shot interface are implemented. The physical-device report is not considered closed until the owner repeats the saving rehearsal.

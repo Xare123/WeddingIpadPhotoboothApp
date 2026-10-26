@@ -70,3 +70,9 @@ test('mixed, expired, local or partially acknowledged gallery identities never p
     assert.equal(sessionGuestPage(session, mixed, 1000), null);
   }
 });
+
+test('a missing or staged selected original cannot silently turn a five-photo session into a four-photo QR', () => {
+  const complete = jobs().map(job => ({ ...job, guestUrl: url, guestExpiresAt: 2000 }));
+  assert.equal(sessionGuestPage({ ...session, targetCount: 5, shots: session.shots.slice(0, 4) }, complete, 1000), null);
+  assert.deepEqual(sessionGuestPage({ ...session, targetCount: 1, shots: session.shots.slice(0, 1) }, complete, 1000), { url, expiresAt: 2000 });
+});
