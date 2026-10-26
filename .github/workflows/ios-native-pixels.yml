@@ -1,0 +1,98 @@
+name: Native Core Image pixel tests
+
+on:
+  push:
+    branches:
+      - codex/wedding-photobooth-mvp
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wedding-native-pixels-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pixels:
+    if: >-
+      github.repository == 'Xare123/WeddingIpadPhotoboothApp' &&
+      github.event.repository.private == false &&
+      contains(github.event.head_commit.message, '[native-pixels-ci]')
+    runs-on: macos-15-intel
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    env:
+      CI: '1'
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+      - name: Verify independent project and result guards
+        timeout-minutes: 3
+        run: node --test scripts/ci-native-pixels.test.mjs scripts/ci-native-pixels-results.test.mjs
+      - name: Execute nineteen real native engine tests
+        timeout-minutes: 46
+        run: |
+          mkdir -p "$RUNNER_TEMP/wedding-native-pixels-diagnostics"
+          node scripts/ci-native-pixels.mjs 2>&1 | tee "$RUNNER_TEMP/wedding-native-pixels-diagnostics/invocation.log"
+      - name: Publish narrow native evidence summary
+        id: evidence
+        if: always()
+        run: |
+          node --input-type=module - <<'JS'
+          import {appendFileSync, readFileSync} from 'node:fs';
+          import {join} from 'node:path';
+          const directory = join(process.env.RUNNER_TEMP, 'wedding-native-pixels-diagnostics');
+          let status;
+          try { status = JSON.parse(readFileSync(join(directory, 'status.json'), 'utf8')); } catch {}
+          const count = Number.isSafeInteger(status?.jpegs?.entries?.length) ? status.jpegs.entries.length : 0;
+          const raw = status?.validRawResult?.eligible === true && status?.xcodeFinishedNormally === true &&
+            status?.processCleanup?.allOwnedGroupsQuiescent === true;
+          appendFileSync(process.env.GITHUB_OUTPUT, 'jpeg_count=' + count + '\nraw_eligible=' + raw + '\n');
+          const rows = [
+            '## Native pixel XCTest evidence', '',
+            'Commit: `' + process.env.GITHUB_SHA + '`',
+            'Result: **' + (status?.result ?? 'runner did not produce status') + '**',
+            'Verified named pixel cases: **' + (status?.tests?.executed ?? 'unknown') + ' / 19**',
+            'Failures: **' + (status?.tests?.failures ?? 'unknown') + '**; skipped: **' + (status?.tests?.skipped ?? 'unknown') + '**',
+            'Exported native JPEGs: **' + count + ' / 16**', '',
+            'Independent unhosted iOS unit-test bundle; unchanged production engines and XCTest sources; no Expo, Pods, Metro or application target.',
+            '**The separate actual full Expo app launch/relaunch/rotation test remains unverified. This does not establish 20 passing tests, app bridge integration, saving, camera, Photos, signing or physical-iPad behavior.**', '',
+          ];
+          appendFileSync(process.env.GITHUB_STEP_SUMMARY, rows.join('\n'));
+          if (!status) console.log('::error title=Native pixel bootstrap::Runner status absent; inspect bounded invocation diagnostics for this exact commit. No native execution is claimed.');
+          JS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: native-pixels-evidence-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/wedding-native-pixels-diagnostics
+            !${{ runner.temp }}/wedding-native-pixels-diagnostics/native-pixels.xcresult/**
+            !${{ runner.temp }}/wedding-native-pixels-diagnostics/native-jpegs/**
+          if-no-files-found: ignore
+          retention-days: 3
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always() && fromJSON(steps.evidence.outputs.jpeg_count || '0') > 0
+        with:
+          name: native-pixels-jpegs-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/wedding-native-pixels-diagnostics/native-jpegs
+            ${{ runner.temp }}/wedding-native-pixels-diagnostics/source-manifest.json
+            ${{ runner.temp }}/wedding-native-pixels-diagnostics/public-evidence.json
+          if-no-files-found: error
+          retention-days: 3
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always() && steps.evidence.outputs.raw_eligible == 'true'
+        with:
+          name: native-pixels-xcresult-${{ github.sha }}
+          path: ${{ runner.temp }}/wedding-native-pixels-diagnostics/native-pixels.xcresult
+          if-no-files-found: error
+          retention-days: 3
