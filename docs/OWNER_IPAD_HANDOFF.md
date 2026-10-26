@@ -2,7 +2,7 @@
 
 Use a Mac with Xcode providing **Swift 6.2+**, the wedding iPad, Node 24 and CocoaPods 1.16.2. CI selects Xcode 26.3; Xcode 16.4 / Swift 6.1 cannot build the installed ExpoModulesJSI package. Check `xcodebuild -version` and `xcrun swift --version` first, and select the intended installation in Xcode's Locations settings if several are installed. Keep the iPad connected and unlocked. Apple signing/account access is separate from unsigned compilation; do not create certificates, buy membership or accept terms automatically.
 
-Install the **five-photo saving repair, version 0.2.0 / build 2**, from the review branch. The previous `82703b6` / `8e473ddd` build is historical and does not contain this repair. Match the checkout to the new Release result recorded in [validation](VALIDATION.md) before installation; a fresh native run is being prepared. CI does not supply a signed installable app. Actual iPad saving, camera, Photos copies, offline recovery, QR scans and profile expiry remain owner checks.
+Install the **five-photo saving repair, version 0.2.0 / build 2**, at reviewed commit **`c0d6f4dd4ae51e7bb5827e3bf9fb6a06bf8ba900`**. Its [unsigned physical-iOS-SDK Release build](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40281388626) and [Linux checks](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40281388547) passed. The previous `82703b6` / `8e473ddd` build is historical and does not contain this repair. CI does not supply a signed installable app. Actual iPad saving, camera, Photos copies, offline recovery, QR scans and profile expiry remain owner checks.
 
 ## Install a standalone release
 
@@ -15,7 +15,7 @@ Install the **five-photo saving repair, version 0.2.0 / build 2**, from the revi
    pod _1.16.2_ --version
    git clone --branch codex/wedding-photobooth-mvp https://github.com/Xare123/WeddingIpadPhotoboothApp.git
    cd WeddingIpadPhotoboothApp
-   git checkout --detach
+   git checkout --detach c0d6f4dd4ae51e7bb5827e3bf9fb6a06bf8ba900
    npm ci
    cd apps/ipad
    EXPO_PUBLIC_E2E_FIXTURE=0 EXPO_OFFLINE=1 EXPO_NO_TELEMETRY=1 node ../../node_modules/expo/bin/cli prebuild --platform ios --no-install

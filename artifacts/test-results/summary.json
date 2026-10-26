@@ -75,10 +75,21 @@
     "incompatibleFixNotForced": true
   },
   "nativeRelease": {
-    "status": "awaiting fresh exact-commit hosted run",
+    "status": "passed",
+    "commit": "c0d6f4dd4ae51e7bb5827e3bf9fb6a06bf8ba900",
+    "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40281388626",
+    "job": "121435249579",
+    "duration": "9m10s",
+    "configuration": "Release",
+    "sdk": "iphoneos",
+    "selectedXcode": "26.3",
+    "swiftToolsMinimumGate": "6.2",
+    "executableEmbeddedJsAndIpadMetadataVerified": true,
     "signed": false,
     "xctestExecuted": false,
-    "physicalDeviceTested": false
+    "physicalDeviceTested": false,
+    "artifact": "native-evidence-c0d6f4dd4ae51e7bb5827e3bf9fb6a06bf8ba900",
+    "inspectionBoundary": "Public exact-SHA success annotation and guarded verification source inspected. Raw hosted JSON/toolchain files require coordinator GitHub connector; no native bundle size/hash invented."
   },
   "coordinatorDeployment": {
     "reportedVerified": true,
@@ -90,7 +101,6 @@
     "liveSmsFromThisExecutor": 0
   },
   "remainingGates": [
-    "fresh unsigned native Release compile",
     "coordinator secure DEVICE_TOKEN configuration and private pairing",
     "owner same-team/bundle standalone installation and real-iPad offline save/reboot/Photos test",
     "live synthetic five-photo storage/download/phone QR rehearsal",
@@ -107,5 +117,12 @@
     "bundleSha256": "d8e8b1dca3cc1ba4c2bcf2bb94eb8531a86b07d350cdc1255173e4e909a613ee",
     "sourceMapModules": 1005
   },
-  "manualEnvironmentCorrection": "One direct npm run check reached 130 passing tests but its bundle step failed because the cloud helper/telemetry environment was omitted. Rerunning the affected export with the documented environment passed. The saved setup script already sources that helper."
+  "manualEnvironmentCorrection": "One direct npm run check reached 130 passing tests but its bundle step failed because the cloud helper/telemetry environment was omitted. Rerunning the affected export with the documented environment passed. The saved setup script already sources that helper.",
+  "sourceCommit": "c0d6f4dd4ae51e7bb5827e3bf9fb6a06bf8ba900",
+  "hostedLinux": {
+    "status": "passed",
+    "commit": "c0d6f4dd4ae51e7bb5827e3bf9fb6a06bf8ba900",
+    "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40281388547",
+    "duration": "56s"
+  }
 }

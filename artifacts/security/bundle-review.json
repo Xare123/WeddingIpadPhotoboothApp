@@ -18,8 +18,11 @@
   "audit_dependency_entries_high": 5,
   "fixture_boundary": "Native fixture requires __DEV__ plus explicit opt-in. Fixed generated attract art is separate from guest originals.",
   "native_release_build": {
-    "current_source_passed": false,
-    "status": "awaiting fresh exact-commit hosted Release verification",
+    "current_source_passed": true,
+    "commit": "c0d6f4dd4ae51e7bb5827e3bf9fb6a06bf8ba900",
+    "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40281388626",
+    "signed": false,
+    "xctest_executed": false,
     "native_binary_security_audited": false
   }
 }
