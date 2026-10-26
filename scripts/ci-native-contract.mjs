@@ -39,6 +39,88 @@ export function parseNamedJSON(name, source) {
   }
 }
 
+export function metroErrorCodes(error) {
+  const found = new Set();
+  function visit(value, depth = 0) {
+    if (!value || depth > 3) return;
+    if (typeof value.code === 'string' && /^[A-Z][A-Z0-9_]{0,63}$/.test(value.code)) found.add(value.code);
+    if (['AbortError', 'TimeoutError'].includes(value.name)) found.add(value.name);
+    visit(value.cause, depth + 1);
+    if (Array.isArray(value.errors)) for (const nested of value.errors.slice(0, 4)) visit(nested, depth + 1);
+  }
+  visit(error);
+  return [...found].slice(0, 4).join(',') || 'FETCH_ERROR';
+}
+
+export async function waitForMetro({
+  origins = ['http://localhost:8081', 'http://127.0.0.1:8081', 'http://[::1]:8081'],
+  timeoutMs = 60_000, pollIntervalMs = 1000, requestTimeoutMs = 1000,
+  childState = () => ({}), fetchImpl = fetch, onObservation = () => {},
+} = {}) {
+  if (!(timeoutMs > 0 && timeoutMs <= 60_000) || !(requestTimeoutMs > 0 && requestTimeoutMs <= 1000)) throw new Error('Invalid Metro readiness deadline');
+  const targets = origins.map(origin => {
+    const url = new URL(origin);
+    if (url.protocol !== 'http:' || !['localhost', '127.0.0.1', '[::1]'].includes(url.hostname) ||
+      url.username || url.password || url.search || url.hash || url.pathname !== '/') throw new Error('Metro readiness permits only HTTP loopback origins');
+    return { origin: url.origin, family: url.hostname === 'localhost' ? 'localhost' : url.hostname === '127.0.0.1' ? 'ipv4' : 'ipv6' };
+  });
+  const started = performance.now(), deadline = started + timeoutMs;
+  const lastHttp = new Map();
+  let observations = [];
+  function snapshot() {
+    const state = childState();
+    return {
+      exitCode: Number.isInteger(state.exitCode) ? state.exitCode : null,
+      signal: typeof state.signal === 'string' && /^SIG[A-Z0-9]+$/.test(state.signal) ? state.signal : null,
+      spawnError: typeof state.spawnError === 'string' && /^[A-Z][A-Z0-9_]{0,63}$/.test(state.spawnError) ? state.spawnError : null,
+    };
+  }
+  function fail(reason) {
+    const state = snapshot();
+    const detail = observations.map(item => {
+      const http = lastHttp.get(item.family);
+      return item.family + ': ' + (item.code ?? ('HTTP ' + item.status + ' ' + item.result)) +
+        (item.code && http ? ' (last HTTP ' + http.status + ' ' + http.result + ')' : '');
+    }).join('; ') || 'no HTTP observation';
+    const error = new Error('metro-ready: ' + reason + '; exit ' + (state.exitCode ?? 'running') + '; signal ' +
+      (state.signal ?? 'none') + '; spawn ' + (state.spawnError ?? 'none') + '; ' + detail);
+    error.metro = { ...state, observations, lastHttp: [...lastHttp.values()], seconds: Math.round((performance.now() - started) / 1000) };
+    throw error;
+  }
+  async function probe(target, remaining) {
+    try {
+      const response = await fetchImpl(target.origin + '/status', { signal: AbortSignal.timeout(Math.max(1, Math.floor(Math.min(requestTimeoutMs, remaining)))) });
+      let body = '', bytes = 0;
+      const reader = response.body?.getReader();
+      if (reader) {
+        try {
+          while (bytes < 256) {
+            const chunk = await reader.read();
+            if (chunk.done) break;
+            bytes += chunk.value.byteLength;
+            body += new TextDecoder().decode(chunk.value.subarray(0, Math.max(0, 256 - body.length)));
+          }
+        } finally { await reader.cancel().catch(() => {}); }
+      }
+      const ready = response.ok && body.includes('packager-status:running');
+      return { family: target.family, status: response.status, result: ready ? 'ready' : response.ok ? 'unexpected-status-body' : 'http-error' };
+    } catch (error) { return { family: target.family, result: 'fetch-error', code: metroErrorCodes(error) }; }
+  }
+  while (performance.now() < deadline) {
+    const state = snapshot();
+    if (state.exitCode !== null || state.signal || state.spawnError) fail('Expo CLI exited or could not spawn');
+    observations = await Promise.all(targets.map(target => probe(target, deadline - performance.now())));
+    for (const observation of observations) if (Number.isInteger(observation.status)) lastHttp.set(observation.family, observation);
+    const after = snapshot();
+    onObservation({ ...after, observations, seconds: Math.round((performance.now() - started) / 1000) });
+    if (after.exitCode !== null || after.signal || after.spawnError) fail('Expo CLI exited or could not spawn');
+    const ready = observations.find(item => item.result === 'ready');
+    if (ready) return { family: ready.family, observations, seconds: Math.round((performance.now() - started) / 1000) };
+    await new Promise(resolveWait => setTimeout(resolveWait, Math.max(0, Math.min(pollIntervalMs, deadline - performance.now()))));
+  }
+  fail('readiness deadline reached');
+}
+
 export function selectIpadSimulator(devices) {
   if (!devices || typeof devices !== 'object' || Array.isArray(devices)) throw new Error('simctl returned no device inventory');
   const choices = Object.entries(devices).filter(([runtime, rows]) => {

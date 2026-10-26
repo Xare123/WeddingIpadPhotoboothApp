@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { bounded, redact } from './ci-summary.mjs';
-import { commandStreams, parseNamedJSON, passingXCTestCounts, selectIpadSimulator } from './ci-native-contract.mjs';
+import { commandStreams, parseNamedJSON, passingXCTestCounts, selectIpadSimulator, waitForMetro, metroErrorCodes } from './ci-native-contract.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const diagnostics = process.env.WEDDING_DIAGNOSTICS_DIR ?? join(process.env.RUNNER_TEMP ?? '/tmp', 'wedding-native-diagnostics');
@@ -94,6 +94,13 @@ function validationStage(name, validate) {
   catch (error) { entry.result = 'failed'; throw error; }
   finally { entry.seconds = Math.round((Date.now() - started) / 1000); saveStatus(); }
 }
+async function asyncValidationStage(name, validate) {
+  const started = Date.now(), entry = { name, result: 'running' };
+  status.stages.push(entry); saveStatus();
+  try { const result = await validate(); entry.result = 'passed'; return result; }
+  catch (error) { entry.result = 'failed'; throw error; }
+  finally { entry.seconds = Math.round((Date.now() - started) / 1000); saveStatus(); }
+}
 async function cleanup() {
   for (const child of children) { try { process.kill(-child.pid, 'SIGTERM'); } catch {} }
   if (metro) {
@@ -145,26 +152,47 @@ async function main() {
   await command('simulator-boot', 'xcrun', ['simctl', 'boot', simulator.udid]); bootedHere = true;
   await command('simulator-ready', 'xcrun', ['simctl', 'bootstatus', simulator.udid, '-b']);
   const metroLog = [];
-  metro = spawn('npx', ['--no-install', 'expo', 'start', '--localhost', '--port', '8081'], {
-    cwd: join(root, 'apps/ipad'), env: fixtureEnv, detached: true, stdio: ['ignore', 'pipe', 'pipe'],
-  });
+  let metroSpawnError;
   const metroOutput = data => {
     metroLog.push(redact(data.toString()));
     if (metroLog.length > 100) metroLog.shift();
     writeFileSync(join(diagnostics, 'metro.log'), bounded(metroLog.join(''), 400, 96_000));
   };
-  metro.stdout.on('data', metroOutput); metro.stderr.on('data', metroOutput);
-  metro.on('error', error => metroOutput(Buffer.from(error.message)));
-  let ready = false;
-  for (let attempt = 0; attempt < 60; attempt++) {
+  await asyncValidationStage('metro-startup', () => new Promise((resolveSpawn, reject) => {
+    metro = spawn('npx', ['--no-install', 'expo', 'start', '--localhost', '--port', '8081'], {
+      cwd: join(root, 'apps/ipad'), env: fixtureEnv, detached: true, stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    metro.stdout.on('data', metroOutput); metro.stderr.on('data', metroOutput);
+    metro.once('spawn', () => {
+      writeFileSync(join(diagnostics, 'metro-startup.log'), 'Expo CLI spawned through npx.\n');
+      resolveSpawn();
+    });
+    metro.on('error', error => {
+      metroSpawnError = metroErrorCodes(error).split(',')[0];
+      const safe = 'metro-startup: Expo CLI spawn failed; code ' + metroSpawnError;
+      metroOutput(Buffer.from('Error: ' + safe + '\n'));
+      writeFileSync(join(diagnostics, 'metro-startup.log'), 'Error: ' + safe + '\n');
+      reject(new Error(safe));
+    });
+  }));
+  await asyncValidationStage('metro-ready', async () => {
     try {
-      const response = await fetch('http://localhost:8081/status', { signal: AbortSignal.timeout(1000) });
-      if (response.ok && (await response.text()).includes('packager-status:running')) { ready = true; break; }
-    } catch { /* Bounded startup polling. */ }
-    if (metro.exitCode !== null) break;
-    await new Promise(resolveWait => setTimeout(resolveWait, 1000));
-  }
-  if (!ready) throw new Error('Metro did not become ready on loopback port 8081');
+      const ready = await waitForMetro({
+        childState: () => ({ exitCode: metro.exitCode, signal: metro.signalCode, spawnError: metroSpawnError }),
+        onObservation: info => {
+          status.metro = info;
+          writeFileSync(join(diagnostics, 'metro-ready.log'), 'Metro readiness observations: ' + JSON.stringify(info) + '\n');
+          saveStatus();
+        },
+      });
+      status.metro = ready;
+      writeFileSync(join(diagnostics, 'metro-ready.log'), 'Metro ready via ' + ready.family + ' after ' + ready.seconds + ' seconds.\n');
+    } catch (error) {
+      status.metro = error.metro;
+      writeFileSync(join(diagnostics, 'metro-ready.log'), 'Error: ' + redact(error.message) + '\n');
+      throw error;
+    }
+  });
   const test = await command('xcode-test', 'xcodebuild', [
     '-workspace', workspace, '-scheme', plan.scheme, '-configuration', 'Debug', '-sdk', 'iphonesimulator',
     '-destination', `platform=iOS Simulator,id=${simulator.udid}`, '-derivedDataPath', derived,

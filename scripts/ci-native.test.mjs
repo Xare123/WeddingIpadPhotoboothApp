@@ -1,7 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
-import { commandStreams, MAX_MACHINE_STDOUT, parseNamedJSON, passingXCTestCounts, selectIpadSimulator } from './ci-native-contract.mjs';
+import { createServer } from 'node:http';
+import { commandStreams, MAX_MACHINE_STDOUT, metroErrorCodes, parseNamedJSON, passingXCTestCounts, selectIpadSimulator, waitForMetro } from './ci-native-contract.mjs';
 import { annotationText, bounded, diagnosticLines, publicAnnotations, redact, workflowData } from './ci-summary.mjs';
 
 const ipad = { udid: '11111111-1111-4111-8111-111111111111', name: 'iPad Pro 13-inch (M4)',
@@ -191,4 +192,72 @@ test('normal CocoaPods script-phase warnings never drown a later explicit error'
   assert.ok(selected[0].startsWith('simulator-list.log: Error:'));
   assert.ok(!selected.join('\n').includes('script phase'));
   assert.deepEqual(diagnosticLines({ 'pods.log': '[!] hermes-engine has added 1 script phase. Please inspect before executing a build.' }), []);
+});
+
+async function statusFixture(t, host, body = 'packager-status:running') {
+  const server = createServer((_request, response) => response.end(body));
+  await new Promise((resolveListen, reject) => { server.once('error', reject); server.listen(0, host, resolveListen); });
+  t.after(() => new Promise(resolveClose => { server.closeAllConnections(); server.close(resolveClose); }));
+  return server.address().port;
+}
+
+test('real IPv4-only Metro status is found even when the IPv6 probe fails', async t => {
+  const port = await statusFixture(t, '127.0.0.1');
+  const result = await waitForMetro({ origins: ['http://[::1]:' + port, 'http://127.0.0.1:' + port], timeoutMs: 1000 });
+  assert.equal(result.family, 'ipv4');
+  assert.ok(result.observations.some(item => item.family === 'ipv6' && item.result === 'fetch-error'));
+});
+
+test('real IPv6-only Metro status is found even when the IPv4 probe fails', async t => {
+  const port = await statusFixture(t, '::1');
+  const result = await waitForMetro({ origins: ['http://127.0.0.1:' + port, 'http://[::1]:' + port], timeoutMs: 1000 });
+  assert.equal(result.family, 'ipv6');
+  assert.ok(result.observations.some(item => item.family === 'ipv4' && item.result === 'fetch-error'));
+});
+
+test('HTTP success with a non-Metro body fails on the same bounded deadline without leaking response data', async t => {
+  const port = await statusFixture(t, '127.0.0.1', 'private response ENV_FLAG=private-value https://fixture.example/private');
+  const started = performance.now();
+  await assert.rejects(waitForMetro({ origins: ['http://127.0.0.1:' + port], timeoutMs: 150, requestTimeoutMs: 50, pollIntervalMs: 20 }),
+    error => error.message.includes('HTTP 200 unexpected-status-body') && error.metro.observations.length === 1 &&
+      !error.message.includes('private-value') && !error.message.includes('https://'));
+  assert.ok(performance.now() - started < 1500);
+});
+
+test('Metro premature exit, signal or spawn failure is reported before waiting for HTTP readiness', async () => {
+  for (const state of [{ exitCode: 7 }, { signal: 'SIGTERM' }, { spawnError: 'ENOENT' }]) {
+    let fetches = 0;
+    await assert.rejects(waitForMetro({ childState: () => state, fetchImpl: async () => { fetches++; throw new Error('must not fetch'); } }),
+      error => error.message.includes('Expo CLI exited or could not spawn') &&
+        (state.exitCode ? error.message.includes('exit 7') : state.signal ? error.message.includes('SIGTERM') : error.message.includes('ENOENT')));
+    assert.equal(fetches, 0);
+  }
+});
+
+test('safe Metro fetch diagnostics expose nested cause codes without raw messages or environment values', () => {
+  const error = { message: 'private ENV_FLAG=value https://private.example', cause: {
+    errors: [{ code: 'ECONNREFUSED' }, { code: 'ENETUNREACH' }, { code: 'ENV_FLAG=private-value' }],
+  } };
+  assert.equal(metroErrorCodes(error), 'ECONNREFUSED,ENETUNREACH');
+  assert.equal(metroErrorCodes({ name: 'TimeoutError' }), 'TimeoutError');
+  assert.equal(metroErrorCodes({ message: 'do not publish' }), 'FETCH_ERROR');
+});
+
+test('failed Metro readiness surfaces its meaningful redacted output instead of unrelated CocoaPods notices', () => {
+  const logs = {
+    'metro-ready.log': 'Error: metro-ready: readiness deadline reached; exit running; ipv4: ECONNREFUSED',
+    'metro.log': 'Starting Metro Bundler\n ERROR  Fixture Metro startup failed\nWaiting on http://localhost:8081\n',
+    'pods.log': '[!] Please close any current Xcode sessions and use the generated workspace from now on.\n[!] Generic unrelated note',
+  };
+  const selected = diagnosticLines(logs, [{ name: 'metro-ready', result: 'failed' }]);
+  assert.ok(selected.some(line => line.includes('ECONNREFUSED')));
+  assert.ok(selected.some(line => line.includes('Fixture Metro startup failed')));
+  assert.ok(!selected.join('\n').includes('pods.log'));
+  assert.ok(!selected.join('\n').includes('http://'));
+});
+
+test('Metro readiness rejects non-loopback probes before any network request', async () => {
+  let fetches = 0;
+  await assert.rejects(waitForMetro({ origins: ['https://production.example'], fetchImpl: async () => { fetches++; } }), /only HTTP loopback/);
+  assert.equal(fetches, 0);
 });

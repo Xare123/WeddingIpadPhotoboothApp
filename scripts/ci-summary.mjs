@@ -33,6 +33,8 @@ export function annotationText(text, limit = 700) {
 
 export function diagnosticLines(logs, stages = [], limit = 3) {
   const preferred = stages.filter(stage => stage.result === 'failed').map(stage => stage.name + '.log');
+  const metroFailed = stages.some(stage => stage.result === 'failed' && stage.name.startsWith('metro-'));
+  if (metroFailed) preferred.push('metro.log');
   const names = [...new Set([...preferred, ...Object.keys(logs).sort()])];
   const selected = [], seen = new Set(), records = [];
   // Select error records, never a dump of build commands or exported variables.
@@ -40,10 +42,15 @@ export function diagnosticLines(logs, stages = [], limit = 3) {
   for (const name of names) {
     for (const line of bounded(logs[name] ?? '', 400, 96_000).split('\n')) {
       const cocoa = /^\s*\[!\]/.test(line);
-      if (cocoa && /(?:\bwarn(?:ing)?\b|\b(?:has|have) added \d+ script phase|please inspect before executing)/i.test(line)) continue;
-      const explicit = errorRecord.test(line) || (cocoa && /\b(?:error|failed|failure|could not|cannot|unable|invalid|incompatible|not found|requires)\b/i.test(line));
-      if (explicit || cocoa) records.push({ name, line, rank: explicit ? 0 : 1 });
+      if (cocoa && /(?:\bwarn(?:ing)?\b|\b(?:has|have) added \d+ script phase|please inspect before executing|please close any current xcode sessions)/i.test(line)) continue;
+      const explicit = errorRecord.test(line) || /^\s*(?:ERROR\s|CommandError:)/.test(line) || (cocoa && /\b(?:error|failed|failure|could not|cannot|unable|invalid|incompatible|not found|requires)\b/i.test(line));
+      if (explicit || (cocoa && preferred.includes(name))) records.push({ name, line, rank: explicit ? 0 : 2 });
     }
+  }
+  if (metroFailed) {
+    const meaningful = bounded(logs['metro.log'] ?? '', 400, 96_000).split('\n').filter(line =>
+      /(?:Starting (?:project|Metro)|Metro (?:is running|Bundler|waiting)|Waiting on|CommandError|error|failed|port.*(?:used|available|busy)|CI mode)/i.test(line));
+    for (const line of meaningful.slice(-2)) records.push({ name: 'metro.log', line, rank: 1 });
   }
   records.sort((left, right) => left.rank - right.rank);
   for (const { name, line } of records) {
