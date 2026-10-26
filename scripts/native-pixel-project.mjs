@@ -167,6 +167,16 @@ export function verifyPixelProject(plan, root) {
   return true;
 }
 
+export function pixelBuildSettingsArguments(plan, architecture) {
+  if (!plan || typeof plan.project !== 'string' || !plan.project || plan.scheme !== PIXEL_PROJECT_NAME ||
+    !['x86_64', 'arm64'].includes(architecture)) throw new Error('Invalid independent pixel build settings inputs');
+  // A test-only scheme has no build-for-running entry. Query its target directly
+  // so this preflight cannot select the scheme's implicit default build action.
+  return ['-project', plan.project, '-target', PIXEL_PROJECT_NAME, '-configuration', 'Release',
+    '-sdk', 'iphonesimulator', 'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO',
+    'ONLY_ACTIVE_ARCH=YES', 'ARCHS=' + architecture, '-showBuildSettings', '-json'];
+}
+
 export function requireUnhostedPixelSettings(value) {
   const settings = Array.isArray(value) ? value[0]?.buildSettings : undefined;
   const reject = message => {

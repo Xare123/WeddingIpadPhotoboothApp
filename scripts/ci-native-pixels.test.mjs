@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
-import { createPixelProject, ownedSimulatorRemoval, pixelCleanupDecision, pixelInputs, PIXEL_BUNDLE_ID, PIXEL_LIMITS, PIXEL_PROJECT_NAME, requireUnhostedPixelSettings, verifyPixelProject } from './native-pixel-project.mjs';
+import { createPixelProject, ownedSimulatorRemoval, pixelBuildSettingsArguments, pixelCleanupDecision, pixelInputs, PIXEL_BUNDLE_ID, PIXEL_LIMITS, PIXEL_PROJECT_NAME, requireUnhostedPixelSettings, verifyPixelProject } from './native-pixel-project.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const hash = value => createHash('sha256').update(value).digest('hex');
@@ -112,6 +112,24 @@ test('pixel source discovery rejects missing methods, skips or Expo imports inst
     writeFileSync(path, change(readFileSync(path, 'utf8')));
     assert.throws(() => pixelInputs(repository));
   }
+});
+
+test('settings preflight queries the unhosted target without a default scheme build action; runtime remains test-only', t => {
+  const { plan } = fixture(t);
+  for (const architecture of ['x86_64', 'arm64']) {
+    const args = pixelBuildSettingsArguments(plan, architecture);
+    assert.deepEqual(args, ['-project', plan.project, '-target', PIXEL_PROJECT_NAME, '-configuration', 'Release',
+      '-sdk', 'iphonesimulator', 'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO',
+      'ONLY_ACTIVE_ARCH=YES', 'ARCHS=' + architecture, '-showBuildSettings', '-json']);
+    assert.equal(args.includes('-scheme'), false); assert.equal(args.includes('-destination'), false);
+  }
+  for (const architecture of ['i386', '', undefined]) assert.throws(() => pixelBuildSettingsArguments(plan, architecture));
+  const scheme = readFileSync(join(plan.project, 'xcshareddata/xcschemes', plan.scheme + '.xcscheme'), 'utf8');
+  assert.match(scheme, /BuildActionEntry buildForTesting="YES" buildForRunning="NO"/);
+  const runner = readFileSync(join(root, 'scripts/ci-native-pixels.mjs'), 'utf8');
+  assert.match(runner, /command\('unhosted-build-settings', 'xcodebuild', pixelBuildSettingsArguments\(plan, status\.architecture\),/);
+  assert.match(runner, /const base = \['-project', plan\.project, '-scheme', plan\.scheme/);
+  assert.match(runner, /command\('xcode-test', 'xcodebuild', \[\.\.\.base,[\s\S]*?'300', 'test'\]/);
 });
 
 function settings() {

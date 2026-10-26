@@ -4,7 +4,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { bounded, diagnosticLines, redact, workflowData } from './ci-summary.mjs';
 import { commandStreams, parseNamedJSON, requireSwiftTools62, selectIpadSimulator, simulatorBuildArchitecture, stopOwnedProcessGroup } from './ci-native-contract.mjs';
-import { createPixelProject, ownedSimulatorRemoval, pixelCleanupDecision, PIXEL_LIMITS, PIXEL_REQUIRED_CASES, requireUnhostedPixelSettings, verifyPixelProject } from './native-pixel-project.mjs';
+import { createPixelProject, ownedSimulatorRemoval, pixelBuildSettingsArguments, pixelCleanupDecision, PIXEL_LIMITS, PIXEL_REQUIRED_CASES, requireUnhostedPixelSettings, verifyPixelProject } from './native-pixel-project.mjs';
 import { EXPECTED_PIXEL_ATTACHMENTS, exportNamedPixelJpegs, inspectPixelTests, requirePassingPixelTests, safeSchemaShape } from './native-pixel-results.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -147,7 +147,7 @@ async function main() {
   const base = ['-project', plan.project, '-scheme', plan.scheme, '-configuration', 'Release', '-sdk', 'iphonesimulator',
     '-destination', 'platform=iOS Simulator,id=' + simulator.udid, 'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO',
     'ONLY_ACTIVE_ARCH=YES', 'ARCHS=' + status.architecture];
-  const settings = await command('unhosted-build-settings', 'xcodebuild', [...base, '-showBuildSettings', '-json'], { structured: true });
+  const settings = await command('unhosted-build-settings', 'xcodebuild', pixelBuildSettingsArguments(plan, status.architecture), { structured: true });
   const parsed = parseNamedJSON('unhosted-build-settings', settings.stdout);
   try { status.target = validation('verify-unhosted-build-settings', () => requireUnhostedPixelSettings(parsed)); }
   catch (error) { error.diagnosticShape ??= safeSchemaShape(parsed); throw error; }
