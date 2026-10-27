@@ -111,10 +111,10 @@ final class AppleFaceEffectsTests: XCTestCase {
     XCTAssertEqual(try Data(contentsOf: portraitURL()), source)
   }
   func testControlledAnchorsPlaceCrownAtExpectedPixelsAndKeepOuterPixels() throws {
-    let image = try blank(width: 200, height: 200)
+    let image = try blank(width: 400, height: 400)
     let face = FaceAnchors(bounds: UnitRect(x: 0.2, y: 0.25, width: 0.6, height: 0.6),
       leftEye: UnitPoint(x: 0.4, y: 0.5), rightEye: UnitPoint(x: 0.6, y: 0.5), confidence: 1)
-    let placements = FaceGeometry.placements(faces: [face], image: ImageSize(width: 200, height: 200), accessory: .crown)
+    let placements = FaceGeometry.placements(faces: [face], image: ImageSize(width: 400, height: 400), accessory: .crown)
     XCTAssertEqual(placements.count, 1)
     let done = expectation(description: "controlled geometry rendered off main")
     var rendered: Result<AppleFaceEffectsOutput, Error>?
@@ -123,8 +123,8 @@ final class AppleFaceEffectsTests: XCTestCase {
     }
     wait(for: [done], timeout: 10)
     let output = try XCTUnwrap(rendered).get()
-    // Top-left gold-band sample: crown center44px + baseband(.34*20px)=50.8px; sample row50.
-    let sample = try XCTUnwrap(output.image.cropping(to: CGRect(x: 100, y: 50, width: 1, height: 1)))
+    // Top-left gold-band sample: crown center88px + baseband(.34*40px)=101.6px; sample opaque row101.
+    let sample = try XCTUnwrap(output.image.cropping(to: CGRect(x: 200, y: 101, width: 1, height: 1)))
     let center = try pixels(sample)
     XCTAssertGreaterThan(Int(center[0]), 180); XCTAssertLessThan(Int(center[2]), 100)
     let corner = try XCTUnwrap(output.image.cropping(to: CGRect(x: 0, y: 0, width: 1, height: 1)))
@@ -584,24 +584,36 @@ final class AppleFaceEffectsTests: XCTestCase {
     let placement = AccessoryPlacement(accessory: .crown, center: UnitPoint(x: 0.5, y: 0.5),
       width: 0.6, height: 0.5, rotation: 0)
     let output = try renderForOrientationTest(image, placements: [placement])
-    var cream = [(Int, Int)]()
+    let seed = try color(output.image, x: 200, y: 67)
+    for channel in 0..<3 {
+      XCTAssertLessThanOrEqual(abs(Int(seed[channel]) - [247,240,217][channel]), 2,
+        "central opaque seed must be actual cream fill, observed seed=\(seed)")
+    }
+    // Gold/white antialias can satisfy a broad cream range; isolate the connected true-fill component.
+    var matching = Set<Int>()
     for y in 58...76 { for x in 188...212 {
       let rgb = try color(output.image, x: x, y: y)
-      if rgb[0] > 230 && rgb[1] > 220 && (195...235).contains(Int(rgb[2])) { cream.append((x,y)) }
+      if (0..<3).allSatisfy({ abs(Int(rgb[$0]) - Int(seed[$0])) <= 2 }) { matching.insert(y * 400 + x) }
     } }
-    XCTAssertFalse(cream.isEmpty, "actual physical pearl fill must render")
-    let left = try XCTUnwrap(cream.map { $0.0 }.min()), right = try XCTUnwrap(cream.map { $0.0 }.max())
-    let top = try XCTUnwrap(cream.map { $0.1 }.min()), bottom = try XCTUnwrap(cream.map { $0.1 }.max())
+    var pending = [67 * 400 + 200], component = Set<Int>()
+    while let point = pending.popLast() {
+      guard matching.contains(point), component.insert(point).inserted else { continue }
+      pending.append(contentsOf: [point - 1, point + 1, point - 400, point + 400])
+    }
+    XCTAssertFalse(component.isEmpty, "actual physical pearl seed component must render, seed=\(seed)")
+    let left = try XCTUnwrap(component.map { $0 % 400 }.min()), right = try XCTUnwrap(component.map { $0 % 400 }.max())
+    let top = try XCTUnwrap(component.map { $0 / 400 }.min()), bottom = try XCTUnwrap(component.map { $0 / 400 }.max())
     let physicalWidth = right - left + 1, physicalHeight = bottom - top + 1
-    XCTAssertLessThanOrEqual(abs(physicalWidth - physicalHeight), 1, "actual pearl pixels must have equal physical diameters on a nonsquare canvas")
-    XCTAssertTrue((6...9).contains(physicalWidth), "expected about7.6px horizontal diameter")
-    XCTAssertTrue((6...9).contains(physicalHeight), "expected about7.6px vertical diameter")
-    XCTAssertEqual(Double(left + right) / 2 + 0.5, 200, accuracy: 1)
-    XCTAssertEqual(Double(top + bottom) / 2 + 0.5, 67, accuracy: 1)
+    let diagnostic = "observed W=\(physicalWidth), H=\(physicalHeight), seed=\(seed)"
+    XCTAssertLessThanOrEqual(abs(physicalWidth - physicalHeight), 1, "equal physical pearl diameters: " + diagnostic)
+    XCTAssertTrue((6...9).contains(physicalWidth), "expected about7.6px horizontal diameter; " + diagnostic)
+    XCTAssertTrue((6...9).contains(physicalHeight), "expected about7.6px vertical diameter; " + diagnostic)
+    XCTAssertEqual(Double(left + right) / 2 + 0.5, 200, accuracy: 1, diagnostic)
+    XCTAssertEqual(Double(top + bottom) / 2 + 0.5, 67, accuracy: 1, diagnostic)
     for point in [(198,67), (202,67), (200,65), (200,69)] {
       let rgb = try color(output.image, x: point.0, y: point.1)
       XCTAssertTrue(rgb[0] > 230 && rgb[1] > 220 && (195...235).contains(Int(rgb[2])),
-        "both physical axes must retain the round cream interior away from connecting gold arch")
+        "both physical axes retain cream interior away from arch; rgb=\(rgb); " + diagnostic)
     }
     XCTAssertEqual(try pixels(image), original)
   }

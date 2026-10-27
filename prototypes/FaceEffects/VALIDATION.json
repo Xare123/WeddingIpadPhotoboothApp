@@ -138,7 +138,7 @@
       "scripts/face-effects-proof.test.mjs": "fc5a940cf5a2a34c0d10da5f9ca673baf61de9ba35ae7784ec974f024c412a71",
       "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/GeometryTests.swift": "3fe69f7de31f613e21c810e824ce270acb9843cfb75d0a4b3695d2745bc89f9e",
       "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/FrameFreshnessGateTests.swift": "03cc3280f46b51e34a3f462595974836840afe2082edef9ed05cce2a9abbec26",
-      "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/AppleFaceEffectsTests.swift": "de02e51259de68098014e68fea737593e35b68976251ef8126d157ac8ae310f1",
+      "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/AppleFaceEffectsTests.swift": "638bf9d9d7673fa5d91b640940ce938d598aebd26c9ca7a9a96997172652b10f",
       "prototypes/FaceEffects/Sources/FaceEffectsPrototype/AppleFaceEffects.swift": "01a87b5454f3f5b52947054302acc717b80510eead06df9e4a71bf94a3a4a8a0",
       "prototypes/FaceEffects/Sources/FaceEffectsPrototype/FaceGeometry.swift": "62866121340d52308afbe16d454aae81ce4873d3de99563b625a24b48c2ffaeb",
       "prototypes/FaceEffects/Sources/FaceEffectsPrototype/FrameFreshnessGate.swift": "2d1d6615c49a501302cf44861825c7cda3ad26fe161cd0db53f84cb396ee55f3"
@@ -156,7 +156,7 @@
       "separated": 3
     },
     "requiredSceneProof": "All three styles detected2/landmarked2/decorated2 for separated pair; truthful counts and omission reasons for touching pair",
-    "nativeResult": "not run yet",
+    "nativeResult": "test fixture repair pending fresh exact-commit native execution",
     "visualResult": "not approved; fresh nine-output review required",
     "integrationDecision": "Keep separate; see INTEGRATION_DECISION.md",
     "independentSourceReview": {
@@ -170,6 +170,25 @@
       ],
       "nativeExecutionByReviewer": false,
       "newRenderedPixelApproval": false
+    },
+    "failedFirstNativeAttempt": {
+      "source": "f0e34dcafe3761c1855e0a9e665a548d7d2bf6a2",
+      "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40499681392",
+      "job": "122173934150",
+      "result": "failed actual native pixel assertions; no infrastructure failure",
+      "verifiedDiagnostics": [
+        "Controlled crown pixelblue106 failedblue<100",
+        "Pearl measurement diameterdifference10 and xcenter201.5 failedunchanged geometric bounds"
+      ],
+      "repair": "Isolate exact opaquecream seed color without looseningroundness; scale controlled gold fixture to400x400 foropaque bandpixel, retain strongmaterial thresholds",
+      "executedAndPassedCount": "not independently read from structured XML in this executor",
+      "assessedCause": "Small gold-band antialias sample and broad cream classifier including pale gold-white antialias; renderer physical formula remains unchanged"
+    },
+    "testOnlyRepair": {
+      "rendererUnchangedFromFailedAttempt": true,
+      "creamMeasurement": "Known opaque seed RGB plus2perchannel and bounded4-connected component; original roundness/diameter/center/cardinal bounds unchanged",
+      "goldMeasurement": "400x400 same unit anchors; opaque band sample200,101; original strongcolor/corner preservation unchanged",
+      "review": "Independent physical-scale math and root read of exact patch; fresh native result required"
     }
   }
 }
