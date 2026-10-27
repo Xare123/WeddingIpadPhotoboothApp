@@ -21,6 +21,7 @@ const methods = {
     'testOtherFacesAndExplicitObstructionsSuppressAccessoriesWithoutUsableEyes',
     'testRotatedNeighborAndAccessoryCollisionsUsePixelSpaceAndStablePriority',
     'testImageEdgesSuppressClippedOrnamentsBeforeCapacityLimit', 'testV2CrownGeometryIsCompactAndAboveEyes',
+    'testGlassesClipOnlyReliableNeighborsWithClearEyes',
   ],
   FrameFreshnessGateTests: [
     'testDefaultNoneNeverAdmitsAndHasNoOverlay', 'testOnlyOnePhysicalRequestAndThrottleAfterCompletion',
@@ -41,6 +42,7 @@ const methods = {
     'testCallerNormalizesAllEightExifOrientationsOnceBeforeRendering',
     'testCloseFaceAndRollFallbackPreservesProtectedNeighborPixels',
     'testControlledCloseRollAndEdgeEvidenceUsesSafeFallback',
+    'testReliableNeighborClippingPreservesLensCentersAndAllExcludedPixels',
   ],
 };
 export const FACE_CASES = Object.freeze(Object.entries(methods).flatMap(([name, entries]) => entries.map(entry => name + '.' + entry)));

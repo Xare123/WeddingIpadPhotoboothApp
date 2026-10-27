@@ -37,13 +37,17 @@ public struct FaceAnchors: Equatable, Sendable {
 public struct AccessoryPlacement: Equatable, Sendable {
   public let accessory: FaceAccessory, center: UnitPoint
   public let width: Double, height: Double, rotation: Double
-  public init(accessory: FaceAccessory, center: UnitPoint, width: Double, height: Double, rotation: Double) {
+  /// Ephemeral, upright face exclusions; never persisted as identity data.
+  public let excludedFaceBounds: [UnitRect]
+  public init(accessory: FaceAccessory, center: UnitPoint, width: Double, height: Double, rotation: Double, excludedFaceBounds: [UnitRect] = []) {
+    self.excludedFaceBounds = excludedFaceBounds
     self.accessory = accessory; self.center = center; self.width = width; self.height = height; self.rotation = rotation
   }
   /// Centers may lie outside the source at a forehead edge; the renderer clips to the image.
   public var finite: Bool {
     [center.x, center.y, width, height, rotation].allSatisfy(\.isFinite) && width > 0 && height > 0
       && width <= 3 && height <= 3 && abs(center.x) <= 3 && abs(center.y) <= 3 && abs(rotation) <= .pi
+      && excludedFaceBounds.count <= 64 && excludedFaceBounds.allSatisfy(\.valid)
   }
 }
 public struct PixelPoint: Equatable, Sendable {
@@ -113,14 +117,48 @@ public enum FaceGeometry {
       guard box.allSatisfy({ $0.x >= 0 && $0.y >= 0 && $0.x <= image.width && $0.y <= image.height }) else { continue }
       // All other valid face rectangles protect even low-confidence/invalid eyes.
       // Own bounds are excluded by input index, not rectangle equality.
-      let obstacles = protective.filter { $0.offset != index }.map { $0.element.bounds } + obstructingBounds
       let padding = 0.035 * distance
-      guard !obstacles.contains(where: { overlaps(box, rectangle($0, image: image, padding: padding)) }),
+      guard !obstructingBounds.contains(where: { overlaps(box, rectangle($0, image: image, padding: padding)) }),
         !envelopes.contains(where: { overlaps(box, $0) }) else { continue }
-      accepted.append(placement); envelopes.append(box)
+      var exclusions: [UnitRect] = [], blocked = false
+      for neighbor in protective where neighbor.offset != index {
+        let bounds = neighbor.element.bounds, padded = rectangle(bounds, image: image, padding: padding)
+        if !overlaps(box, padded) { continue }
+        // Only trim an exterior glasses temple when both own eye cores are
+        // untouched and the neighbor has reliable full eye geometry. Every
+        // rejected/low-confidence neighbor remains a full obstruction.
+        guard accessory == .glasses, reliableEyes(face, image: image), reliableEyes(neighbor.element, image: image),
+          !overlaps(eyeCore(first, image: image, halfSize: 0.20 * distance), padded),
+          !overlaps(eyeCore(second, image: image, halfSize: 0.20 * distance), padded) else { blocked = true; break }
+        let left = max(0, bounds.x - padding / image.width), top = max(0, bounds.y - padding / image.height)
+        let right = min(1, bounds.x + bounds.width + padding / image.width)
+        let bottom = min(1, bounds.y + bounds.height + padding / image.height)
+        exclusions.append(UnitRect(x: left, y: top, width: right - left, height: bottom - top))
+      }
+      if blocked { continue }
+      let safe = AccessoryPlacement(accessory: placement.accessory, center: placement.center, width: placement.width,
+        height: placement.height, rotation: placement.rotation, excludedFaceBounds: exclusions)
+      guard safe.finite else { continue }
+      accepted.append(safe); envelopes.append(box)
       if accepted.count == maximum { break }
     }
     return accepted
+  }
+
+  private static func reliableEyes(_ face: FaceAnchors, image: ImageSize) -> Bool {
+    guard face.bounds.valid, face.bounds.width >= 0.035, face.confidence.isFinite, (0.8...1).contains(face.confidence),
+      face.bounds.contains(face.leftEye), face.bounds.contains(face.rightEye) else { return false }
+    let first = face.leftEye.x <= face.rightEye.x ? face.leftEye : face.rightEye
+    let second = face.leftEye.x <= face.rightEye.x ? face.rightEye : face.leftEye
+    let dx = (second.x - first.x) * image.width, dy = (second.y - first.y) * image.height
+    let distance = hypot(dx, dy), angle = atan2(dy, dx)
+    return distance >= max(4, image.width * 0.008) && distance <= face.bounds.width * image.width * 0.9
+      && angle.isFinite && abs(angle) <= .pi / 3
+  }
+  private static func eyeCore(_ point: UnitPoint, image: ImageSize, halfSize: Double) -> [PixelPoint] {
+    let x = point.x * image.width, y = point.y * image.height
+    return [PixelPoint(x: x - halfSize, y: y - halfSize), PixelPoint(x: x + halfSize, y: y - halfSize),
+      PixelPoint(x: x + halfSize, y: y + halfSize), PixelPoint(x: x - halfSize, y: y + halfSize)]
   }
 
   /// Conservative artwork/stroke envelope, not face segmentation or depth occlusion.

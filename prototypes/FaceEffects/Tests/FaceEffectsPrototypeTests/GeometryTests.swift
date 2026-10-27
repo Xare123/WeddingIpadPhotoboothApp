@@ -206,4 +206,41 @@ final class GeometryTests: XCTestCase {
     XCTAssertLessThan(crown.center.y + crown.height / 2, 0.6)
   }
 
+  func testGlassesClipOnlyReliableNeighborsWithClearEyes() throws {
+    let primary = FaceAnchors(bounds: UnitRect(x: 0.2, y: 0.3, width: 0.22, height: 0.28),
+      leftEye: UnitPoint(x: 0.26, y: 0.42), rightEye: UnitPoint(x: 0.36, y: 0.42), confidence: 1)
+    let bounds = UnitRect(x: 0.41, y: 0.24, width: 0.20, height: 0.30)
+    func neighbor(_ confidence: Double, left: UnitPoint = UnitPoint(x: 0.46, y: 0.40)) -> FaceAnchors {
+      FaceAnchors(bounds: bounds, leftEye: left, rightEye: UnitPoint(x: 0.56, y: 0.40), confidence: confidence)
+    }
+    let unclipped = try XCTUnwrap(FaceGeometry.placements(faces: [primary], image: image, accessory: .glasses).first)
+    XCTAssertTrue(unclipped.excludedFaceBounds.isEmpty)
+    for confidence in [0.8, 1.0] {
+      let clipped = FaceGeometry.placements(faces: [primary, neighbor(confidence)], image: image, accessory: .glasses)
+      XCTAssertEqual(clipped.count, 1)
+      let placement = try XCTUnwrap(clipped.first), exclusion = try XCTUnwrap(placement.excludedFaceBounds.first)
+      XCTAssertEqual(placement.center, unclipped.center); XCTAssertEqual(placement.width, unclipped.width)
+      XCTAssertEqual(placement.excludedFaceBounds.count, 1)
+      // 100px interocular distance =>3.5px padding, expressed separately in each image axis.
+      XCTAssertEqual(exclusion.x, 0.4065, accuracy: 1e-12); XCTAssertEqual(exclusion.y, 0.233, accuracy: 1e-12)
+      XCTAssertEqual(exclusion.width, 0.207, accuracy: 1e-12); XCTAssertEqual(exclusion.height, 0.314, accuracy: 1e-12)
+      XCTAssertTrue(placement.finite)
+    }
+    for confidence in [0.0, 0.4, 0.5, 0.799] {
+      XCTAssertTrue(FaceGeometry.placements(faces: [primary, neighbor(confidence)], image: image, accessory: .glasses).isEmpty)
+    }
+    XCTAssertTrue(FaceGeometry.placements(faces: [primary, neighbor(1, left: UnitPoint(x: .nan, y: 0.4))], image: image, accessory: .glasses).isEmpty)
+    XCTAssertTrue(FaceGeometry.placements(faces: [primary], image: image, accessory: .glasses, obstructingBounds: [bounds]).isEmpty,
+      "explicit unusable-landmark obstructions cannot be converted into clip permission")
+    let acrossEye = FaceAnchors(bounds: UnitRect(x: 0.37, y: 0.24, width: 0.2, height: 0.3),
+      leftEye: UnitPoint(x: 0.42, y: 0.40), rightEye: UnitPoint(x: 0.52, y: 0.40), confidence: 1)
+    XCTAssertTrue(FaceGeometry.placements(faces: [primary, acrossEye], image: image, accessory: .glasses).isEmpty,
+      "a reliable neighbor still cannot cut either own eye core")
+    let invalid = UnitRect(x: .nan, y: 0, width: 0.1, height: 0.1)
+    XCTAssertFalse(AccessoryPlacement(accessory: .glasses, center: UnitPoint(x: 0.5, y: 0.5), width: 0.2,
+      height: 0.1, rotation: 0, excludedFaceBounds: [invalid]).finite)
+    XCTAssertFalse(AccessoryPlacement(accessory: .glasses, center: UnitPoint(x: 0.5, y: 0.5), width: 0.2,
+      height: 0.1, rotation: 0, excludedFaceBounds: Array(repeating: bounds, count: 65)).finite)
+  }
+
 }

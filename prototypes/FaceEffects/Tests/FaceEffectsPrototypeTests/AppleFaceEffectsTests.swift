@@ -61,18 +61,21 @@ final class AppleFaceEffectsTests: XCTestCase {
     var derivatives = Set<String>()
     for accessory in [FaceAccessory.glasses, .crown, .hearts] {
       let output = try process(image, accessory)
-      XCTAssertFalse(output.unchanged)
-      XCTAssertEqual(output.visionRevision, 3)
-      XCTAssertGreaterThanOrEqual(output.placements.count, 1, "Actual Vision must detect a usable face; count/identity is not fixed")
-      XCTAssertLessThanOrEqual(output.placements.count, FaceGeometry.maximumFaces)
-      XCTAssertTrue(output.placements.allSatisfy { $0.accessory == accessory && $0.finite })
-      let jpeg = try XCTUnwrap(output.jpegData), decoded = try decode(jpeg)
-      XCTAssertEqual(decoded.width, 960); XCTAssertEqual(decoded.height, 1200)
-      XCTAssertNotEqual(try pixels(output.image), before, "Each accessory must change actual image pixels")
-      let metadata = try XCTUnwrap(CGImageSourceCreateWithData(jpeg as CFData, nil))
-      let props = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(metadata, 0, nil) as? [String: Any])
-      XCTAssertNil(props[kCGImagePropertyGPSDictionary as String])
-      XCTAssertEqual((props[kCGImagePropertyOrientation as String] as? NSNumber)?.intValue ?? 1, 1)
+      let label = accessory.rawValue
+      XCTAssertFalse(output.unchanged, "\(label): usable portrait effect must produce a derivative")
+      XCTAssertEqual(output.visionRevision, 3, "\(label): pinned detector revision")
+      XCTAssertGreaterThanOrEqual(output.placements.count, 1, "\(label): actual Vision must produce a usable face; identity/count is not fixed")
+      XCTAssertLessThanOrEqual(output.placements.count, FaceGeometry.maximumFaces, "\(label): bounded group size")
+      XCTAssertTrue(output.placements.allSatisfy { $0.accessory == accessory && $0.finite }, "\(label): valid matching placements")
+      XCTAssertNotEqual(try pixels(output.image), before, "\(label): accessory must change actual image pixels")
+      XCTAssertNotNil(output.jpegData, "\(label): a rendered JPEG is mandatory")
+      guard let jpeg = output.jpegData else { continue } // Assertion failed above; still report every other style.
+      let decoded = try decode(jpeg)
+      XCTAssertEqual(decoded.width, 960, "\(label): full width"); XCTAssertEqual(decoded.height, 1200, "\(label): full height")
+      let metadata = try XCTUnwrap(CGImageSourceCreateWithData(jpeg as CFData, nil), "\(label): readable JPEG")
+      let props = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(metadata, 0, nil) as? [String: Any], "\(label): JPEG properties")
+      XCTAssertNil(props[kCGImagePropertyGPSDictionary as String], "\(label): no source GPS")
+      XCTAssertEqual((props[kCGImagePropertyOrientation as String] as? NSNumber)?.intValue ?? 1, 1, "\(label): upright output")
       derivatives.insert(SHA256.hash(data: jpeg).map { String(format: "%02x", $0) }.joined())
       try evidence(jpeg, accessory: accessory)
     }
@@ -306,7 +309,7 @@ final class AppleFaceEffectsTests: XCTestCase {
     case "rolled":
       primary = FaceAnchors(bounds: UnitRect(x: 0.08, y: 0.32, width: 0.30, height: 0.32),
         leftEye: UnitPoint(x: 0.16, y: 0.50), rightEye: UnitPoint(x: 0.30, y: 0.58), confidence: 1)
-      protected = UnitRect(x: 0.34, y: 0.28, width: 0.22, height: 0.25)
+      protected = UnitRect(x: 0.34, y: 0.28, width: 0.22, height: 0.35)
     case "edge":
       primary = FaceAnchors(bounds: UnitRect(x: 0.01, y: 0.12, width: 0.18, height: 0.30),
         leftEye: UnitPoint(x: 0.025, y: 0.24), rightEye: UnitPoint(x: 0.105, y: 0.24), confidence: 1)
@@ -416,6 +419,58 @@ final class AppleFaceEffectsTests: XCTestCase {
       XCTAssertEqual(try pixels(image), before)
       try controlledEvidence(output, name: name)
     }
+  }
+
+  func testReliableNeighborClippingPreservesLensCentersAndAllExcludedPixels() throws {
+    let image = try blank(width: 960, height: 1200), before = try pixels(image)
+    let primary = FaceAnchors(bounds: UnitRect(x: 0.10, y: 0.30, width: 0.30, height: 0.30),
+      leftEye: UnitPoint(x: 0.20, y: 0.45), rightEye: UnitPoint(x: 0.30, y: 0.45), confidence: 1)
+    let neighbor = FaceAnchors(bounds: UnitRect(x: 0.34, y: 0.30, width: 0.25, height: 0.30),
+      leftEye: UnitPoint(x: 0.42, y: 0.45), rightEye: UnitPoint(x: 0.52, y: 0.45), confidence: 1)
+    let placements = FaceGeometry.placements(faces: [primary, neighbor], image: ImageSize(width: 960, height: 1200), accessory: .glasses)
+    XCTAssertEqual(placements.count, 1, "larger reliable face may keep its safe lenses while trimming its outer temple")
+    let placement = try XCTUnwrap(placements.first)
+    XCTAssertEqual(placement.excludedFaceBounds.count, 1)
+    let weakPrimary = FaceAnchors(bounds: primary.bounds, leftEye: primary.leftEye, rightEye: primary.rightEye, confidence: 0.5)
+    XCTAssertTrue(FaceGeometry.placements(faces: [weakPrimary, neighbor], image: ImageSize(width: 960, height: 1200),
+      accessory: .glasses).isEmpty, "weak own or neighbor confidence must not admit a clipped accessory in either direction")
+    let untrimmed = AccessoryPlacement(accessory: .glasses, center: placement.center, width: placement.width,
+      height: placement.height, rotation: placement.rotation)
+    let bare = try renderForOrientationTest(image, placements: [untrimmed])
+    let rawZone = CGRect(x: CGFloat(neighbor.bounds.x * 960), y: CGFloat(neighbor.bounds.y * 1200),
+      width: CGFloat(neighbor.bounds.width * 960), height: CGFloat(neighbor.bounds.height * 1200))
+    XCTAssertNotEqual(try pixels(XCTUnwrap(bare.image.cropping(to: rawZone))), try pixels(XCTUnwrap(image.cropping(to: rawZone))),
+      "negative control must actually paint into the protected neighbor without clipping")
+    let clipped = try renderForOrientationTest(image, placements: placements), jpeg = try decode(XCTUnwrap(clipped.jpegData))
+    try assertProtectedPixels(image, clipped.image, region: neighbor.bounds)
+    try assertProtectedJpegSamples(image, jpeg, region: neighbor.bounds)
+    for excluded in placement.excludedFaceBounds { try assertProtectedPixels(image, clipped.image, region: excluded) }
+    for rendered in [clipped.image, jpeg] { for eye in [primary.leftEye, primary.rightEye] {
+      let x = Int((eye.x * 960).rounded()), y = Int((eye.y * 1200).rounded())
+      XCTAssertTrue(try color(rendered, x: x, y: y).allSatisfy { $0 > 220 }, "both reliable eye centers stay clear")
+      var dark = 0
+      for dy in -2...2 { for dx in -2...2 {
+        if try color(rendered, x: x + dx, y: y - 26 + dy).allSatisfy({ $0 < 110 }) { dark += 1 }
+      } }
+      XCTAssertGreaterThan(dark, 0, "both top lens rims remain centered above the known eyes")
+    } }
+    // Deliberately overlapping holes cover real ink. One combined even-odd path would re-include their overlap.
+    let first = UnitRect(x: 0.32, y: 0.42, width: 0.04, height: 0.06)
+    let second = UnitRect(x: 0.33, y: 0.43, width: 0.04, height: 0.06)
+    let overlap = UnitRect(x: 0.33, y: 0.43, width: 0.03, height: 0.05)
+    let twoHoles = AccessoryPlacement(accessory: .glasses, center: placement.center, width: placement.width,
+      height: placement.height, rotation: placement.rotation, excludedFaceBounds: [first, second])
+    let output = try renderForOrientationTest(image, placements: [twoHoles])
+    let encoded = try decode(XCTUnwrap(output.jpegData))
+    let overlapPixels = CGRect(x: CGFloat(overlap.x * 960), y: CGFloat(overlap.y * 1200),
+      width: CGFloat(overlap.width * 960), height: CGFloat(overlap.height * 1200))
+    XCTAssertNotEqual(try pixels(XCTUnwrap(bare.image.cropping(to: overlapPixels))),
+      try pixels(XCTUnwrap(image.cropping(to: overlapPixels))), "overlap negative control must contain actual accessory ink")
+    for region in [first, second, overlap] {
+      try assertProtectedPixels(image, output.image, region: region)
+      try assertProtectedJpegSamples(image, encoded, region: region)
+    }
+    XCTAssertEqual(try pixels(image), before)
   }
 
 }

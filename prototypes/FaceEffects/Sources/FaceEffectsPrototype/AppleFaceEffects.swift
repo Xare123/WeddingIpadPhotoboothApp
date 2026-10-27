@@ -134,6 +134,17 @@ public final class AppleFaceEffectsWorker: @unchecked Sendable {
     canvas.translateBy(x: 0, y: CGFloat(height)); canvas.scaleBy(x: 1, y: -1)
     for placement in placements {
       canvas.saveGState()
+      // Intersect one outside-of-hole clip at a time in global TOP-LEFT image coordinates.
+      // A single even-odd path containing all holes would re-include overlapping exclusions.
+      for excluded in placement.excludedFaceBounds {
+        let x = floor(excluded.x * Double(width)), y = floor(excluded.y * Double(height))
+        let right = ceil((excluded.x + excluded.width) * Double(width))
+        let bottom = ceil((excluded.y + excluded.height) * Double(height))
+        canvas.beginPath()
+        canvas.addRect(CGRect(x: 0, y: 0, width: CGFloat(width), height: CGFloat(height)))
+        canvas.addRect(CGRect(x: CGFloat(x), y: CGFloat(y), width: CGFloat(right - x), height: CGFloat(bottom - y)))
+        canvas.clip(using: .evenOdd)
+      }
       canvas.translateBy(x: CGFloat(placement.center.x * Double(width)), y: CGFloat(placement.center.y * Double(height)))
       canvas.rotate(by: CGFloat(placement.rotation))
       canvas.scaleBy(x: CGFloat(placement.width * Double(width)), y: CGFloat(placement.height * Double(height)))

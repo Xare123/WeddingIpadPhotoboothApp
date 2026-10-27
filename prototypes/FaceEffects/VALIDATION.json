@@ -83,7 +83,7 @@
       "executorViewedRenderedArtifact": false
     },
     "scope": "Isolated geometry/vector refinement and deterministic native regressions; no app integration",
-    "expectedNativeMethods": 37,
+    "expectedNativeMethods": 39,
     "existingMethodsRetained": 31,
     "expectedImages": {
       "actualVisionPortraits": 3,
@@ -93,7 +93,7 @@
         1200
       ]
     },
-    "nativeResult": "not run yet; v1 counts below do not validate v2",
+    "nativeResult": "repair candidate unrun; do not infer success from failed37-case attempt",
     "visualResult": "new exports and coordinator review required",
     "limitations": [
       "conservative bounding-box suppression, not depth-aware occlusion",
@@ -104,13 +104,13 @@
       "prototypes/FaceEffects/Package.swift": "d182d430a227dd5669d5720e889ae721d2c8d134879c5f02d2bbc45d0d684226",
       "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/Fixtures/provenance.json": "937bbf6d2d52a3b18569b38371e9fdae622ebf9ea7ca86c20ee0e322f5bd3e9c",
       ".github/workflows/face-effects-prototype.yml": "995110e019a1de4d43a130c4b04481f11edb353fcf1f3fdb73d0da3e8bae0a00",
-      "scripts/face-effects-proof.mjs": "48e6b48a87315610db80c4c1412a515ca1aa84ddf18dd5994c40c31a6f901b6b",
-      "scripts/face-effects-proof.test.mjs": "b36b7b679a1ce6759ed82e6babb1e4d949b1619bddb4da19175ad21413e915de",
-      "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/GeometryTests.swift": "4283dae0765938fcf13bdefe7f3825e69b8d7a71228d72a411fe8be1be098d2d",
+      "scripts/face-effects-proof.mjs": "d87aaa39370fded9d1aba9a51160f3dd8dd018c244af5d9d58a19143b8848e9a",
+      "scripts/face-effects-proof.test.mjs": "0a662ed00ca5382816ac2a561251a7710e1cd9a5bc610e47be3ed606789345c3",
+      "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/GeometryTests.swift": "a1a384b9672242925470211105601464159e1077dff7b71b01b843982ad0c1a7",
       "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/FrameFreshnessGateTests.swift": "03cc3280f46b51e34a3f462595974836840afe2082edef9ed05cce2a9abbec26",
-      "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/AppleFaceEffectsTests.swift": "551628dee2d5b8c2b54c7b4c170f7adcddd881bff38d5cc697cb4ea671780399",
-      "prototypes/FaceEffects/Sources/FaceEffectsPrototype/AppleFaceEffects.swift": "236d9ea2a76fd2100302dd1da58c0719428514813182ae0dde0b908a749b5b4f",
-      "prototypes/FaceEffects/Sources/FaceEffectsPrototype/FaceGeometry.swift": "e51dac1a5dffa5f4d7f96d6e6a7a8ffb58e304b661c153e14566004acc8a7ad8",
+      "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/AppleFaceEffectsTests.swift": "d73a4738a7cee221ffc6df97a4d420e1a8fa83fefc7468468cd4f3a8db6c35b5",
+      "prototypes/FaceEffects/Sources/FaceEffectsPrototype/AppleFaceEffects.swift": "664f76451dd5fb9d89758bc1dcfda3240e578ba85c085aace95771cd84d0aa37",
+      "prototypes/FaceEffects/Sources/FaceEffectsPrototype/FaceGeometry.swift": "84605627ec754edb1c0f625fc1fd241ae840de8e9701715d82d0638ac740654e",
       "prototypes/FaceEffects/Sources/FaceEffectsPrototype/FrameFreshnessGate.swift": "2d1d6615c49a501302cf44861825c7cda3ad26fe161cd0db53f84cb396ee55f3"
     },
     "localProofTests": {
@@ -129,6 +129,29 @@
       ],
       "nativeExecutionByReviewer": false,
       "actualJPEGVisualApprovalByReviewer": false
+    },
+    "failedNativeAttempt": {
+      "source": "d1dcfe952cd3ece0decce35d4d6b9faf6f01082d",
+      "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40493829745",
+      "job": "122154125913",
+      "result": "failed: actual XCTest assertions, not infrastructure",
+      "verifiedFindings": [
+        "first portrait/glasses output had zero placements and no JPEG: coarse neighbor envelopes over-suppressed",
+        "controlled rolled-face expected omission but actual count2: fixture obstacle did not intersect glasses as intended"
+      ],
+      "exactExecutedCount": "not independently read from structured XML in this executor"
+    },
+    "repair": "Guarded temple clipping for reliably detected neighbors with clear own eye cores; independent clipped/overlapping-mask regressions; corrected rolled obstruction geometry. Unknown/weak/occluded neighbors still suppress effect.",
+    "independentRepairReview": {
+      "result": "No source blocker",
+      "coverage": [
+        "Sequential global top-left outside-of-one-hole clips exclude union; no overlap reinclusion",
+        "Own and neighbor reliability required; own .20d eye cores protected",
+        "Unknown/weak/invalid-eye neighbors still suppress; crown/hearts unchanged",
+        "All37 prior method identities retained within39; all mandatory output assertions remain"
+      ],
+      "nativeExecutionByReviewer": false,
+      "actualNewJPEGVisualReview": false
     }
   }
 }
