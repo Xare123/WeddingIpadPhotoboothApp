@@ -136,7 +136,6 @@ function Photobooth() {
   const templateActive = useRef(false);
   const templateSaving = useRef(false);
   const librarySessionRef = useRef<ActiveSession | null>(null);
-  const screenFade = useRef(new Animated.Value(1)).current;
   const countdownReveal = useRef(new Animated.Value(1)).current;
   const exposureFlash = useRef(new Animated.Value(0)).current;
   const reduceMotionRef = useRef(true);
@@ -551,14 +550,14 @@ function Photobooth() {
         hostVisibleRef.current = false; setHostVisible(false); setHostDecision(null);
         librarySessionRef.current = null; setLibrarySession(null); setSavedSessions([]); setLibraryMode('selected'); setHostPage('controls'); setHostMessage('');
         retakeAllIntent.current = null; setRetakeAllVisible(false);
-        setTimingVisible(false); setScanningSetup(false); setPairingCode(''); runner.current?.interrupt(); screenFade.stopAnimation(); screenFade.setValue(1); countdownReveal.stopAnimation(); exposureFlash.stopAnimation(); exposureFlash.setValue(0);
+        setTimingVisible(false); setScanningSetup(false); setPairingCode(''); runner.current?.interrupt(); countdownReveal.stopAnimation(); exposureFlash.stopAnimation(); exposureFlash.setValue(0);
       }
       else { refreshInterruptedCamera(); void retrySharing(); void refreshCapability(); }
     });
     const timer = setInterval(() => {
       if (AppState.currentState === 'active') { setNow(Date.now()); void retrySharing(); }
     }, 15_000);
-    return () => { hostVisibility.current.close(); mounted.current = false; alive = false; lookEditor.current?.close(); templateEditor.current?.close(); runner.current?.interrupt(); screenFade.stopAnimation(); countdownReveal.stopAnimation(); exposureFlash.stopAnimation(); motion.remove(); lifecycle.remove(); clearInterval(timer); };
+    return () => { hostVisibility.current.close(); mounted.current = false; alive = false; lookEditor.current?.close(); templateEditor.current?.close(); runner.current?.interrupt(); countdownReveal.stopAnimation(); exposureFlash.stopAnimation(); motion.remove(); lifecycle.remove(); clearInterval(timer); };
   }, []);
 
   useEffect(() => {
@@ -614,13 +613,6 @@ function Photobooth() {
     const timer = setTimeout(() => setNow(Date.now()), Math.max(0, Math.min(guestPage.expiresAt - Date.now() + 1, 2_147_483_647)));
     return () => clearTimeout(timer);
   }, [guestPage?.expiresAt]);
-  useEffect(() => {
-    screenFade.stopAnimation();
-    if (reduceMotion) { screenFade.setValue(1); return; }
-    screenFade.setValue(0);
-    const transition = Animated.timing(screenFade, { toValue: 1, duration: 220, easing: Easing.out(Easing.quad), useNativeDriver: true });
-    transition.start(); return () => transition.stop();
-  }, [screen, reduceMotion, screenFade]);
   useEffect(() => {
     countdownReveal.stopAnimation();
     if (reduceMotion || countdown === undefined) { countdownReveal.setValue(1); return; }
@@ -949,7 +941,8 @@ function Photobooth() {
     : 'Applying the saved display preference…';
   return <SafeAreaView edges={screen === 'camera' ? [] : ['top', 'right', 'bottom', 'left']} style={[styles.page, lightScreen && styles.lightPage]}>
     <StatusBar hidden={screen === 'camera'} barStyle={lightScreen ? 'dark-content' : 'light-content'} />
-    <Animated.View style={[styles.app, { opacity: screen === 'camera' ? 1 : screenFade }]}>
+    {/* Root visibility stays opaque; only explicit flash/countdown/thumbnail surfaces animate. */}
+    <View style={styles.app}>
       {screen === 'attract' ? <ImageBackground source={require('./assets/attract-scene.png')} resizeMode="cover" style={styles.attract} imageStyle={styles.attractImage}>
         <View style={styles.attractShade} />
         <View style={styles.attractTop}><Text testID="wedding-identity" style={[styles.brand, styles.weddingIdentity]}>{WEDDING_IDENTITY}</Text><Pressable accessibilityRole="button" accessibilityLabel="Open host controls" onPress={() => void openHost()} disabled={hostBusy}><Text style={styles.attractHost}>Host</Text></Pressable></View>
@@ -1035,7 +1028,7 @@ function Photobooth() {
       </>}
       {!!message && <View testID="booth-status-message" accessibilityLiveRegion="polite" style={[styles.message, screen === 'camera' && styles.cameraMessage, screen === 'camera' && { left: insets.left + 18, right: insets.right + 18, top: insets.top + 80 }]}><Text style={styles.messageText}>{message}</Text></View>}
       {nativeFixtureEnabled && <View style={styles.fixture}><Text testID="native-fixture-enabled" style={styles.fixtureText}>SYNTHETIC CAMERA · REAL LOCAL STORAGE · OFFLINE SHARING</Text><Text testID="native-fixture-storage" style={styles.fixtureText}>{fixtureStatus}</Text></View>}
-    </Animated.View>
+    </View>
     <Modal visible={retakeAllVisible && foreground && !hostVisible} transparent animationType={reduceMotion ? 'none' : 'fade'} onRequestClose={closeRetakeAll}>
       <View style={styles.retakeAllOverlay}><View style={styles.retakeAllCard} accessibilityViewIsModal>
         <Text style={styles.retakeAllEyebrow}>YOUR PREVIOUS SET STAYS SAVED</Text><Text style={styles.retakeAllTitle}>A fresh set?</Text>
