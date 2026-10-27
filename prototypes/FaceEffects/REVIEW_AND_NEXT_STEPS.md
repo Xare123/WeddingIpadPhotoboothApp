@@ -1,6 +1,6 @@
 # Still-effects acceptance and next steps
 
-**V3 candidate review:** the next gate is43 native methods, nine exports and two aggregate count files, including a separate two-person portrait that must decorate both people in all three styles. Read the [integration decision](INTEGRATION_DECISION.md). Older native passes below are historical and do not approve this new candidate.
+**V3 review source9335c18:**43 native methods, nine exports and both aggregate count files now pass. Both separated people receive every effect; touching heads retain two crowns and intentional one-person glasses/hearts fallback. Read the [integration decision](INTEGRATION_DECISION.md). Personal visual review and all app/live/device gates remain open.
 
 This document belongs only to `codex/face-effects-prototype`. The installed wedding app stays at tested `9ed36b4` / 0.3.7 build10. The MVP review-branch handoff `642a367` changes documentation and test preparation, not the installed application. Do not merge, install or wire this prototype into the booth yet.
 
@@ -57,3 +57,12 @@ The new [separated generated source](Tests/FaceEffectsPrototypeTests/Fixtures/se
 | `separated-coverage.json`, `touching-coverage.json` | Actual aggregate detected/landmarked/decorated counts per style; omission reasons are `detector-miss`, `landmarks-unusable` or `placement-protection`. These contain no face coordinates or identities. |
 
 The small tiara now uses symmetric smooth arches and a fine circlet with physically round pearls. A nonsquare-canvas pixel test checks physical circles instead of trusting normalized widths. The exact new native exports still need a personal visual pass. Still tests do not close live-preview, actual camera orientation/mirroring, app preview/export parity, broad group quality or iPad performance gates.
+
+Download **`isolated-face-effects-9335c1881901dde11da91cbcc1b5304033e25bdd`** from [native40501990970](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40501990970), job122181696272. Terminal success in1m43s verifies all43 exact methods with zero failures/skips, nine JPEGs, both count reports and iOS SDK typecheck. [Linux40501990986](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40501990986) passes in1m14s;13 local proof checks pass. The source and all11 code-input hashes are recorded in [VALIDATION.json](VALIDATION.json).
+
+| Scene | Glasses | Tiara | Hearts |
+| --- | --- | --- | --- |
+| Separated pair | 2of2 | 2of2 | 2of2 |
+| Touching heads | 1of2 | 2of2 | 1of2 |
+
+Every row reports2detected/2landmarked. Thus touching omissions are placement protection, not detector or landmark failure. The counts come from the actual native producer and strict finish gate; this executor has not downloaded the raw artifact or viewed its new JPEGs. Review each natural placement/omission in the pixels before approval. The installed0.3.7 app and stable MVP642a367 remain unchanged.
