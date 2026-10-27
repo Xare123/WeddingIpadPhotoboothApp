@@ -76,10 +76,11 @@
     },
     "candidate": {
       "source": "e886ec596ab3b946f578289f29e0fafd90cd074a",
-      "result": "not yet visually approved",
+      "result": "Coordinator personally reviewed: right-side art cleaner; left person omitted for every effect; safe fallback only, not multi-person success",
       "executorViewedNewJPEGs": false,
       "requiredAction": "Coordinator inspect all six new native outputs from exact artifact; approve scale/anchoring/temple clipping and close-face/edge fallback separately from CI",
-      "transferCapability": "No artifact/Library materialization tool exposed in this executor; parent workspace paths are not local"
+      "transferCapability": "No artifact/Library materialization tool exposed in this executor; parent workspace paths are not local",
+      "coordinatorActuallyViewedThreePortraitJPEGs": true
     }
   },
   "repairedNativeFailure": {
@@ -120,5 +121,55 @@
     "Shipping app integration, derivative durability and preview/export consistency",
     "Real guests/device acceptance"
   ],
-  "noProductionActions": true
+  "noProductionActions": true,
+  "pendingV3": {
+    "scope": "Isolated bounded multi-person still-assessment; no app integration",
+    "expectedNativeMethods": 43,
+    "prior39IdentitiesRetained": true,
+    "localProof": {
+      "executed": 13,
+      "passed": 13
+    },
+    "sourceSHA256": {
+      "prototypes/FaceEffects/Package.swift": "d182d430a227dd5669d5720e889ae721d2c8d134879c5f02d2bbc45d0d684226",
+      "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/Fixtures/provenance.json": "a8371739f42bd4ef82ac55977527d1e985fe51680df8289821d03bdc911b2fce",
+      ".github/workflows/face-effects-prototype.yml": "2bba2253b88a4b0c03e0c949c91867f12f552c53c7d06445eec329cb83da4843",
+      "scripts/face-effects-proof.mjs": "5cf542328064ad9421a82129486c1ce3760fc7ee320422b9c7b7201cebcd154b",
+      "scripts/face-effects-proof.test.mjs": "fc5a940cf5a2a34c0d10da5f9ca673baf61de9ba35ae7784ec974f024c412a71",
+      "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/GeometryTests.swift": "3fe69f7de31f613e21c810e824ce270acb9843cfb75d0a4b3695d2745bc89f9e",
+      "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/FrameFreshnessGateTests.swift": "03cc3280f46b51e34a3f462595974836840afe2082edef9ed05cce2a9abbec26",
+      "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/AppleFaceEffectsTests.swift": "de02e51259de68098014e68fea737593e35b68976251ef8126d157ac8ae310f1",
+      "prototypes/FaceEffects/Sources/FaceEffectsPrototype/AppleFaceEffects.swift": "01a87b5454f3f5b52947054302acc717b80510eead06df9e4a71bf94a3a4a8a0",
+      "prototypes/FaceEffects/Sources/FaceEffectsPrototype/FaceGeometry.swift": "62866121340d52308afbe16d454aae81ce4873d3de99563b625a24b48c2ffaeb",
+      "prototypes/FaceEffects/Sources/FaceEffectsPrototype/FrameFreshnessGate.swift": "2d1d6615c49a501302cf44861825c7cda3ad26fe161cd0db53f84cb396ee55f3"
+    },
+    "separatedFixtureSha256": "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165",
+    "separatedFixtureDimensions": [
+      1122,
+      1402
+    ],
+    "newSourceViewedByExecutor": true,
+    "newRenderedOutputsViewedByExecutor": false,
+    "expectedNativeImages": {
+      "touching": 3,
+      "controlled": 3,
+      "separated": 3
+    },
+    "requiredSceneProof": "All three styles detected2/landmarked2/decorated2 for separated pair; truthful counts and omission reasons for touching pair",
+    "nativeResult": "not run yet",
+    "visualResult": "not approved; fresh nine-output review required",
+    "integrationDecision": "Keep separate; see INTEGRATION_DECISION.md",
+    "independentSourceReview": {
+      "result": "No remaining source blocker",
+      "coverage": [
+        "All fixed6 crown/heart alternatives rerun unchanged full face/image/unknown/accepted-art protection",
+        "Glasses remain eye-locked; masks unchanged",
+        "Smooth diadem artwork and physically round pearls fit .515 envelope",
+        "All39 prior identities retained within43; strict separated2/2/2 perstyle plus pixelchanges perperson",
+        "Four truthful count outcomes; no facial coordinates or identities persisted"
+      ],
+      "nativeExecutionByReviewer": false,
+      "newRenderedPixelApproval": false
+    }
+  }
 }

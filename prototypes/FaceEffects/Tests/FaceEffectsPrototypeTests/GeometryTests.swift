@@ -165,17 +165,21 @@ final class GeometryTests: XCTestCase {
     let one = FaceGeometry.placements(faces: [left], image: image, accessory: .crown)
     let two = FaceGeometry.placements(faces: [right], image: image, accessory: .crown)
     XCTAssertEqual(one.count, 1); XCTAssertEqual(two.count, 1)
-    XCTAssertEqual(FaceGeometry.placements(faces: [left,right], image: image, accessory: .crown), one)
-    XCTAssertEqual(FaceGeometry.placements(faces: [right,left], image: image, accessory: .crown), two,
+    // A real explicit overhead obstruction blocks both bounded lifts while
+    // leaving the natural full-size baseline clear. No protection is relaxed.
+    let ceiling = UnitRect(x: 0.25, y: 0.30, width: 0.5, height: 0.12)
+    XCTAssertEqual(FaceGeometry.placements(faces: [left,right], image: image, accessory: .crown, obstructingBounds: [ceiling]), one)
+    XCTAssertEqual(FaceGeometry.placements(faces: [right,left], image: image, accessory: .crown, obstructingBounds: [ceiling]), two,
       "equal-area collision priority is stable input order")
-    XCTAssertEqual(FaceGeometry.placements(faces: [left,rolled(0.55, width: 0.09)], image: image, accessory: .crown), two,
+    XCTAssertEqual(FaceGeometry.placements(faces: [left,rolled(0.55, width: 0.09)], image: image, accessory: .crown, obstructingBounds: [ceiling]), two,
       "larger face wins even when it appears later")
     // In the rotated envelope's lower-right AABB corner, this tiny box is
     // physically separated from the actual rotated rectangle. SAT must keep it.
     let outsideRotatedBox = UnitRect(x: 0.536, y: 0.55, width: 0.004, height: 0.008)
     XCTAssertEqual(FaceGeometry.placements(faces: [left], image: image, accessory: .crown,
       obstructingBounds: [outsideRotatedBox]), one)
-    let acrossRotatedBox = UnitRect(x: 0.50, y: 0.49, width: 0.02, height: 0.02)
+    // Covers every bounded alternative, not merely the formerly fixed base pose.
+    let acrossRotatedBox = UnitRect(x: 0.40, y: 0.30, width: 0.16, height: 0.28)
     XCTAssertTrue(FaceGeometry.placements(faces: [left], image: image, accessory: .crown,
       obstructingBounds: [acrossRotatedBox]).isEmpty)
   }
@@ -200,7 +204,7 @@ final class GeometryTests: XCTestCase {
     let candidate = FaceAnchors(bounds: UnitRect(x: 0.25, y: 0.45, width: 0.5, height: 0.35),
       leftEye: UnitPoint(x: 0.45, y: 0.6), rightEye: UnitPoint(x: 0.55, y: 0.6), confidence: 1)
     let crown = try XCTUnwrap(FaceGeometry.placements(faces: [candidate], image: square, accessory: .crown).first)
-    XCTAssertEqual(FaceGeometry.recipeVersion, "wedding-face-prototype-v2")
+    XCTAssertEqual(FaceGeometry.recipeVersion, "wedding-face-prototype-v3")
     XCTAssertEqual(crown.width, 0.172, accuracy: 1e-12); XCTAssertEqual(crown.height, 0.05, accuracy: 1e-12)
     XCTAssertEqual(crown.center.x, 0.5, accuracy: 1e-12); XCTAssertEqual(crown.center.y, 0.46, accuracy: 1e-12)
     XCTAssertLessThan(crown.center.y + crown.height / 2, 0.6)
@@ -241,6 +245,70 @@ final class GeometryTests: XCTestCase {
       height: 0.1, rotation: 0, excludedFaceBounds: [invalid]).finite)
     XCTAssertFalse(AccessoryPlacement(accessory: .glasses, center: UnitPoint(x: 0.5, y: 0.5), width: 0.2,
       height: 0.1, rotation: 0, excludedFaceBounds: Array(repeating: bounds, count: 65)).finite)
+  }
+
+  func testAboveHeadAlternativesFindSafeRoomWithoutRelaxingFaceProtection() throws {
+    let square = ImageSize(width: 1000, height: 1000)
+    let candidate = FaceAnchors(bounds: UnitRect(x: 0.30, y: 0.55, width: 0.40, height: 0.25),
+      leftEye: UnitPoint(x: 0.45, y: 0.65), rightEye: UnitPoint(x: 0.55, y: 0.65), confidence: 1)
+    let lowerBand = UnitRect(x: 0.40, y: 0.52, width: 0.20, height: 0.02)
+    let higherBand = UnitRect(x: 0.40, y: 0.494, width: 0.20, height: 0.046)
+    let leftWall = UnitRect(x: 0.39, y: 0.40, width: 0.02, height: 0.15)
+    let rightWall = UnitRect(x: 0.59, y: 0.40, width: 0.02, height: 0.15)
+    let wholeCorridor = UnitRect(x: 0.20, y: 0.30, width: 0.60, height: 0.25)
+    for accessory in [FaceAccessory.crown, .hearts] {
+      let baseline = try XCTUnwrap(FaceGeometry.placements(faces: [candidate], image: square, accessory: accessory).first)
+      for (band, lift) in [(lowerBand, 0.025), (higherBand, 0.050)] {
+        let lifted = try XCTUnwrap(FaceGeometry.placements(faces: [candidate], image: square, accessory: accessory,
+          obstructingBounds: [band]).first)
+        XCTAssertEqual(lifted.center.x, baseline.center.x, accuracy: 1e-12)
+        XCTAssertEqual(lifted.center.y, baseline.center.y - lift, accuracy: 1e-12)
+        XCTAssertEqual(lifted.width, baseline.width); XCTAssertEqual(lifted.height, baseline.height)
+        XCTAssertLessThan(lifted.center.y + 0.515 * lifted.height, band.y - 0.0035,
+          "the full padded unknown obstruction is genuinely cleared, not shrunk")
+      }
+      let smaller = try XCTUnwrap(FaceGeometry.placements(faces: [candidate], image: square, accessory: accessory,
+        obstructingBounds: [leftWall,rightWall]).first)
+      XCTAssertEqual(smaller.center, baseline.center, "prefer natural baseline at90% over an unnecessary floating pose")
+      XCTAssertEqual(smaller.width, baseline.width * 0.90, accuracy: 1e-12)
+      XCTAssertEqual(smaller.height, baseline.height * 0.90, accuracy: 1e-12)
+      XCTAssertTrue(FaceGeometry.placements(faces: [candidate], image: square, accessory: accessory,
+        obstructingBounds: [wholeCorridor]).isEmpty, "all six unsafe alternatives must be omitted")
+      let unknownFace = FaceAnchors(bounds: wholeCorridor, leftEye: UnitPoint(x: .nan, y: .nan),
+        rightEye: UnitPoint(x: .nan, y: .nan), confidence: 0.1)
+      XCTAssertTrue(FaceGeometry.placements(faces: [candidate,unknownFace], image: square, accessory: accessory).isEmpty)
+    }
+    // Glasses stay precisely at their eye anchors: the same wall cannot cause
+    // any repositioning or resize to manufacture a visible result.
+    let glasses = FaceGeometry.placements(faces: [candidate], image: square, accessory: .glasses)
+    XCTAssertEqual(glasses.count, 1)
+    let eyeBlock = UnitRect(x: 0.44, y: 0.64, width: 0.02, height: 0.02)
+    XCTAssertTrue(FaceGeometry.placements(faces: [candidate], image: square, accessory: .glasses,
+      obstructingBounds: [eyeBlock]).isEmpty)
+  }
+  func testSeparatedFacesKeepBothDecorationsAndTouchingFacesMayFallBack() {
+    let square = ImageSize(width: 1000, height: 1000)
+    func head(_ x: Double) -> FaceAnchors {
+      FaceAnchors(bounds: UnitRect(x: x - 0.10, y: 0.50, width: 0.20, height: 0.25),
+        leftEye: UnitPoint(x: x - 0.04, y: 0.60), rightEye: UnitPoint(x: x + 0.04, y: 0.60), confidence: 1)
+    }
+    let separated = [head(0.25),head(0.75)]
+    let close = [FaceAnchors(bounds: UnitRect(x: 0.20, y: 0.50, width: 0.25, height: 0.25),
+      leftEye: UnitPoint(x: 0.27, y: 0.60), rightEye: UnitPoint(x: 0.37, y: 0.60), confidence: 1),
+      FaceAnchors(bounds: UnitRect(x: 0.28, y: 0.10, width: 0.25, height: 0.70),
+      leftEye: UnitPoint(x: 0.33, y: 0.60), rightEye: UnitPoint(x: 0.43, y: 0.60), confidence: 1)]
+    for accessory in [FaceAccessory.glasses, .crown, .hearts] {
+      let both = FaceGeometry.placements(faces: separated, image: square, accessory: accessory)
+      XCTAssertEqual(both.count, 2)
+      for (index, placement) in both.enumerated() {
+        XCTAssertEqual([placement], FaceGeometry.placements(faces: [separated[index]], image: square, accessory: accessory),
+          "separated faces retain their natural first safe poses")
+      }
+      let fallback = FaceGeometry.placements(faces: close, image: square, accessory: accessory)
+      XCTAssertLessThan(fallback.count, 2, "protection wins over forcing multi-person decoration")
+      XCTAssertEqual(FaceGeometry.placements(faces: Array(close.reversed()), image: square, accessory: accessory), fallback,
+        "larger-area priority stays stable across input order")
+    }
   }
 
 }

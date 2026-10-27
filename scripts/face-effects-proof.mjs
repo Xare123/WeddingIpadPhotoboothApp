@@ -7,10 +7,13 @@ import { jpegDimensions } from './native-pixel-results.mjs';
 
 export const FACE_BASELINE = 'c6920138de3fe239571b1c65cf6750dfd96664ff';
 export const FACE_FIXTURE_SHA = '98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1';
+export const SEPARATED_FIXTURE_SHA = 'c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165';
 export const FACE_JPEGS = Object.freeze(['portrait-glasses.jpg', 'portrait-crown.jpg', 'portrait-hearts.jpg',
-  'close-faces.jpg', 'rolled-faces.jpg', 'edge-faces.jpg']);
+  'close-faces.jpg', 'rolled-faces.jpg', 'edge-faces.jpg',
+  'separated-glasses.jpg', 'separated-crown.jpg', 'separated-hearts.jpg']);
 const PORTRAIT_PRODUCER = 'AppleFaceEffectsTests.testActualVisionPortraitDetectsUsableFacesAndRendersAllThreeOriginalVectors';
 const CONTROLLED_PRODUCER = 'AppleFaceEffectsTests.testControlledCloseRollAndEdgeEvidenceUsesSafeFallback';
+const SEPARATED_PRODUCER = 'AppleFaceEffectsTests.testSeparatedPortraitDecoratesBothPeopleForEveryEffect';
 const methods = {
   GeometryTests: [
     'testVisionLocalBottomLeftConvertsOnceToUprightTopLeft', 'testVisionRejectsInvalidBoundsNonfiniteConfidenceAndPoints',
@@ -22,6 +25,8 @@ const methods = {
     'testRotatedNeighborAndAccessoryCollisionsUsePixelSpaceAndStablePriority',
     'testImageEdgesSuppressClippedOrnamentsBeforeCapacityLimit', 'testV2CrownGeometryIsCompactAndAboveEyes',
     'testGlassesClipOnlyReliableNeighborsWithClearEyes',
+    'testAboveHeadAlternativesFindSafeRoomWithoutRelaxingFaceProtection',
+    'testSeparatedFacesKeepBothDecorationsAndTouchingFacesMayFallBack',
   ],
   FrameFreshnessGateTests: [
     'testDefaultNoneNeverAdmitsAndHasNoOverlay', 'testOnlyOnePhysicalRequestAndThrottleAfterCompletion',
@@ -43,6 +48,8 @@ const methods = {
     'testCloseFaceAndRollFallbackPreservesProtectedNeighborPixels',
     'testControlledCloseRollAndEdgeEvidenceUsesSafeFallback',
     'testReliableNeighborClippingPreservesLensCentersAndAllExcludedPixels',
+    'testSeparatedPortraitDecoratesBothPeopleForEveryEffect',
+    'testTiaraPearlsRemainPhysicallyRoundOnNonsquareCanvas',
   ],
 };
 export const FACE_CASES = Object.freeze(Object.entries(methods).flatMap(([name, entries]) => entries.map(entry => name + '.' + entry)));
@@ -96,20 +103,52 @@ export function inspectFaceJpegs(directory) {
   const state = lstatSync(directory);
   if (!state.isDirectory() || state.isSymbolicLink()) throw new Error('Prototype evidence directory must not be a symlink');
   if (!Array.isArray(FACE_JPEGS) || FACE_JPEGS.some(name => !existsSync(join(directory, name))))
-    throw new Error('All six actual native still/diagnostic JPEGs are required');
+    throw new Error('All nine actual native still/diagnostic JPEGs are required');
   const names = readdirSync(directory).filter(name => /\.(?:jpg|jpeg|png)$/i.test(name)).sort();
   if (JSON.stringify(names) !== JSON.stringify([...FACE_JPEGS].sort())) throw new Error('Unexpected prototype image evidence');
   const rows = FACE_JPEGS.map(name => {
     const bytes = boundedFile(join(directory, name), 4 * 1024 * 1024), dimensions = jpegDimensions(bytes), sha256 = digest(bytes);
-    if (dimensions.width !== 960 || dimensions.height !== 1200 || sha256 === FACE_FIXTURE_SHA)
+    const separated = name.startsWith('separated-');
+    if (dimensions.width !== (separated ? 1122 : 960) || dimensions.height !== (separated ? 1402 : 1200) ||
+      sha256 === FACE_FIXTURE_SHA || sha256 === SEPARATED_FIXTURE_SHA)
       throw new Error('Native derivative dimensions or source separation failed');
     const portrait = name.startsWith('portrait-');
     return { file: name, bytes: bytes.length, sha256, ...dimensions,
-      producer: portrait ? PORTRAIT_PRODUCER : CONTROLLED_PRODUCER,
-      kind: portrait ? 'actual-Vision-still' : 'controlled-anchor-diagnostic' };
+      producer: portrait ? PORTRAIT_PRODUCER : separated ? SEPARATED_PRODUCER : CONTROLLED_PRODUCER,
+      kind: portrait ? 'actual-Vision-touching-still' : separated ? 'actual-Vision-separated-still' : 'controlled-anchor-diagnostic' };
   });
   if (new Set(rows.map(row => row.sha256)).size !== FACE_JPEGS.length) throw new Error('Still/diagnostic outputs must have distinct bytes');
   return rows;
+}
+export function requireSceneCoverage(value, scene) {
+  const keys = (object, expected) => object && typeof object === 'object' && !Array.isArray(object) &&
+    JSON.stringify(Object.keys(object).sort()) === JSON.stringify([...expected].sort());
+  if (!['touching', 'separated'].includes(scene) || !keys(value, ['scene', 'expectedPeople', 'styles']) ||
+    value.scene !== scene || value.expectedPeople !== 2 || !Array.isArray(value.styles) || value.styles.length !== 3)
+    throw new Error('Native scene coverage schema failed');
+  const expected = ['glasses', 'crown', 'hearts'];
+  if (JSON.stringify(value.styles.map(row => row?.accessory).sort()) !== JSON.stringify([...expected].sort()))
+    throw new Error('All three exact effects require scene coverage');
+  for (const row of value.styles) {
+    if (!keys(row, ['accessory', 'detected', 'landmarked', 'decorated', 'omitted', 'explanation']) ||
+      ['detected', 'landmarked', 'decorated', 'omitted'].some(key => !Number.isInteger(row[key]) || row[key] < 0 || row[key] > 2) ||
+      row.decorated < 1 || row.decorated > row.landmarked || row.landmarked > row.detected || row.omitted !== 2 - row.decorated)
+      throw new Error('Native scene counts are inconsistent');
+    const reason = row.decorated === 2 ? 'none' : row.detected < 2 ? 'detector-miss' :
+      row.landmarked < 2 ? 'landmarks-unusable' : 'placement-protection';
+    if (row.explanation !== reason || scene === 'separated' && (row.detected !== 2 || row.landmarked !== 2 || row.decorated !== 2))
+      throw new Error('Separated scene must decorate both people; any omission must be explained truthfully');
+  }
+  return value;
+}
+export function inspectSceneCoverage(directory) {
+  return Object.fromEntries(['touching', 'separated'].map(scene => {
+    const file = `${scene}-coverage.json`, bytes = boundedFile(join(directory, file), 16 * 1024);
+    let value;
+    try { value = JSON.parse(bytes); } catch { throw new Error('Malformed native scene coverage JSON'); }
+    return [scene, { ...requireSceneCoverage(value, scene), file, sha256: digest(bytes),
+      producer: scene === 'touching' ? PORTRAIT_PRODUCER : SEPARATED_PRODUCER }];
+  }));
 }
 export function faceInputs(root) {
   root = realpathSync(root);
@@ -123,6 +162,8 @@ export function faceInputs(root) {
   requireIsolatedChanges(changed);
   const fixture = boundedFile(join(root, 'prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/Fixtures/portrait.jpg'), 1024 * 1024);
   if (digest(fixture) !== FACE_FIXTURE_SHA) throw new Error('Only the approved generated portrait fixture may enter native testing');
+  const separated = boundedFile(join(root, 'prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/Fixtures/separated-portrait.png'), 8 * 1024 * 1024);
+  if (digest(separated) !== SEPARATED_FIXTURE_SHA) throw new Error('Separated generated portrait fixture changed');
   const sources = {};
   for (const path of ['prototypes/FaceEffects/Package.swift', 'prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/Fixtures/provenance.json',
     '.github/workflows/face-effects-prototype.yml', 'scripts/face-effects-proof.mjs', 'scripts/face-effects-proof.test.mjs'])
@@ -140,7 +181,8 @@ export function faceInputs(root) {
     sources[path] = digest(boundedFile(join(root, path), 128 * 1024));
   }
   return { baseline: FACE_BASELINE, sourceCommit: git(['rev-parse', 'HEAD'])[0], shippingSourceUnchanged: true, changed, expectedCases: FACE_CASES,
-    fixtureSha256: FACE_FIXTURE_SHA, sourceSHA256: sources, dependencies: 'Apple frameworks only; no package dependencies',
+    fixtureSha256: FACE_FIXTURE_SHA, separatedFixtureSha256: SEPARATED_FIXTURE_SHA,
+    sourceSHA256: sources, dependencies: 'Apple frameworks only; no package dependencies',
     scope: 'Isolated still-image and pure frame-admission prototype; no camera, app, live tracking or device proof' };
 }
 function cli() {
@@ -162,10 +204,12 @@ function cli() {
   const tests = parseFaceXunit(boundedFile(join(directory, 'tests.xml'), 1024 * 1024).toString());
   requireAppleOnlyPackage(JSON.parse(boundedFile(join(directory, 'package-manifest.json'), 128 * 1024)));
   const images = inspectFaceJpegs(directory);
-  const report = { ...inputs, result: 'passed', tests, images, iosSDKTypecheck: 'passed', macOSVisionAndRenderer: 'passed',
+  const scenes = inspectSceneCoverage(directory);
+  const report = { ...inputs, result: 'passed', tests, images, scenes, iosSDKTypecheck: 'passed', macOSVisionAndRenderer: 'passed',
     unverified: ['iOS runtime', 'camera/session attachment', 'live tracking/smoothing', 'M2 iPad performance/thermal', 'app integration and durability/export', 'real guests/device'] };
   writeFileSync(join(directory, 'report.json'), JSON.stringify(report, null, 2) + '\n');
-  console.log(`::notice title=Face prototype evidence::${FACE_CASES.length} exact native methods passed; ${FACE_JPEGS.length} native JPEGs (three actual-Vision stills, three controlled diagnostics); iOS SDK typecheck. Shipping app unchanged. No live camera, tracking or physical-iPad proof.`);
+  const touching = scenes.touching.styles.map(row => `${row.accessory}=${row.decorated}/2(detected${row.detected},landmarked${row.landmarked})`).join(',');
+  console.log(`::notice title=Face prototype evidence::${FACE_CASES.length} exact native methods passed; ${FACE_JPEGS.length} native JPEGs; separated:2/2 people for all three effects; touching:${touching}; iOS SDK typecheck. Shipping app unchanged. No live camera, tracking or physical-iPad proof.`);
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try { cli(); } catch (error) { console.error('::error title=Face prototype gate::' + error.message.replace(/[\r\n%]/g, ' ').slice(0, 300)); process.exitCode = 1; }

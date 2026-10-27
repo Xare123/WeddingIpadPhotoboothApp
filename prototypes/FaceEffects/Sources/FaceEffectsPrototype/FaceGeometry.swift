@@ -55,7 +55,7 @@ public struct PixelPoint: Equatable, Sendable {
 }
 
 public enum FaceGeometry {
-  public static let recipeVersion = "wedding-face-prototype-v2"
+  public static let recipeVersion = "wedding-face-prototype-v3"
   public static let maximumFaces = 6
 
   /// Vision supplies bottom-left face bounds and face-local landmark points.
@@ -106,40 +106,46 @@ public enum FaceGeometry {
       case .crown: geometry = (1.72, 0.50, -1.40)
       case .hearts: geometry = (1.70, 0.48, -1.35)
       }
-      // Offset along the local face's vertical axis, not the screen's vertical.
-      let offset = geometry.2 * distance
-      let placement = AccessoryPlacement(accessory: accessory,
-        center: UnitPoint(x: x - sin(angle) * offset / image.width,
-                          y: y + cos(angle) * offset / image.height),
-        width: geometry.0 * distance / image.width, height: geometry.1 * distance / image.height, rotation: angle)
-      guard placement.finite else { continue }
-      let box = envelope(placement, image: image)
-      guard box.allSatisfy({ $0.x >= 0 && $0.y >= 0 && $0.x <= image.width && $0.y <= image.height }) else { continue }
-      // All other valid face rectangles protect even low-confidence/invalid eyes.
-      // Own bounds are excluded by input index, not rectangle equality.
-      let padding = 0.035 * distance
-      guard !obstructingBounds.contains(where: { overlaps(box, rectangle($0, image: image, padding: padding)) }),
-        !envelopes.contains(where: { overlaps(box, $0) }) else { continue }
-      var exclusions: [UnitRect] = [], blocked = false
-      for neighbor in protective where neighbor.offset != index {
-        let bounds = neighbor.element.bounds, padded = rectangle(bounds, image: image, padding: padding)
-        if !overlaps(box, padded) { continue }
-        // Only trim an exterior glasses temple when both own eye cores are
-        // untouched and the neighbor has reliable full eye geometry. Every
-        // rejected/low-confidence neighbor remains a full obstruction.
-        guard accessory == .glasses, reliableEyes(face, image: image), reliableEyes(neighbor.element, image: image),
-          !overlaps(eyeCore(first, image: image, halfSize: 0.20 * distance), padded),
-          !overlaps(eyeCore(second, image: image, halfSize: 0.20 * distance), padded) else { blocked = true; break }
-        let left = max(0, bounds.x - padding / image.width), top = max(0, bounds.y - padding / image.height)
-        let right = min(1, bounds.x + bounds.width + padding / image.width)
-        let bottom = min(1, bounds.y + bounds.height + padding / image.height)
-        exclusions.append(UnitRect(x: left, y: top, width: right - left, height: bottom - top))
+      // Fixed maximum six poses for forehead ornaments; glasses remain eye-locked.
+      let alternatives: [(lift: Double, scale: Double)] = accessory == .glasses ? [(0, 1)]
+        : [(0, 1), (0.25, 1), (0.50, 1), (0, 0.90), (0.25, 0.90), (0.50, 0.90)]
+      for alternative in alternatives {
+        // Lift along the local head normal; scale only the ornament, never the eyes.
+        let offset = (geometry.2 - alternative.lift) * distance
+        let placement = AccessoryPlacement(accessory: accessory,
+          center: UnitPoint(x: x - sin(angle) * offset / image.width,
+                            y: y + cos(angle) * offset / image.height),
+          width: alternative.scale * geometry.0 * distance / image.width, height: alternative.scale * geometry.1 * distance / image.height, rotation: angle)
+        guard placement.finite else { continue }
+        let box = envelope(placement, image: image)
+        guard box.allSatisfy({ $0.x >= 0 && $0.y >= 0 && $0.x <= image.width && $0.y <= image.height }) else { continue }
+        // All other valid face rectangles protect even low-confidence/invalid eyes.
+        // Own bounds are excluded by input index, not rectangle equality.
+        let padding = 0.035 * distance
+        guard !obstructingBounds.contains(where: { overlaps(box, rectangle($0, image: image, padding: padding)) }),
+          !envelopes.contains(where: { overlaps(box, $0) }) else { continue }
+        var exclusions: [UnitRect] = [], blocked = false
+        for neighbor in protective where neighbor.offset != index {
+          let bounds = neighbor.element.bounds, padded = rectangle(bounds, image: image, padding: padding)
+          if !overlaps(box, padded) { continue }
+          // Only trim an exterior glasses temple when both own eye cores are
+          // untouched and the neighbor has reliable full eye geometry. Every
+          // rejected/low-confidence neighbor remains a full obstruction.
+          guard accessory == .glasses, reliableEyes(face, image: image), reliableEyes(neighbor.element, image: image),
+            !overlaps(eyeCore(first, image: image, halfSize: 0.20 * distance), padded),
+            !overlaps(eyeCore(second, image: image, halfSize: 0.20 * distance), padded) else { blocked = true; break }
+          let left = max(0, bounds.x - padding / image.width), top = max(0, bounds.y - padding / image.height)
+          let right = min(1, bounds.x + bounds.width + padding / image.width)
+          let bottom = min(1, bounds.y + bounds.height + padding / image.height)
+          exclusions.append(UnitRect(x: left, y: top, width: right - left, height: bottom - top))
+        }
+        if blocked { continue }
+        let safe = AccessoryPlacement(accessory: placement.accessory, center: placement.center, width: placement.width,
+          height: placement.height, rotation: placement.rotation, excludedFaceBounds: exclusions)
+        guard safe.finite else { continue }
+        accepted.append(safe); envelopes.append(box)
+        break // First safe candidate wins; never float an already-safe baseline.
       }
-      if blocked { continue }
-      let safe = AccessoryPlacement(accessory: placement.accessory, center: placement.center, width: placement.width,
-        height: placement.height, rotation: placement.rotation, excludedFaceBounds: exclusions)
-      guard safe.finite else { continue }
-      accepted.append(safe); envelopes.append(box)
       if accepted.count == maximum { break }
     }
     return accepted

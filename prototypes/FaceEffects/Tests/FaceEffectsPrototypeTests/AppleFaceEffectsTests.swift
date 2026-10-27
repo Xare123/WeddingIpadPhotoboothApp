@@ -59,13 +59,22 @@ final class AppleFaceEffectsTests: XCTestCase {
     XCTAssertEqual(image.width, 960); XCTAssertEqual(image.height, 1200)
     let before = try pixels(image)
     var derivatives = Set<String>()
+    var coverage = [[String: Any]]()
+    let initialFailures = testRun?.failureCount ?? 0
     for accessory in [FaceAccessory.glasses, .crown, .hearts] {
       let output = try process(image, accessory)
       let label = accessory.rawValue
       XCTAssertFalse(output.unchanged, "\(label): usable portrait effect must produce a derivative")
       XCTAssertEqual(output.visionRevision, 3, "\(label): pinned detector revision")
       XCTAssertGreaterThanOrEqual(output.placements.count, 1, "\(label): actual Vision must produce a usable face; identity/count is not fixed")
-      XCTAssertLessThanOrEqual(output.placements.count, FaceGeometry.maximumFaces, "\(label): bounded group size")
+      XCTAssertLessThanOrEqual(output.placements.count, 2, "\(label): known two-person touching fixture")
+      XCTAssertNotNil(output.detectedFaceCount, "\(label): actual detection count")
+      XCTAssertNotNil(output.landmarkedFaceCount, "\(label): actual converted landmark count")
+      if let detected = output.detectedFaceCount, let landmarked = output.landmarkedFaceCount {
+        XCTAssertGreaterThanOrEqual(detected, landmarked, "\(label): counts remain ordered")
+        XCTAssertGreaterThanOrEqual(landmarked, output.placements.count, "\(label): decorations cannot exceed usable landmarks")
+        coverage.append(coverageRow(accessory, detected: detected, landmarked: landmarked, decorated: output.placements.count))
+      }
       XCTAssertTrue(output.placements.allSatisfy { $0.accessory == accessory && $0.finite }, "\(label): valid matching placements")
       XCTAssertNotEqual(try pixels(output.image), before, "\(label): accessory must change actual image pixels")
       XCTAssertNotNil(output.jpegData, "\(label): a rendered JPEG is mandatory")
@@ -82,18 +91,23 @@ final class AppleFaceEffectsTests: XCTestCase {
     XCTAssertEqual(derivatives.count, 3, "Accessories must not all render the same pixels")
     XCTAssertEqual(SHA256.hash(data: try Data(contentsOf: url)), originalHash)
     XCTAssertEqual(try Data(contentsOf: url), source)
+    if (testRun?.failureCount ?? 0) == initialFailures { try coverageEvidence(scene: "touching", styles: coverage) }
   }
   func testBlankImageReturnsUntouchedInputWithoutEncodingOrFakeFace() throws {
     let image = try blank()
     let output = try process(image, .glasses)
     XCTAssertTrue(output.unchanged); XCTAssertNil(output.jpegData); XCTAssertTrue(output.image === image)
     XCTAssertTrue(output.placements.isEmpty); XCTAssertEqual(output.visionRevision, 3)
+    XCTAssertEqual(output.detectedFaceCount, 0); XCTAssertEqual(output.landmarkedFaceCount, 0)
+    XCTAssertEqual(coverageRow(.glasses, detected: 1, landmarked: 1, decorated: 1)["explanation"] as? String, "detector-miss",
+      "a never-detected person must not be reported as landmark or placement protection")
   }
   func testNoneUnconditionallyBypassesDetectionAndEncoding() throws {
     let source = try Data(contentsOf: portraitURL()), image = try decode(source)
     let output = try process(image, .none)
     XCTAssertTrue(output.image === image); XCTAssertNil(output.jpegData)
     XCTAssertNil(output.visionRevision); XCTAssertTrue(output.placements.isEmpty)
+    XCTAssertNil(output.detectedFaceCount); XCTAssertNil(output.landmarkedFaceCount)
     XCTAssertEqual(try Data(contentsOf: portraitURL()), source)
   }
   func testControlledAnchorsPlaceCrownAtExpectedPixelsAndKeepOuterPixels() throws {
@@ -109,8 +123,8 @@ final class AppleFaceEffectsTests: XCTestCase {
     }
     wait(for: [done], timeout: 10)
     let output = try XCTUnwrap(rendered).get()
-    // CGImage crop coordinates are top-left; avoid assuming bitmap-buffer row order.
-    let sample = try XCTUnwrap(output.image.cropping(to: CGRect(x: 100, y: 44, width: 1, height: 1)))
+    // Top-left gold-band sample: crown center44px + baseband(.34*20px)=50.8px; sample row50.
+    let sample = try XCTUnwrap(output.image.cropping(to: CGRect(x: 100, y: 50, width: 1, height: 1)))
     let center = try pixels(sample)
     XCTAssertGreaterThan(Int(center[0]), 180); XCTAssertLessThan(Int(center[2]), 100)
     let corner = try XCTUnwrap(output.image.cropping(to: CGRect(x: 0, y: 0, width: 1, height: 1)))
@@ -309,10 +323,11 @@ final class AppleFaceEffectsTests: XCTestCase {
     case "rolled":
       primary = FaceAnchors(bounds: UnitRect(x: 0.08, y: 0.32, width: 0.30, height: 0.32),
         leftEye: UnitPoint(x: 0.16, y: 0.50), rightEye: UnitPoint(x: 0.30, y: 0.58), confidence: 1)
-      protected = UnitRect(x: 0.34, y: 0.28, width: 0.22, height: 0.35)
+      // Tall unknown-face corridor blocks every bounded uplift/scale alternative; far face remains clear in x.
+      protected = UnitRect(x: 0.34, y: 0.12, width: 0.22, height: 0.51)
     case "edge":
-      primary = FaceAnchors(bounds: UnitRect(x: 0.01, y: 0.12, width: 0.18, height: 0.30),
-        leftEye: UnitPoint(x: 0.025, y: 0.24), rightEye: UnitPoint(x: 0.105, y: 0.24), confidence: 1)
+      primary = FaceAnchors(bounds: UnitRect(x: 0.005, y: 0.12, width: 0.18, height: 0.30),
+        leftEye: UnitPoint(x: 0.015, y: 0.24), rightEye: UnitPoint(x: 0.085, y: 0.24), confidence: 1)
       protected = primary.bounds
     default:
       primary = FaceAnchors(bounds: UnitRect(x: 0.10, y: 0.30, width: 0.22, height: 0.28),
@@ -471,6 +486,124 @@ final class AppleFaceEffectsTests: XCTestCase {
       try assertProtectedJpegSamples(image, encoded, region: region)
     }
     XCTAssertEqual(try pixels(image), before)
+  }
+
+  private func coverageRow(_ accessory: FaceAccessory, detected: Int, landmarked: Int, decorated: Int) -> [String: Any] {
+    let explanation = decorated == 2 ? "none" : detected < 2 ? "detector-miss" : landmarked < 2 ? "landmarks-unusable" : "placement-protection"
+    return ["accessory": accessory.rawValue, "detected": detected, "landmarked": landmarked,
+      "decorated": decorated, "omitted": max(0, 2 - decorated), "explanation": explanation]
+  }
+  private func coverageEvidence(scene: String, styles: [[String: Any]]) throws {
+    guard ["touching", "separated"].contains(scene), styles.count == 3 else { throw AppleFaceEffectsError.invalidImage }
+    guard let directory = ProcessInfo.processInfo.environment["FACE_EFFECTS_EVIDENCE_DIR"] else { return }
+    let root = URL(fileURLWithPath: directory, isDirectory: true)
+    try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+    let bytes = try JSONSerialization.data(withJSONObject: ["scene": scene, "expectedPeople": 2, "styles": styles], options: [.sortedKeys, .prettyPrinted])
+    try bytes.write(to: root.appendingPathComponent(scene == "touching" ? "touching-coverage.json" : "separated-coverage.json"), options: .withoutOverwriting)
+  }
+  private func separatedEvidence(_ data: Data, accessory: FaceAccessory) throws {
+    let name: String
+    switch accessory {
+    case .glasses: name = "separated-glasses.jpg"
+    case .crown: name = "separated-crown.jpg"
+    case .hearts: name = "separated-hearts.jpg"
+    case .none: throw AppleFaceEffectsError.invalidImage
+    }
+    guard let directory = ProcessInfo.processInfo.environment["FACE_EFFECTS_EVIDENCE_DIR"] else { return }
+    let root = URL(fileURLWithPath: directory, isDirectory: true)
+    try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+    try data.write(to: root.appendingPathComponent(name), options: .withoutOverwriting)
+  }
+  func testSeparatedPortraitDecoratesBothPeopleForEveryEffect() throws {
+    let url = try XCTUnwrap(Bundle.module.url(forResource: "separated-portrait", withExtension: "png", subdirectory: "Fixtures"))
+    let source = try Data(contentsOf: url), originalHash = SHA256.hash(data: source), image = try decode(source)
+    XCTAssertEqual(originalHash.map { String(format: "%02x", $0) }.joined(), "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165")
+    XCTAssertEqual(image.width, 1122); XCTAssertEqual(image.height, 1402)
+    let before = try pixels(image), initialFailures = testRun?.failureCount ?? 0
+    var coverage = [[String: Any]](), derivatives = Set<String>()
+    for accessory in [FaceAccessory.glasses, .crown, .hearts] {
+      let label = accessory.rawValue, output = try process(image, accessory)
+      XCTAssertEqual(output.detectedFaceCount, 2, "\(label): actual Vision must detect both separated people")
+      XCTAssertEqual(output.landmarkedFaceCount, 2, "\(label): both people need usable landmarks")
+      XCTAssertEqual(output.placements.count, 2, "\(label): both separated people must actually receive art")
+      XCTAssertFalse(output.unchanged, "\(label): expected two-person derivative")
+      XCTAssertEqual(output.visionRevision, 3, "\(label): pinned detector")
+      XCTAssertNotNil(output.jpegData, "\(label): mandatory JPEG")
+      guard let jpeg = output.jpegData else { continue }
+      let decoded = try decode(jpeg)
+      XCTAssertEqual(decoded.width, image.width, "\(label): original full width")
+      XCTAssertEqual(decoded.height, image.height, "\(label): original full height")
+      XCTAssertTrue(output.placements.allSatisfy { $0.accessory == accessory && $0.finite }, "\(label): valid placements")
+      let sorted = output.placements.sorted { $0.center.x < $1.center.x }
+      if sorted.count == 2 {
+        XCTAssertLessThan(sorted[0].center.x, 0.5, "\(label): first person is on the left")
+        XCTAssertGreaterThan(sorted[1].center.x, 0.5, "\(label): second person is on the right")
+        XCTAssertGreaterThan(sorted[1].center.x - sorted[0].center.x, 0.20, "\(label): two distinct person regions")
+        for placement in sorted {
+          // Independently scan an envelope around EACH actual placement, not merely global image inequality.
+          let c = abs(cos(placement.rotation)), t = abs(sin(placement.rotation))
+          let halfW = (placement.width * Double(image.width) * c + placement.height * Double(image.height) * t) * 0.515
+          let halfH = (placement.width * Double(image.width) * t + placement.height * Double(image.height) * c) * 0.515
+          let x = max(0, Int(floor(placement.center.x * Double(image.width) - halfW)))
+          let y = max(0, Int(floor(placement.center.y * Double(image.height) - halfH)))
+          let w = min(image.width - x, Int(ceil(halfW * 2))), h = min(image.height - y, Int(ceil(halfH * 2)))
+          XCTAssertGreaterThan(w, 0); XCTAssertGreaterThan(h, 0)
+          let region = CGRect(x: CGFloat(x), y: CGFloat(y), width: CGFloat(w), height: CGFloat(h))
+          let original = try pixels(XCTUnwrap(image.cropping(to: region)))
+          let rendered = try pixels(XCTUnwrap(output.image.cropping(to: region)))
+          let encoded = try pixels(XCTUnwrap(decoded.cropping(to: region)))
+          XCTAssertNotEqual(rendered, original, "\(label): each person's native region must contain actual vector ink")
+          let changed = original.indices.filter { index in
+            index % 4 != 3 && abs(Int(rendered[index]) - Int(original[index])) > 45
+              && abs(Int(encoded[index]) - Int(original[index])) > 30
+          }.count
+          XCTAssertGreaterThan(changed, 12, "\(label): each person's JPEG region must change beyond mild quantization noise")
+        }
+      }
+      let jpegSource = try XCTUnwrap(CGImageSourceCreateWithData(jpeg as CFData, nil))
+      let props = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(jpegSource, 0, nil) as? [String: Any])
+      XCTAssertEqual((props[kCGImagePropertyOrientation as String] as? NSNumber)?.intValue ?? 1, 1)
+      XCTAssertNil(props[kCGImagePropertyGPSDictionary as String])
+      XCTAssertNotEqual(try pixels(output.image), before)
+      if let detected = output.detectedFaceCount, let landmarked = output.landmarkedFaceCount {
+        coverage.append(coverageRow(accessory, detected: detected, landmarked: landmarked, decorated: output.placements.count))
+      }
+      derivatives.insert(SHA256.hash(data: jpeg).map { String(format: "%02x", $0) }.joined())
+      try separatedEvidence(jpeg, accessory: accessory)
+    }
+    XCTAssertEqual(derivatives.count, 3)
+    XCTAssertEqual(SHA256.hash(data: try Data(contentsOf: url)), originalHash)
+    XCTAssertEqual(try Data(contentsOf: url), source)
+    if (testRun?.failureCount ?? 0) == initialFailures { try coverageEvidence(scene: "separated", styles: coverage) }
+  }
+
+  func testTiaraPearlsRemainPhysicallyRoundOnNonsquareCanvas() throws {
+    let image = try blank(width: 400, height: 200), original = try pixels(image)
+    // Physical accessory scale is240x100px, not the normalized.6x.5 ratio.
+    // The center pearl is at(200,67), radius3.8px; its cream fill is distinct from white and gold arch ink.
+    let placement = AccessoryPlacement(accessory: .crown, center: UnitPoint(x: 0.5, y: 0.5),
+      width: 0.6, height: 0.5, rotation: 0)
+    let output = try renderForOrientationTest(image, placements: [placement])
+    var cream = [(Int, Int)]()
+    for y in 58...76 { for x in 188...212 {
+      let rgb = try color(output.image, x: x, y: y)
+      if rgb[0] > 230 && rgb[1] > 220 && (195...235).contains(Int(rgb[2])) { cream.append((x,y)) }
+    } }
+    XCTAssertFalse(cream.isEmpty, "actual physical pearl fill must render")
+    let left = try XCTUnwrap(cream.map { $0.0 }.min()), right = try XCTUnwrap(cream.map { $0.0 }.max())
+    let top = try XCTUnwrap(cream.map { $0.1 }.min()), bottom = try XCTUnwrap(cream.map { $0.1 }.max())
+    let physicalWidth = right - left + 1, physicalHeight = bottom - top + 1
+    XCTAssertLessThanOrEqual(abs(physicalWidth - physicalHeight), 1, "actual pearl pixels must have equal physical diameters on a nonsquare canvas")
+    XCTAssertTrue((6...9).contains(physicalWidth), "expected about7.6px horizontal diameter")
+    XCTAssertTrue((6...9).contains(physicalHeight), "expected about7.6px vertical diameter")
+    XCTAssertEqual(Double(left + right) / 2 + 0.5, 200, accuracy: 1)
+    XCTAssertEqual(Double(top + bottom) / 2 + 0.5, 67, accuracy: 1)
+    for point in [(198,67), (202,67), (200,65), (200,69)] {
+      let rgb = try color(output.image, x: point.0, y: point.1)
+      XCTAssertTrue(rgb[0] > 230 && rgb[1] > 220 && (195...235).contains(Int(rgb[2])),
+        "both physical axes must retain the round cream interior away from connecting gold arch")
+    }
+    XCTAssertEqual(try pixels(image), original)
   }
 
 }

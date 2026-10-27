@@ -1,0 +1,19 @@
+# Face-effects integration decision
+
+**Keep this prototype separate from the wedding app.** The next useful integration candidate is post-capture still effects after native and visual acceptance. Live preview remains a separate investigation. Preserve the installed `9ed36b4` /0.3.7 build10 and the stable MVP handoff `642a367`; this prototype is not an installation update.
+
+The coordinator's actual e886ec5 JPEG review found cleaner right-face glasses/hearts but no decoration on the left person. That establishes safe fallback for this touching-head fixture, not successful multi-person decoration. V3 therefore adds an independent generated, separated two-person portrait and requires both people to receive every effect. Aggregate detection/landmark/decoration counts explain omissions without recording facial coordinates or identities.
+
+The current policy deliberately protects broad neighbor rectangles. It can reject empty space as well as actual facial features. V3 tries at most six compact/higher crown or heart poses and repeats every existing safety check; it does not shrink protected regions to force two overlays. Glasses stay eye-locked, using the existing guarded temple clipping. The tiara uses smooth symmetric arches, a fine base band and physically round pearls. These are still-rendering changes, not a tracking system.
+
+| Gate | Required evidence before app integration |
+| --- | --- |
+| Native still pipeline | All43 exact macOS XCTest identities, actual iOS SDK typecheck, nine decoded native JPEG exports and both scene-coverage files. A native pass remains distinct from iOS runtime proof. |
+| Visual quality | Inspect all three separated outputs with both people decorated; compare touching-head outputs and truthful omission reasons. Approve tiara shape, placement, natural temple endings and unchanged full framing at100% and normal size. Hash/dimension success cannot approve appearance. |
+| Orientation and mirroring | Existing asymmetric/all-eight caller EXIF tests cover a caller contract. Verify actual front-camera saved orientation, preview mirroring, both landscape directions and rotation/background transitions on the wedding iPad. Never save a UI screenshot or reuse a stale preview overlay. |
+| Preview/export parity and preservation | Render from each untouched saved original, atomically preserve a separate derivative and versioned accessory recipe, then use that actual derivative for review, Photos, keepsake and upload. Verify filter/template ordering, retries, interrupted rendering and relaunch without overwriting originals or publishing abandoned retakes. This app integration does not exist yet. |
+| Groups and uncertainty | Test multiple people, close heads, occlusion, varied lighting/skin tones, profiles and missing faces. Keep a clear None fallback. Two synthetic faces and conservative rectangles do not prove broad group quality or semantic hair/hand occlusion. |
+| Live preview | Prove a supported native Expo/Fabric camera-view/video attachment that preserves current photo output, camera geometry and scanner. Expo Camera58 has no public frame-processor API. Add measured scheduling, stale-result rejection and smoothing only after that attachment is proven. Still JPEGs are not live tracking. |
+| Actual iPad performance | Measure latency, memory, dropped frames and thermal behavior on the M2 Air during sustained offline use and real capture. CPU-only macOS Vision timings and proposed150ms/10Hz budgets do not establish device performance. No physical test of this feature has run. |
+
+Proceed only with a separately reviewed post-capture change after the still/visual gates pass; keep live effects out of the production candidate until the remaining gates have evidence. Pairing, queued-photo upload, SMS and physical retake rehearsal are independent owner-attended work and are not authorized by this prototype's tests.

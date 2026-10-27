@@ -13,6 +13,13 @@ public struct AppleFaceEffectsOutput {
   public let jpegData: Data?
   public let placements: [AccessoryPlacement]
   public let visionRevision: Int?
+  /// Ephemeral aggregate counts only; no face coordinates/identities are persisted by this prototype.
+  public let detectedFaceCount: Int?, landmarkedFaceCount: Int?
+  public init(image: CGImage, jpegData: Data?, placements: [AccessoryPlacement], visionRevision: Int?,
+              detectedFaceCount: Int? = nil, landmarkedFaceCount: Int? = nil) {
+    self.image = image; self.jpegData = jpegData; self.placements = placements; self.visionRevision = visionRevision
+    self.detectedFaceCount = detectedFaceCount; self.landmarkedFaceCount = landmarkedFaceCount
+  }
   public var unchanged: Bool { jpegData == nil }
 }
 
@@ -67,7 +74,8 @@ public final class AppleFaceEffectsWorker: @unchecked Sendable {
           let observations = detection.results ?? []
           // Too many observations is a safe no-effect outcome, never silently ignore neighbors.
           guard observations.count <= 64 else {
-            return .success(AppleFaceEffectsOutput(image: uprightImage, jpegData: nil, placements: [], visionRevision: Self.pinnedVisionRevision))
+            return .success(AppleFaceEffectsOutput(image: uprightImage, jpegData: nil, placements: [], visionRevision: Self.pinnedVisionRevision,
+              detectedFaceCount: observations.count, landmarkedFaceCount: 0))
           }
           var anchors = [FaceAnchors](), obstructingBounds = [UnitRect]()
           for observation in observations {
@@ -92,12 +100,14 @@ public final class AppleFaceEffectsWorker: @unchecked Sendable {
             accessory: accessory, obstructingBounds: obstructingBounds)
           try check(requestID)
           if placements.isEmpty {
-            return .success(AppleFaceEffectsOutput(image: uprightImage, jpegData: nil, placements: [], visionRevision: Self.pinnedVisionRevision))
+            return .success(AppleFaceEffectsOutput(image: uprightImage, jpegData: nil, placements: [], visionRevision: Self.pinnedVisionRevision,
+              detectedFaceCount: observations.count, landmarkedFaceCount: anchors.count))
           }
           let rendered = try Self.renderPlacements(uprightImage: uprightImage, placements: placements)
           try check(requestID)
           return .success(AppleFaceEffectsOutput(image: rendered.image, jpegData: rendered.jpegData,
-            placements: placements, visionRevision: Self.pinnedVisionRevision))
+            placements: placements, visionRevision: Self.pinnedVisionRevision,
+            detectedFaceCount: observations.count, landmarkedFaceCount: anchors.count))
         } catch let error as AppleFaceEffectsError { return .failure(error) }
         catch {
           lock.lock(); let wasCancelled = cancelled; lock.unlock()
@@ -160,18 +170,29 @@ public final class AppleFaceEffectsWorker: @unchecked Sendable {
         canvas.move(to: CGPoint(x: -0.49, y: -0.13)); canvas.addLine(to: CGPoint(x: -0.42, y: -0.08))
         canvas.move(to: CGPoint(x: 0.42, y: -0.08)); canvas.addLine(to: CGPoint(x: 0.49, y: -0.13)); canvas.strokePath()
       case .crown:
-        // Small open tiara: restrained gold lines and one slender central point, no block/jewels.
+        // Symmetric scalloped diadem: smooth circlet, thin gold base, three small round pearls.
         let gold = CGColor(red: 0.79, green: 0.60, blue: 0.25, alpha: 1)
-        canvas.setStrokeColor(gold); canvas.setFillColor(gold); canvas.setLineWidth(0.04)
-        canvas.move(to: CGPoint(x: -0.46, y: 0.30))
-        canvas.addQuadCurve(to: CGPoint(x: 0, y: 0), control: CGPoint(x: -0.28, y: 0.03))
-        canvas.addQuadCurve(to: CGPoint(x: 0.46, y: 0.30), control: CGPoint(x: 0.28, y: 0.03)); canvas.strokePath()
-        canvas.move(to: CGPoint(x: -0.44, y: 0.26)); canvas.addLine(to: CGPoint(x: -0.34, y: -0.24))
-        canvas.addLine(to: CGPoint(x: -0.13, y: 0.05))
-        canvas.move(to: CGPoint(x: 0.13, y: 0.05)); canvas.addLine(to: CGPoint(x: 0.34, y: -0.24))
-        canvas.addLine(to: CGPoint(x: 0.44, y: 0.26)); canvas.strokePath()
-        canvas.move(to: CGPoint(x: -0.05, y: 0.12)); canvas.addLine(to: CGPoint(x: 0, y: -0.42))
-        canvas.addLine(to: CGPoint(x: 0.05, y: 0.12)); canvas.closePath(); canvas.fillPath()
+        canvas.setStrokeColor(gold); canvas.setLineWidth(0.065)
+        canvas.move(to: CGPoint(x: -0.45, y: 0.27))
+        canvas.addQuadCurve(to: CGPoint(x: 0, y: 0.34), control: CGPoint(x: -0.23, y: 0.36))
+        canvas.addQuadCurve(to: CGPoint(x: 0.45, y: 0.27), control: CGPoint(x: 0.23, y: 0.36)); canvas.strokePath()
+        canvas.setLineWidth(0.035)
+        canvas.move(to: CGPoint(x: -0.45, y: 0.27))
+        canvas.addCurve(to: CGPoint(x: -0.27, y: -0.08), control1: CGPoint(x: -0.44, y: 0.09), control2: CGPoint(x: -0.39, y: -0.13))
+        canvas.addCurve(to: CGPoint(x: 0, y: -0.29), control1: CGPoint(x: -0.17, y: 0.02), control2: CGPoint(x: -0.16, y: -0.29))
+        canvas.addCurve(to: CGPoint(x: 0.27, y: -0.08), control1: CGPoint(x: 0.16, y: -0.29), control2: CGPoint(x: 0.17, y: 0.02))
+        canvas.addCurve(to: CGPoint(x: 0.45, y: 0.27), control1: CGPoint(x: 0.39, y: -0.13), control2: CGPoint(x: 0.44, y: 0.09)); canvas.strokePath()
+        // Counter-scale each circle so the non-square accessory transform does not squash physical pearls.
+        let pearlYRadius: CGFloat = 0.038
+        canvas.setFillColor(CGColor(red: 0.97, green: 0.94, blue: 0.85, alpha: 1))
+        canvas.setLineWidth(0.016)
+        for center in [CGPoint(x: -0.27, y: -0.11), CGPoint(x: 0, y: -0.33), CGPoint(x: 0.27, y: -0.11)] {
+          canvas.saveGState(); canvas.translateBy(x: center.x, y: center.y)
+          canvas.scaleBy(x: CGFloat((placement.height * Double(height)) / (placement.width * Double(width))), y: 1)
+          canvas.addEllipse(in: CGRect(x: -pearlYRadius, y: -pearlYRadius,
+            width: pearlYRadius * 2, height: pearlYRadius * 2)); canvas.drawPath(using: .fillStroke)
+          canvas.restoreGState()
+        }
       case .hearts:
         canvas.setFillColor(CGColor(red: 0.78, green: 0.27, blue: 0.36, alpha: 1))
         for x in [CGFloat(-0.30), CGFloat(0), CGFloat(0.30)] {

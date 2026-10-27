@@ -97,3 +97,8 @@ jobs:
             ${{ runner.temp }}/face-effects-evidence/close-faces.jpg
             ${{ runner.temp }}/face-effects-evidence/rolled-faces.jpg
             ${{ runner.temp }}/face-effects-evidence/edge-faces.jpg
+            ${{ runner.temp }}/face-effects-evidence/separated-glasses.jpg
+            ${{ runner.temp }}/face-effects-evidence/separated-crown.jpg
+            ${{ runner.temp }}/face-effects-evidence/separated-hearts.jpg
+            ${{ runner.temp }}/face-effects-evidence/touching-coverage.json
+            ${{ runner.temp }}/face-effects-evidence/separated-coverage.json

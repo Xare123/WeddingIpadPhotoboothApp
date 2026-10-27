@@ -8,6 +8,16 @@
   "origin": "Previously image_gen-generated fictional adult wedding portraits; no guest/vendor/reference photos",
   "transform": "Exact byte copy; no new image editing",
   "testScope": "Apple Vision still detection and original vector derivatives; not live tracking",
+  "separatedPhotographicFixture": {
+    "file": "separated-portrait.png",
+    "sha256": "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165",
+    "dimensions": [1122, 1402],
+    "bytes": 2150366,
+    "origin": "New image_gen-generated fictional adult pair,2026-10-27; no reference/guest/vendor images",
+    "transform": "Exact PNG copy; no crop, resize or format conversion; original generation retained",
+    "composition": "Two frontal separated faces, sage/navy formal clothes, ivory background, no drinks or props",
+    "acceptance": "Actual Vision must decorate both people for each of glasses,tiara,hearts; original bytes remain unchanged"
+  },
   "controlledEvidence": {
     "files": ["close-faces.jpg", "rolled-faces.jpg", "edge-faces.jpg"],
     "origin": "In-memory CoreGraphics colored/marked geometric fixtures in the native XCTest producer; no external imagery",

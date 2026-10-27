@@ -1,5 +1,7 @@
 # Still-effects acceptance and next steps
 
+**V3 candidate review:** the next gate is43 native methods, nine exports and two aggregate count files, including a separate two-person portrait that must decorate both people in all three styles. Read the [integration decision](INTEGRATION_DECISION.md). Older native passes below are historical and do not approve this new candidate.
+
 This document belongs only to `codex/face-effects-prototype`. The installed wedding app stays at tested `9ed36b4` / 0.3.7 build10. The MVP review-branch handoff `642a367` changes documentation and test preparation, not the installed application. Do not merge, install or wire this prototype into the booth yet.
 
 ## Synthetic visual handoff
@@ -40,3 +42,18 @@ The tested `4c127fe` candidate retains every original native method and adds two
 4. **Measure on the real iPad before integration approval.** Use harmless, explicitly authorized subjects for groups, occlusion, crossings, both orientations, poor light, background/foreground and sustained use. Record measured latency, dropped frames, memory and thermal behavior. The prototype's proposed 150ms freshness and 10Hz admission defaults are not performance evidence. Overload or lost faces must clear overlays and leave ordinary capture available.
 
 No prototype stage authorizes pairing, guest-photo upload, SMS, a device prompt or a change to the installed app. The existing private pairing handoff and physical retake checks remain separate owner-attended work.
+
+## V3 two-scene evidence
+
+The coordinator inspected the revised e886ec5 portrait JPEGs: right-face art was cleaner, while the left person lost every effect. That is a useful safe-fallback demonstration, not successful multi-person decoration. Current collision rectangles protect more area than just visible facial features. The new approach keeps that protection and tries a fixed set of six higher/compact crown or heart poses; it never moves glasses away from the eyes or shrinks the protected face regions. Suppression remains valid when all poses are unsafe.
+
+The new [separated generated source](Tests/FaceEffectsPrototypeTests/Fixtures/separated-portrait.png) is an untouched1122×1402 PNG. Native acceptance must detect/landmark/decorate exactly two people for every style and verify changed native/decoded-JPEG pixels around each person. The existing960×1200 touching-head source stays unchanged and reports actual counts so a detector miss cannot be mislabeled as collision suppression.
+
+| Evidence | Intended review |
+| --- | --- |
+| `separated-glasses.jpg`, `separated-crown.jpg`, `separated-hearts.jpg` | Both people receive each effect; unchanged1122×1402 framing, natural anchoring, round pearls and a smooth elegant diadem. |
+| `portrait-glasses.jpg`, `portrait-crown.jpg`, `portrait-hearts.jpg` | Touching heads: inspect any restored safe above-head placements and any intentional omissions without demanding unsafe overlaps. |
+| `close-faces.jpg`, `rolled-faces.jpg`, `edge-faces.jpg` | Controlled-anchor diagnostics, not detector/realistic portrait proof; protected regions and uncertain/edge cases remain safe. |
+| `separated-coverage.json`, `touching-coverage.json` | Actual aggregate detected/landmarked/decorated counts per style; omission reasons are `detector-miss`, `landmarks-unusable` or `placement-protection`. These contain no face coordinates or identities. |
+
+The small tiara now uses symmetric smooth arches and a fine circlet with physically round pearls. A nonsquare-canvas pixel test checks physical circles instead of trusting normalized widths. The exact new native exports still need a personal visual pass. Still tests do not close live-preview, actual camera orientation/mirroring, app preview/export parity, broad group quality or iPad performance gates.
