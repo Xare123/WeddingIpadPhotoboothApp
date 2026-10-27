@@ -33,12 +33,34 @@
     "ui": "both orientations reviewed; no remaining blocker reported"
   },
   "hostedGates": {
-    "nativePixels": "pending exact-commit run; requires 29 XCTest cases and 19 native JPEGs",
-    "unsignedRelease": "pending exact-commit run; compile is not bridge/device runtime acceptance",
+    "nativePixels": {
+      "run": "40512638049",
+      "job": "122218157449",
+      "commit": "6492010409d499399277ce9d0ecea6c911a1acc4",
+      "result": "failed acceptance",
+      "executed": 29,
+      "passed": 27,
+      "failedMethods": 2,
+      "skipped": 0,
+      "nativeJpegs": 19,
+      "expectedNativeJpegs": 19,
+      "knownAssertion": "Separated-pair Warm/glasses decorated1 vs2 and partial vsnone; second failed method requires full result inventory",
+      "diagnosis": "test-only generated-fixture PNG/JPEG/Warm comparison prepared; production renderer unchanged; no fix claimed"
+    },
+    "unsignedRelease": {
+      "run": "40512638110",
+      "commit": "6492010409d499399277ce9d0ecea6c911a1acc4",
+      "result": "passed; unsigned iphoneos Release compiled with embedded JavaScript and iPad bundle metadata verified; no XCTest or device installation"
+    },
     "firstLinuxRun": {
       "run": "40511920808",
       "commit": "9fa06d76dd6b1e07cd255d9ab8c3288f32423cdf",
       "result": "failed before product tests: source-preparation guard correctly rejected unreviewed 0.3.8/build11; reproduced locally; exact-version/UI review added without arming or execution"
+    },
+    "linux": {
+      "run": "40512638138",
+      "commit": "6492010409d499399277ce9d0ecea6c911a1acc4",
+      "result": "passed"
     }
   },
   "notVerified": [
@@ -58,5 +80,15 @@
     "apps/ipad/modules/wedding-photo-effects/tests/NativePhotoTreatmentEngineTests.swift": "df1878a9500f1ac09e4cd015e14d8981712fe14a4b69e63a7461b2e2e6c67c09",
     "artifacts/visual/face-effects-evidence.json": "afe58a7707a2e5d3c5f3d31236d7adf8690efe48f69da44e494abdc152ca6af9",
     "artifacts/visual/face-effects-sha256.txt": "48496cf92be55f0ffdf7f007a6b9c638dedcd4f4e06956e502c4e46a9d3de5d1"
+  },
+  "lastUpdatedAt": "2026-10-27T13:54:08.356660+00:00",
+  "diagnosticFollowup": {
+    "scope": "Test-only; no production behavior or acceptance change",
+    "nativeTestSha256": "c0c167816477d9ffee1e5bd93e8692403a65c323040e164482cd566c176b71e2",
+    "nativeProductionBytesUnchanged": true,
+    "localContracts": 149,
+    "stdout": "SHA-guarded ASCII synthetic JSON in indexed6000-byte chunks, below logger line cap",
+    "runtime": "pending targeted iOS run; no fix claimed",
+    "independentReview": "GO; original stdout-cap caveat repaired by chunking"
   }
 }

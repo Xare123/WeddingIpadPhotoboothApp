@@ -4,6 +4,7 @@ import CoreImage
 import ImageIO
 import UniformTypeIdentifiers
 import CryptoKit
+import Vision
 
 /// Compiled alongside pure engine sources in the unhosted iOS target; no Expo dependency.
 final class NativePhotoTreatmentEngineTests: XCTestCase {
@@ -84,6 +85,10 @@ final class NativePhotoTreatmentEngineTests: XCTestCase {
     let source = try separated(), original = try Data(contentsOf: source)
     for face in ["glasses", "crown", "hearts"] {
       let result = try render(source, recipe("warm", 0.4, face)), bytes = try data(result)
+      if face == "glasses" {
+        do { try attachSyntheticPlacementDiagnostics(source: source, receipt: result) }
+        catch { XCTFail("Generated-fixture placement diagnostics could not complete; production acceptance assertions remain required") }
+      }
       XCTAssertEqual(result.detectedFaceCount, 2, face); XCTAssertEqual(result.landmarkedFaceCount, 2, face)
       XCTAssertEqual(result.decoratedFaceCount, 2, face); XCTAssertEqual(result.fallbackReason, "none", face)
       XCTAssertFalse(result.isOriginal); XCTAssertEqual(result.recipe.face.accessory, face)
@@ -250,6 +255,115 @@ final class NativePhotoTreatmentEngineTests: XCTestCase {
     XCTAssertFalse(FileManager.default.fileExists(atPath: activeTemporary.path), "only the owning cancelled job cleans its own temporary file")
     XCTAssertEqual(try Data(contentsOf: previewURL), previewBytes)
     withExtendedLifetime((rollover, controlled, next)) {}
+  }
+
+  /// TEST ONLY. Never called by the module or engine; only the SHA-pinned fictional PNG authorizes attachment data.
+  private func attachSyntheticPlacementDiagnostics(source: URL, receipt: PhotoTreatmentEngine.Output) throws {
+    let resource = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "separated-portrait", withExtension: "png"))
+    let png = try Data(contentsOf: resource)
+    guard sha(png) == "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165" else { throw PhotoTreatmentEngine.Failure.invalidInput }
+    let done = expectation(description: "bounded generated-fixture placement diagnosis")
+    var result: Result<Data, Error>?
+    DispatchQueue.global(qos: .userInitiated).async {
+      result = Result { try autoreleasepool {
+        guard VNDetectFaceLandmarksRequest.supportedRevisions.contains(3) else { throw PhotoTreatmentEngine.Failure.processingFailed }
+        let input = try XCTUnwrap(CGImageSourceCreateWithURL(source as CFURL, nil))
+        let props = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(input, 0, nil) as? [String: Any])
+        let orientation = (props[kCGImagePropertyOrientation as String] as? NSNumber)?.int32Value ?? 1
+        let raw = try XCTUnwrap(CGImageSourceCreateImageAtIndex(input, 0, [kCGImageSourceShouldCache: false] as CFDictionary))
+        let oriented = CIImage(cgImage: raw).oriented(forExifOrientation: orientation)
+        let upright = oriented.transformed(by: CGAffineTransform(translationX: -oriented.extent.minX, y: -oriented.extent.minY))
+        let variants: [(String, CGImage)] = try PhotoEffectsEngine.queue.sync {
+          let original = try XCTUnwrap(PhotoEffectsEngine.context.createCGImage(upright, from: upright.extent, format: .RGBA8, colorSpace: PhotoEffectsEngine.sRGB))
+          let looked = PhotoEffectsEngine.lookPixels(upright, preset: "warm", intensity: 0.4)
+          let warm = try XCTUnwrap(PhotoEffectsEngine.context.createCGImage(looked, from: upright.extent, format: .RGBA8, colorSpace: PhotoEffectsEngine.sRGB))
+          return [("raw-png", try self.image(png)), ("root-jpeg-original-pixels", original), ("root-jpeg-warm-0.4-pixels", warm)]
+        }
+        var reports = [[String: Any]]()
+        for (name, cg) in variants {
+          let request = VNDetectFaceLandmarksRequest(); request.revision = 3; request.usesCPUOnly = true
+          try VNImageRequestHandler(cgImage: cg, orientation: .up, options: [:]).perform([request])
+          let observations = request.results ?? []
+          guard observations.count <= 8 else { throw PhotoTreatmentEngine.Failure.resourceLimit }
+          var anchors = [FaceAnchors](), obstructions = [UnitRect](), rows = [[String: Any]]()
+          func rectangle(_ value: UnitRect) -> [Double] { [value.x,value.y,value.width,value.height] }
+          func encode(_ value: AccessoryPlacement) -> [String: Any] {
+            ["centerTopLeft": [value.center.x,value.center.y], "width": value.width, "height": value.height,
+             "rotationRadians": value.rotation, "excludedBoundsTopLeft": value.excludedFaceBounds.map(rectangle)]
+          }
+          let size = ImageSize(width: Double(cg.width), height: Double(cg.height))
+          func styles(_ faces: [FaceAnchors], _ blocks: [UnitRect]) -> [String: Any] {
+            var outputs = [String: Any]()
+            for accessory in [FaceAccessory.glasses,.crown,.hearts] {
+              outputs[accessory.rawValue] = FaceGeometry.placements(faces: faces, image: size, accessory: accessory, obstructingBounds: blocks).map(encode)
+            }; return outputs
+          }
+          for (index, observation) in observations.enumerated() {
+            let b = observation.boundingBox
+            let bounds = UnitRect(x: Double(b.minX), y: Double(b.minY), width: Double(b.width), height: Double(b.height))
+            let top = UnitRect(x: bounds.x, y: 1 - bounds.y - bounds.height, width: bounds.width, height: bounds.height)
+            var row: [String: Any] = ["anonymousObservationIndex": index, "visionBoundsBottomLeft": rectangle(bounds),
+              "confidence": Double(observation.confidence)]
+            func points(_ region: VNFaceLandmarkRegion2D) -> [UnitPoint] {
+              guard region.pointCount <= 128 else { return [] }
+              return (0..<region.pointCount).map { UnitPoint(x: Double(region.normalizedPoints[$0].x), y: Double(region.normalizedPoints[$0].y)) }
+            }
+            if let left = observation.landmarks?.leftEye, let right = observation.landmarks?.rightEye,
+              let face = FaceGeometry.fromVision(bounds: bounds, leftEye: points(left), rightEye: points(right), confidence: Double(observation.confidence)) {
+              row["boundsTopLeft"] = rectangle(face.bounds)
+              row["leftEyeTopLeft"] = [face.leftEye.x,face.leftEye.y]; row["rightEyeTopLeft"] = [face.rightEye.x,face.rightEye.y]
+              let first = face.leftEye.x <= face.rightEye.x ? face.leftEye : face.rightEye
+              let second = face.leftEye.x <= face.rightEye.x ? face.rightEye : face.leftEye
+              let dx = (second.x - first.x) * size.width, dy = (second.y - first.y) * size.height
+              let distance = hypot(dx,dy), roll = atan2(dy,dx)
+              row["interocularPixels"] = distance; row["sortedEyeRollRadians"] = roll
+              row["confidenceAtLeast0.8"] = face.confidence >= 0.8
+              row["commonAdmissionConditions"] = ["confidenceAtLeast0.5": face.confidence >= 0.5,
+                "faceWidthAtLeast0.035": face.bounds.width >= 0.035,
+                "bothEyesInsideFace": face.bounds.contains(first) && face.bounds.contains(second),
+                "eyeDistanceAtLeastMinimum": distance >= max(4, size.width * 0.008),
+                "eyeDistanceWithinFaceWidth": distance <= face.bounds.width * size.width * 0.9,
+                "rollWithinPiOver3": abs(roll) <= .pi / 3]
+              row["individualNoNeighborPlacements"] = styles([face], [])
+              anchors.append(face)
+            } else if top.valid { obstructions.append(top) }
+            rows.append(row)
+          }
+          var pairs = [[String: Any]]()
+          if anchors.count >= 2 {
+            for i in 0..<(anchors.count - 1) { for j in (i + 1)..<anchors.count {
+              pairs.append(["anonymousAnchorIndices": [i,j], "placementsWithRawObstructions": styles([anchors[i],anchors[j]], obstructions)])
+            } }
+          }
+          let confidenceOne = anchors.map { FaceAnchors(bounds: $0.bounds, leftEye: $0.leftEye, rightEye: $0.rightEye, confidence: 1) }
+          reports.append(["variant": name, "width": cg.width, "height": cg.height,
+            "pixelSha256": self.sha(Data(try self.pixels(cg))), "detected": observations.count, "landmarked": anchors.count,
+            "observations": rows, "rawObstructionsTopLeft": obstructions.map(rectangle), "pairDiagnostics": pairs,
+            "allPlacements": styles(anchors, obstructions),
+            "TEST_ONLY_confidenceOnePlacements": styles(confidenceOne, obstructions)])
+        }
+        let report: [String: Any] = ["scope": "TEST_ONLY_SHA_PINNED_GENERATED_FIXTURE_NOT_GUEST_DATA",
+          "fixturePngSha256": self.sha(png), "rootJpegSha256": self.sha(try Data(contentsOf: source)), "visionRevision": 3,
+          "requestOrientation": "up", "usesCPUOnly": true, "recipeVersion": FaceGeometry.recipeVersion,
+          "productionWarmGlassesReceipt": ["detected": receipt.detectedFaceCount ?? -1, "landmarked": receipt.landmarkedFaceCount ?? -1,
+            "decorated": receipt.decoratedFaceCount, "fallbackReason": receipt.fallbackReason],
+          "independentRepeatsMayVary": true, "variants": reports]
+        let bytes = try JSONSerialization.data(withJSONObject: report, options: [.sortedKeys])
+        guard bytes.count <= 96 * 1024 else { throw PhotoTreatmentEngine.Failure.resourceLimit }; return bytes
+      } }; done.fulfill()
+    }
+    wait(for: [done], timeout: 120)
+    let bytes = try XCTUnwrap(result).get()
+    // The CI logger bounds each line to 16k characters. Only fixed ASCII keys,
+    // synthetic-fixture labels and JSON numbers are admitted; preserve every byte.
+    guard bytes.allSatisfy({ $0 < 128 }) else { throw PhotoTreatmentEngine.Failure.invalidInput }
+    let chunkSize = 6000, total = (bytes.count + chunkSize - 1) / chunkSize
+    for start in stride(from: 0, to: bytes.count, by: chunkSize) {
+      let part = bytes.subdata(in: start..<min(start + chunkSize, bytes.count))
+      print("SYNTHETIC_FACE_PLACEMENT_JSON_CHUNK \(start / chunkSize + 1)/\(total) " + String(decoding: part, as: UTF8.self))
+    }
+    let attachment = XCTAttachment(data: bytes, uniformTypeIdentifier: UTType.json.identifier)
+    attachment.name = "synthetic-face-placement-diagnostic"; attachment.lifetime = .keepAlways; add(attachment)
   }
 
 }

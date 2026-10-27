@@ -239,6 +239,8 @@ finally {
   const classes = status.tests?.cases?.reduce((value, item) => { const name = item.id.split('.')[0]; value[name] = (value[name] ?? 0) + 1; return value; }, {}) ?? {};
   const message = { commit: sha, profile: profile.id, result: status.result, stage, expectedTests: profile.expectedTests, executed: status.tests?.executed ?? 'unknown',
     failures: status.tests?.failures ?? 'unknown', skipped: status.tests?.skipped ?? 'unknown', classes,
+    failedCases: status.tests?.cases?.filter(value => value.status === 'failed' && plan?.expectedCases.includes(value.id))
+      .slice(0, 6).map(value => value.id) ?? [],
     nativeJpegs: status.jpegs?.entries?.length ?? 0, expectedNativeJpegs: profile.expectedJpegs,
     fullExpoSmokeVerified: false, error: status.error, schema: status.schemaDiagnostic };
   jsonFile('public-evidence.json', message);

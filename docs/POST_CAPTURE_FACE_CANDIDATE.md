@@ -35,7 +35,7 @@ The versioned recipe records `look-then-face`. Colour processing shares the exis
 
 ## Review evidence and limits
 
-The frozen local candidate passed **536 product tests, 149 CI contract tests, all workspace typechecks and an iOS Hermes export**, with no failed/skipped tests. The independent browser acceptance run passed **23 groups** and produced **30 screenshots** in both orientations; all 537 historical visual files remain unchanged. See [local test record](../artifacts/test-results/post-capture-face-local.json), [UI evidence index](../artifacts/visual/face-effects-index.html) and [parity review](../artifacts/visual/face-effects-parity-review.md). Native hosted results are pending the exact-commit run and must be recorded separately.
+The frozen local candidate passed **536 product tests, 149 CI contract tests, all workspace typechecks and an iOS Hermes export**, with no failed/skipped tests. The independent browser acceptance run passed **23 groups** and produced **30 screenshots** in both orientations; all 537 historical visual files remain unchanged. See [test record](../artifacts/test-results/post-capture-face-local.json), [UI evidence index](../artifacts/visual/face-effects-index.html) and [parity review](../artifacts/visual/face-effects-parity-review.md). Hosted results are recorded separately below.
 
 Current local evidence includes 61 editor cases (21 unchanged legacy), 96 persistence/files/SQLite cases, six UI-message truth cases and two composed real-file routing cases. The routing cases verify cache/document/Photos-port/keepsake-source/upload-port byte identity and cancellation during a real copy. Native rendering, Photos, template raster and transport are substituted only at those test boundaries; they do not prove device behavior.
 
@@ -45,4 +45,23 @@ Actual Root browser screenshots use explicitly labeled native-port substitutes a
 
 Before proposing integration, review local/hosted results, inspect native output and both-orientation UI evidence, then complete the actual iPad rehearsal on a separately approved build. Preserve the stable wedding build throughout.
 
+## Device acceptance after separate review and installation approval
+
+The existing physical smoke runner checks capture/relaunch, not these accessories. Do not count its success as treatment acceptance or arm it automatically.
+
+1. Preserve the installed app identity and all saved sessions. Use an approved harmless test subject; do not upload private photos or enable SMS as part of this check.
+2. In a new four-photo review, choose Warm and an accessory. Wait for the actual rendered image, inspect both people/edges, then Apply. Compare the review image with the newly added Photos copy and the keepsake preview/export.
+3. Reopen the edit and select None. Confirm the colour look remains and the untouched original is still available through host recovery. Cancel a different edit and confirm the selected photo stays unchanged.
+4. Change choices rapidly, background during processing, and relaunch after an admitted save. Check that the selected derivative and recipe return, with no stale image, wrong guest or automatic selection of an abandoned result.
+5. Check a no-face subject and a touching-head pair. None/fallback must remain usable and truthful; never force an accessory over another person's face. Check device rotation, unmirrored saved orientation and both layouts.
+6. Rehearse individual and whole-session retakes, interruption and offline use without deleting prior originals. Measure actual response time and sustained memory/thermal behavior before enabling the option for wedding guests.
+
 The first hosted Linux run (`40511920808`, source `9fa06d7`) stopped in physical-runner preparation contracts: its production guard intentionally accepted only 0.3.7/build10. The candidate retains that review and adds an exact 0.3.8/build11 and complete UI-source hash entry after source review. Unknown versions/builds or changed UI bytes remain rejected. Signing is disabled and readiness is still explicitly `NOT_ARMED`; this is unsigned source preparation, not authorization to install or run the candidate. All 149 complete preflight/treatment contracts pass locally after the repair.
+
+## Actual Apple result and diagnostic follow-through
+
+At source `6492010409d499399277ce9d0ecea6c911a1acc4`, hosted [Linux verification](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40512638138) and the [unsigned iPhoneOS Release build](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40512638110) passed. The [iOS pixel run](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40512638049) executed all 29 methods: **27 passed, two failed, none skipped**. All 19 native JPEGs were exported. The candidate does **not** pass native acceptance.
+
+The public annotation identifies separated-pair Warm/glasses assertions: one decorated face instead of two, with partial instead of complete placement. The other failed method must be identified from the full result inventory; the first two assertion lines do not establish its identity. This pure Swift failure occurs before Expo/JavaScript conversion. PNG/JPEG conversion, colour processing and iOS/macOS Vision differences remain hypotheses, not established causes.
+
+A test-only follow-up compares raw PNG, decoded root JPEG and the exact Warm pixel path on one iOS runtime. It emits bounded, SHA-guarded **fictional-fixture-only** geometry and actual unchanged placement results into `xcode-test.log` under indexed `SYNTHETIC_FACE_PLACEMENT_JSON_CHUNK i/n` lines of at most 6,000 payload bytes (concatenate payloads in order), with an attachment named `synthetic-face-placement-diagnostic`. All copied production sources and acceptance assertions remain unchanged. This diagnostic is not a fix or a claim of two-person success. The existing browser evidence fingerprints the earlier native test source; App, native production code and all browser-rendered inputs are unchanged.
