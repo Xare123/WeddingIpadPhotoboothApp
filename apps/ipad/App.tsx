@@ -11,11 +11,12 @@ import { requireOptionalNativeModule } from 'expo';
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { randomUUID } from 'expo-crypto';
 import QRCode from 'react-native-qrcode-svg';
-import type { QueueJob } from '@wedding-booth/core';
+import { parseQueueFailure, type QueueJob } from '@wedding-booth/core';
 import { SmsShare } from './src/SmsShare';
-import { authenticateHost } from './src/host-auth';
+import { authenticateHost, hostAuthenticationCode } from './src/host-auth';
 import { loadConnection, loadHostPreferences, provisionBooth, saveHostPreferences } from './src/config';
-import { formatGuestExpiry, sessionGuestPage } from './src/sharing';
+import { formatGuestExpiry } from './src/sharing';
+import { classifyShareReadiness, type SharingConnectionState, type SharingSyncState } from './src/share-readiness';
 import {
   clearActiveSession, confirmSession, createSession, getActiveCapture, getActiveSession, getLocalSession, getQueueIndexDiagnostics,
   listLocalSessions, recoverPreservedPhotos, retryStagedPhotos, retryStagedComposites, saveShot, saveRenderedPhoto, saveComposite, selectSavedPhoto, store, updatePhotoExport, type ActiveCapture, type ActiveSession,
@@ -29,6 +30,7 @@ import { createReviewSelection } from './src/review-selection';
 import { createSessionCaptureRunner, nextPhotoSlot, screenForSession, sessionIsComplete, type PendingPhoto } from './src/session-capture';
 import { GlassSurface } from './src/GlassSurface';
 import { createHostVisibility } from './src/host-visibility';
+import { authenticateHostAction, type HostActionLease } from './src/host-action-auth';
 import { createPhotoLookEditor, type PhotoLookEditorState, type PhotoLookPreset } from './src/photo-look-editor';
 import { loadPhotoEffects, loadTemplateEffects } from './src/native-photo-effects';
 import { createTemplateEditor, type TemplateEditorState } from './src/template-editor';
@@ -52,17 +54,17 @@ function photosExportTitle(session: ActiveSession): string {
   if (!session.shots.length) return 'No photos to export';
   if (needsPhotosExport(session)) return 'Export copies to Photos';
   if (session.shots.some(photo => String(photo.exportStatus) === 'uncertain') || session.composite?.exportStatus === 'uncertain') return 'Check Photos for unconfirmed copies';
-  return 'All copies are saved in Photos';
+  return 'All copies were exported to Photos';
 }
 function photosStatus(session: ActiveSession | null): string {
   if (!session?.shots.length) return 'Photos export is separate from your saved originals.';
   const saved = session.shots.filter(photo => photo.exportStatus === 'saved').length;
   if (session.shots.some(photo => String(photo.exportStatus) === 'uncertain')) return 'Photos result unconfirmed · check Photos before retrying';
-  if (saved === session.shots.length) return `${saved} of ${session.shots.length} also saved in Photos`;
+  if (saved === session.shots.length) return `${saved} of ${session.shots.length} exported to Photos`;
   if (session.shots.some(photo => photo.exportStatus === 'denied')) return 'Photos access needed · originals are safe here';
   if (session.shots.some(photo => photo.exportStatus === 'failed')) return 'Photos export needs a retry · originals are safe here';
   if (session.shots.some(photo => photo.exportStatus === 'unavailable')) return 'Photos unavailable · originals are safe here';
-  return saved ? `${saved} of ${session.shots.length} saved in Photos` : 'Not yet exported to Photos';
+  return saved ? `${saved} of ${session.shots.length} exported to Photos` : 'Not yet exported to Photos';
 }
 
 function Button({ title, onPress, disabled, secondary, light, testID }: {
@@ -123,6 +125,7 @@ function Photobooth() {
   const exportLock = useRef(false);
   const pairingLock = useRef(false);
   const hostOriginalLock = useRef(false);
+  const hostMutationLock = useRef(false);
   const hostVisibleRef = useRef(false);
   const hostVisibility = useRef(createHostVisibility());
   const lookActive = useRef(false);
@@ -169,6 +172,11 @@ function Photobooth() {
   const [message, setMessage] = useState('');
   const [hostDiagnostic, setHostDiagnostic] = useState('');
   const [jobs, setJobs] = useState<QueueJob[]>([]);
+  const [sharingConnection, setSharingConnection] = useState<SharingConnectionState>('checking');
+  const [sharingSync, setSharingSync] = useState<SharingSyncState>('idle');
+  const connectionRead = useRef(0);
+  const sharingPasses = useRef(0);
+  const sharingPassFailed = useRef(false);
   const [invalidQueueRows, setInvalidQueueRows] = useState(0);
   const [now, setNow] = useState(Date.now());
   const [reduceMotion, setReduceMotion] = useState(true);
@@ -289,20 +297,49 @@ function Photobooth() {
     try { setLibraryPermission((await getPhotoLibraryCapability()).permission); }
     catch { setLibraryPermission('unavailable'); }
   }
+  async function refreshSharingConnection(): Promise<SharingConnectionState> {
+    const request = ++connectionRead.current;
+    let result: SharingConnectionState;
+    try { result = await loadConnection() ? 'paired' : 'unpaired'; }
+    catch { result = 'unavailable'; }
+    if (mounted.current && request === connectionRead.current) {
+      setSharingConnection(result); setPaired(result === 'paired');
+    }
+    return result;
+  }
   async function retrySharing(immediate = false) {
-    try { await (immediate ? retryPendingNow() : syncPending()); }
-    catch (error) { diagnose(error); }
+    const connection = await refreshSharingConnection();
+    const canUpload = connection === 'paired';
+    if (canUpload) {
+      if (!sharingPasses.current) sharingPassFailed.current = false;
+      sharingPasses.current++;
+      if (mounted.current) setSharingSync('running');
+    }
+    try {
+      // Local index/recipient maintenance still runs without pairing. The sync
+      // layer checks setup before any job claim, retry reset or network request.
+      await (immediate ? retryPendingNow() : syncPending());
+    } catch {
+      sharingPassFailed.current = true;
+      if (mounted.current) setHostDiagnostic('Sharing did not complete. Check private setup and the saved session status; local originals are retained.');
+    } finally {
+      if (canUpload) sharingPasses.current = Math.max(0, sharingPasses.current - 1);
+      if (mounted.current && !sharingPasses.current) setSharingSync(sharingPassFailed.current ? 'failed' : 'idle');
+    }
     await refreshQueue();
     try { await refreshDisplayedSessions(); if (hostVisibleRef.current) await refreshLibrary(); }
     catch (error) { diagnose(error); }
   }
-  async function exportPhotos(value: ActiveSession, requestPermission: boolean, includeKeepsake = !!value.composite) {
+  async function exportPhotos(value: ActiveSession, requestPermission: boolean, includeKeepsake = !!value.composite, authorization?: { assertCurrent(): void }) {
+    authorization?.assertCurrent();
     if (exportLock.current) return;
     exportLock.current = true;
     setExporting(true);
     try {
-      let updated = await exportSessionPhotos(value, { requestPermission });
-      if (includeKeepsake && compositeExportCapture(updated)) updated = await exportSessionPhotos(updated, { requestPermission, includeComposite: true, photoIds: [updated.composite!.id] });
+      let updated = await exportSessionPhotos(value, { requestPermission, ...(authorization ? { assertCurrent: authorization.assertCurrent } : {}) });
+      authorization?.assertCurrent();
+      if (includeKeepsake && compositeExportCapture(updated)) updated = await exportSessionPhotos(updated, { requestPermission, includeComposite: true, photoIds: [updated.composite!.id], ...(authorization ? { assertCurrent: authorization.assertCurrent } : {}) });
+      authorization?.assertCurrent();
       if (sessionRef.current?.id === updated.id) adoptSession(updated);
       if (librarySessionRef.current?.id === updated.id) adoptLibrarySession(updated);
       await refreshLibrary();
@@ -313,40 +350,82 @@ function Photobooth() {
     } finally { exportLock.current = false; setExporting(false); }
   }
 
-  const hostOriginalActions = useRef<ReturnType<typeof createHostOriginalActions<ActiveSession>> | null>(null);
-  if (!hostOriginalActions.current) hostOriginalActions.current = createHostOriginalActions<ActiveSession>({
-    authenticate: authenticateHost, load: getLocalSession,
-    acknowledge: (sessionId, photoId) => updatePhotoExport(sessionId, photoId, 'saved'),
-    export: (value, options) => exportSessionPhotos(value, options),
-    finishSave: retryStagedPhotos,
-  });
+  // Each protected mutation gets a fresh OS-authenticated lease. The system
+  // prompt may redact the sheet; only its still-current foreground lease can
+  // restore the intended page or start an effect after a later asynchronous read.
+  function hostActionAuthorization(page: HostPage, selectedSessionId?: string) {
+    let lease: HostActionLease | null = null;
+    const intendedLibraryMode = libraryMode;
+    return {
+      async authenticate() {
+        if (!hostVisibleRef.current || !mounted.current || AppState.currentState !== 'active') {
+          throw new Error('Host settings locked. Return to the booth and authenticate again.');
+        }
+        lease = await authenticateHostAction({
+          visibility: hostVisibility.current, authenticate: authenticateHost,
+          isActive: () => mounted.current && AppState.currentState === 'active', wait: pause,
+        });
+        lease.assertCurrent();
+        setHostPage(page); setScanningSetup(false); setPairingCode(''); setHostDecision(null);
+        if (page === 'library') setLibraryMode(intendedLibraryMode);
+        hostVisibleRef.current = true; setHostVisible(true);
+        if (selectedSessionId) {
+          const selected = await getLocalSession(selectedSessionId);
+          lease.assertCurrent(); adoptLibrarySession(selected);
+        }
+        await refreshLibrary();
+        lease.assertCurrent();
+      },
+      assertCurrent() {
+        if (!lease) throw new Error('This host action needs fresh iPad authentication.');
+        lease.assertCurrent();
+      },
+    };
+  }
+  function reportHostActionFailure(error: unknown) {
+    diagnose(error);
+    if (hostVisibleRef.current && AppState.currentState === 'active') {
+      setHostMessage(error instanceof Error ? error.message : 'The host action did not finish. Local originals remain on this iPad.');
+    } else {
+      setMessage('The host action stopped or was interrupted. Return to Host and authenticate to check its saved result. Local originals remain on this iPad.');
+    }
+  }
   async function runHostOriginalAction(request: HostOriginalRequest) {
-    if (hostOriginalLock.current || exportLock.current || hostBusy) return;
+    if (hostMutationLock.current || hostOriginalLock.current || exportLock.current || hostBusy) return;
+    hostMutationLock.current = true;
     hostOriginalLock.current = true; exportLock.current = true;
     setHostBusy(true); setExporting(request.kind === 'export'); setHostMessage('');
+    const authorization = hostActionAuthorization('library', request.sessionId);
+    const actions = createHostOriginalActions<ActiveSession>({
+      ...authorization, load: getLocalSession,
+      acknowledge: (sessionId, photoId) => updatePhotoExport(sessionId, photoId, 'saved'),
+      export: (value, options) => exportSessionPhotos(value, { ...options, assertCurrent: authorization.assertCurrent }),
+      finishSave: retryStagedPhotos,
+    });
     try {
-      const result = await hostOriginalActions.current!.run(request);
+      const result = await actions.run(request);
       if (result.kind === 'confirm-duplicate') {
         if (result.request.kind !== 'finish-save') setHostDecision(result.request);
         return;
       }
       if (result.kind === 'busy') return;
+      authorization.assertCurrent();
       const updated = result.session;
       if (sessionRef.current?.id === updated.id) adoptSession(updated);
       if (librarySessionRef.current?.id === updated.id) adoptLibrarySession(updated);
-      await refreshLibrary(); await refreshCapability();
+      await refreshLibrary(); await refreshCapability(); authorization.assertCurrent();
       if (request.kind === 'finish-save') {
         const remaining = (updated.stagedOriginals?.length ?? 0) + (updated.stagedComposites?.length ?? 0);
         setHostMessage(remaining ? `Local save retried. ${remaining} captured originals still need completion.` : 'Local save completed. The original is now available on this iPad.');
-      } else if (result.kind === 'already-saved') setHostMessage('This original is already marked as saved in Photos.');
+      } else if (result.kind === 'already-saved') setHostMessage('This original already has a successful Photos export recorded.');
       else if (request.kind === 'acknowledge') setHostMessage('Marked as saved in Photos based on your check.');
       else {
         const photo = (request.retained ? updated.retakes ?? [] : updated.shots).find(value => value.id === request.photoId);
         setHostMessage(photo ? hostOriginalStatus(photo) : 'Check this original’s Photos status before another export.');
       }
     } catch (error) {
-      diagnose(error); setHostMessage(error instanceof Error ? error.message : 'The host action did not finish. Local originals remain on this iPad.');
-    } finally { hostOriginalLock.current = false; exportLock.current = false; setExporting(false); setHostBusy(false); }
+      reportHostActionFailure(error);
+    } finally { hostMutationLock.current = false; hostOriginalLock.current = false; exportLock.current = false; setExporting(false); setHostBusy(false); }
   }
   function requestHostPhoto(kind: 'acknowledge' | 'export', photo: ActiveCapture, retained: boolean) {
     const value = librarySessionRef.current;
@@ -365,7 +444,7 @@ function Photobooth() {
       {photo.exportStatus === 'uncertain' ? <>
         <Button title="Already in Photos" testID={`host-photo-ack-${photo.id}`} light secondary disabled={hostBusy || exporting} onPress={() => requestHostPhoto('acknowledge', photo, retained)} />
         <Button title="Export this copy again" testID={`host-photo-export-${photo.id}`} disabled={hostBusy || exporting} onPress={() => requestHostPhoto('export', photo, retained)} />
-      </> : <Button title={photo.exportStatus === 'saved' ? 'Saved in Photos' : 'Export this original to Photos'} testID={`host-photo-export-${photo.id}`} disabled={hostBusy || exporting || photo.exportStatus === 'saved'} onPress={() => requestHostPhoto('export', photo, retained)} />}
+      </> : <Button title={photo.exportStatus === 'saved' ? 'Exported to Photos' : 'Export this original to Photos'} testID={`host-photo-export-${photo.id}`} disabled={hostBusy || exporting || photo.exportStatus === 'saved'} onPress={() => requestHostPhoto('export', photo, retained)} />}
     </View>;
   }
 
@@ -444,7 +523,7 @@ function Photobooth() {
         if (!mounted.current) return;
         setInitialized(true);
         await refreshQueue();
-        try { setPaired(!!await loadConnection()); } catch (error) { diagnose(error); }
+        await refreshSharingConnection();
         void refreshCapability();
         void retrySharing();
       } catch (error) { diagnose(error); setMessage('Local storage needs attention. Please ask the host before starting.'); }
@@ -454,6 +533,7 @@ function Photobooth() {
     const motion = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduceMotion);
     const lifecycle = AppState.addEventListener('change', state => {
       setForeground(state === 'active');
+      hostVisibility.current.record('lifecycle', state);
       if (state !== 'active') {
         cameraNeedsRemount.current = true; updateCameraReady(false);
         const wasTemplate = templateActive.current;
@@ -469,12 +549,24 @@ function Photobooth() {
     const timer = setInterval(() => {
       if (AppState.currentState === 'active') { setNow(Date.now()); void retrySharing(); }
     }, 15_000);
-    return () => { mounted.current = false; alive = false; lookEditor.current?.close(); templateEditor.current?.close(); runner.current?.interrupt(); screenFade.stopAnimation(); countdownReveal.stopAnimation(); exposureFlash.stopAnimation(); motion.remove(); lifecycle.remove(); clearInterval(timer); };
+    return () => { hostVisibility.current.close(); mounted.current = false; alive = false; lookEditor.current?.close(); templateEditor.current?.close(); runner.current?.interrupt(); screenFade.stopAnimation(); countdownReveal.stopAnimation(); exposureFlash.stopAnimation(); motion.remove(); lifecycle.remove(); clearInterval(timer); };
   }, []);
 
   useEffect(() => { reduceMotionRef.current = reduceMotion; if (reduceMotion) { exposureFlash.stopAnimation(); exposureFlash.setValue(0); } }, [reduceMotion, exposureFlash]);
 
-  const guestPage = session?.confirmed ? sessionGuestPage(session, jobs, now) : null;
+  const shareReadiness = classifyShareReadiness({ session, jobs, connection: sharingConnection, sync: sharingSync, now });
+  const guestPage = shareReadiness.guestPage;
+  const latestSharingFailure = jobs.flatMap(job => {
+    const diagnostic = parseQueueFailure(job.lastFailure);
+    return diagnostic ? [diagnostic] : [];
+  }).sort((left, right) => right.at - left.at)[0];
+  const sharingSetupDetail = sharingConnection === 'unpaired'
+    ? 'This iPad has not completed private pairing. Uploads wait for setup; local originals are retained.'
+    : sharingConnection === 'unavailable'
+      ? 'Private sharing settings could not be read or validated. Check Setup; this does not establish a network outage.'
+      : sharingConnection === 'checking' ? 'Checking saved private connection settings.'
+        : session?.confirmed ? shareReadiness.hostMessage
+          : 'Private connection settings are saved. Open Saved sessions to inspect a queued session. This does not prove server authorization.';
   const expiry = formatGuestExpiry(guestPage?.expiresAt);
   const pendingCount = jobs.filter(job => job.kind === 'upload' && job.state === 'pending').length;
   useEffect(() => {
@@ -594,39 +686,78 @@ function Photobooth() {
     } catch (error) { diagnose(error); setMessage('Please ask the host to reset this screen. Your originals remain safe.'); }
     finally { actionLock.current = false; setBusy(false); }
   }
-  async function openHost() {
-    if (hostBusy || busy || saving || lookActive.current || lookSaving.current || templateActive.current || templateSaving.current) return;
+  async function openHost(initialPage: HostPage = 'controls') {
+    if (!mounted.current) return;
+    if (AppState.currentState !== 'active') {
+      hostVisibility.current.record('blocked', AppState.currentState);
+      setMessage('Return to the booth, then tap Host to unlock settings.'); return;
+    }
+    if (hostBusy || hostMutationLock.current) {
+      setMessage('Complete or cancel the iPad authentication prompt, then tap Host again.'); return;
+    }
+    if (busy || saving || lookActive.current || lookSaving.current || templateActive.current || templateSaving.current) {
+      hostVisibility.current.record('blocked', AppState.currentState);
+      setMessage('Finish the current capture, save or photo editor, then tap Host. Your photos stay saved.'); return;
+    }
     const ticket = hostVisibility.current.begin();
-    if (ticket === null) return;
-    setHostBusy(true);
+    if (ticket === null) {
+      setMessage('Complete or cancel the iPad authentication prompt before trying Host again.'); return;
+    }
+    setHostBusy(true); setMessage('Unlock host settings with this iPad’s passcode or biometrics. Complete or cancel the iPad prompt to continue.');
+    hostVisibility.current.record('requested', AppState.currentState);
     try {
-      await authenticateHost();
-      if (!hostVisibility.current.finish(ticket) || AppState.currentState !== 'active') return;
-      setTimingVisible(false); setHostTiming(normalizeCaptureTiming(preferencesRef.current)); setExportEnabled(preferencesRef.current.photosExportEnabled); updateCameraReady(false); setScanningSetup(false); setHostPage('controls'); setHostMessage(''); hostVisibleRef.current = true; setHostVisible(true); setHostDecision(null); setPairingCode('');
+      const foregroundReady = await hostVisibility.current.authenticate(ticket, async () => {
+        await authenticateHost();
+        hostVisibility.current.record('os-success', AppState.currentState);
+      }, {
+        isActive: () => mounted.current && AppState.currentState === 'active', wait: pause,
+      });
+      if (!foregroundReady || !mounted.current || !hostVisibility.current.finish(ticket) || AppState.currentState !== 'active') {
+        throw new Error('Host settings stayed locked because the iPad left the booth or authentication did not return to the foreground. Return to the booth and tap Host to authenticate again.');
+      }
+      hostVisibility.current.record('foreground-ready', AppState.currentState); setMessage('');
+      setTimingVisible(false); setHostTiming(normalizeCaptureTiming(preferencesRef.current)); setExportEnabled(preferencesRef.current.photosExportEnabled); updateCameraReady(false); setScanningSetup(false); setHostPage(initialPage); setHostMessage(''); hostVisibleRef.current = true; setHostVisible(true); setHostDecision(null); setPairingCode('');
       await refreshLibrary(); await refreshCapability();
       try { const connection = await loadConnection(); if (hostVisibleRef.current && hostVisibility.current.current(ticket)) setPaired(!!connection); } catch (error) { diagnose(error); }
-    } catch (error) { setMessage(error instanceof Error ? error.message : 'Host authentication is unavailable.'); }
-    finally { hostVisibility.current.finish(ticket); setHostBusy(false); }
+    } catch (error) {
+      hostVisibility.current.record('failed', AppState.currentState, hostAuthenticationCode(error));
+      // Fixed stages/allowlisted state and result codes only. Never log the
+      // native error payload, credentials, PIN, pairing code or guest content.
+      console.info('[host-access-state]', hostVisibility.current.diagnostics());
+      if (mounted.current) setMessage(error instanceof Error ? error.message : 'Host authentication is unavailable. Tap Host to try again.');
+    }
+    finally { hostVisibility.current.finish(ticket); if (mounted.current) setHostBusy(false); }
   }
   async function savePreferences() {
+    if (hostMutationLock.current || hostBusy || !hostVisibleRef.current) return;
+    hostMutationLock.current = true;
+    const update = { ...hostTiming, photosExportEnabled: exportEnabled };
+    const authorization = hostActionAuthorization('controls');
     setHostBusy(true); setHostMessage('');
     try {
-      await authenticateHost();
-      const prefs = await saveHostPreferences({ ...hostTiming, photosExportEnabled: exportEnabled });
+      await authorization.authenticate();
+      const prefs = await saveHostPreferences(update, authorization);
       preferencesRef.current = prefs; setHostTiming(normalizeCaptureTiming(prefs));
       if (!guestTimingOverride.current && !runner.current?.isBusy()) { guestTimingRef.current = normalizeCaptureTiming(prefs); setGuestTiming({ ...guestTimingRef.current }); }
+      authorization.assertCurrent();
       setHostMessage('Booth defaults saved. Guest changes apply to one session only.');
-    } catch (error) { setHostMessage(error instanceof Error ? error.message : 'Settings could not save.'); }
-    finally { setHostBusy(false); }
+    } catch (error) { reportHostActionFailure(error); }
+    finally { hostMutationLock.current = false; setHostBusy(false); }
   }
   async function pairBooth(scannedCode?: string) {
     const code = (scannedCode ?? pairingCode).trim();
-    if (!code || hostBusy || pairingLock.current) return;
+    if (!code || hostMutationLock.current || hostBusy || pairingLock.current) return;
+    hostMutationLock.current = true;
     pairingLock.current = true;
+    const authorization = hostActionAuthorization('setup');
     setScanningSetup(false); setPairingCode(''); setHostBusy(true); setHostMessage('');
-    try { await provisionBooth(code); setPairingCode(''); setPaired(true); setHostPage('controls'); setHostMessage('Sharing connected securely.'); void retrySharing(true); }
-    catch (error) { diagnose(error); setHostMessage('Pairing did not finish. Ask the owner for a fresh private code. Local capture still works.'); }
-    finally { pairingLock.current = false; setPairingCode(''); setScanningSetup(false); setHostBusy(false); }
+    try {
+      await provisionBooth(code, authorization);
+      authorization.assertCurrent();
+      setPairingCode(''); setPaired(true); setSharingConnection('paired'); setHostPage('controls'); setHostMessage('Private setup saved. Confirmed queued sessions can now upload.'); void retrySharing(true);
+    }
+    catch (error) { reportHostActionFailure(error); }
+    finally { hostMutationLock.current = false; pairingLock.current = false; setPairingCode(''); setScanningSetup(false); setHostBusy(false); }
   }
 
   function closeHost() { hostVisibility.current.close(); hostVisibleRef.current = false; setHostVisible(false); setHostDecision(null); librarySessionRef.current = null; setLibrarySession(null); setSavedSessions([]); setPairingCode(''); setScanningSetup(false); }
@@ -675,19 +806,38 @@ function Photobooth() {
     finally { actionLock.current = false; templateSaving.current = false; if (mounted.current) { setBusy(false); setTemplateApplying(false); } }
   }
   async function finishKeepsakeSave(sessionId: string) {
-    if (hostBusy || hostOriginalLock.current) return;
+    if (hostMutationLock.current || hostBusy || hostOriginalLock.current) return;
+    hostMutationLock.current = true;
     hostOriginalLock.current = true; setHostBusy(true);
+    const authorization = hostActionAuthorization('library', sessionId);
     try {
-      await authenticateHost();
+      await authorization.authenticate();
+      authorization.assertCurrent();
       const updated = await retryStagedComposites(sessionId);
+      authorization.assertCurrent();
       if (updated) {
         if (sessionRef.current?.id === updated.id) adoptSession(updated);
         if (librarySessionRef.current?.id === updated.id) adoptLibrarySession(updated);
         setHostMessage(updated.stagedComposites?.length ? 'The keepsake still needs its local save completed.' : 'Keepsake save checked. Your originals are retained.');
       }
-      await refreshLibrary();
-    } catch (error) { diagnose(error); setHostMessage('The keepsake save needs another retry. Your originals remain saved.'); }
-    finally { hostOriginalLock.current = false; setHostBusy(false); }
+      await refreshLibrary(); authorization.assertCurrent();
+    } catch (error) { reportHostActionFailure(error); }
+    finally { hostMutationLock.current = false; hostOriginalLock.current = false; setHostBusy(false); }
+  }
+  async function exportHostPhotos(value: ActiveSession) {
+    if (hostMutationLock.current || hostBusy || exportLock.current || !hostVisibleRef.current) return;
+    hostMutationLock.current = true;
+    const authorization = hostActionAuthorization('library', value.id);
+    setHostBusy(true); setHostMessage('');
+    try {
+      await authorization.authenticate();
+      const current = await getLocalSession(value.id);
+      authorization.assertCurrent();
+      if (!current) throw new Error('The local session is unavailable.');
+      await exportPhotos(current, true, !!current.composite, authorization);
+      authorization.assertCurrent();
+    } catch (error) { reportHostActionFailure(error); }
+    finally { hostMutationLock.current = false; setHostBusy(false); }
   }
 
   const selectedPhoto = session?.shots.find((photo, index) => photoSlot(photo, index) === focusedSlot);
@@ -768,16 +918,18 @@ function Photobooth() {
           <View style={styles.shareStory}><Text style={styles.shareEyebrow}>{total === 4 ? 'FOUR FRAMES. ALL YOURS.' : total === 5 ? 'FIVE FRAMES. ALL YOURS.' : 'YOUR MOMENT. ALL YOURS.'}</Text><Text style={styles.shareTitle}>Yours to keep.</Text><Text style={styles.shareBody}>{guestPage ? session.composite ? 'Your keepsake and all four originals, in one private page.' : `Scan once. Take all ${session.shots.length} home.` : `Your ${session.shots.length} originals are safe on this iPad.`}</Text>{session.composite && <Image testID="saved-keepsake-preview" source={{ uri: session.composite.fileUri }} style={styles.keepsakePreview} resizeMode="contain" accessibilityLabel="Saved full-resolution keepsake" />}<Thumbnails reduceMotion={reduceMotion || !foreground} session={session} active={-1} dark={false} />
             <SmsShare key={session.id} session={session} jobs={jobs} onChanged={async () => { await retrySharing(); }} />
             <Text style={styles.shareLocal}>{session.shots.length} originals saved on this iPad</Text><Text style={styles.shareLibrary}>{photosStatus(session)}</Text>
-            {session.composite && <Text testID="keepsake-photos-status" style={styles.shareLibrary}>{session.composite.exportStatus === 'saved' ? 'Your keepsake is also saved in Photos' : session.composite.exportStatus === 'uncertain' ? 'Keepsake Photos result unconfirmed · ask the host to check' : 'Keepsake saved here · Photos copy is separate'}</Text>}
+            {session.composite && <Text testID="keepsake-photos-status" style={styles.shareLibrary}>{session.composite.exportStatus === 'saved' ? 'Your keepsake was exported to Photos' : session.composite.exportStatus === 'uncertain' ? 'Keepsake Photos result unconfirmed · ask the host to check' : 'Keepsake saved here · Photos copy is separate'}</Text>}
             {needsPhotosExport(session) && <Pressable accessibilityRole="button" disabled={exporting} style={styles.textAction} onPress={() => void exportPhotos(session, true)}><Text style={styles.lightTextAction}>{exporting ? 'Exporting to Photos…' : 'Save a copy to Photos'}</Text></Pressable>}
           </View>
           <View style={styles.shareCard}>{guestPage ? <View testID="guest-qr" style={styles.qrContent}><QRCode value={guestPage.url} size={224} quietZone={32} ecl="M" backgroundColor="#ffffff" color="#1e2723" /><Text style={styles.qrCaption}>YOUR PRIVATE PHOTO PAGE</Text><Text style={styles.expiry} accessibilityLabel={`Photo link expires ${expiry}`}>Available until {expiry}</Text><Text style={styles.sharePrivacy}>Anyone with the link can open your photos until then. Your originals stay private with the host afterward.</Text></View>
-              : <View style={styles.offlineCard}><Text style={styles.offlineGlyph}>✓</Text><Text testID="share-link-unavailable" style={styles.offlineTitle}>No download link yet</Text><Text style={styles.sharePrivacy}>The host must reconnect the booth before your photo link is ready. Your originals stay safe on this iPad.</Text><Button title="Retry sharing" testID="retry-sharing" secondary light onPress={() => void retrySharing(true)} /></View>}
+              : <View style={styles.offlineCard}><Text style={styles.offlineGlyph}>✓</Text><Text testID="share-link-unavailable" style={styles.offlineTitle}>{shareReadiness.title}</Text><Text testID="share-readiness-message" style={styles.sharePrivacy}>{shareReadiness.message}</Text>{shareReadiness.action === 'private-setup' || shareReadiness.action === 'check-connection'
+                ? <Button title="Ask the host for sharing setup" testID="sharing-setup-host" secondary light onPress={() => void openHost('setup')} />
+                : shareReadiness.action === 'retry' ? <Button title="Retry sharing" testID="retry-sharing" secondary light disabled={sharingSync === 'running'} onPress={() => void retrySharing(true)} /> : null}</View>}
             <Button title={busy ? 'Clearing this screen…' : 'Next guests'} testID="next-guest" disabled={busy} onPress={() => void nextGuests()} />
           </View>
         </ScrollView>}
       </>}
-      {!!message && <View accessibilityLiveRegion="polite" style={[styles.message, screen === 'camera' && styles.cameraMessage, screen === 'camera' && { left: insets.left + 18, right: insets.right + 18, top: insets.top + 80 }]}><Text style={styles.messageText}>{message}</Text></View>}
+      {!!message && <View testID="booth-status-message" accessibilityLiveRegion="polite" style={[styles.message, screen === 'camera' && styles.cameraMessage, screen === 'camera' && { left: insets.left + 18, right: insets.right + 18, top: insets.top + 80 }]}><Text style={styles.messageText}>{message}</Text></View>}
       {nativeFixtureEnabled && <View style={styles.fixture}><Text testID="native-fixture-enabled" style={styles.fixtureText}>SYNTHETIC CAMERA · REAL LOCAL STORAGE · OFFLINE SHARING</Text><Text testID="native-fixture-storage" style={styles.fixtureText}>{fixtureStatus}</Text></View>}
     </Animated.View>
     <TimingSheet visible={timingVisible && foreground && !hostVisible && !busy} timing={guestTiming} defaults={normalizeCaptureTiming(preferencesRef.current)} onApply={applyGuestTiming} onClose={() => setTimingVisible(false)} reduceMotion={reduceMotion} disabled={busy} />
@@ -789,10 +941,10 @@ function Photobooth() {
           <View style={styles.hostCard}><Text style={styles.hostSectionTitle}>Booth timing defaults</Text><Text style={styles.hostBody}>A little longer to get ready, then a quicker rhythm. Guests can adjust their own session before starting.</Text><TimingControls value={hostTiming} onChange={setHostTiming} disabled={hostBusy} testIDPrefix="host-timing" /><Text style={styles.hostSmall}>Next guests start with these saved defaults. Retakes and paused sessions use the first-photo preparation time again.</Text></View>
           <View style={styles.hostCard}><View style={styles.switchRow}><View style={styles.switchText}><Text style={styles.hostSectionTitle}>Copies in Photos</Text><Text style={styles.hostBody}>Try an additional Photos export after capture. Local originals always save first.</Text></View><Switch accessibilityLabel="Automatically export copies to Photos" value={exportEnabled} onValueChange={setExportEnabled} trackColor={{ true: '#596857' }} /></View><Text style={styles.hostSmall}>Photos permission: {libraryPermission}. Failed or denied exports keep their local originals.</Text><Pressable accessibilityRole="button" style={styles.textAction} onPress={() => void Linking.openSettings()}><Text style={styles.lightTextAction}>Open iPad permission settings</Text></Pressable></View>
           <Button title={hostBusy ? 'Saving settings…' : 'Save booth settings'} disabled={hostBusy} onPress={() => void savePreferences()} />
-          <View style={styles.hostCard}><Text style={styles.hostSectionTitle}>Sharing {paired ? 'paired' : 'offline'}</Text><Text style={styles.hostBody}>{pendingCount} photos currently listed in the upload queue. Local capture and saved sessions work independently.</Text>{queueRepairStatus && <Text testID="host-index-repair-status" style={styles.hostWarning}>{queueRepairStatus}</Text>}<Pressable accessibilityRole="button" style={styles.textAction} onPress={() => void retrySharing(true)}><Text style={styles.lightTextAction}>{queueRepairStatus ? 'Repair index & retry sharing' : 'Retry pending sharing'}</Text></Pressable>{!!hostDiagnostic && <Text selectable style={styles.diagnostic}>{hostDiagnostic}</Text>}</View>
+          <View style={styles.hostCard}><Text style={styles.hostSectionTitle}>{sharingConnection === 'paired' ? 'Private sharing setup saved' : sharingConnection === 'checking' ? 'Checking sharing setup' : 'Sharing setup needs attention'}</Text><Text testID="host-sharing-status" style={styles.hostBody}>{sharingSetupDetail}</Text><Text style={styles.hostBody}>{pendingCount} files currently listed in the upload queue. Local originals are saved independently. Older attempt counters may include configuration waits, not network requests.</Text>{latestSharingFailure && <Text testID="host-sharing-diagnostic" selectable style={styles.diagnostic}>Last recorded request issue: {latestSharingFailure.operation} · {latestSharingFailure.category}{latestSharingFailure.httpStatus ? ` · HTTP ${latestSharingFailure.httpStatus}` : ''}</Text>}{queueRepairStatus && <Text testID="host-index-repair-status" style={styles.hostWarning}>{queueRepairStatus}</Text>}{sharingConnection !== 'paired' && <Button title="Open private setup" testID="open-sharing-setup" secondary light onPress={() => { setHostMessage(''); setHostPage('setup'); }} />}<Pressable accessibilityRole="button" style={styles.textAction} onPress={() => void retrySharing(true)}><Text style={styles.lightTextAction}>{queueRepairStatus ? 'Repair index & retry sharing' : 'Refresh sharing status'}</Text></Pressable>{!!hostDiagnostic && <Text selectable style={styles.diagnostic}>{hostDiagnostic}</Text>}</View>
         </>}
         {hostPage === 'library' && <>
-          <Text style={styles.hostBody}>Originals saved in this app, available without a network connection. Photos export is listed separately.</Text>
+          <Text style={styles.hostBody}>Originals saved in this app, available without a network connection. Photos export is listed separately. Export records do not track later deletions in Photos.</Text>
           <Button title="Refresh local sessions" secondary light onPress={() => void refreshLibrary().catch(error => { diagnose(error); setHostMessage('Could not refresh local sessions.'); })} />
           {librarySession && <View style={styles.hostCard}>
             <Text style={styles.hostSectionTitle}>{librarySession.createdAt > 0 ? new Date(librarySession.createdAt).toLocaleString() : 'Recovered session'}</Text>
@@ -814,7 +966,7 @@ function Photobooth() {
             </> : <>
               <ScrollView horizontal pagingEnabled style={{ height: Math.min(420, height * 0.4) }}>{librarySession.shots.map(photo => <Image key={photo.id} source={{ uri: photo.fileUri }} style={{ width: Math.min(width - 96, 650), height: '100%' }} resizeMode="contain" />)}</ScrollView>
               <Text style={styles.hostBody}>{librarySession.shots.length} originals on this iPad · {photosStatus(librarySession)}</Text>
-              <Button title={exporting ? 'Exporting copies…' : photosExportTitle(librarySession)} disabled={exporting || !needsPhotosExport(librarySession)} onPress={() => void exportPhotos(librarySession, true)} />
+              <Button title={exporting ? 'Exporting copies…' : photosExportTitle(librarySession)} disabled={hostBusy || exporting || !needsPhotosExport(librarySession)} onPress={() => void exportHostPhotos(librarySession)} />
               {librarySession.shots.some(photo => photo.exportStatus === 'uncertain') && <Text style={styles.hostWarning}>Check each uncertain original in the Photos app before choosing an action below. No uncertain copy is retried automatically.</Text>}
               {librarySession.shots.filter(photo => photo.exportStatus === 'uncertain').map(photo => hostPhotoCard(photo, false))}
               {compositeExportCapture(librarySession) && hostPhotoCard(compositeExportCapture(librarySession)!, false, true)}

@@ -3,7 +3,7 @@ export type HostOriginalSession = { id: string; shots: HostOriginal[]; retakes?:
 export type HostOriginalRequest =
   | { kind: 'acknowledge' | 'export'; sessionId: string; photoId: string; retained: boolean; duplicateRiskAccepted?: boolean }
   | { kind: 'finish-save'; sessionId: string };
-export type HostExportOptions = { includeComposite?: boolean; photoIds: string[]; includeRetakes: boolean; requestPermission: true; retryUncertain: boolean };
+export type HostExportOptions = { includeComposite?: boolean; photoIds: string[]; includeRetakes: boolean; requestPermission: true; retryUncertain: boolean; assertCurrent: () => void };
 export type HostOriginalResult<S> = { kind: 'updated' | 'already-saved'; session: S } | { kind: 'busy' } | { kind: 'confirm-duplicate'; request: HostOriginalRequest };
 
 export const INDEX_REPAIR_DIAGNOSTIC = 'Originals and the recovery journal are saved. The sharing index is waiting for repair.';
@@ -21,7 +21,7 @@ export function queueIndexStatus(pendingSessions: number, invalidRows: number): 
   return notes.join(' ');
 }
 export function hostOriginalStatus(photo: HostOriginal): string {
-  if (photo.exportStatus === 'saved') return 'Saved in Photos';
+  if (photo.exportStatus === 'saved') return 'Exported to Photos';
   if (photo.exportStatus === 'uncertain') return 'Photos result uncertain. Check Photos before marking or exporting again.';
   if (photo.exportStatus === 'denied') return 'Not exported · Photos permission needed';
   if (photo.exportStatus === 'failed') return 'Not exported · last attempt failed';
@@ -33,6 +33,7 @@ export function hostOriginalStatus(photo: HostOriginal): string {
 // authentication, and address exactly one selected or retained original.
 export function createHostOriginalActions<S extends HostOriginalSession>(dependencies: {
   authenticate(): Promise<void>;
+  assertCurrent(): void;
   load(id: string): Promise<S | null>;
   acknowledge(sessionId: string, photoId: string): Promise<S | null>;
   export(session: S, options: HostExportOptions): Promise<S>;
@@ -60,10 +61,14 @@ export function createHostOriginalActions<S extends HostOriginalSession>(depende
           if (request.kind === 'acknowledge' && photo.exportStatus !== 'uncertain' && photo.exportStatus !== 'saved') throw new Error('Only an uncertain Photos result can be acknowledged.');
         }
         await dependencies.authenticate();
+        dependencies.assertCurrent();
         const current = await dependencies.load(request.sessionId);
+        dependencies.assertCurrent();
         if (!current || current.id !== request.sessionId) throw new Error('The local session is unavailable.');
         if (request.kind === 'finish-save') {
+          dependencies.assertCurrent();
           const updated = await dependencies.finishSave(current.id);
+          dependencies.assertCurrent();
           if (!updated) throw new Error('The original still needs its local save completed.');
           const stagedIds = new Set(initial.stagedOriginals?.map(photo => photo.id));
           if (!updated.stagedOriginals?.length && ![...updated.shots, ...updated.retakes ?? []].some(photo => stagedIds.has(photo.id))) {
@@ -75,16 +80,22 @@ export function createHostOriginalActions<S extends HostOriginalSession>(depende
         if (photo.exportStatus === 'saved') return { kind: 'already-saved', session: current };
         if (request.kind === 'acknowledge') {
           if (photo.exportStatus !== 'uncertain') throw new Error('The Photos result changed. Check this original again.');
+          dependencies.assertCurrent();
           const updated = await dependencies.acknowledge(current.id, photo.id);
+          dependencies.assertCurrent();
           if (!updated) throw new Error('The Photos acknowledgement could not be saved.');
           return { kind: 'updated', session: updated };
         }
         if (photo.exportStatus === 'uncertain' && !request.duplicateRiskAccepted) return { kind: 'confirm-duplicate', request };
-        return { kind: 'updated', session: await dependencies.export(current, {
+        dependencies.assertCurrent();
+        const updated = await dependencies.export(current, {
           photoIds: [photo.id], includeRetakes: request.retained, requestPermission: true,
           ...(!request.retained && current.composite?.id === photo.id ? { includeComposite: true } : {}),
           retryUncertain: photo.exportStatus === 'uncertain' && request.duplicateRiskAccepted === true,
-        }) };
+          assertCurrent: dependencies.assertCurrent,
+        });
+        dependencies.assertCurrent();
+        return { kind: 'updated', session: updated };
       } finally { running = false; }
     },
   };

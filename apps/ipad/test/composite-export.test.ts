@@ -15,7 +15,7 @@ function session(): ActiveSession {
 function fixture() {
   let current = session(), writes = 0, auths = 0;
   let permission: PhotoLibraryCapability = { available: true, permission: 'granted', canAskAgain: true, writeOnly: true };
-  const updates: PhotoExportStatus[] = [], exports: HostExportOptions[] = [];
+  const updates: PhotoExportStatus[] = [], exports: Omit<HostExportOptions, 'assertCurrent'>[] = [];
   const ports = {
     get: async () => current,
     update: async (_sessionId: string, id: string, status: PhotoExportStatus) => {
@@ -28,9 +28,9 @@ function fixture() {
   const library = { capability: async () => permission, requestAddPermission: async () => permission,
     save: async (_uri: string) => { writes++; } };
   const exporter = createPhotoExporter(library, ports);
-  const host = createHostOriginalActions({ load: async () => current,
+  const host = createHostOriginalActions({ assertCurrent: () => {}, load: async () => current,
     authenticate: async () => { auths++; }, acknowledge: (id, photoId) => ports.update(id, photoId, 'saved'),
-    export: async (value, options) => { exports.push(options); return exporter.exportSession(value, options); }, finishSave: async () => current });
+    export: async (value, options) => { assert.equal(typeof options.assertCurrent, 'function'); const { assertCurrent, ...payload } = options; exports.push(payload); return exporter.exportSession(value, options); }, finishSave: async () => current });
   return { ports, library, exporter, host, updates, exports, current: () => current, set: (value: ActiveSession) => { current = value; },
     deny: () => { permission = { ...permission, permission: 'denied' }; }, writes: () => writes, auths: () => auths };
 }
@@ -88,7 +88,7 @@ for (const boundary of ['uncertain', 'saved'] as const) test(`failed ${boundary}
 });
 test('host rejects composite replaced during authentication and retained composite routes', async () => {
   let current = session(), saves = 0, acknowledgments = 0;
-  const actions = createHostOriginalActions({ load: async () => current,
+  const actions = createHostOriginalActions({ assertCurrent: () => {}, load: async () => current,
     authenticate: async () => { current = { ...current, composite: { ...current.composite!, id: 'replacement' } }; },
     acknowledge: async () => { acknowledgments++; return current; }, export: async value => { saves++; return value; }, finishSave: async () => current });
   await assert.rejects(actions.run({ kind: 'export', sessionId: 'session', photoId: 'composite', retained: false }), /host collection/);

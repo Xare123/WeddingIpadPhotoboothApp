@@ -98,7 +98,7 @@ test('independent 3: automatic uncertain export stays inert, host authorization 
  const calls:string[]=[];const capability={available:true,permission:'granted',canAskAgain:false,writeOnly:true} as const;
  const e=createPhotoExporter({async capability(){return capability;},async requestAddPermission(){return capability;},async save(uri){calls.push(uri);}},{get:id=>r.getSession(id),update:(id,p,status)=>r.updateExport(id,p,status)});
  await e.exportSession((await r.getSession(s.id))!);assert.equal(calls.length,0);
- let rejectAuth=true,auth=0;const host=createHostOriginalActions({async authenticate(){auth++;if(rejectAuth)throw Error('authentication failed');},load:(id:string)=>r.getSession(id),acknowledge:(id:string,p:string)=>r.updateExport(id,p,'saved'),export:(value:typeof s,options:any)=>e.exportSession(value,options),finishSave:(id:string)=>r.retryStagedPhotos(id)});
+ let rejectAuth=true,auth=0;const host=createHostOriginalActions({ assertCurrent: () => {},async authenticate(){auth++;if(rejectAuth)throw Error('authentication failed');},load:(id:string)=>r.getSession(id),acknowledge:(id:string,p:string)=>r.updateExport(id,p,'saved'),export:(value:typeof s,options:any)=>e.exportSession(value,options),finishSave:(id:string)=>r.retryStagedPhotos(id)});
  const request={kind:'export',sessionId:s.id,photoId:id,retained:false} as const;
  assert.equal((await host.run(request)).kind,'confirm-duplicate');assert.equal(auth,0);
  await assert.rejects(host.run({...request,duplicateRiskAccepted:true}));assert.equal(calls.length,0);rejectAuth=false;await host.run({...request,duplicateRiskAccepted:true});assert.equal(calls.length,1);assert.equal(auth,2);

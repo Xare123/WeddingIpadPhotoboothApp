@@ -30,6 +30,7 @@ export function normalizePairingCode(input: string): string {
 
 type PairingPorts = {
   authenticate(): Promise<void>;
+  assertCurrent(): void;
   request(code: string): Promise<unknown>;
   persist(origin: string, token: string): Promise<void>;
 };
@@ -40,9 +41,13 @@ type PairingPorts = {
 export async function pairBooth(input: string, ports: PairingPorts): Promise<void> {
   const code = normalizePairingCode(input);
   await ports.authenticate();
+  ports.assertCurrent();
   let response: unknown;
   try { response = await ports.request(code); }
   catch { throw new Error('Setup could not finish. Ask the host for a fresh private setup code. Photos still save locally.'); }
+  // A response can consume the one-time code even when the owner leaves before it arrives.
+  // Never persist its token under an expired lease or automatically consume the code again.
+  ports.assertCurrent();
   const value = response && typeof response === 'object' ? response as Record<string, unknown> : {};
   if (value.status !== 'paired' || typeof value.origin !== 'string' ||
     validateOrigin(value.origin, false) !== DEFAULT_API_ORIGIN || typeof value.deviceToken !== 'string' ||
@@ -50,6 +55,18 @@ export async function pairBooth(input: string, ports: PairingPorts): Promise<voi
     new Set(value.deviceToken).size < 12 || !/^[\x21-\x7e]+$/.test(value.deviceToken)) {
     throw new Error('The private setup response was invalid. Ask the host for a fresh code.');
   }
+  ports.assertCurrent();
   try { await ports.persist(DEFAULT_API_ORIGIN, value.deviceToken); }
   catch { throw new Error('The setup code was used, but secure storage could not save it. Ask for a fresh private code. Local photos are safe.'); }
+}
+
+export async function saveGuardedHostPreferences(update: Partial<HostPreferences>, ports: {
+  load(): Promise<HostPreferences>;
+  assertCurrent(): void;
+  persist(value: HostPreferences): Promise<void>;
+}): Promise<HostPreferences> {
+  const next = hostPreferences({ ...await ports.load(), ...update });
+  ports.assertCurrent();
+  await ports.persist(next);
+  return next;
 }

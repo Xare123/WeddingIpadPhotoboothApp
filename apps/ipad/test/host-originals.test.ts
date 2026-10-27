@@ -6,12 +6,12 @@ import { createHostOriginalActions, hostOriginalStatus, indexRepairSessions, que
 const session = (): HostOriginalSession => ({ id: 'session', shots: [{ id: 'selected', exportStatus: 'uncertain' }], retakes: [{ id: 'retake', exportStatus: 'pending' }] });
 function fixture() {
   let current = session();
-  const calls: string[] = [], exports: HostExportOptions[] = [];
-  const actions = createHostOriginalActions({
+  const calls: string[] = [], exports: Omit<HostExportOptions, 'assertCurrent'>[] = [];
+  const actions = createHostOriginalActions({ assertCurrent: () => {},
     load: async () => current,
     authenticate: async () => { calls.push('authenticate'); },
     acknowledge: async (_sessionId, photoId) => { calls.push(`ack:${photoId}`); current = { ...current, shots: current.shots.map(photo => photo.id === photoId ? { ...photo, exportStatus: 'saved' } : photo) }; return current; },
-    export: async (value, options) => { calls.push('export'); exports.push(options); return value; },
+    export: async (value, options) => { calls.push('export'); assert.equal(typeof options.assertCurrent, 'function'); const { assertCurrent, ...payload } = options; exports.push(payload); return value; },
     finishSave: async () => { calls.push('finish'); return current; },
   });
   return { actions, calls, exports, get: () => current };
@@ -49,14 +49,14 @@ test('retained-original export is individually scoped and does not select it for
 });
 
 test('host authentication cancellation never acknowledges or exports', async () => {
-  const actions = createHostOriginalActions({ load: async () => session(), authenticate: async () => { throw new Error('cancel'); }, acknowledge: async () => { throw new Error('must not mutate'); }, export: async () => { throw new Error('must not export'); }, finishSave: async () => null });
+  const actions = createHostOriginalActions({ assertCurrent: () => {}, load: async () => session(), authenticate: async () => { throw new Error('cancel'); }, acknowledge: async () => { throw new Error('must not mutate'); }, export: async () => { throw new Error('must not export'); }, finishSave: async () => null });
   await assert.rejects(actions.run({ kind: 'acknowledge', sessionId: 'session', photoId: 'selected', retained: false }), /cancel/);
 });
 
 test('host actions reserve before asynchronous authentication so repeated taps cannot duplicate exports', async () => {
   let unlock!: () => void, exports = 0;
   const gate = new Promise<void>(resolve => { unlock = resolve; });
-  const actions = createHostOriginalActions({ load: async () => session(), authenticate: () => gate, acknowledge: async () => null,
+  const actions = createHostOriginalActions({ assertCurrent: () => {}, load: async () => session(), authenticate: () => gate, acknowledge: async () => null,
     export: async value => { exports++; return value; }, finishSave: async () => null });
   const first = actions.run({ kind: 'export', sessionId: 'session', photoId: 'retake', retained: true });
   assert.equal((await actions.run({ kind: 'export', sessionId: 'session', photoId: 'retake', retained: true })).kind, 'busy');
@@ -67,7 +67,7 @@ test('host actions reserve before asynchronous authentication so repeated taps c
 test('local staged-save completion requires host authentication and never invokes Photos export', async () => {
   const calls: string[] = [];
   const staged: HostOriginalSession = { ...session(), stagedOriginals: [{ id: 'stage' }] };
-  const actions = createHostOriginalActions({ load: async () => staged, authenticate: async () => { calls.push('authenticate'); },
+  const actions = createHostOriginalActions({ assertCurrent: () => {}, load: async () => staged, authenticate: async () => { calls.push('authenticate'); },
     acknowledge: async () => null, export: async value => { throw new Error('must not export'); }, finishSave: async () => { calls.push('finish'); return staged; } });
   await actions.run({ kind: 'finish-save', sessionId: 'session' });
   assert.deepEqual(calls, ['authenticate', 'finish']);
@@ -83,7 +83,7 @@ test('pending index repair is distinct from a zero queue count and is deduplicat
 
 test('a result becoming uncertain during authentication asks for confirmation without exporting', async () => {
   let loads = 0, exported = false;
-  const actions = createHostOriginalActions({ load: async () => ({ ...session(), shots: [{ id: 'selected', exportStatus: ++loads === 1 ? 'pending' : 'uncertain' }] }), authenticate: async () => {}, acknowledge: async () => null,
+  const actions = createHostOriginalActions({ assertCurrent: () => {}, load: async () => ({ ...session(), shots: [{ id: 'selected', exportStatus: ++loads === 1 ? 'pending' : 'uncertain' }] }), authenticate: async () => {}, acknowledge: async () => null,
     export: async value => { exported = true; return value; }, finishSave: async () => null });
   const result = await actions.run({ kind: 'export', sessionId: 'session', photoId: 'selected', retained: false });
   assert.equal(result.kind, 'confirm-duplicate');
@@ -92,7 +92,7 @@ test('a result becoming uncertain during authentication asks for confirmation wi
 
 test('local save completion cannot claim a disappeared staged original is available', async () => {
   const staged: HostOriginalSession = { ...session(), stagedOriginals: [{ id: 'stage' }] };
-  const actions = createHostOriginalActions({ load: async () => staged, authenticate: async () => {}, acknowledge: async () => null,
+  const actions = createHostOriginalActions({ assertCurrent: () => {}, load: async () => staged, authenticate: async () => {}, acknowledge: async () => null,
     export: async value => value, finishSave: async () => session() });
   await assert.rejects(actions.run({ kind: 'finish-save', sessionId: 'session' }), /not available yet/);
 });
@@ -108,8 +108,33 @@ test('orphan index diagnostics remain visible even with no sessions and no queue
 test('staged originals cannot be addressed through selected or retained Photos-export routes', async () => {
   let exports = 0;
   const value: HostOriginalSession = { ...session(), stagedOriginals: [{ id: 'stage' }] };
-  const actions = createHostOriginalActions({ load: async () => value, authenticate: async () => {}, acknowledge: async () => null,
+  const actions = createHostOriginalActions({ assertCurrent: () => {}, load: async () => value, authenticate: async () => {}, acknowledge: async () => null,
     export: async current => { exports++; return current; }, finishSave: async () => value });
   for (const retained of [false, true]) await assert.rejects(actions.run({ kind: 'export', sessionId: 'session', photoId: 'stage', retained }), /host collection/);
   assert.equal(exports, 0);
 });
+
+// These regressions use the production action lease, not a fixture no-op guard.
+for (const kind of ['acknowledge', 'export', 'finish-save'] as const) {
+  for (const event of ['background', 'close'] as const) test(`${event} during post-auth ${kind} reload prevents the mutation`, async () => {
+    const { authenticateHostAction } = await import('../src/host-action-auth');
+    const { createHostVisibility } = await import('../src/host-visibility');
+    const visibility = createHostVisibility(); let clock = 0, loads = 0, mutations = 0;
+    let lease: Awaited<ReturnType<typeof authenticateHostAction>>;
+    const value = { ...session(), stagedOriginals: [{ id: 'stage' }] };
+    const actions = createHostOriginalActions({
+      authenticate: async () => { lease = await authenticateHostAction({ visibility, authenticate: async () => {},
+        isActive: () => true, now: () => clock, wait: async ms => { clock += ms; } }); },
+      assertCurrent: () => lease.assertCurrent(),
+      load: async () => { if (++loads === 2) {
+        if (event === 'background') visibility.suspend('background'); else visibility.close();
+      } return value; },
+      acknowledge: async () => { mutations++; return value; },
+      export: async () => { mutations++; return value; },
+      finishSave: async () => { mutations++; return value; },
+    });
+    await assert.rejects(actions.run(kind === 'finish-save' ? { kind, sessionId: 'session' }
+      : { kind, sessionId: 'session', photoId: 'selected', retained: false, duplicateRiskAccepted: true }), /no longer authorized/);
+    assert.equal(mutations, 0); assert.equal(value.shots[0]?.exportStatus, 'uncertain');
+  });
+}

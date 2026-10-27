@@ -1,4 +1,4 @@
-import type { QueueJob } from '@wedding-booth/core';
+import { parseQueueFailure, type QueueJob } from '@wedding-booth/core';
 
 export interface QueueDatabase {
   getFirstAsync<T>(sql: string, ...parameters: string[]): Promise<T | null>;
@@ -18,6 +18,10 @@ export function parseQueuePayload(payload: string, id: string): QueueJob | undef
     if (!job || !identity(id) || job.id !== id || !identity(job.photoId) || !identity(job.sessionId) ||
       !Number.isFinite(job.createdAt) || job.createdAt < 0 || !Number.isFinite(job.nextAttemptAt) || job.nextAttemptAt < 0 ||
       !Number.isSafeInteger(job.attempts) || job.attempts < 0 || !states.has(job.state)) return undefined;
+    if (job.lastFailure !== undefined) {
+      const diagnostic = parseQueueFailure(job.lastFailure);
+      if (diagnostic) job.lastFailure = diagnostic; else delete job.lastFailure;
+    }
     if (job.kind === 'upload' && job.id === job.photoId && (job.state === 'pending' || job.state === 'complete')) return job as QueueJob;
     if (job.kind === 'share' && identity(job.uploadJobId) && recipientReference(job.recipientRef) && Number.isFinite(job.consentedAt) && job.consentedAt > 0) return job as QueueJob;
   } catch { /* The original payload is quarantined by the authoritative repair. */ }

@@ -1,0 +1,521 @@
+{
+  "generatedAt": "2026-10-27T01:34:22.018Z",
+  "status": "passed",
+  "scope": "Actual current App JSX, host visibility/auth policy and share-readiness logic through RN-web. Explicit synthetic OS lifecycle/auth result, secure-store, camera, storage, Canvas keepsake, Photos and sharing adapters. No genuine PIN/biometric, iPad, durable storage, native camera, network, real URL, or SMS verification.",
+  "groups": 30,
+  "screenshotCount": 48,
+  "contactSheetCount": 2,
+  "sourceSHA256": "9425fa216f680b9f6add46d16eca4d3a0cca4bfb52aaac6eb010b814b269068e",
+  "sourceHashes": {
+    "apps/ipad/app.json": "94d85ce4cea69ed8b3156715a67573ee752396c290fbf9cef1aa2d75f3f767b8",
+    "apps/ipad/src/config.ts": "707cfb41dfb6ed03e4493784940510c7e64ba018e058b5f426967ad3d432e460",
+    "apps/ipad/src/TimingSheet.tsx": "c6564a204c7a3a3ebd3fe993c04facc755ba08e18bc1e0cee62c572a0e466210",
+    "apps/ipad/src/capture-timing.ts": "83eec4ead6d14e43e6061b63201d6b432c1e0f17a24a4d35035944c8638c5683",
+    "apps/ipad/src/timing-controls.ts": "b73ced2d2ba25beaffbf4f0ec3fcda648de0bafebcae44534052d7649facc5b1",
+    "apps/ipad/src/provisioning.ts": "a87167193caeefae2bc2a2e9a1675395ebc07363e2c0695cb492577c0a345d9a",
+    "apps/ipad/App.tsx": "9425fa216f680b9f6add46d16eca4d3a0cca4bfb52aaac6eb010b814b269068e",
+    "apps/ipad/src/GlassSurface.tsx": "ace64a22e740d69040689495c0aa7147f7456038bbd0ee9aba6f2d52b58af972",
+    "apps/ipad/src/glass-policy.ts": "d3e33995484239887dde90f2743919c17bb2e8ff23093ceb45a804e530499e9e",
+    "apps/ipad/src/host-visibility.ts": "94f81920ae080b7182483e376bd782f062fb43e6b603ec53a8af0296733acc49",
+    "apps/ipad/src/photo-look-editor.ts": "38d6dc47fb34d9d9da58cf96a7daa6102d9616c7f54720c0406c1962548f817b",
+    "apps/ipad/src/native-photo-effects.ts": "372b1250d399429dc7396d09be1affa44b063216ba471d5cc4ed2d953394f0c9",
+    "apps/ipad/src/local-types.ts": "ab3e1e69d051a7a7c91886445781cbe306bb8839a60c2c4cbbafb49d488bde47",
+    "apps/ipad/src/template-editor.ts": "ad02f03cb5cae30d801e5262fd8f363f4e023b3c7f815f7e22e56ee604abe3df",
+    "apps/ipad/src/TemplateStudio.tsx": "2ce75e3831efeff05e6c841440ace23dfb34d220f09af30f0c80a418800113fc",
+    "apps/ipad/src/publication.ts": "33d26658c1c2de8781bc62ded35c80cbd00394c7413c70fdedf1fbc834875357",
+    "apps/ipad/src/session-capture.ts": "544104e153dab9b9d8f7996f15e4b79180d9dede1819620de7fec07c076f4763",
+    "apps/ipad/src/review-selection.ts": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
+    "apps/ipad/src/sharing.ts": "6bce9b315a8dc7064f858d7ff9d10c5d5587b1b2bf66a56923f738823c1df271",
+    "apps/ipad/src/SmsShare.tsx": "79464043a0e40a6cc7850c0e46cacfab33b3b19e477fee87192c0b38195d7541",
+    "apps/ipad/src/sms-state.ts": "4c7125d4f710c97848b6690196fa328edc83e85488ce3626dd7e843e2e99497a",
+    "apps/ipad/src/booth-presentation.ts": "c9bee7d01b75b29e5c3cb958483adf155dd843824c2216e60219fb3bd0d0c507",
+    "apps/ipad/src/host-originals.ts": "82f920cbdaf79672a872130d016cabb4d7c2bcae951aea1b0c1c950ff80f2001",
+    "apps/ipad/src/photo-export.ts": "8360fc824ece4d972c317f3cb743f71ba95fa3718e02a6e81796ce89c4f5ac36",
+    "apps/ipad/src/photo-library.ts": "800b9dd768d660c16720fda134fe33a1a14db1061f7f31531063b136b670b6a8",
+    "packages/core/src/index.ts": "bb8196ebd2672c74f74ceab333e70e8a3abef481d6e341b8763c4e396431e2de",
+    "apps/ipad/assets/attract-scene.png": "6ca6274beba9483104f19fb35d1ef9b8bfaae458208025e8fb4e8d4890f45cdf",
+    "apps/ipad/src/host-auth.ts": "1f71cedabd1a67bd56cb4b66d5c6e9861eccc798cf72321b24cb975e48cd0fbf",
+    "apps/ipad/src/host-auth-policy.ts": "9b52b7473a2f874dd93367607d48b0b2046cd9d6e67ef0e6ec575863bb0a6111",
+    "apps/ipad/src/host-action-auth.ts": "9619fc4e5f3b935ead8c5828d1e4bb99804c4440cb864362c2feb421cd493bdb",
+    "apps/ipad/src/share-readiness.ts": "8c518ae80702a09e81e17f3ae67d8a477783bebba57284ffdc8af76f95617178",
+    "apps/ipad/src/sharing-request.ts": "446dfb0e0ccf09675d56c7cf50cf3b5b1442050373d13a8dfe73a68c213576d9",
+    "apps/ipad/src/sync-preflight.ts": "8b703821a286d20a482192eff763e5cee0c67418c238457c11aa76d5955597c2",
+    "apps/ipad/src/sync.ts": "14e13d7c73810c2a6405de63ed452d3133411184afee7363cb6a1c856881280b",
+    "apps/ipad/src/session-sync.ts": "c3ae9b040ba69daac29024a014745682d656aa7ae26f5df76006bfc15c20e658",
+    "apps/ipad/src/queue-index.ts": "75de31a5a38a4142f18c6683ac8cc212f941bad1a902606bafd9906739482e84"
+  },
+  "fixtureSourceHashes": {
+    "tools/native-visual/new-session/serve.mjs": "1a3dbbade6c4b3aa27857d03ee6dc6288954f70509e4406ee1ad2309cc87d6e3",
+    "tools/native-visual/new-session/entry.tsx": "c9ba630f53c61f7e25b5c2381d31a7070dccae2c4a3fb058c2d50220fa48498a",
+    "tools/native-visual/new-session/fixture-controls.ts": "02cb2eac61e9ea03b6ef1f3101fba0f4f0cb26e980fba900bb648c031e94194a",
+    "tools/native-visual/new-session/stubs.tsx": "9c68c00b27a1914d04a07d031e9521d083bfd12747b30094b1b3fd43a85161a6",
+    "tools/native-visual/new-session/native-runtime.ts": "4977e8404fdc5d83980286ee3f00c2b4b35716643edd73afba5504924664896d",
+    "tools/native-visual/new-session/safe-area-stub.tsx": "4b9fc1218f6a64c71ff6bbb51a57c50826ccca1a957c5d021bd5dc9643e505f7",
+    "tools/native-visual/new-session/glass-stub.tsx": "3712d3272cb137bfba9c4d19cf4913a0cbafd53a6b43225c6876cf19f97b8e7f",
+    "tools/native-visual/new-session/effects-stub.ts": "2aabd78a80740fcf405d630a18af6c83fb350e5853db2c5bdbe697181a377724",
+    "tools/native-visual/new-session/template-stub.ts": "0bc1ecdf6cd578fa5fb5ac8203438389806e3b76b161b3d389e096174ea49d6d",
+    "tools/native-visual/new-session/template-v2-stub.ts": "db4497c78eb087ae6459da7b0425b7fda221b4abcd941fa3ad4521f382bbaa6d",
+    "tools/native-visual/new-session/native-fixture-disabled.ts": "628425cf7b23d8b839e04bed27881ad6308301904bd1ad8a8b6acc275b856986"
+  },
+  "verificationToolHashes": {
+    "tools/native-visual/new-session/host-sharing-checks.mjs": "561314f8e56bfa4f4b948a2bc4b6b6dbe79bb156435c185c1041f6fd3c02f569",
+    "tools/native-visual/new-session/host-sharing-build-evidence.mjs": "72435dd8cb9d12d00c8dc73390e3c993ced88e210df7eefb956c2f3c92d388de",
+    "tools/native-visual/new-session/browser.mjs": "388467a8410346640f9de5af5656a9985cdbd09b0b2c230419a1e1fc19b17900",
+    "tools/native-visual/new-session/qr-decode.mjs": "bc5a243244b63f109bd07fa3132d59a3e62889b7cf3beae9dd5b9982fe80570a"
+  },
+  "generatedFixtureSourceSet": {
+    "query": "clean-mixed",
+    "description": "Four distinct existing generated, drink-free fictional scenes. No real guests or vendor assets.",
+    "sourcePhotos": [
+      {
+        "index": 0,
+        "sha256": "fa7aab6c4948c559a6c2acfbe426ff79293b75edfd15229dbeacf2f8cbd0d365"
+      },
+      {
+        "index": 1,
+        "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1"
+      },
+      {
+        "index": 2,
+        "sha256": "e664fecbb6bdc171e092cb9c11d9ee215cbcf0722ef3f4f29090fecb73295161"
+      },
+      {
+        "index": 3,
+        "sha256": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed"
+      }
+    ]
+  },
+  "noExternalRequests": true,
+  "independentQRChecks": [
+    {
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "expectedURL": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "jsQR": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+          "error": ""
+        }
+      ],
+      "matrixModules": 41
+    },
+    {
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "expectedURL": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "jsQR": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+          "error": ""
+        }
+      ],
+      "matrixModules": 41
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "artifacts/visual/host-sharing-welcome-auth-pending-portrait.png",
+      "label": "welcome-auth-pending",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "f201008e3270c5937aa959d0ae7d801a7cf0e99ae12e1e90cda03771a32edb69"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-camera-auth-pending-portrait.png",
+      "label": "camera-auth-pending",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "734786421b57517add46bf6d39e8f496f3ae76ae40e42820e605d0b93aedbc04"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-host-success-portrait.png",
+      "label": "host-success",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "8a97ff84de90fd53a46f81f8f7c514e0dd0701507f67a7cee293176aa54e56d5"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-review-auth-pending-portrait.png",
+      "label": "review-auth-pending",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "e0cadfe2152cf7efa2c583f10f600091fba8c5f73dcab92c2ae498b3ace24ad2"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-share-auth-pending-portrait.png",
+      "label": "share-auth-pending",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "4a6b5d0c56ac239c3c8297d640c89e52870227d389461c57e55aca59c714899c"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-welcome-auth-error-portrait.png",
+      "label": "welcome-auth-error",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "901be5962132fcffc384ea309a71775e032e069a857bb9e5d123d508ca762c3c"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-camera-auth-error-portrait.png",
+      "label": "camera-auth-error",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "d9722e3d9a5df612065a629ed5762db3c9d93303043b8754a21011315bcc35f8"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-review-auth-error-portrait.png",
+      "label": "review-auth-error",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "563832024d4e7fd9db6652f27e898cecf4d88c63664f2ec47b00355e559d3b6d"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-share-auth-error-portrait.png",
+      "label": "share-auth-error",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "56ed003e5921fdf0298bbd24adefadadd5433b2968f27d375dd54dc0b55ec3d0"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-background-success-stays-locked-portrait.png",
+      "label": "background-success-stays-locked",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "30184d79013d7e9e7c92d33f371c2c5392e97efbb96b408729f635546980a877"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-settings-save-auth-pending-portrait.png",
+      "label": "settings-save-auth-pending",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "1e23c0d051d3bc6f5769fcb84f724c87b472aa2c36ded05d6eb8252e0cffdc2d"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-settings-save-foreground-success-portrait.png",
+      "label": "settings-save-foreground-success",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "c9c74f9b4094a55f82864f26e27453959aa783590d877405ce8198c0a79aea98"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-settings-background-revoked-portrait.png",
+      "label": "settings-background-revoked",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "84cd6d95fc2887c93f2a249f15ebec534e3e66fba145bde26ea21f944532f7a4"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-retained-export-foreground-success-portrait.png",
+      "label": "retained-export-foreground-success",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "ffb77ecba2ab9cf0fba115099fa31d38132dc483e94781541ad15db122f3fa0d"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-retained-export-background-revoked-portrait.png",
+      "label": "retained-export-background-revoked",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "2d65f2edc8639362f21f8fe4959271655a4312e7c2b5feae175b1eb748a9ca43"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-unpaired-portrait.png",
+      "label": "unpaired",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "6ba86d0fb18f407da3b8cf74d4e890b3083da7d0ebdd544805ea5f3805a9c7ac"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-unpaired-private-setup-portrait.png",
+      "label": "unpaired-private-setup",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "46c369e11d67c6c683fd2d3b3d879342941f2a94b5f4269c2468a9a9ad6ee4f0"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-unavailable-portrait.png",
+      "label": "unavailable",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "e5207395b999aa00718b0d3c0ab2d158463e5e3afad5cd1d7afef01fa7e53fce"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-unavailable-private-setup-portrait.png",
+      "label": "unavailable-private-setup",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "46c369e11d67c6c683fd2d3b3d879342941f2a94b5f4269c2468a9a9ad6ee4f0"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-queued-portrait.png",
+      "label": "queued",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "840220506b11824bbcc810447edc00eefc496193bd482980b7bae7c928a3df22"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-uploading-unacknowledged-portrait.png",
+      "label": "uploading-unacknowledged",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "cc569afaa2657e4c87bf4d1355e82a68ffecd7116a4afed4528f7c911ea538d4"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-failed-unacknowledged-portrait.png",
+      "label": "failed-unacknowledged",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "fbef70acb19281633f223d2fe40d3359e03ae9d4082e5a99aa8bbcbb5ac21a8e"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-uploaded-no-session-ack-portrait.png",
+      "label": "uploaded-no-session-ack",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "68c0d1844860236df99a4bf93258095fb2d127b12bec86790750a77b075fd65d"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-ready-exact-session-ack-portrait.png",
+      "label": "ready-exact-session-ack",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "b670f1da2fed0ccd6d183e2f65f924976fa6ad6c68356f140f516d46a517365d"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-welcome-auth-pending-landscape.png",
+      "label": "welcome-auth-pending",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "f2663c554327dfd1ef80e7208308e8f8117dcfec11ae6921674aee301cfc40ec"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-camera-auth-pending-landscape.png",
+      "label": "camera-auth-pending",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "7c1440b9c4aa7301e27c8945f465cbb9690b1d51ed5ca9222c7ee9d250999bcf"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-host-success-landscape.png",
+      "label": "host-success",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "f97dc91dfcfb6e6b14be28e491327170695d10db824b70af76c99171a21552dd"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-review-auth-pending-landscape.png",
+      "label": "review-auth-pending",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "4adfe4b1e1aa5cdee897c0914c25886714318f6de0d57024e87ae02abe2942d9"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-share-auth-pending-landscape.png",
+      "label": "share-auth-pending",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "73bb081855963d08217aa9625b68ddee98ead32586765230d13a47d695655d83"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-welcome-auth-error-landscape.png",
+      "label": "welcome-auth-error",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "d088987c9f5dba6d10561d3e206e7352981235b2fdc2655f2c098d81d2cb020d"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-camera-auth-error-landscape.png",
+      "label": "camera-auth-error",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "1db2a5dd049728d659c1e6dd3175d5708c3b3ee356ea9fa6982c0eafd67db3ca"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-review-auth-error-landscape.png",
+      "label": "review-auth-error",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "0df990deeb994fbcd8588509a29a05a2997eca1355dc7205e377b872918b1512"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-share-auth-error-landscape.png",
+      "label": "share-auth-error",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "e3585ea3ae3bacb9674943796f0fb3b27162e746e2eadc425d3f2ee7cda1427c"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-background-success-stays-locked-landscape.png",
+      "label": "background-success-stays-locked",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "f9c1991b1d43918ef0ba779f5bd4f972f08566d33a5a72033b1a7ac7ba3d97d3"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-settings-save-auth-pending-landscape.png",
+      "label": "settings-save-auth-pending",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "13082f3985a4fa06fd6d6e30b9eb397b2e053656b95b85db965d768797dc8bb0"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-settings-save-foreground-success-landscape.png",
+      "label": "settings-save-foreground-success",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "da28e3afb72c6d0a159f6ba6306aef6f19ea6b465aa6d7f02d7a1b486ede623c"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-settings-background-revoked-landscape.png",
+      "label": "settings-background-revoked",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "53d08b3a7977295f621221722ad1dbf04ea4c85043dc37eca78dbf55360d83b5"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-retained-export-foreground-success-landscape.png",
+      "label": "retained-export-foreground-success",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "55a492498e4d958b6a1f72074e69f3878ce3b7633acd8e9c700af97769028f43"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-retained-export-background-revoked-landscape.png",
+      "label": "retained-export-background-revoked",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "32c22bd9e8fa158f0ae0a05e80807959454cda0cc7517c848dc4c2100a3d12a8"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-unpaired-landscape.png",
+      "label": "unpaired",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "64b9828f2c4703dd84d60b0816d17805e909cd3e7a77838afd7428251301fc3f"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-unpaired-private-setup-landscape.png",
+      "label": "unpaired-private-setup",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "8a29d1457a1068b18f3d950fdd7413a3fbb774eb638eb35708f194a549ad219c"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-unavailable-landscape.png",
+      "label": "unavailable",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "bdaff2c947d3b3d6347509e0f3847f86d94b9040968d71e099529140e78b0a35"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-unavailable-private-setup-landscape.png",
+      "label": "unavailable-private-setup",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "8a29d1457a1068b18f3d950fdd7413a3fbb774eb638eb35708f194a549ad219c"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-queued-landscape.png",
+      "label": "queued",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "b9b7c6e3ce61a70f99fb17d97c736c2c1ccbb72547d0250f24ff879627dca141"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-uploading-unacknowledged-landscape.png",
+      "label": "uploading-unacknowledged",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "154578a185352fe9fa20aaf85cdcb31ef66ad2900060f652a4273d49900414ba"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-failed-unacknowledged-landscape.png",
+      "label": "failed-unacknowledged",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "70d0b1c596dce615740de02afad614a4cee5162aa19cf92f6e5f48b832ea7d27"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-uploaded-no-session-ack-landscape.png",
+      "label": "uploaded-no-session-ack",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "dd44e962e9ec63a6989d4e9157341e6e2768700b54dda5a8b544900ce6275231"
+    },
+    {
+      "file": "artifacts/visual/host-sharing-ready-exact-session-ack-landscape.png",
+      "label": "ready-exact-session-ack",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "2a522cd0024f8d5641e0836270b7a31f2e427e663386d2e4ba9cb8a1fab2af8e"
+    }
+  ],
+  "contacts": [
+    {
+      "orientation": "portrait",
+      "file": "artifacts/visual/host-sharing-portrait-contact.png",
+      "sha256": "cefa733f19a9f439bb033af7455396ae13bcace94c8f0f60e823d24c024c871d",
+      "scope": "Six settled actual-JSX screenshots; scaled contact sheet for review only."
+    },
+    {
+      "orientation": "landscape",
+      "file": "artifacts/visual/host-sharing-landscape-contact.png",
+      "sha256": "02686b3744c7c84874764755f632a23d097922ddbfaaf506dce7c896c6bb163b",
+      "scope": "Six settled actual-JSX screenshots; scaled contact sheet for review only."
+    }
+  ],
+  "review": "artifacts/visual/host-sharing-visual-review.md",
+  "index": "artifacts/visual/host-sharing-index.html"
+}

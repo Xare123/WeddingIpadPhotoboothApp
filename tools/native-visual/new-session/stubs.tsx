@@ -4,6 +4,8 @@ import { Image, StyleSheet, View } from 'react-native';
 import { uploadJob, type QueueJob } from '@wedding-booth/core';
 import type { ActiveCapture, ActiveSession, PhotoExportStatus } from '../../../apps/ipad/src/local-types';
 import { fixtureControls, fixtureState } from './fixture-controls';
+import { createHostAuthenticator } from '../../../apps/ipad/src/host-auth-policy';
+export { hostAuthenticationCode } from '../../../apps/ipad/src/host-auth-policy';
 
 import { originalImageVariants } from './effects-stub';
 import { syntheticTemplatesV2 as syntheticTemplates } from './template-v2-stub';
@@ -133,6 +135,13 @@ export const saveToLibraryAsync = async (uri: string) => {
 };
 export const syncPending = async () => {
   await reconcileConfirmedPhotos();
+  // Production has a preflight before network/claim work. This explicit port
+  // mirrors only its observable setup gate; it is not a network integration.
+  if (fixtureControls.connection !== 'paired') return;
+  fixtureControls.sharingCalls++;
+  event('synthetic-sharing-started');
+  if (fixtureControls.sharingBlocked) await new Promise<void>(resolve => fixtureControls.sharingWaiters.add(resolve));
+  if (fixtureControls.sharingFailure) throw new Error('Synthetic unacknowledged sharing failure');
   if (!fixtureControls.online) return;
   for (const job of jobs) if (job.kind === 'upload' && job.state === 'pending') job.state = 'complete';
   if (fixtureControls.readyAcknowledged) {
@@ -153,11 +162,45 @@ export const WHEN_UNLOCKED_THIS_DEVICE_ONLY = 'synthetic-only';
 export const getItemAsync = async (key: string) => vault.get(key) ?? null;
 export const setItemAsync = async (key: string, value: string) => { vault.set(key, value); };
 export const deleteItemAsync = async (key: string) => { vault.delete(key); };
-export const authenticateHost = async () => { event('synthetic-host-auth'); };
-export const loadConnection = async () => ({ origin: 'https://photobooth.example', token: 'synthetic-browser-fixture-only-never-a-real-credential' });
+const syntheticHostAuthenticator = createHostAuthenticator({
+  getEnrolledLevelAsync: async () => fixtureControls.hostAuthOutcome === 'passcode_not_set' ? 0 : 1,
+  authenticateAsync: async () => {
+    fixtureControls.hostAuthPending++;
+    try {
+      if (fixtureControls.hostAuthLifecycle !== 'none') fixtureControls.setAppState(fixtureControls.hostAuthLifecycle);
+      event('synthetic-host-auth-prompt');
+      if (fixtureControls.hostAuthBlocked) await new Promise<void>(resolve => fixtureControls.hostAuthWaiters.add(resolve));
+      if (fixtureControls.hostAuthOutcome === 'throw') throw new Error('Synthetic SDK payload intentionally not surfaced');
+      const success = fixtureControls.hostAuthOutcome === 'success';
+      event(success ? 'synthetic-host-auth-success' : 'synthetic-host-auth-rejected');
+      return success ? { success: true } : { success: false, error: fixtureControls.hostAuthOutcome };
+    } finally { fixtureControls.hostAuthPending--; }
+  },
+});
+export const authenticateHost = async () => {
+  fixtureControls.hostAuthRequests++;
+  event('synthetic-host-auth');
+  await syntheticHostAuthenticator();
+};
+export const loadConnection = async () => {
+  event('synthetic-connection-read');
+  if (fixtureControls.connection === 'unavailable') throw new Error('Synthetic secure-store read unavailable');
+  if (fixtureControls.connection === 'unpaired') return null;
+  return { origin: 'https://photobooth.example', token: 'synthetic-browser-fixture-only-never-a-real-credential' };
+};
 export const loadHostPreferences = async () => clone(preferences);
-export const saveHostPreferences = async (update: Partial<typeof preferences>) => { preferences = { ...preferences, ...update }; event('synthetic-preferences-saved'); return clone(preferences); };
-export const provisionBooth = async () => { throw new Error('Real device pairing is disabled in this browser fixture'); };
+export const saveHostPreferences = async (update: Partial<typeof preferences>, authorization?: { assertCurrent(): void }) => {
+  await Promise.resolve(); // Mirror the protected native preference-read boundary.
+  authorization?.assertCurrent();
+  preferences = { ...preferences, ...update }; event('synthetic-preferences-saved'); return clone(preferences);
+};
+export const provisionBooth = async (_code: string, authorization?: { authenticate(): Promise<void>; assertCurrent(): void }) => {
+  if (!authorization) throw new Error('Synthetic pairing refuses missing protected authorization');
+  await authorization.authenticate(); authorization.assertCurrent();
+  event('synthetic-provisioning-refused');
+  // Never consume or persist a real code; even an authorized fixture refuses it.
+  throw new Error('Real device pairing is disabled in this browser fixture');
+};
 export const useCameraPermissions = () => {
   const mode = parameters.get('permission');
   const [granted, setGranted] = useState(mode !== 'denied' && mode !== 'blocked');

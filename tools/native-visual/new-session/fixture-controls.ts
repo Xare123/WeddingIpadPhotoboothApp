@@ -1,5 +1,6 @@
 /** Explicit in-memory test controls. No OS events, Photos calls, or live network. */
 type AppStatus = 'active' | 'background' | 'inactive';
+type SyntheticHostAuthOutcome = 'success' | 'throw' | 'passcode_not_set' | 'user_cancel' | 'system_cancel' | 'app_cancel' | 'user_fallback' | 'lockout' | 'not_enrolled' | 'not_available' | 'authentication_failed' | 'unknown';
 const listeners = new Set<(status: AppStatus) => void>();
 const parameters = new URLSearchParams(location.search);
 export const accessibilityListeners = new Map<string, Set<(value: boolean) => void>>();
@@ -62,6 +63,21 @@ export const fixtureControls = {
   cameraCalls: 0,
   cameraPermissionRequests: 0,
   openSettingsCalls: 0,
+  // Synthetic OS-auth result/lifecycle ports exercise the actual host policy.
+  // They never accept a PIN, biometrics, device passcode, pairing code or secret.
+  hostAuthOutcome: 'success' as SyntheticHostAuthOutcome,
+  hostAuthLifecycle: 'none' as 'none' | 'inactive' | 'background',
+  hostAuthBlocked: false,
+  hostAuthRequests: 0,
+  hostAuthPending: 0,
+  hostAuthWaiters: new Set<() => void>(),
+  releaseHostAuth() { this.hostAuthBlocked = false; for (const resolve of this.hostAuthWaiters) resolve(); this.hostAuthWaiters.clear(); },
+  connection: (parameters.get('connection') ?? 'paired') as 'paired' | 'unpaired' | 'unavailable',
+  sharingBlocked: parameters.get('sharing') === 'blocked',
+  sharingFailure: false,
+  sharingCalls: 0,
+  sharingWaiters: new Set<() => void>(),
+  releaseSharing() { this.sharingBlocked = false; for (const resolve of this.sharingWaiters) resolve(); this.sharingWaiters.clear(); },
   photoPermissionRequests: 0,
   photoExportCalls: [] as { uri: string; photoId: string }[],
   photoStatusUpdates: [] as { sessionId: string; photoId: string; status: string }[],

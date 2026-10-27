@@ -1,0 +1,6232 @@
+{
+  "generatedAt": "2026-10-27T01:29:48.228Z",
+  "status": "passed",
+  "scope": "Actual current App JSX, host visibility/auth policy and share-readiness logic through RN-web. Explicit synthetic OS lifecycle/auth result, secure-store, camera, storage, Canvas keepsake, Photos and sharing adapters. No genuine PIN/biometric, iPad, durable storage, native camera, network, real URL, or SMS verification.",
+  "sourceHashes": {
+    "apps/ipad/app.json": "94d85ce4cea69ed8b3156715a67573ee752396c290fbf9cef1aa2d75f3f767b8",
+    "apps/ipad/src/config.ts": "707cfb41dfb6ed03e4493784940510c7e64ba018e058b5f426967ad3d432e460",
+    "apps/ipad/src/TimingSheet.tsx": "c6564a204c7a3a3ebd3fe993c04facc755ba08e18bc1e0cee62c572a0e466210",
+    "apps/ipad/src/capture-timing.ts": "83eec4ead6d14e43e6061b63201d6b432c1e0f17a24a4d35035944c8638c5683",
+    "apps/ipad/src/timing-controls.ts": "b73ced2d2ba25beaffbf4f0ec3fcda648de0bafebcae44534052d7649facc5b1",
+    "apps/ipad/src/provisioning.ts": "a87167193caeefae2bc2a2e9a1675395ebc07363e2c0695cb492577c0a345d9a",
+    "apps/ipad/App.tsx": "9425fa216f680b9f6add46d16eca4d3a0cca4bfb52aaac6eb010b814b269068e",
+    "apps/ipad/src/GlassSurface.tsx": "ace64a22e740d69040689495c0aa7147f7456038bbd0ee9aba6f2d52b58af972",
+    "apps/ipad/src/glass-policy.ts": "d3e33995484239887dde90f2743919c17bb2e8ff23093ceb45a804e530499e9e",
+    "apps/ipad/src/host-visibility.ts": "94f81920ae080b7182483e376bd782f062fb43e6b603ec53a8af0296733acc49",
+    "apps/ipad/src/photo-look-editor.ts": "38d6dc47fb34d9d9da58cf96a7daa6102d9616c7f54720c0406c1962548f817b",
+    "apps/ipad/src/native-photo-effects.ts": "372b1250d399429dc7396d09be1affa44b063216ba471d5cc4ed2d953394f0c9",
+    "apps/ipad/src/local-types.ts": "ab3e1e69d051a7a7c91886445781cbe306bb8839a60c2c4cbbafb49d488bde47",
+    "apps/ipad/src/template-editor.ts": "ad02f03cb5cae30d801e5262fd8f363f4e023b3c7f815f7e22e56ee604abe3df",
+    "apps/ipad/src/TemplateStudio.tsx": "2ce75e3831efeff05e6c841440ace23dfb34d220f09af30f0c80a418800113fc",
+    "apps/ipad/src/publication.ts": "33d26658c1c2de8781bc62ded35c80cbd00394c7413c70fdedf1fbc834875357",
+    "apps/ipad/src/session-capture.ts": "544104e153dab9b9d8f7996f15e4b79180d9dede1819620de7fec07c076f4763",
+    "apps/ipad/src/review-selection.ts": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
+    "apps/ipad/src/sharing.ts": "6bce9b315a8dc7064f858d7ff9d10c5d5587b1b2bf66a56923f738823c1df271",
+    "apps/ipad/src/SmsShare.tsx": "79464043a0e40a6cc7850c0e46cacfab33b3b19e477fee87192c0b38195d7541",
+    "apps/ipad/src/sms-state.ts": "4c7125d4f710c97848b6690196fa328edc83e85488ce3626dd7e843e2e99497a",
+    "apps/ipad/src/booth-presentation.ts": "c9bee7d01b75b29e5c3cb958483adf155dd843824c2216e60219fb3bd0d0c507",
+    "apps/ipad/src/host-originals.ts": "82f920cbdaf79672a872130d016cabb4d7c2bcae951aea1b0c1c950ff80f2001",
+    "apps/ipad/src/photo-export.ts": "8360fc824ece4d972c317f3cb743f71ba95fa3718e02a6e81796ce89c4f5ac36",
+    "apps/ipad/src/photo-library.ts": "800b9dd768d660c16720fda134fe33a1a14db1061f7f31531063b136b670b6a8",
+    "packages/core/src/index.ts": "bb8196ebd2672c74f74ceab333e70e8a3abef481d6e341b8763c4e396431e2de",
+    "apps/ipad/assets/attract-scene.png": "6ca6274beba9483104f19fb35d1ef9b8bfaae458208025e8fb4e8d4890f45cdf",
+    "apps/ipad/src/host-auth.ts": "1f71cedabd1a67bd56cb4b66d5c6e9861eccc798cf72321b24cb975e48cd0fbf",
+    "apps/ipad/src/host-auth-policy.ts": "9b52b7473a2f874dd93367607d48b0b2046cd9d6e67ef0e6ec575863bb0a6111",
+    "apps/ipad/src/host-action-auth.ts": "9619fc4e5f3b935ead8c5828d1e4bb99804c4440cb864362c2feb421cd493bdb",
+    "apps/ipad/src/share-readiness.ts": "8c518ae80702a09e81e17f3ae67d8a477783bebba57284ffdc8af76f95617178",
+    "apps/ipad/src/sharing-request.ts": "446dfb0e0ccf09675d56c7cf50cf3b5b1442050373d13a8dfe73a68c213576d9",
+    "apps/ipad/src/sync-preflight.ts": "8b703821a286d20a482192eff763e5cee0c67418c238457c11aa76d5955597c2",
+    "apps/ipad/src/sync.ts": "14e13d7c73810c2a6405de63ed452d3133411184afee7363cb6a1c856881280b",
+    "apps/ipad/src/session-sync.ts": "c3ae9b040ba69daac29024a014745682d656aa7ae26f5df76006bfc15c20e658",
+    "apps/ipad/src/queue-index.ts": "75de31a5a38a4142f18c6683ac8cc212f941bad1a902606bafd9906739482e84"
+  },
+  "sourceSHA256": "9425fa216f680b9f6add46d16eca4d3a0cca4bfb52aaac6eb010b814b269068e",
+  "fixtureSourceHashes": {
+    "tools/native-visual/new-session/serve.mjs": "1a3dbbade6c4b3aa27857d03ee6dc6288954f70509e4406ee1ad2309cc87d6e3",
+    "tools/native-visual/new-session/entry.tsx": "c9ba630f53c61f7e25b5c2381d31a7070dccae2c4a3fb058c2d50220fa48498a",
+    "tools/native-visual/new-session/fixture-controls.ts": "02cb2eac61e9ea03b6ef1f3101fba0f4f0cb26e980fba900bb648c031e94194a",
+    "tools/native-visual/new-session/stubs.tsx": "9c68c00b27a1914d04a07d031e9521d083bfd12747b30094b1b3fd43a85161a6",
+    "tools/native-visual/new-session/native-runtime.ts": "4977e8404fdc5d83980286ee3f00c2b4b35716643edd73afba5504924664896d",
+    "tools/native-visual/new-session/safe-area-stub.tsx": "4b9fc1218f6a64c71ff6bbb51a57c50826ccca1a957c5d021bd5dc9643e505f7",
+    "tools/native-visual/new-session/glass-stub.tsx": "3712d3272cb137bfba9c4d19cf4913a0cbafd53a6b43225c6876cf19f97b8e7f",
+    "tools/native-visual/new-session/effects-stub.ts": "2aabd78a80740fcf405d630a18af6c83fb350e5853db2c5bdbe697181a377724",
+    "tools/native-visual/new-session/template-stub.ts": "0bc1ecdf6cd578fa5fb5ac8203438389806e3b76b161b3d389e096174ea49d6d",
+    "tools/native-visual/new-session/template-v2-stub.ts": "db4497c78eb087ae6459da7b0425b7fda221b4abcd941fa3ad4521f382bbaa6d",
+    "tools/native-visual/new-session/native-fixture-disabled.ts": "628425cf7b23d8b839e04bed27881ad6308301904bd1ad8a8b6acc275b856986"
+  },
+  "verificationToolHashes": {
+    "tools/native-visual/new-session/host-sharing-checks.mjs": "561314f8e56bfa4f4b948a2bc4b6b6dbe79bb156435c185c1041f6fd3c02f569",
+    "tools/native-visual/new-session/host-sharing-build-evidence.mjs": "72435dd8cb9d12d00c8dc73390e3c993ced88e210df7eefb956c2f3c92d388de",
+    "tools/native-visual/new-session/browser.mjs": "388467a8410346640f9de5af5656a9985cdbd09b0b2c230419a1e1fc19b17900",
+    "tools/native-visual/new-session/qr-decode.mjs": "bc5a243244b63f109bd07fa3132d59a3e62889b7cf3beae9dd5b9982fe80570a"
+  },
+  "decoderVersions": {
+    "jsQR": "1.4.0",
+    "zxingCppWasm": "3.1.6",
+    "pngjs": "7.0.0",
+    "encoder": "1.5.4"
+  },
+  "expectedSyntheticGuestURL": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+  "sourceSet": {
+    "query": "clean-mixed",
+    "description": "Four distinct existing generated, drink-free fictional scenes. No real guests or vendor assets.",
+    "sourcePhotos": [
+      {
+        "index": 0,
+        "sha256": "fa7aab6c4948c559a6c2acfbe426ff79293b75edfd15229dbeacf2f8cbd0d365"
+      },
+      {
+        "index": 1,
+        "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1"
+      },
+      {
+        "index": 2,
+        "sha256": "e664fecbb6bdc171e092cb9c11d9ee215cbcf0722ef3f4f29090fecb73295161"
+      },
+      {
+        "index": 3,
+        "sha256": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed"
+      }
+    ]
+  },
+  "checks": [
+    {
+      "name": "inactive-success-active-opens-once",
+      "orientation": "portrait",
+      "passed": true,
+      "screen": "welcome",
+      "authRequests": 1,
+      "originalIdentitiesPreserved": true,
+      "limits": "Synthetic SDK success and AppState notifications; no actual passcode or biometric entry."
+    },
+    {
+      "name": "inactive-success-active-opens-once",
+      "orientation": "portrait",
+      "passed": true,
+      "screen": "camera",
+      "authRequests": 1,
+      "originalIdentitiesPreserved": true,
+      "limits": "Synthetic SDK success and AppState notifications; no actual passcode or biometric entry."
+    },
+    {
+      "name": "inactive-success-active-opens-once",
+      "orientation": "portrait",
+      "passed": true,
+      "screen": "review",
+      "authRequests": 1,
+      "originalIdentitiesPreserved": true,
+      "limits": "Synthetic SDK success and AppState notifications; no actual passcode or biometric entry."
+    },
+    {
+      "name": "inactive-success-active-opens-once",
+      "orientation": "portrait",
+      "passed": true,
+      "screen": "share",
+      "authRequests": 1,
+      "originalIdentitiesPreserved": true,
+      "limits": "Synthetic SDK success and AppState notifications; no actual passcode or biometric entry."
+    },
+    {
+      "name": "actionable-locked-auth-error-and-retry",
+      "orientation": "portrait",
+      "passed": true,
+      "screen": "welcome",
+      "outcome": "user_cancel",
+      "recovery": "Explicit fresh Host action succeeds once; no original selection changed."
+    },
+    {
+      "name": "actionable-locked-auth-error-and-retry",
+      "orientation": "portrait",
+      "passed": true,
+      "screen": "camera",
+      "outcome": "passcode_not_set",
+      "recovery": "Explicit fresh Host action succeeds once; no original selection changed."
+    },
+    {
+      "name": "actionable-locked-auth-error-and-retry",
+      "orientation": "portrait",
+      "passed": true,
+      "screen": "review",
+      "outcome": "throw",
+      "recovery": "Explicit fresh Host action succeeds once; no original selection changed."
+    },
+    {
+      "name": "actionable-locked-auth-error-and-retry",
+      "orientation": "portrait",
+      "passed": true,
+      "screen": "share",
+      "outcome": "authentication_failed",
+      "recovery": "Explicit fresh Host action succeeds once; no original selection changed."
+    },
+    {
+      "name": "background-stale-and-repeat-relock",
+      "orientation": "portrait",
+      "passed": true,
+      "cases": [
+        "OS success after real synthetic background cannot reopen",
+        "inactive/background each redact open modal",
+        "foreground never automatically authenticates",
+        "fresh Host required twice",
+        "late foreground after2second deadline stays locked"
+      ]
+    },
+    {
+      "name": "settings-mutation-waits-for-foreground",
+      "orientation": "portrait",
+      "passed": true,
+      "noWriteBeforeForeground": true,
+      "writes": 1,
+      "savedDefaults": [
+        8,
+        5
+      ],
+      "outcomeVisibleOutsideOrInsideAuthenticatedHost": true
+    },
+    {
+      "name": "settings-background-revokes-write",
+      "orientation": "portrait",
+      "passed": true,
+      "preferenceWrites": 0,
+      "oldDefaultsPreserved": true,
+      "staleModalNotReopened": true,
+      "explicitFreshReauthenticationWorks": true
+    },
+    {
+      "name": "retained-export-foreground-lease-and-revocation",
+      "orientation": "portrait",
+      "passed": true,
+      "syntheticSDKCopies": 1,
+      "onlyExplicitSelectedRetainedOriginalCopied": true,
+      "revokedUncertainExportUnchanged": true,
+      "guestSelectionsAndUploadsUnchanged": true,
+      "nativePhotosVerified": false
+    },
+    {
+      "name": "missing-setup-private-auth-route",
+      "orientation": "portrait",
+      "passed": true,
+      "connection": "unpaired",
+      "title": "Ask the host to connect sharing",
+      "syntheticNetworkOrQueueClaimCalls": 0,
+      "setupOpenedOnlyAfterFreshForegroundAuth": true
+    },
+    {
+      "name": "missing-setup-private-auth-route",
+      "orientation": "portrait",
+      "passed": true,
+      "connection": "unavailable",
+      "title": "Sharing settings need attention",
+      "syntheticNetworkOrQueueClaimCalls": 0,
+      "setupOpenedOnlyAfterFreshForegroundAuth": true
+    },
+    {
+      "name": "queued-failed-publishing-ready-ack-boundary",
+      "orientation": "portrait",
+      "passed": true,
+      "assets": "Four originals plus one actual Canvas saved composite",
+      "progressStates": [
+        "queued",
+        "uploading",
+        "failed",
+        "publishing",
+        "ready"
+      ],
+      "noNetworkOutageClaim": true,
+      "QRRequiresAllFiveAssetAcknowledgements": true,
+      "independentScreenshotDecoders": [
+        "jsQR",
+        "ZXing-C++"
+      ],
+      "nextGuestsRedactsGuestPage": true
+    },
+    {
+      "name": "inactive-success-active-opens-once",
+      "orientation": "landscape",
+      "passed": true,
+      "screen": "welcome",
+      "authRequests": 1,
+      "originalIdentitiesPreserved": true,
+      "limits": "Synthetic SDK success and AppState notifications; no actual passcode or biometric entry."
+    },
+    {
+      "name": "inactive-success-active-opens-once",
+      "orientation": "landscape",
+      "passed": true,
+      "screen": "camera",
+      "authRequests": 1,
+      "originalIdentitiesPreserved": true,
+      "limits": "Synthetic SDK success and AppState notifications; no actual passcode or biometric entry."
+    },
+    {
+      "name": "inactive-success-active-opens-once",
+      "orientation": "landscape",
+      "passed": true,
+      "screen": "review",
+      "authRequests": 1,
+      "originalIdentitiesPreserved": true,
+      "limits": "Synthetic SDK success and AppState notifications; no actual passcode or biometric entry."
+    },
+    {
+      "name": "inactive-success-active-opens-once",
+      "orientation": "landscape",
+      "passed": true,
+      "screen": "share",
+      "authRequests": 1,
+      "originalIdentitiesPreserved": true,
+      "limits": "Synthetic SDK success and AppState notifications; no actual passcode or biometric entry."
+    },
+    {
+      "name": "actionable-locked-auth-error-and-retry",
+      "orientation": "landscape",
+      "passed": true,
+      "screen": "welcome",
+      "outcome": "user_cancel",
+      "recovery": "Explicit fresh Host action succeeds once; no original selection changed."
+    },
+    {
+      "name": "actionable-locked-auth-error-and-retry",
+      "orientation": "landscape",
+      "passed": true,
+      "screen": "camera",
+      "outcome": "passcode_not_set",
+      "recovery": "Explicit fresh Host action succeeds once; no original selection changed."
+    },
+    {
+      "name": "actionable-locked-auth-error-and-retry",
+      "orientation": "landscape",
+      "passed": true,
+      "screen": "review",
+      "outcome": "throw",
+      "recovery": "Explicit fresh Host action succeeds once; no original selection changed."
+    },
+    {
+      "name": "actionable-locked-auth-error-and-retry",
+      "orientation": "landscape",
+      "passed": true,
+      "screen": "share",
+      "outcome": "authentication_failed",
+      "recovery": "Explicit fresh Host action succeeds once; no original selection changed."
+    },
+    {
+      "name": "background-stale-and-repeat-relock",
+      "orientation": "landscape",
+      "passed": true,
+      "cases": [
+        "OS success after real synthetic background cannot reopen",
+        "inactive/background each redact open modal",
+        "foreground never automatically authenticates",
+        "fresh Host required twice",
+        "late foreground after2second deadline stays locked"
+      ]
+    },
+    {
+      "name": "settings-mutation-waits-for-foreground",
+      "orientation": "landscape",
+      "passed": true,
+      "noWriteBeforeForeground": true,
+      "writes": 1,
+      "savedDefaults": [
+        8,
+        5
+      ],
+      "outcomeVisibleOutsideOrInsideAuthenticatedHost": true
+    },
+    {
+      "name": "settings-background-revokes-write",
+      "orientation": "landscape",
+      "passed": true,
+      "preferenceWrites": 0,
+      "oldDefaultsPreserved": true,
+      "staleModalNotReopened": true,
+      "explicitFreshReauthenticationWorks": true
+    },
+    {
+      "name": "retained-export-foreground-lease-and-revocation",
+      "orientation": "landscape",
+      "passed": true,
+      "syntheticSDKCopies": 1,
+      "onlyExplicitSelectedRetainedOriginalCopied": true,
+      "revokedUncertainExportUnchanged": true,
+      "guestSelectionsAndUploadsUnchanged": true,
+      "nativePhotosVerified": false
+    },
+    {
+      "name": "missing-setup-private-auth-route",
+      "orientation": "landscape",
+      "passed": true,
+      "connection": "unpaired",
+      "title": "Ask the host to connect sharing",
+      "syntheticNetworkOrQueueClaimCalls": 0,
+      "setupOpenedOnlyAfterFreshForegroundAuth": true
+    },
+    {
+      "name": "missing-setup-private-auth-route",
+      "orientation": "landscape",
+      "passed": true,
+      "connection": "unavailable",
+      "title": "Sharing settings need attention",
+      "syntheticNetworkOrQueueClaimCalls": 0,
+      "setupOpenedOnlyAfterFreshForegroundAuth": true
+    },
+    {
+      "name": "queued-failed-publishing-ready-ack-boundary",
+      "orientation": "landscape",
+      "passed": true,
+      "assets": "Four originals plus one actual Canvas saved composite",
+      "progressStates": [
+        "queued",
+        "uploading",
+        "failed",
+        "publishing",
+        "ready"
+      ],
+      "noNetworkOutageClaim": true,
+      "QRRequiresAllFiveAssetAcknowledgements": true,
+      "independentScreenshotDecoders": [
+        "jsQR",
+        "ZXing-C++"
+      ],
+      "nextGuestsRedactsGuestPage": true
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "artifacts/visual/host-sharing-welcome-auth-pending-portrait.png",
+      "label": "welcome-auth-pending",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "f201008e3270c5937aa959d0ae7d801a7cf0e99ae12e1e90cda03771a32edb69",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "Unlock host settings with this iPad’s passcode or biometrics. Complete or cancel the iPad prompt to continue.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": true,
+            "box": {
+              "x": 729.203125,
+              "y": 54,
+              "width": 58.796875,
+              "height": 46,
+              "top": 54,
+              "right": 788,
+              "bottom": 100,
+              "left": 729.203125
+            }
+          },
+          {
+            "label": "Let’s make memories",
+            "disabled": false,
+            "box": {
+              "x": 36,
+              "y": 979,
+              "width": 748,
+              "height": 64,
+              "top": 979,
+              "right": 784,
+              "bottom": 1043,
+              "left": 36
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-camera-auth-pending-portrait.png",
+      "label": "camera-auth-pending",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "734786421b57517add46bf6d39e8f496f3ae76ae40e42820e605d0b93aedbc04",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "Unlock host settings with this iPad’s passcode or biometrics. Complete or cancel the iPad prompt to continue.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": true,
+            "box": {
+              "x": 740,
+              "y": 70,
+              "width": 60,
+              "height": 48,
+              "top": 70,
+              "right": 800,
+              "bottom": 118,
+              "left": 740
+            }
+          },
+          {
+            "label": "Photo timing, 5 seconds to prepare, 3 seconds for following photos. Edit for this session.",
+            "disabled": true,
+            "box": {
+              "x": 321.34375,
+              "y": 957,
+              "width": 177.3125,
+              "height": 44,
+              "top": 957,
+              "right": 498.65625,
+              "bottom": 1001,
+              "left": 321.34375
+            }
+          },
+          {
+            "label": "Start 4 photos",
+            "disabled": true,
+            "box": {
+              "x": 190,
+              "y": 1009,
+              "width": 440,
+              "height": 64,
+              "top": 1009,
+              "right": 630,
+              "bottom": 1073,
+              "left": 190
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-host-success-portrait.png",
+      "label": "host-success",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "8a97ff84de90fd53a46f81f8f7c514e0dd0701507f67a7cee293176aa54e56d5",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 740,
+              "y": 70,
+              "width": 60,
+              "height": 48,
+              "top": 70,
+              "right": 800,
+              "bottom": 118,
+              "left": 740
+            }
+          },
+          {
+            "label": "Photo timing, 5 seconds to prepare, 3 seconds for following photos. Edit for this session.",
+            "disabled": true,
+            "box": {
+              "x": 321.34375,
+              "y": 957,
+              "width": 177.3125,
+              "height": 44,
+              "top": 957,
+              "right": 498.65625,
+              "bottom": 1001,
+              "left": 321.34375
+            }
+          },
+          {
+            "label": "Start 4 photos",
+            "disabled": true,
+            "box": {
+              "x": 190,
+              "y": 1009,
+              "width": 440,
+              "height": 64,
+              "top": 1009,
+              "right": 630,
+              "bottom": 1073,
+              "left": 190
+            }
+          },
+          {
+            "label": "Done",
+            "disabled": false,
+            "box": {
+              "x": 724.96875,
+              "y": 28,
+              "width": 67.03125,
+              "height": 45,
+              "top": 28,
+              "right": 792,
+              "bottom": 73,
+              "left": 724.96875
+            }
+          },
+          {
+            "label": "Controls",
+            "disabled": false,
+            "box": {
+              "x": 28,
+              "y": 93,
+              "width": 249.328125,
+              "height": 44,
+              "top": 93,
+              "right": 277.328125,
+              "bottom": 137,
+              "left": 28
+            }
+          },
+          {
+            "label": "Saved sessions",
+            "disabled": false,
+            "box": {
+              "x": 285.328125,
+              "y": 93,
+              "width": 249.34375,
+              "height": 44,
+              "top": 93,
+              "right": 534.671875,
+              "bottom": 137,
+              "left": 285.328125
+            }
+          },
+          {
+            "label": "Private setup",
+            "disabled": false,
+            "box": {
+              "x": 542.671875,
+              "y": 93,
+              "width": 249.328125,
+              "height": 44,
+              "top": 93,
+              "right": 792,
+              "bottom": 137,
+              "left": 542.671875
+            }
+          },
+          {
+            "label": "First photo: less time",
+            "disabled": false,
+            "box": {
+              "x": 69,
+              "y": 399,
+              "width": 48,
+              "height": 44,
+              "top": 399,
+              "right": 117,
+              "bottom": 443,
+              "left": 69
+            }
+          },
+          {
+            "label": "First photo: more time",
+            "disabled": false,
+            "box": {
+              "x": 337,
+              "y": 399,
+              "width": 48,
+              "height": 44,
+              "top": 399,
+              "right": 385,
+              "bottom": 443,
+              "left": 337
+            }
+          },
+          {
+            "label": "Next photos: less time",
+            "disabled": false,
+            "box": {
+              "x": 435,
+              "y": 399,
+              "width": 48,
+              "height": 44,
+              "top": 399,
+              "right": 483,
+              "bottom": 443,
+              "left": 435
+            }
+          },
+          {
+            "label": "Next photos: more time",
+            "disabled": false,
+            "box": {
+              "x": 703,
+              "y": 399,
+              "width": 48,
+              "height": 44,
+              "top": 399,
+              "right": 751,
+              "bottom": 443,
+              "left": 703
+            }
+          },
+          {
+            "label": "Open iPad permission settings",
+            "disabled": false,
+            "box": {
+              "x": 50,
+              "y": 668,
+              "width": 720,
+              "height": 44,
+              "top": 668,
+              "right": 770,
+              "bottom": 712,
+              "left": 50
+            }
+          },
+          {
+            "label": "Save booth settings",
+            "disabled": false,
+            "box": {
+              "x": 28,
+              "y": 754,
+              "width": 764,
+              "height": 64,
+              "top": 754,
+              "right": 792,
+              "bottom": 818,
+              "left": 28
+            }
+          },
+          {
+            "label": "Refresh sharing status",
+            "disabled": false,
+            "box": {
+              "x": 50,
+              "y": 1023,
+              "width": 720,
+              "height": 44,
+              "top": 1023,
+              "right": 770,
+              "bottom": 1067,
+              "left": 50
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-review-auth-pending-portrait.png",
+      "label": "review-auth-pending",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "e0cadfe2152cf7efa2c583f10f600091fba8c5f73dcab92c2ae498b3ace24ad2",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "Unlock host settings with this iPad’s passcode or biometrics. Complete or cancel the iPad prompt to continue.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": true,
+            "box": {
+              "x": 739.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 792,
+              "bottom": 83,
+              "left": 739.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 272.5,
+              "y": 848,
+              "width": 62,
+              "height": 76,
+              "top": 848,
+              "right": 334.5,
+              "bottom": 924,
+              "left": 272.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 343.5,
+              "y": 848,
+              "width": 62,
+              "height": 76,
+              "top": 848,
+              "right": 405.5,
+              "bottom": 924,
+              "left": 343.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 414.5,
+              "y": 848,
+              "width": 62,
+              "height": 76,
+              "top": 848,
+              "right": 476.5,
+              "bottom": 924,
+              "left": 414.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 485.5,
+              "y": 848,
+              "width": 62,
+              "height": 76,
+              "top": 848,
+              "right": 547.5,
+              "bottom": 924,
+              "left": 485.5
+            }
+          },
+          {
+            "label": "Retake photo 1",
+            "disabled": false,
+            "box": {
+              "x": 60,
+              "y": 935,
+              "width": 345.546875,
+              "height": 64,
+              "top": 935,
+              "right": 405.546875,
+              "bottom": 999,
+              "left": 60
+            }
+          },
+          {
+            "label": "Make my keepsake",
+            "disabled": false,
+            "box": {
+              "x": 415.546875,
+              "y": 935,
+              "width": 344.453125,
+              "height": 64,
+              "top": 935,
+              "right": 760,
+              "bottom": 999,
+              "left": 415.546875
+            }
+          },
+          {
+            "label": "Choose a look",
+            "disabled": false,
+            "box": {
+              "x": 337.3125,
+              "y": 1007,
+              "width": 145.359375,
+              "height": 48,
+              "top": 1007,
+              "right": 482.671875,
+              "bottom": 1055,
+              "left": 337.3125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-share-auth-pending-portrait.png",
+      "label": "share-auth-pending",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "4a6b5d0c56ac239c3c8297d640c89e52870227d389461c57e55aca59c714899c",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "Unlock host settings with this iPad’s passcode or biometrics. Complete or cancel the iPad prompt to continue.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": true,
+            "box": {
+              "x": 739.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 792,
+              "bottom": 83,
+              "left": 739.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 73.5,
+              "y": 744,
+              "width": 62,
+              "height": 76,
+              "top": 744,
+              "right": 135.5,
+              "bottom": 820,
+              "left": 73.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 144.5,
+              "y": 744,
+              "width": 62,
+              "height": 76,
+              "top": 744,
+              "right": 206.5,
+              "bottom": 820,
+              "left": 144.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 215.5,
+              "y": 744,
+              "width": 62,
+              "height": 76,
+              "top": 744,
+              "right": 277.5,
+              "bottom": 820,
+              "left": 215.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 286.5,
+              "y": 744,
+              "width": 62,
+              "height": 76,
+              "top": 744,
+              "right": 348.5,
+              "bottom": 820,
+              "left": 286.5
+            }
+          },
+          {
+            "label": "Retry sharing",
+            "disabled": false,
+            "box": {
+              "x": 421.5,
+              "y": 627.5,
+              "width": 306,
+              "height": 64,
+              "top": 627.5,
+              "right": 727.5,
+              "bottom": 691.5,
+              "left": 421.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 421.5,
+              "y": 723.5,
+              "width": 306,
+              "height": 64,
+              "top": 723.5,
+              "right": 727.5,
+              "bottom": 787.5,
+              "left": 421.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-welcome-auth-error-portrait.png",
+      "label": "welcome-auth-error",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "901be5962132fcffc384ea309a71775e032e069a857bb9e5d123d508ca762c3c",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "Host settings stayed locked. Tap Host when you are ready to unlock them.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 729.203125,
+              "y": 54,
+              "width": 58.796875,
+              "height": 46,
+              "top": 54,
+              "right": 788,
+              "bottom": 100,
+              "left": 729.203125
+            }
+          },
+          {
+            "label": "Let’s make memories",
+            "disabled": false,
+            "box": {
+              "x": 36,
+              "y": 979,
+              "width": 748,
+              "height": 64,
+              "top": 979,
+              "right": 784,
+              "bottom": 1043,
+              "left": 36
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-camera-auth-error-portrait.png",
+      "label": "camera-auth-error",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "d9722e3d9a5df612065a629ed5762db3c9d93303043b8754a21011315bcc35f8",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "Enable an iPad passcode before configuring booth sharing.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 740,
+              "y": 70,
+              "width": 60,
+              "height": 48,
+              "top": 70,
+              "right": 800,
+              "bottom": 118,
+              "left": 740
+            }
+          },
+          {
+            "label": "Photo timing, 5 seconds to prepare, 3 seconds for following photos. Edit for this session.",
+            "disabled": false,
+            "box": {
+              "x": 321.34375,
+              "y": 957,
+              "width": 177.3125,
+              "height": 44,
+              "top": 957,
+              "right": 498.65625,
+              "bottom": 1001,
+              "left": 321.34375
+            }
+          },
+          {
+            "label": "Start 4 photos",
+            "disabled": false,
+            "box": {
+              "x": 190,
+              "y": 1009,
+              "width": 440,
+              "height": 64,
+              "top": 1009,
+              "right": 630,
+              "bottom": 1073,
+              "left": 190
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-review-auth-error-portrait.png",
+      "label": "review-auth-error",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "563832024d4e7fd9db6652f27e898cecf4d88c63664f2ec47b00355e559d3b6d",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "The iPad could not open authentication. Return to the booth and tap Host to try again.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 739.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 792,
+              "bottom": 83,
+              "left": 739.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 272.5,
+              "y": 848,
+              "width": 62,
+              "height": 76,
+              "top": 848,
+              "right": 334.5,
+              "bottom": 924,
+              "left": 272.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 343.5,
+              "y": 848,
+              "width": 62,
+              "height": 76,
+              "top": 848,
+              "right": 405.5,
+              "bottom": 924,
+              "left": 343.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 414.5,
+              "y": 848,
+              "width": 62,
+              "height": 76,
+              "top": 848,
+              "right": 476.5,
+              "bottom": 924,
+              "left": 414.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 485.5,
+              "y": 848,
+              "width": 62,
+              "height": 76,
+              "top": 848,
+              "right": 547.5,
+              "bottom": 924,
+              "left": 485.5
+            }
+          },
+          {
+            "label": "Retake photo 1",
+            "disabled": false,
+            "box": {
+              "x": 60,
+              "y": 935,
+              "width": 345.546875,
+              "height": 64,
+              "top": 935,
+              "right": 405.546875,
+              "bottom": 999,
+              "left": 60
+            }
+          },
+          {
+            "label": "Make my keepsake",
+            "disabled": false,
+            "box": {
+              "x": 415.546875,
+              "y": 935,
+              "width": 344.453125,
+              "height": 64,
+              "top": 935,
+              "right": 760,
+              "bottom": 999,
+              "left": 415.546875
+            }
+          },
+          {
+            "label": "Choose a look",
+            "disabled": false,
+            "box": {
+              "x": 337.3125,
+              "y": 1007,
+              "width": 145.359375,
+              "height": 48,
+              "top": 1007,
+              "right": 482.671875,
+              "bottom": 1055,
+              "left": 337.3125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-share-auth-error-portrait.png",
+      "label": "share-auth-error",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "56ed003e5921fdf0298bbd24adefadadd5433b2968f27d375dd54dc0b55ec3d0",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "The iPad could not verify you. Tap Host to try the device passcode or biometrics again.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 739.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 792,
+              "bottom": 83,
+              "left": 739.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 73.5,
+              "y": 744,
+              "width": 62,
+              "height": 76,
+              "top": 744,
+              "right": 135.5,
+              "bottom": 820,
+              "left": 73.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 144.5,
+              "y": 744,
+              "width": 62,
+              "height": 76,
+              "top": 744,
+              "right": 206.5,
+              "bottom": 820,
+              "left": 144.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 215.5,
+              "y": 744,
+              "width": 62,
+              "height": 76,
+              "top": 744,
+              "right": 277.5,
+              "bottom": 820,
+              "left": 215.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 286.5,
+              "y": 744,
+              "width": 62,
+              "height": 76,
+              "top": 744,
+              "right": 348.5,
+              "bottom": 820,
+              "left": 286.5
+            }
+          },
+          {
+            "label": "Retry sharing",
+            "disabled": false,
+            "box": {
+              "x": 421.5,
+              "y": 627.5,
+              "width": 306,
+              "height": 64,
+              "top": 627.5,
+              "right": 727.5,
+              "bottom": 691.5,
+              "left": 421.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 421.5,
+              "y": 723.5,
+              "width": 306,
+              "height": 64,
+              "top": 723.5,
+              "right": 727.5,
+              "bottom": 787.5,
+              "left": 421.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-background-success-stays-locked-portrait.png",
+      "label": "background-success-stays-locked",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "30184d79013d7e9e7c92d33f371c2c5392e97efbb96b408729f635546980a877",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "Host settings stayed locked because the iPad left the booth or authentication did not return to the foreground. Return to the booth and tap Host to authenticate again.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 739.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 792,
+              "bottom": 83,
+              "left": 739.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 272.5,
+              "y": 826,
+              "width": 62,
+              "height": 76,
+              "top": 826,
+              "right": 334.5,
+              "bottom": 902,
+              "left": 272.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 343.5,
+              "y": 826,
+              "width": 62,
+              "height": 76,
+              "top": 826,
+              "right": 405.5,
+              "bottom": 902,
+              "left": 343.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 414.5,
+              "y": 826,
+              "width": 62,
+              "height": 76,
+              "top": 826,
+              "right": 476.5,
+              "bottom": 902,
+              "left": 414.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 485.5,
+              "y": 826,
+              "width": 62,
+              "height": 76,
+              "top": 826,
+              "right": 547.5,
+              "bottom": 902,
+              "left": 485.5
+            }
+          },
+          {
+            "label": "Retake photo 1",
+            "disabled": false,
+            "box": {
+              "x": 60,
+              "y": 913,
+              "width": 345.546875,
+              "height": 64,
+              "top": 913,
+              "right": 405.546875,
+              "bottom": 977,
+              "left": 60
+            }
+          },
+          {
+            "label": "Make my keepsake",
+            "disabled": false,
+            "box": {
+              "x": 415.546875,
+              "y": 913,
+              "width": 344.453125,
+              "height": 64,
+              "top": 913,
+              "right": 760,
+              "bottom": 977,
+              "left": 415.546875
+            }
+          },
+          {
+            "label": "Choose a look",
+            "disabled": false,
+            "box": {
+              "x": 337.3125,
+              "y": 985,
+              "width": 145.359375,
+              "height": 48,
+              "top": 985,
+              "right": 482.671875,
+              "bottom": 1033,
+              "left": 337.3125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-settings-save-auth-pending-portrait.png",
+      "label": "settings-save-auth-pending",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "1e23c0d051d3bc6f5769fcb84f724c87b472aa2c36ded05d6eb8252e0cffdc2d",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": true,
+            "box": {
+              "x": 740,
+              "y": 70,
+              "width": 60,
+              "height": 48,
+              "top": 70,
+              "right": 800,
+              "bottom": 118,
+              "left": 740
+            }
+          },
+          {
+            "label": "Photo timing, 5 seconds to prepare, 3 seconds for following photos. Edit for this session.",
+            "disabled": true,
+            "box": {
+              "x": 321.34375,
+              "y": 957,
+              "width": 177.3125,
+              "height": 44,
+              "top": 957,
+              "right": 498.65625,
+              "bottom": 1001,
+              "left": 321.34375
+            }
+          },
+          {
+            "label": "Start 4 photos",
+            "disabled": true,
+            "box": {
+              "x": 190,
+              "y": 1009,
+              "width": 440,
+              "height": 64,
+              "top": 1009,
+              "right": 630,
+              "bottom": 1073,
+              "left": 190
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-settings-save-foreground-success-portrait.png",
+      "label": "settings-save-foreground-success",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "c9c74f9b4094a55f82864f26e27453959aa783590d877405ce8198c0a79aea98",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 740,
+              "y": 70,
+              "width": 60,
+              "height": 48,
+              "top": 70,
+              "right": 800,
+              "bottom": 118,
+              "left": 740
+            }
+          },
+          {
+            "label": "Photo timing, 8 seconds to prepare, 5 seconds for following photos. Edit for this session.",
+            "disabled": true,
+            "box": {
+              "x": 321.34375,
+              "y": 957,
+              "width": 177.3125,
+              "height": 44,
+              "top": 957,
+              "right": 498.65625,
+              "bottom": 1001,
+              "left": 321.34375
+            }
+          },
+          {
+            "label": "Start 4 photos",
+            "disabled": false,
+            "box": {
+              "x": 190,
+              "y": 1009,
+              "width": 440,
+              "height": 64,
+              "top": 1009,
+              "right": 630,
+              "bottom": 1073,
+              "left": 190
+            }
+          },
+          {
+            "label": "Done",
+            "disabled": false,
+            "box": {
+              "x": 724.96875,
+              "y": 28,
+              "width": 67.03125,
+              "height": 45,
+              "top": 28,
+              "right": 792,
+              "bottom": 73,
+              "left": 724.96875
+            }
+          },
+          {
+            "label": "Controls",
+            "disabled": false,
+            "box": {
+              "x": 28,
+              "y": 93,
+              "width": 249.328125,
+              "height": 44,
+              "top": 93,
+              "right": 277.328125,
+              "bottom": 137,
+              "left": 28
+            }
+          },
+          {
+            "label": "Saved sessions",
+            "disabled": false,
+            "box": {
+              "x": 285.328125,
+              "y": 93,
+              "width": 249.34375,
+              "height": 44,
+              "top": 93,
+              "right": 534.671875,
+              "bottom": 137,
+              "left": 285.328125
+            }
+          },
+          {
+            "label": "Private setup",
+            "disabled": false,
+            "box": {
+              "x": 542.671875,
+              "y": 93,
+              "width": 249.328125,
+              "height": 44,
+              "top": 93,
+              "right": 792,
+              "bottom": 137,
+              "left": 542.671875
+            }
+          },
+          {
+            "label": "First photo: less time",
+            "disabled": false,
+            "box": {
+              "x": 69,
+              "y": 399,
+              "width": 48,
+              "height": 44,
+              "top": 399,
+              "right": 117,
+              "bottom": 443,
+              "left": 69
+            }
+          },
+          {
+            "label": "First photo: more time",
+            "disabled": false,
+            "box": {
+              "x": 337,
+              "y": 399,
+              "width": 48,
+              "height": 44,
+              "top": 399,
+              "right": 385,
+              "bottom": 443,
+              "left": 337
+            }
+          },
+          {
+            "label": "Next photos: less time",
+            "disabled": false,
+            "box": {
+              "x": 435,
+              "y": 399,
+              "width": 48,
+              "height": 44,
+              "top": 399,
+              "right": 483,
+              "bottom": 443,
+              "left": 435
+            }
+          },
+          {
+            "label": "Next photos: more time",
+            "disabled": false,
+            "box": {
+              "x": 703,
+              "y": 399,
+              "width": 48,
+              "height": 44,
+              "top": 399,
+              "right": 751,
+              "bottom": 443,
+              "left": 703
+            }
+          },
+          {
+            "label": "Open iPad permission settings",
+            "disabled": false,
+            "box": {
+              "x": 50,
+              "y": 668,
+              "width": 720,
+              "height": 44,
+              "top": 668,
+              "right": 770,
+              "bottom": 712,
+              "left": 50
+            }
+          },
+          {
+            "label": "Save booth settings",
+            "disabled": false,
+            "box": {
+              "x": 28,
+              "y": 754,
+              "width": 764,
+              "height": 64,
+              "top": 754,
+              "right": 792,
+              "bottom": 818,
+              "left": 28
+            }
+          },
+          {
+            "label": "Refresh sharing status",
+            "disabled": false,
+            "box": {
+              "x": 50,
+              "y": 1023,
+              "width": 720,
+              "height": 44,
+              "top": 1023,
+              "right": 770,
+              "bottom": 1067,
+              "left": 50
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-settings-background-revoked-portrait.png",
+      "label": "settings-background-revoked",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "84cd6d95fc2887c93f2a249f15ebec534e3e66fba145bde26ea21f944532f7a4",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "The host action stopped or was interrupted. Return to Host and authenticate to check its saved result. Local originals remain on this iPad.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 739.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 792,
+              "bottom": 83,
+              "left": 739.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 272.5,
+              "y": 826,
+              "width": 62,
+              "height": 76,
+              "top": 826,
+              "right": 334.5,
+              "bottom": 902,
+              "left": 272.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 343.5,
+              "y": 826,
+              "width": 62,
+              "height": 76,
+              "top": 826,
+              "right": 405.5,
+              "bottom": 902,
+              "left": 343.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 414.5,
+              "y": 826,
+              "width": 62,
+              "height": 76,
+              "top": 826,
+              "right": 476.5,
+              "bottom": 902,
+              "left": 414.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 485.5,
+              "y": 826,
+              "width": 62,
+              "height": 76,
+              "top": 826,
+              "right": 547.5,
+              "bottom": 902,
+              "left": 485.5
+            }
+          },
+          {
+            "label": "Retake photo 1",
+            "disabled": false,
+            "box": {
+              "x": 60,
+              "y": 913,
+              "width": 345.546875,
+              "height": 64,
+              "top": 913,
+              "right": 405.546875,
+              "bottom": 977,
+              "left": 60
+            }
+          },
+          {
+            "label": "Make my keepsake",
+            "disabled": false,
+            "box": {
+              "x": 415.546875,
+              "y": 913,
+              "width": 344.453125,
+              "height": 64,
+              "top": 913,
+              "right": 760,
+              "bottom": 977,
+              "left": 415.546875
+            }
+          },
+          {
+            "label": "Choose a look",
+            "disabled": false,
+            "box": {
+              "x": 337.3125,
+              "y": 985,
+              "width": 145.359375,
+              "height": 48,
+              "top": 985,
+              "right": 482.671875,
+              "bottom": 1033,
+              "left": 337.3125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-retained-export-foreground-success-portrait.png",
+      "label": "retained-export-foreground-success",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "ffb77ecba2ab9cf0fba115099fa31d38132dc483e94781541ad15db122f3fa0d",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 739.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 792,
+              "bottom": 83,
+              "left": 739.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 73.5,
+              "y": 634.5,
+              "width": 62,
+              "height": 76,
+              "top": 634.5,
+              "right": 135.5,
+              "bottom": 710.5,
+              "left": 73.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 144.5,
+              "y": 634.5,
+              "width": 62,
+              "height": 76,
+              "top": 634.5,
+              "right": 206.5,
+              "bottom": 710.5,
+              "left": 144.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 215.5,
+              "y": 634.5,
+              "width": 62,
+              "height": 76,
+              "top": 634.5,
+              "right": 277.5,
+              "bottom": 710.5,
+              "left": 215.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 286.5,
+              "y": 634.5,
+              "width": 62,
+              "height": 76,
+              "top": 634.5,
+              "right": 348.5,
+              "bottom": 710.5,
+              "left": 286.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 445.03125,
+              "y": 700,
+              "width": 306,
+              "height": 64,
+              "top": 700,
+              "right": 751.03125,
+              "bottom": 764,
+              "left": 445.03125
+            }
+          },
+          {
+            "label": "Done",
+            "disabled": false,
+            "box": {
+              "x": 724.96875,
+              "y": 28,
+              "width": 67.03125,
+              "height": 45,
+              "top": 28,
+              "right": 792,
+              "bottom": 73,
+              "left": 724.96875
+            }
+          },
+          {
+            "label": "Controls",
+            "disabled": false,
+            "box": {
+              "x": 28,
+              "y": 93,
+              "width": 249.328125,
+              "height": 44,
+              "top": 93,
+              "right": 277.328125,
+              "bottom": 137,
+              "left": 28
+            }
+          },
+          {
+            "label": "Saved sessions",
+            "disabled": false,
+            "box": {
+              "x": 285.328125,
+              "y": 93,
+              "width": 249.34375,
+              "height": 44,
+              "top": 93,
+              "right": 534.671875,
+              "bottom": 137,
+              "left": 285.328125
+            }
+          },
+          {
+            "label": "Private setup",
+            "disabled": false,
+            "box": {
+              "x": 542.671875,
+              "y": 93,
+              "width": 249.328125,
+              "height": 44,
+              "top": 93,
+              "right": 792,
+              "bottom": 137,
+              "left": 542.671875
+            }
+          },
+          {
+            "label": "Refresh local sessions",
+            "disabled": false,
+            "box": {
+              "x": 28,
+              "y": 223,
+              "width": 764,
+              "height": 64,
+              "top": 223,
+              "right": 792,
+              "bottom": 287,
+              "left": 28
+            }
+          },
+          {
+            "label": "Guest selections",
+            "disabled": false,
+            "box": {
+              "x": 50,
+              "y": 368,
+              "width": 356,
+              "height": 44,
+              "top": 368,
+              "right": 406,
+              "bottom": 412,
+              "left": 50
+            }
+          },
+          {
+            "label": "Retained originals (2)",
+            "disabled": false,
+            "box": {
+              "x": 414,
+              "y": 368,
+              "width": 356,
+              "height": 44,
+              "top": 368,
+              "right": 770,
+              "bottom": 412,
+              "left": 414
+            }
+          },
+          {
+            "label": "Exported to Photos",
+            "disabled": true,
+            "box": {
+              "x": 67,
+              "y": 889,
+              "width": 686,
+              "height": 64,
+              "top": 889,
+              "right": 753,
+              "bottom": 953,
+              "left": 67
+            }
+          },
+          {
+            "label": "Already in Photos",
+            "disabled": false,
+            "box": {
+              "x": 67,
+              "y": 1385,
+              "width": 686,
+              "height": 64,
+              "top": 1385,
+              "right": 753,
+              "bottom": 1449,
+              "left": 67
+            }
+          },
+          {
+            "label": "Export this copy again",
+            "disabled": false,
+            "box": {
+              "x": 67,
+              "y": 1463,
+              "width": 686,
+              "height": 64,
+              "top": 1463,
+              "right": 753,
+              "bottom": 1527,
+              "left": 67
+            }
+          },
+          {
+            "label": "10/26/2026, 6:30:11 PM4 originals · Photos result unconfirmed · check Photos before retryingOpen saved session →",
+            "disabled": false,
+            "box": {
+              "x": 28,
+              "y": 1586,
+              "width": 764,
+              "height": 230,
+              "top": 1586,
+              "right": 792,
+              "bottom": 1816,
+              "left": 28
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-retained-export-background-revoked-portrait.png",
+      "label": "retained-export-background-revoked",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "2d65f2edc8639362f21f8fe4959271655a4312e7c2b5feae175b1eb748a9ca43",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "The host action stopped or was interrupted. Return to Host and authenticate to check its saved result. Local originals remain on this iPad.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 739.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 792,
+              "bottom": 83,
+              "left": 739.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 73.5,
+              "y": 590.5,
+              "width": 62,
+              "height": 76,
+              "top": 590.5,
+              "right": 135.5,
+              "bottom": 666.5,
+              "left": 73.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 144.5,
+              "y": 590.5,
+              "width": 62,
+              "height": 76,
+              "top": 590.5,
+              "right": 206.5,
+              "bottom": 666.5,
+              "left": 144.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 215.5,
+              "y": 590.5,
+              "width": 62,
+              "height": 76,
+              "top": 590.5,
+              "right": 277.5,
+              "bottom": 666.5,
+              "left": 215.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 286.5,
+              "y": 590.5,
+              "width": 62,
+              "height": 76,
+              "top": 590.5,
+              "right": 348.5,
+              "bottom": 666.5,
+              "left": 286.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 445.03125,
+              "y": 656,
+              "width": 306,
+              "height": 64,
+              "top": 656,
+              "right": 751.03125,
+              "bottom": 720,
+              "left": 445.03125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-unpaired-portrait.png",
+      "label": "unpaired",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "6ba86d0fb18f407da3b8cf74d4e890b3083da7d0ebdd544805ea5f3805a9c7ac",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 739.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 792,
+              "bottom": 83,
+              "left": 739.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 73.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 135.5,
+              "bottom": 853,
+              "left": 73.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 144.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 206.5,
+              "bottom": 853,
+              "left": 144.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 215.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 277.5,
+              "bottom": 853,
+              "left": 215.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 286.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 348.5,
+              "bottom": 853,
+              "left": 286.5
+            }
+          },
+          {
+            "label": "Ask the host for sharing setup",
+            "disabled": false,
+            "box": {
+              "x": 421.5,
+              "y": 651.5,
+              "width": 306,
+              "height": 82,
+              "top": 651.5,
+              "right": 727.5,
+              "bottom": 733.5,
+              "left": 421.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 421.5,
+              "y": 765.5,
+              "width": 306,
+              "height": 64,
+              "top": 765.5,
+              "right": 727.5,
+              "bottom": 829.5,
+              "left": 421.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-unpaired-private-setup-portrait.png",
+      "label": "unpaired-private-setup",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "46c369e11d67c6c683fd2d3b3d879342941f2a94b5f4269c2468a9a9ad6ee4f0",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 739.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 792,
+              "bottom": 83,
+              "left": 739.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 73.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 135.5,
+              "bottom": 853,
+              "left": 73.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 144.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 206.5,
+              "bottom": 853,
+              "left": 144.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 215.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 277.5,
+              "bottom": 853,
+              "left": 215.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 286.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 348.5,
+              "bottom": 853,
+              "left": 286.5
+            }
+          },
+          {
+            "label": "Ask the host for sharing setup",
+            "disabled": false,
+            "box": {
+              "x": 421.5,
+              "y": 651.5,
+              "width": 306,
+              "height": 82,
+              "top": 651.5,
+              "right": 727.5,
+              "bottom": 733.5,
+              "left": 421.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 421.5,
+              "y": 765.5,
+              "width": 306,
+              "height": 64,
+              "top": 765.5,
+              "right": 727.5,
+              "bottom": 829.5,
+              "left": 421.5
+            }
+          },
+          {
+            "label": "Done",
+            "disabled": false,
+            "box": {
+              "x": 724.96875,
+              "y": 28,
+              "width": 67.03125,
+              "height": 45,
+              "top": 28,
+              "right": 792,
+              "bottom": 73,
+              "left": 724.96875
+            }
+          },
+          {
+            "label": "Controls",
+            "disabled": false,
+            "box": {
+              "x": 28,
+              "y": 93,
+              "width": 249.328125,
+              "height": 44,
+              "top": 93,
+              "right": 277.328125,
+              "bottom": 137,
+              "left": 28
+            }
+          },
+          {
+            "label": "Saved sessions",
+            "disabled": false,
+            "box": {
+              "x": 285.328125,
+              "y": 93,
+              "width": 249.34375,
+              "height": 44,
+              "top": 93,
+              "right": 534.671875,
+              "bottom": 137,
+              "left": 285.328125
+            }
+          },
+          {
+            "label": "Private setup",
+            "disabled": false,
+            "box": {
+              "x": 542.671875,
+              "y": 93,
+              "width": 249.328125,
+              "height": 44,
+              "top": 93,
+              "right": 792,
+              "bottom": 137,
+              "left": 542.671875
+            }
+          },
+          {
+            "label": "Scan private setup QR",
+            "disabled": false,
+            "box": {
+              "x": 50,
+              "y": 257,
+              "width": 720,
+              "height": 64,
+              "top": 257,
+              "right": 770,
+              "bottom": 321,
+              "left": 50
+            }
+          },
+          {
+            "label": "Pair this iPad",
+            "disabled": true,
+            "box": {
+              "x": 50,
+              "y": 413,
+              "width": 720,
+              "height": 64,
+              "top": 413,
+              "right": 770,
+              "bottom": 477,
+              "left": 50
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-unavailable-portrait.png",
+      "label": "unavailable",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "e5207395b999aa00718b0d3c0ab2d158463e5e3afad5cd1d7afef01fa7e53fce",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 739.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 792,
+              "bottom": 83,
+              "left": 739.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 73.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 135.5,
+              "bottom": 853,
+              "left": 73.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 144.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 206.5,
+              "bottom": 853,
+              "left": 144.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 215.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 277.5,
+              "bottom": 853,
+              "left": 215.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 286.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 348.5,
+              "bottom": 853,
+              "left": 286.5
+            }
+          },
+          {
+            "label": "Ask the host for sharing setup",
+            "disabled": false,
+            "box": {
+              "x": 421.5,
+              "y": 651.5,
+              "width": 306,
+              "height": 82,
+              "top": 651.5,
+              "right": 727.5,
+              "bottom": 733.5,
+              "left": 421.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 421.5,
+              "y": 765.5,
+              "width": 306,
+              "height": 64,
+              "top": 765.5,
+              "right": 727.5,
+              "bottom": 829.5,
+              "left": 421.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-unavailable-private-setup-portrait.png",
+      "label": "unavailable-private-setup",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "46c369e11d67c6c683fd2d3b3d879342941f2a94b5f4269c2468a9a9ad6ee4f0",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 739.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 792,
+              "bottom": 83,
+              "left": 739.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 73.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 135.5,
+              "bottom": 853,
+              "left": 73.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 144.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 206.5,
+              "bottom": 853,
+              "left": 144.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 215.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 277.5,
+              "bottom": 853,
+              "left": 215.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 286.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 348.5,
+              "bottom": 853,
+              "left": 286.5
+            }
+          },
+          {
+            "label": "Ask the host for sharing setup",
+            "disabled": false,
+            "box": {
+              "x": 421.5,
+              "y": 651.5,
+              "width": 306,
+              "height": 82,
+              "top": 651.5,
+              "right": 727.5,
+              "bottom": 733.5,
+              "left": 421.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 421.5,
+              "y": 765.5,
+              "width": 306,
+              "height": 64,
+              "top": 765.5,
+              "right": 727.5,
+              "bottom": 829.5,
+              "left": 421.5
+            }
+          },
+          {
+            "label": "Done",
+            "disabled": false,
+            "box": {
+              "x": 724.96875,
+              "y": 28,
+              "width": 67.03125,
+              "height": 45,
+              "top": 28,
+              "right": 792,
+              "bottom": 73,
+              "left": 724.96875
+            }
+          },
+          {
+            "label": "Controls",
+            "disabled": false,
+            "box": {
+              "x": 28,
+              "y": 93,
+              "width": 249.328125,
+              "height": 44,
+              "top": 93,
+              "right": 277.328125,
+              "bottom": 137,
+              "left": 28
+            }
+          },
+          {
+            "label": "Saved sessions",
+            "disabled": false,
+            "box": {
+              "x": 285.328125,
+              "y": 93,
+              "width": 249.34375,
+              "height": 44,
+              "top": 93,
+              "right": 534.671875,
+              "bottom": 137,
+              "left": 285.328125
+            }
+          },
+          {
+            "label": "Private setup",
+            "disabled": false,
+            "box": {
+              "x": 542.671875,
+              "y": 93,
+              "width": 249.328125,
+              "height": 44,
+              "top": 93,
+              "right": 792,
+              "bottom": 137,
+              "left": 542.671875
+            }
+          },
+          {
+            "label": "Scan private setup QR",
+            "disabled": false,
+            "box": {
+              "x": 50,
+              "y": 257,
+              "width": 720,
+              "height": 64,
+              "top": 257,
+              "right": 770,
+              "bottom": 321,
+              "left": 50
+            }
+          },
+          {
+            "label": "Pair this iPad",
+            "disabled": true,
+            "box": {
+              "x": 50,
+              "y": 413,
+              "width": 720,
+              "height": 64,
+              "top": 413,
+              "right": 770,
+              "bottom": 477,
+              "left": 50
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-queued-portrait.png",
+      "label": "queued",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "840220506b11824bbcc810447edc00eefc496193bd482980b7bae7c928a3df22",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 739.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 792,
+              "bottom": 83,
+              "left": 739.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 73.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 135.5,
+              "bottom": 853,
+              "left": 73.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 144.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 206.5,
+              "bottom": 853,
+              "left": 144.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 215.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 277.5,
+              "bottom": 853,
+              "left": 215.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 286.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 348.5,
+              "bottom": 853,
+              "left": 286.5
+            }
+          },
+          {
+            "label": "Retry sharing",
+            "disabled": false,
+            "box": {
+              "x": 421.5,
+              "y": 660.5,
+              "width": 306,
+              "height": 64,
+              "top": 660.5,
+              "right": 727.5,
+              "bottom": 724.5,
+              "left": 421.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 421.5,
+              "y": 756.5,
+              "width": 306,
+              "height": 64,
+              "top": 756.5,
+              "right": 727.5,
+              "bottom": 820.5,
+              "left": 421.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-uploading-unacknowledged-portrait.png",
+      "label": "uploading-unacknowledged",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "cc569afaa2657e4c87bf4d1355e82a68ffecd7116a4afed4528f7c911ea538d4",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 739.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 792,
+              "bottom": 83,
+              "left": 739.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 73.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 135.5,
+              "bottom": 853,
+              "left": 73.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 144.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 206.5,
+              "bottom": 853,
+              "left": 144.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 215.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 277.5,
+              "bottom": 853,
+              "left": 215.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 286.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 348.5,
+              "bottom": 853,
+              "left": 286.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 421.5,
+              "y": 716,
+              "width": 306,
+              "height": 64,
+              "top": 716,
+              "right": 727.5,
+              "bottom": 780,
+              "left": 421.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-failed-unacknowledged-portrait.png",
+      "label": "failed-unacknowledged",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "fbef70acb19281633f223d2fe40d3359e03ae9d4082e5a99aa8bbcbb5ac21a8e",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 739.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 792,
+              "bottom": 83,
+              "left": 739.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 73.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 135.5,
+              "bottom": 853,
+              "left": 73.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 144.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 206.5,
+              "bottom": 853,
+              "left": 144.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 215.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 277.5,
+              "bottom": 853,
+              "left": 215.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 286.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 348.5,
+              "bottom": 853,
+              "left": 286.5
+            }
+          },
+          {
+            "label": "Retry sharing",
+            "disabled": false,
+            "box": {
+              "x": 421.5,
+              "y": 644.5,
+              "width": 306,
+              "height": 64,
+              "top": 644.5,
+              "right": 727.5,
+              "bottom": 708.5,
+              "left": 421.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 421.5,
+              "y": 740.5,
+              "width": 306,
+              "height": 64,
+              "top": 740.5,
+              "right": 727.5,
+              "bottom": 804.5,
+              "left": 421.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-uploaded-no-session-ack-portrait.png",
+      "label": "uploaded-no-session-ack",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "68c0d1844860236df99a4bf93258095fb2d127b12bec86790750a77b075fd65d",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 739.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 792,
+              "bottom": 83,
+              "left": 739.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 73.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 135.5,
+              "bottom": 853,
+              "left": 73.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 144.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 206.5,
+              "bottom": 853,
+              "left": 144.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 215.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 277.5,
+              "bottom": 853,
+              "left": 215.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 286.5,
+              "y": 777,
+              "width": 62,
+              "height": 76,
+              "top": 777,
+              "right": 348.5,
+              "bottom": 853,
+              "left": 286.5
+            }
+          },
+          {
+            "label": "Retry sharing",
+            "disabled": false,
+            "box": {
+              "x": 421.5,
+              "y": 644.5,
+              "width": 306,
+              "height": 64,
+              "top": 644.5,
+              "right": 727.5,
+              "bottom": 708.5,
+              "left": 421.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 421.5,
+              "y": 740.5,
+              "width": 306,
+              "height": 64,
+              "top": 740.5,
+              "right": 727.5,
+              "bottom": 804.5,
+              "left": 421.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-ready-exact-session-ack-portrait.png",
+      "label": "ready-exact-session-ack",
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "sha256": "b670f1da2fed0ccd6d183e2f65f924976fa6ad6c68356f140f516d46a517365d",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 739.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 792,
+              "bottom": 83,
+              "left": 739.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 73.5,
+              "y": 790,
+              "width": 62,
+              "height": 76,
+              "top": 790,
+              "right": 135.5,
+              "bottom": 866,
+              "left": 73.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 144.5,
+              "y": 790,
+              "width": 62,
+              "height": 76,
+              "top": 790,
+              "right": 206.5,
+              "bottom": 866,
+              "left": 144.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 215.5,
+              "y": 790,
+              "width": 62,
+              "height": 76,
+              "top": 790,
+              "right": 277.5,
+              "bottom": 866,
+              "left": 215.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 286.5,
+              "y": 790,
+              "width": 62,
+              "height": 76,
+              "top": 790,
+              "right": 348.5,
+              "bottom": 866,
+              "left": 286.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 446,
+              "y": 779,
+              "width": 306,
+              "height": 64,
+              "top": 779,
+              "right": 752,
+              "bottom": 843,
+              "left": 446
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-welcome-auth-pending-landscape.png",
+      "label": "welcome-auth-pending",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "f2663c554327dfd1ef80e7208308e8f8117dcfec11ae6921674aee301cfc40ec",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "Unlock host settings with this iPad’s passcode or biometrics. Complete or cancel the iPad prompt to continue.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": true,
+            "box": {
+              "x": 1089.203125,
+              "y": 54,
+              "width": 58.796875,
+              "height": 46,
+              "top": 54,
+              "right": 1148,
+              "bottom": 100,
+              "left": 1089.203125
+            }
+          },
+          {
+            "label": "Let’s make memories",
+            "disabled": false,
+            "box": {
+              "x": 66,
+              "y": 589,
+              "width": 552,
+              "height": 64,
+              "top": 589,
+              "right": 618,
+              "bottom": 653,
+              "left": 66
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-camera-auth-pending-landscape.png",
+      "label": "camera-auth-pending",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "7c1440b9c4aa7301e27c8945f465cbb9690b1d51ed5ca9222c7ee9d250999bcf",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "Unlock host settings with this iPad’s passcode or biometrics. Complete or cancel the iPad prompt to continue.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": true,
+            "box": {
+              "x": 1100,
+              "y": 70,
+              "width": 60,
+              "height": 48,
+              "top": 70,
+              "right": 1160,
+              "bottom": 118,
+              "left": 1100
+            }
+          },
+          {
+            "label": "Photo timing, 5 seconds to prepare, 3 seconds for following photos. Edit for this session.",
+            "disabled": true,
+            "box": {
+              "x": 501.34375,
+              "y": 597,
+              "width": 177.3125,
+              "height": 44,
+              "top": 597,
+              "right": 678.65625,
+              "bottom": 641,
+              "left": 501.34375
+            }
+          },
+          {
+            "label": "Start 4 photos",
+            "disabled": true,
+            "box": {
+              "x": 370,
+              "y": 649,
+              "width": 440,
+              "height": 64,
+              "top": 649,
+              "right": 810,
+              "bottom": 713,
+              "left": 370
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-host-success-landscape.png",
+      "label": "host-success",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "f97dc91dfcfb6e6b14be28e491327170695d10db824b70af76c99171a21552dd",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 1100,
+              "y": 70,
+              "width": 60,
+              "height": 48,
+              "top": 70,
+              "right": 1160,
+              "bottom": 118,
+              "left": 1100
+            }
+          },
+          {
+            "label": "Photo timing, 5 seconds to prepare, 3 seconds for following photos. Edit for this session.",
+            "disabled": true,
+            "box": {
+              "x": 501.34375,
+              "y": 597,
+              "width": 177.3125,
+              "height": 44,
+              "top": 597,
+              "right": 678.65625,
+              "bottom": 641,
+              "left": 501.34375
+            }
+          },
+          {
+            "label": "Start 4 photos",
+            "disabled": true,
+            "box": {
+              "x": 370,
+              "y": 649,
+              "width": 440,
+              "height": 64,
+              "top": 649,
+              "right": 810,
+              "bottom": 713,
+              "left": 370
+            }
+          },
+          {
+            "label": "Done",
+            "disabled": false,
+            "box": {
+              "x": 919.96875,
+              "y": 28,
+              "width": 67.03125,
+              "height": 45,
+              "top": 28,
+              "right": 987,
+              "bottom": 73,
+              "left": 919.96875
+            }
+          },
+          {
+            "label": "Controls",
+            "disabled": false,
+            "box": {
+              "x": 193,
+              "y": 93,
+              "width": 259.328125,
+              "height": 44,
+              "top": 93,
+              "right": 452.328125,
+              "bottom": 137,
+              "left": 193
+            }
+          },
+          {
+            "label": "Saved sessions",
+            "disabled": false,
+            "box": {
+              "x": 460.328125,
+              "y": 93,
+              "width": 259.34375,
+              "height": 44,
+              "top": 93,
+              "right": 719.671875,
+              "bottom": 137,
+              "left": 460.328125
+            }
+          },
+          {
+            "label": "Private setup",
+            "disabled": false,
+            "box": {
+              "x": 727.671875,
+              "y": 93,
+              "width": 259.328125,
+              "height": 44,
+              "top": 93,
+              "right": 987,
+              "bottom": 137,
+              "left": 727.671875
+            }
+          },
+          {
+            "label": "First photo: less time",
+            "disabled": false,
+            "box": {
+              "x": 234,
+              "y": 399,
+              "width": 48,
+              "height": 44,
+              "top": 399,
+              "right": 282,
+              "bottom": 443,
+              "left": 234
+            }
+          },
+          {
+            "label": "First photo: more time",
+            "disabled": false,
+            "box": {
+              "x": 517,
+              "y": 399,
+              "width": 48,
+              "height": 44,
+              "top": 399,
+              "right": 565,
+              "bottom": 443,
+              "left": 517
+            }
+          },
+          {
+            "label": "Next photos: less time",
+            "disabled": false,
+            "box": {
+              "x": 615,
+              "y": 399,
+              "width": 48,
+              "height": 44,
+              "top": 399,
+              "right": 663,
+              "bottom": 443,
+              "left": 615
+            }
+          },
+          {
+            "label": "Next photos: more time",
+            "disabled": false,
+            "box": {
+              "x": 898,
+              "y": 399,
+              "width": 48,
+              "height": 44,
+              "top": 399,
+              "right": 946,
+              "bottom": 443,
+              "left": 898
+            }
+          },
+          {
+            "label": "Open iPad permission settings",
+            "disabled": false,
+            "box": {
+              "x": 215,
+              "y": 668,
+              "width": 750,
+              "height": 44,
+              "top": 668,
+              "right": 965,
+              "bottom": 712,
+              "left": 215
+            }
+          },
+          {
+            "label": "Save booth settings",
+            "disabled": false,
+            "box": {
+              "x": 193,
+              "y": 754,
+              "width": 794,
+              "height": 64,
+              "top": 754,
+              "right": 987,
+              "bottom": 818,
+              "left": 193
+            }
+          },
+          {
+            "label": "Refresh sharing status",
+            "disabled": false,
+            "box": {
+              "x": 215,
+              "y": 1023,
+              "width": 750,
+              "height": 44,
+              "top": 1023,
+              "right": 965,
+              "bottom": 1067,
+              "left": 215
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-review-auth-pending-landscape.png",
+      "label": "review-auth-pending",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "4adfe4b1e1aa5cdee897c0914c25886714318f6de0d57024e87ae02abe2942d9",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "Unlock host settings with this iPad’s passcode or biometrics. Complete or cancel the iPad prompt to continue.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": true,
+            "box": {
+              "x": 1099.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 1152,
+              "bottom": 83,
+              "left": 1099.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 905.5,
+              "y": 309.5,
+              "width": 48,
+              "height": 62,
+              "top": 309.5,
+              "right": 953.5,
+              "bottom": 371.5,
+              "left": 905.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 960.5,
+              "y": 309.5,
+              "width": 48,
+              "height": 62,
+              "top": 309.5,
+              "right": 1008.5,
+              "bottom": 371.5,
+              "left": 960.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 1015.5,
+              "y": 309.5,
+              "width": 48,
+              "height": 62,
+              "top": 309.5,
+              "right": 1063.5,
+              "bottom": 371.5,
+              "left": 1015.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 1070.5,
+              "y": 309.5,
+              "width": 48,
+              "height": 62,
+              "top": 309.5,
+              "right": 1118.5,
+              "bottom": 371.5,
+              "left": 1070.5
+            }
+          },
+          {
+            "label": "Retake photo 1",
+            "disabled": false,
+            "box": {
+              "x": 862,
+              "y": 388.5,
+              "width": 300,
+              "height": 64,
+              "top": 388.5,
+              "right": 1162,
+              "bottom": 452.5,
+              "left": 862
+            }
+          },
+          {
+            "label": "Make my keepsake",
+            "disabled": false,
+            "box": {
+              "x": 862,
+              "y": 462.5,
+              "width": 300,
+              "height": 64,
+              "top": 462.5,
+              "right": 1162,
+              "bottom": 526.5,
+              "left": 862
+            }
+          },
+          {
+            "label": "Choose a look",
+            "disabled": false,
+            "box": {
+              "x": 939.3125,
+              "y": 540.5,
+              "width": 145.359375,
+              "height": 48,
+              "top": 540.5,
+              "right": 1084.671875,
+              "bottom": 588.5,
+              "left": 939.3125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-share-auth-pending-landscape.png",
+      "label": "share-auth-pending",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "73bb081855963d08217aa9625b68ddee98ead32586765230d13a47d695655d83",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "Unlock host settings with this iPad’s passcode or biometrics. Complete or cancel the iPad prompt to continue.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": true,
+            "box": {
+              "x": 1099.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 1152,
+              "bottom": 83,
+              "left": 1099.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 253.5,
+              "y": 584,
+              "width": 62,
+              "height": 76,
+              "top": 584,
+              "right": 315.5,
+              "bottom": 660,
+              "left": 253.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 324.5,
+              "y": 584,
+              "width": 62,
+              "height": 76,
+              "top": 584,
+              "right": 386.5,
+              "bottom": 660,
+              "left": 324.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 395.5,
+              "y": 584,
+              "width": 62,
+              "height": 76,
+              "top": 584,
+              "right": 457.5,
+              "bottom": 660,
+              "left": 395.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 466.5,
+              "y": 584,
+              "width": 62,
+              "height": 76,
+              "top": 584,
+              "right": 528.5,
+              "bottom": 660,
+              "left": 466.5
+            }
+          },
+          {
+            "label": "Retry sharing",
+            "disabled": false,
+            "box": {
+              "x": 601.5,
+              "y": 467.5,
+              "width": 306,
+              "height": 64,
+              "top": 467.5,
+              "right": 907.5,
+              "bottom": 531.5,
+              "left": 601.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 601.5,
+              "y": 563.5,
+              "width": 306,
+              "height": 64,
+              "top": 563.5,
+              "right": 907.5,
+              "bottom": 627.5,
+              "left": 601.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-welcome-auth-error-landscape.png",
+      "label": "welcome-auth-error",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "d088987c9f5dba6d10561d3e206e7352981235b2fdc2655f2c098d81d2cb020d",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "Host settings stayed locked. Tap Host when you are ready to unlock them.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 1089.203125,
+              "y": 54,
+              "width": 58.796875,
+              "height": 46,
+              "top": 54,
+              "right": 1148,
+              "bottom": 100,
+              "left": 1089.203125
+            }
+          },
+          {
+            "label": "Let’s make memories",
+            "disabled": false,
+            "box": {
+              "x": 66,
+              "y": 589,
+              "width": 552,
+              "height": 64,
+              "top": 589,
+              "right": 618,
+              "bottom": 653,
+              "left": 66
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-camera-auth-error-landscape.png",
+      "label": "camera-auth-error",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "1db2a5dd049728d659c1e6dd3175d5708c3b3ee356ea9fa6982c0eafd67db3ca",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "Enable an iPad passcode before configuring booth sharing.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 1100,
+              "y": 70,
+              "width": 60,
+              "height": 48,
+              "top": 70,
+              "right": 1160,
+              "bottom": 118,
+              "left": 1100
+            }
+          },
+          {
+            "label": "Photo timing, 5 seconds to prepare, 3 seconds for following photos. Edit for this session.",
+            "disabled": false,
+            "box": {
+              "x": 501.34375,
+              "y": 597,
+              "width": 177.3125,
+              "height": 44,
+              "top": 597,
+              "right": 678.65625,
+              "bottom": 641,
+              "left": 501.34375
+            }
+          },
+          {
+            "label": "Start 4 photos",
+            "disabled": false,
+            "box": {
+              "x": 370,
+              "y": 649,
+              "width": 440,
+              "height": 64,
+              "top": 649,
+              "right": 810,
+              "bottom": 713,
+              "left": 370
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-review-auth-error-landscape.png",
+      "label": "review-auth-error",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "0df990deeb994fbcd8588509a29a05a2997eca1355dc7205e377b872918b1512",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "The iPad could not open authentication. Return to the booth and tap Host to try again.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 1099.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 1152,
+              "bottom": 83,
+              "left": 1099.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 905.5,
+              "y": 309.5,
+              "width": 48,
+              "height": 62,
+              "top": 309.5,
+              "right": 953.5,
+              "bottom": 371.5,
+              "left": 905.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 960.5,
+              "y": 309.5,
+              "width": 48,
+              "height": 62,
+              "top": 309.5,
+              "right": 1008.5,
+              "bottom": 371.5,
+              "left": 960.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 1015.5,
+              "y": 309.5,
+              "width": 48,
+              "height": 62,
+              "top": 309.5,
+              "right": 1063.5,
+              "bottom": 371.5,
+              "left": 1015.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 1070.5,
+              "y": 309.5,
+              "width": 48,
+              "height": 62,
+              "top": 309.5,
+              "right": 1118.5,
+              "bottom": 371.5,
+              "left": 1070.5
+            }
+          },
+          {
+            "label": "Retake photo 1",
+            "disabled": false,
+            "box": {
+              "x": 862,
+              "y": 388.5,
+              "width": 300,
+              "height": 64,
+              "top": 388.5,
+              "right": 1162,
+              "bottom": 452.5,
+              "left": 862
+            }
+          },
+          {
+            "label": "Make my keepsake",
+            "disabled": false,
+            "box": {
+              "x": 862,
+              "y": 462.5,
+              "width": 300,
+              "height": 64,
+              "top": 462.5,
+              "right": 1162,
+              "bottom": 526.5,
+              "left": 862
+            }
+          },
+          {
+            "label": "Choose a look",
+            "disabled": false,
+            "box": {
+              "x": 939.3125,
+              "y": 540.5,
+              "width": 145.359375,
+              "height": 48,
+              "top": 540.5,
+              "right": 1084.671875,
+              "bottom": 588.5,
+              "left": 939.3125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-share-auth-error-landscape.png",
+      "label": "share-auth-error",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "e3585ea3ae3bacb9674943796f0fb3b27162e746e2eadc425d3f2ee7cda1427c",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "The iPad could not verify you. Tap Host to try the device passcode or biometrics again.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 1099.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 1152,
+              "bottom": 83,
+              "left": 1099.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 253.5,
+              "y": 584,
+              "width": 62,
+              "height": 76,
+              "top": 584,
+              "right": 315.5,
+              "bottom": 660,
+              "left": 253.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 324.5,
+              "y": 584,
+              "width": 62,
+              "height": 76,
+              "top": 584,
+              "right": 386.5,
+              "bottom": 660,
+              "left": 324.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 395.5,
+              "y": 584,
+              "width": 62,
+              "height": 76,
+              "top": 584,
+              "right": 457.5,
+              "bottom": 660,
+              "left": 395.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 466.5,
+              "y": 584,
+              "width": 62,
+              "height": 76,
+              "top": 584,
+              "right": 528.5,
+              "bottom": 660,
+              "left": 466.5
+            }
+          },
+          {
+            "label": "Retry sharing",
+            "disabled": false,
+            "box": {
+              "x": 601.5,
+              "y": 467.5,
+              "width": 306,
+              "height": 64,
+              "top": 467.5,
+              "right": 907.5,
+              "bottom": 531.5,
+              "left": 601.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 601.5,
+              "y": 563.5,
+              "width": 306,
+              "height": 64,
+              "top": 563.5,
+              "right": 907.5,
+              "bottom": 627.5,
+              "left": 601.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-background-success-stays-locked-landscape.png",
+      "label": "background-success-stays-locked",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "f9c1991b1d43918ef0ba779f5bd4f972f08566d33a5a72033b1a7ac7ba3d97d3",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "Host settings stayed locked because the iPad left the booth or authentication did not return to the foreground. Return to the booth and tap Host to authenticate again.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 1099.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 1152,
+              "bottom": 83,
+              "left": 1099.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 905.5,
+              "y": 309.5,
+              "width": 48,
+              "height": 62,
+              "top": 309.5,
+              "right": 953.5,
+              "bottom": 371.5,
+              "left": 905.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 960.5,
+              "y": 309.5,
+              "width": 48,
+              "height": 62,
+              "top": 309.5,
+              "right": 1008.5,
+              "bottom": 371.5,
+              "left": 960.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 1015.5,
+              "y": 309.5,
+              "width": 48,
+              "height": 62,
+              "top": 309.5,
+              "right": 1063.5,
+              "bottom": 371.5,
+              "left": 1015.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 1070.5,
+              "y": 309.5,
+              "width": 48,
+              "height": 62,
+              "top": 309.5,
+              "right": 1118.5,
+              "bottom": 371.5,
+              "left": 1070.5
+            }
+          },
+          {
+            "label": "Retake photo 1",
+            "disabled": false,
+            "box": {
+              "x": 862,
+              "y": 388.5,
+              "width": 300,
+              "height": 64,
+              "top": 388.5,
+              "right": 1162,
+              "bottom": 452.5,
+              "left": 862
+            }
+          },
+          {
+            "label": "Make my keepsake",
+            "disabled": false,
+            "box": {
+              "x": 862,
+              "y": 462.5,
+              "width": 300,
+              "height": 64,
+              "top": 462.5,
+              "right": 1162,
+              "bottom": 526.5,
+              "left": 862
+            }
+          },
+          {
+            "label": "Choose a look",
+            "disabled": false,
+            "box": {
+              "x": 939.3125,
+              "y": 540.5,
+              "width": 145.359375,
+              "height": 48,
+              "top": 540.5,
+              "right": 1084.671875,
+              "bottom": 588.5,
+              "left": 939.3125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-settings-save-auth-pending-landscape.png",
+      "label": "settings-save-auth-pending",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "13082f3985a4fa06fd6d6e30b9eb397b2e053656b95b85db965d768797dc8bb0",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": true,
+            "box": {
+              "x": 1100,
+              "y": 70,
+              "width": 60,
+              "height": 48,
+              "top": 70,
+              "right": 1160,
+              "bottom": 118,
+              "left": 1100
+            }
+          },
+          {
+            "label": "Photo timing, 5 seconds to prepare, 3 seconds for following photos. Edit for this session.",
+            "disabled": true,
+            "box": {
+              "x": 501.34375,
+              "y": 597,
+              "width": 177.3125,
+              "height": 44,
+              "top": 597,
+              "right": 678.65625,
+              "bottom": 641,
+              "left": 501.34375
+            }
+          },
+          {
+            "label": "Start 4 photos",
+            "disabled": true,
+            "box": {
+              "x": 370,
+              "y": 649,
+              "width": 440,
+              "height": 64,
+              "top": 649,
+              "right": 810,
+              "bottom": 713,
+              "left": 370
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-settings-save-foreground-success-landscape.png",
+      "label": "settings-save-foreground-success",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "da28e3afb72c6d0a159f6ba6306aef6f19ea6b465aa6d7f02d7a1b486ede623c",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 1100,
+              "y": 70,
+              "width": 60,
+              "height": 48,
+              "top": 70,
+              "right": 1160,
+              "bottom": 118,
+              "left": 1100
+            }
+          },
+          {
+            "label": "Photo timing, 8 seconds to prepare, 5 seconds for following photos. Edit for this session.",
+            "disabled": true,
+            "box": {
+              "x": 501.34375,
+              "y": 597,
+              "width": 177.3125,
+              "height": 44,
+              "top": 597,
+              "right": 678.65625,
+              "bottom": 641,
+              "left": 501.34375
+            }
+          },
+          {
+            "label": "Start 4 photos",
+            "disabled": false,
+            "box": {
+              "x": 370,
+              "y": 649,
+              "width": 440,
+              "height": 64,
+              "top": 649,
+              "right": 810,
+              "bottom": 713,
+              "left": 370
+            }
+          },
+          {
+            "label": "Done",
+            "disabled": false,
+            "box": {
+              "x": 919.96875,
+              "y": 28,
+              "width": 67.03125,
+              "height": 45,
+              "top": 28,
+              "right": 987,
+              "bottom": 73,
+              "left": 919.96875
+            }
+          },
+          {
+            "label": "Controls",
+            "disabled": false,
+            "box": {
+              "x": 193,
+              "y": 93,
+              "width": 259.328125,
+              "height": 44,
+              "top": 93,
+              "right": 452.328125,
+              "bottom": 137,
+              "left": 193
+            }
+          },
+          {
+            "label": "Saved sessions",
+            "disabled": false,
+            "box": {
+              "x": 460.328125,
+              "y": 93,
+              "width": 259.34375,
+              "height": 44,
+              "top": 93,
+              "right": 719.671875,
+              "bottom": 137,
+              "left": 460.328125
+            }
+          },
+          {
+            "label": "Private setup",
+            "disabled": false,
+            "box": {
+              "x": 727.671875,
+              "y": 93,
+              "width": 259.328125,
+              "height": 44,
+              "top": 93,
+              "right": 987,
+              "bottom": 137,
+              "left": 727.671875
+            }
+          },
+          {
+            "label": "First photo: less time",
+            "disabled": false,
+            "box": {
+              "x": 234,
+              "y": 399,
+              "width": 48,
+              "height": 44,
+              "top": 399,
+              "right": 282,
+              "bottom": 443,
+              "left": 234
+            }
+          },
+          {
+            "label": "First photo: more time",
+            "disabled": false,
+            "box": {
+              "x": 517,
+              "y": 399,
+              "width": 48,
+              "height": 44,
+              "top": 399,
+              "right": 565,
+              "bottom": 443,
+              "left": 517
+            }
+          },
+          {
+            "label": "Next photos: less time",
+            "disabled": false,
+            "box": {
+              "x": 615,
+              "y": 399,
+              "width": 48,
+              "height": 44,
+              "top": 399,
+              "right": 663,
+              "bottom": 443,
+              "left": 615
+            }
+          },
+          {
+            "label": "Next photos: more time",
+            "disabled": false,
+            "box": {
+              "x": 898,
+              "y": 399,
+              "width": 48,
+              "height": 44,
+              "top": 399,
+              "right": 946,
+              "bottom": 443,
+              "left": 898
+            }
+          },
+          {
+            "label": "Open iPad permission settings",
+            "disabled": false,
+            "box": {
+              "x": 215,
+              "y": 668,
+              "width": 750,
+              "height": 44,
+              "top": 668,
+              "right": 965,
+              "bottom": 712,
+              "left": 215
+            }
+          },
+          {
+            "label": "Save booth settings",
+            "disabled": false,
+            "box": {
+              "x": 193,
+              "y": 754,
+              "width": 794,
+              "height": 64,
+              "top": 754,
+              "right": 987,
+              "bottom": 818,
+              "left": 193
+            }
+          },
+          {
+            "label": "Refresh sharing status",
+            "disabled": false,
+            "box": {
+              "x": 215,
+              "y": 1023,
+              "width": 750,
+              "height": 44,
+              "top": 1023,
+              "right": 965,
+              "bottom": 1067,
+              "left": 215
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-settings-background-revoked-landscape.png",
+      "label": "settings-background-revoked",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "53d08b3a7977295f621221722ad1dbf04ea4c85043dc37eca78dbf55360d83b5",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "The host action stopped or was interrupted. Return to Host and authenticate to check its saved result. Local originals remain on this iPad.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 1099.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 1152,
+              "bottom": 83,
+              "left": 1099.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 905.5,
+              "y": 309.5,
+              "width": 48,
+              "height": 62,
+              "top": 309.5,
+              "right": 953.5,
+              "bottom": 371.5,
+              "left": 905.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 960.5,
+              "y": 309.5,
+              "width": 48,
+              "height": 62,
+              "top": 309.5,
+              "right": 1008.5,
+              "bottom": 371.5,
+              "left": 960.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 1015.5,
+              "y": 309.5,
+              "width": 48,
+              "height": 62,
+              "top": 309.5,
+              "right": 1063.5,
+              "bottom": 371.5,
+              "left": 1015.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": false,
+            "box": {
+              "x": 1070.5,
+              "y": 309.5,
+              "width": 48,
+              "height": 62,
+              "top": 309.5,
+              "right": 1118.5,
+              "bottom": 371.5,
+              "left": 1070.5
+            }
+          },
+          {
+            "label": "Retake photo 1",
+            "disabled": false,
+            "box": {
+              "x": 862,
+              "y": 388.5,
+              "width": 300,
+              "height": 64,
+              "top": 388.5,
+              "right": 1162,
+              "bottom": 452.5,
+              "left": 862
+            }
+          },
+          {
+            "label": "Make my keepsake",
+            "disabled": false,
+            "box": {
+              "x": 862,
+              "y": 462.5,
+              "width": 300,
+              "height": 64,
+              "top": 462.5,
+              "right": 1162,
+              "bottom": 526.5,
+              "left": 862
+            }
+          },
+          {
+            "label": "Choose a look",
+            "disabled": false,
+            "box": {
+              "x": 939.3125,
+              "y": 540.5,
+              "width": 145.359375,
+              "height": 48,
+              "top": 540.5,
+              "right": 1084.671875,
+              "bottom": 588.5,
+              "left": 939.3125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-retained-export-foreground-success-landscape.png",
+      "label": "retained-export-foreground-success",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "55a492498e4d958b6a1f72074e69f3878ce3b7633acd8e9c700af97769028f43",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 1099.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 1152,
+              "bottom": 83,
+              "left": 1099.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 253.5,
+              "y": 454.5,
+              "width": 62,
+              "height": 76,
+              "top": 454.5,
+              "right": 315.5,
+              "bottom": 530.5,
+              "left": 253.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 324.5,
+              "y": 454.5,
+              "width": 62,
+              "height": 76,
+              "top": 454.5,
+              "right": 386.5,
+              "bottom": 530.5,
+              "left": 324.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 395.5,
+              "y": 454.5,
+              "width": 62,
+              "height": 76,
+              "top": 454.5,
+              "right": 457.5,
+              "bottom": 530.5,
+              "left": 395.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 466.5,
+              "y": 454.5,
+              "width": 62,
+              "height": 76,
+              "top": 454.5,
+              "right": 528.5,
+              "bottom": 530.5,
+              "left": 466.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 625.03125,
+              "y": 520,
+              "width": 306,
+              "height": 64,
+              "top": 520,
+              "right": 931.03125,
+              "bottom": 584,
+              "left": 625.03125
+            }
+          },
+          {
+            "label": "Done",
+            "disabled": false,
+            "box": {
+              "x": 919.96875,
+              "y": -122,
+              "width": 67.03125,
+              "height": 45,
+              "top": -122,
+              "right": 987,
+              "bottom": -77,
+              "left": 919.96875
+            }
+          },
+          {
+            "label": "Controls",
+            "disabled": false,
+            "box": {
+              "x": 193,
+              "y": -57,
+              "width": 259.328125,
+              "height": 44,
+              "top": -57,
+              "right": 452.328125,
+              "bottom": -13,
+              "left": 193
+            }
+          },
+          {
+            "label": "Saved sessions",
+            "disabled": false,
+            "box": {
+              "x": 460.328125,
+              "y": -57,
+              "width": 259.34375,
+              "height": 44,
+              "top": -57,
+              "right": 719.671875,
+              "bottom": -13,
+              "left": 460.328125
+            }
+          },
+          {
+            "label": "Private setup",
+            "disabled": false,
+            "box": {
+              "x": 727.671875,
+              "y": -57,
+              "width": 259.328125,
+              "height": 44,
+              "top": -57,
+              "right": 987,
+              "bottom": -13,
+              "left": 727.671875
+            }
+          },
+          {
+            "label": "Refresh local sessions",
+            "disabled": false,
+            "box": {
+              "x": 193,
+              "y": 73,
+              "width": 794,
+              "height": 64,
+              "top": 73,
+              "right": 987,
+              "bottom": 137,
+              "left": 193
+            }
+          },
+          {
+            "label": "Guest selections",
+            "disabled": false,
+            "box": {
+              "x": 215,
+              "y": 218,
+              "width": 371,
+              "height": 44,
+              "top": 218,
+              "right": 586,
+              "bottom": 262,
+              "left": 215
+            }
+          },
+          {
+            "label": "Retained originals (2)",
+            "disabled": false,
+            "box": {
+              "x": 594,
+              "y": 218,
+              "width": 371,
+              "height": 44,
+              "top": 218,
+              "right": 965,
+              "bottom": 262,
+              "left": 594
+            }
+          },
+          {
+            "label": "Exported to Photos",
+            "disabled": true,
+            "box": {
+              "x": 232,
+              "y": 739,
+              "width": 716,
+              "height": 64,
+              "top": 739,
+              "right": 948,
+              "bottom": 803,
+              "left": 232
+            }
+          },
+          {
+            "label": "Already in Photos",
+            "disabled": false,
+            "box": {
+              "x": 232,
+              "y": 1235,
+              "width": 716,
+              "height": 64,
+              "top": 1235,
+              "right": 948,
+              "bottom": 1299,
+              "left": 232
+            }
+          },
+          {
+            "label": "Export this copy again",
+            "disabled": false,
+            "box": {
+              "x": 232,
+              "y": 1313,
+              "width": 716,
+              "height": 64,
+              "top": 1313,
+              "right": 948,
+              "bottom": 1377,
+              "left": 232
+            }
+          },
+          {
+            "label": "10/26/2026, 6:30:41 PM4 originals · Photos result unconfirmed · check Photos before retryingOpen saved session →",
+            "disabled": false,
+            "box": {
+              "x": 193,
+              "y": 1436,
+              "width": 794,
+              "height": 230,
+              "top": 1436,
+              "right": 987,
+              "bottom": 1666,
+              "left": 193
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-retained-export-background-revoked-landscape.png",
+      "label": "retained-export-background-revoked",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "32c22bd9e8fa158f0ae0a05e80807959454cda0cc7517c848dc4c2100a3d12a8",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": "The host action stopped or was interrupted. Return to Host and authenticate to check its saved result. Local originals remain on this iPad.",
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 1099.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 1152,
+              "bottom": 83,
+              "left": 1099.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 253.5,
+              "y": 421.5,
+              "width": 62,
+              "height": 76,
+              "top": 421.5,
+              "right": 315.5,
+              "bottom": 497.5,
+              "left": 253.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 324.5,
+              "y": 421.5,
+              "width": 62,
+              "height": 76,
+              "top": 421.5,
+              "right": 386.5,
+              "bottom": 497.5,
+              "left": 324.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 395.5,
+              "y": 421.5,
+              "width": 62,
+              "height": 76,
+              "top": 421.5,
+              "right": 457.5,
+              "bottom": 497.5,
+              "left": 395.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 466.5,
+              "y": 421.5,
+              "width": 62,
+              "height": 76,
+              "top": 421.5,
+              "right": 528.5,
+              "bottom": 497.5,
+              "left": 466.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 625.03125,
+              "y": 487,
+              "width": 306,
+              "height": 64,
+              "top": 487,
+              "right": 931.03125,
+              "bottom": 551,
+              "left": 625.03125
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-unpaired-landscape.png",
+      "label": "unpaired",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "64b9828f2c4703dd84d60b0816d17805e909cd3e7a77838afd7428251301fc3f",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 1099.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 1152,
+              "bottom": 83,
+              "left": 1099.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 253.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 315.5,
+              "bottom": 673,
+              "left": 253.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 324.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 386.5,
+              "bottom": 673,
+              "left": 324.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 395.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 457.5,
+              "bottom": 673,
+              "left": 395.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 466.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 528.5,
+              "bottom": 673,
+              "left": 466.5
+            }
+          },
+          {
+            "label": "Ask the host for sharing setup",
+            "disabled": false,
+            "box": {
+              "x": 601.5,
+              "y": 471.5,
+              "width": 306,
+              "height": 82,
+              "top": 471.5,
+              "right": 907.5,
+              "bottom": 553.5,
+              "left": 601.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 601.5,
+              "y": 585.5,
+              "width": 306,
+              "height": 64,
+              "top": 585.5,
+              "right": 907.5,
+              "bottom": 649.5,
+              "left": 601.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-unpaired-private-setup-landscape.png",
+      "label": "unpaired-private-setup",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "8a29d1457a1068b18f3d950fdd7413a3fbb774eb638eb35708f194a549ad219c",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 1099.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 1152,
+              "bottom": 83,
+              "left": 1099.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 253.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 315.5,
+              "bottom": 673,
+              "left": 253.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 324.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 386.5,
+              "bottom": 673,
+              "left": 324.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 395.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 457.5,
+              "bottom": 673,
+              "left": 395.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 466.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 528.5,
+              "bottom": 673,
+              "left": 466.5
+            }
+          },
+          {
+            "label": "Ask the host for sharing setup",
+            "disabled": false,
+            "box": {
+              "x": 601.5,
+              "y": 471.5,
+              "width": 306,
+              "height": 82,
+              "top": 471.5,
+              "right": 907.5,
+              "bottom": 553.5,
+              "left": 601.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 601.5,
+              "y": 585.5,
+              "width": 306,
+              "height": 64,
+              "top": 585.5,
+              "right": 907.5,
+              "bottom": 649.5,
+              "left": 601.5
+            }
+          },
+          {
+            "label": "Done",
+            "disabled": false,
+            "box": {
+              "x": 919.96875,
+              "y": 28,
+              "width": 67.03125,
+              "height": 45,
+              "top": 28,
+              "right": 987,
+              "bottom": 73,
+              "left": 919.96875
+            }
+          },
+          {
+            "label": "Controls",
+            "disabled": false,
+            "box": {
+              "x": 193,
+              "y": 93,
+              "width": 259.328125,
+              "height": 44,
+              "top": 93,
+              "right": 452.328125,
+              "bottom": 137,
+              "left": 193
+            }
+          },
+          {
+            "label": "Saved sessions",
+            "disabled": false,
+            "box": {
+              "x": 460.328125,
+              "y": 93,
+              "width": 259.34375,
+              "height": 44,
+              "top": 93,
+              "right": 719.671875,
+              "bottom": 137,
+              "left": 460.328125
+            }
+          },
+          {
+            "label": "Private setup",
+            "disabled": false,
+            "box": {
+              "x": 727.671875,
+              "y": 93,
+              "width": 259.328125,
+              "height": 44,
+              "top": 93,
+              "right": 987,
+              "bottom": 137,
+              "left": 727.671875
+            }
+          },
+          {
+            "label": "Scan private setup QR",
+            "disabled": false,
+            "box": {
+              "x": 215,
+              "y": 257,
+              "width": 750,
+              "height": 64,
+              "top": 257,
+              "right": 965,
+              "bottom": 321,
+              "left": 215
+            }
+          },
+          {
+            "label": "Pair this iPad",
+            "disabled": true,
+            "box": {
+              "x": 215,
+              "y": 413,
+              "width": 750,
+              "height": 64,
+              "top": 413,
+              "right": 965,
+              "bottom": 477,
+              "left": 215
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-unavailable-landscape.png",
+      "label": "unavailable",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "bdaff2c947d3b3d6347509e0f3847f86d94b9040968d71e099529140e78b0a35",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 1099.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 1152,
+              "bottom": 83,
+              "left": 1099.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 253.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 315.5,
+              "bottom": 673,
+              "left": 253.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 324.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 386.5,
+              "bottom": 673,
+              "left": 324.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 395.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 457.5,
+              "bottom": 673,
+              "left": 395.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 466.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 528.5,
+              "bottom": 673,
+              "left": 466.5
+            }
+          },
+          {
+            "label": "Ask the host for sharing setup",
+            "disabled": false,
+            "box": {
+              "x": 601.5,
+              "y": 471.5,
+              "width": 306,
+              "height": 82,
+              "top": 471.5,
+              "right": 907.5,
+              "bottom": 553.5,
+              "left": 601.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 601.5,
+              "y": 585.5,
+              "width": 306,
+              "height": 64,
+              "top": 585.5,
+              "right": 907.5,
+              "bottom": 649.5,
+              "left": 601.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-unavailable-private-setup-landscape.png",
+      "label": "unavailable-private-setup",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "8a29d1457a1068b18f3d950fdd7413a3fbb774eb638eb35708f194a549ad219c",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 1099.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 1152,
+              "bottom": 83,
+              "left": 1099.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 253.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 315.5,
+              "bottom": 673,
+              "left": 253.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 324.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 386.5,
+              "bottom": 673,
+              "left": 324.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 395.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 457.5,
+              "bottom": 673,
+              "left": 395.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 466.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 528.5,
+              "bottom": 673,
+              "left": 466.5
+            }
+          },
+          {
+            "label": "Ask the host for sharing setup",
+            "disabled": false,
+            "box": {
+              "x": 601.5,
+              "y": 471.5,
+              "width": 306,
+              "height": 82,
+              "top": 471.5,
+              "right": 907.5,
+              "bottom": 553.5,
+              "left": 601.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 601.5,
+              "y": 585.5,
+              "width": 306,
+              "height": 64,
+              "top": 585.5,
+              "right": 907.5,
+              "bottom": 649.5,
+              "left": 601.5
+            }
+          },
+          {
+            "label": "Done",
+            "disabled": false,
+            "box": {
+              "x": 919.96875,
+              "y": 28,
+              "width": 67.03125,
+              "height": 45,
+              "top": 28,
+              "right": 987,
+              "bottom": 73,
+              "left": 919.96875
+            }
+          },
+          {
+            "label": "Controls",
+            "disabled": false,
+            "box": {
+              "x": 193,
+              "y": 93,
+              "width": 259.328125,
+              "height": 44,
+              "top": 93,
+              "right": 452.328125,
+              "bottom": 137,
+              "left": 193
+            }
+          },
+          {
+            "label": "Saved sessions",
+            "disabled": false,
+            "box": {
+              "x": 460.328125,
+              "y": 93,
+              "width": 259.34375,
+              "height": 44,
+              "top": 93,
+              "right": 719.671875,
+              "bottom": 137,
+              "left": 460.328125
+            }
+          },
+          {
+            "label": "Private setup",
+            "disabled": false,
+            "box": {
+              "x": 727.671875,
+              "y": 93,
+              "width": 259.328125,
+              "height": 44,
+              "top": 93,
+              "right": 987,
+              "bottom": 137,
+              "left": 727.671875
+            }
+          },
+          {
+            "label": "Scan private setup QR",
+            "disabled": false,
+            "box": {
+              "x": 215,
+              "y": 257,
+              "width": 750,
+              "height": 64,
+              "top": 257,
+              "right": 965,
+              "bottom": 321,
+              "left": 215
+            }
+          },
+          {
+            "label": "Pair this iPad",
+            "disabled": true,
+            "box": {
+              "x": 215,
+              "y": 413,
+              "width": 750,
+              "height": 64,
+              "top": 413,
+              "right": 965,
+              "bottom": 477,
+              "left": 215
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-queued-landscape.png",
+      "label": "queued",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "b9b7c6e3ce61a70f99fb17d97c736c2c1ccbb72547d0250f24ff879627dca141",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 1099.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 1152,
+              "bottom": 83,
+              "left": 1099.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 253.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 315.5,
+              "bottom": 673,
+              "left": 253.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 324.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 386.5,
+              "bottom": 673,
+              "left": 324.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 395.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 457.5,
+              "bottom": 673,
+              "left": 395.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 466.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 528.5,
+              "bottom": 673,
+              "left": 466.5
+            }
+          },
+          {
+            "label": "Retry sharing",
+            "disabled": false,
+            "box": {
+              "x": 601.5,
+              "y": 480.5,
+              "width": 306,
+              "height": 64,
+              "top": 480.5,
+              "right": 907.5,
+              "bottom": 544.5,
+              "left": 601.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 601.5,
+              "y": 576.5,
+              "width": 306,
+              "height": 64,
+              "top": 576.5,
+              "right": 907.5,
+              "bottom": 640.5,
+              "left": 601.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-uploading-unacknowledged-landscape.png",
+      "label": "uploading-unacknowledged",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "154578a185352fe9fa20aaf85cdcb31ef66ad2900060f652a4273d49900414ba",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 1099.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 1152,
+              "bottom": 83,
+              "left": 1099.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 253.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 315.5,
+              "bottom": 673,
+              "left": 253.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 324.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 386.5,
+              "bottom": 673,
+              "left": 324.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 395.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 457.5,
+              "bottom": 673,
+              "left": 395.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 466.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 528.5,
+              "bottom": 673,
+              "left": 466.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 601.5,
+              "y": 536,
+              "width": 306,
+              "height": 64,
+              "top": 536,
+              "right": 907.5,
+              "bottom": 600,
+              "left": 601.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-failed-unacknowledged-landscape.png",
+      "label": "failed-unacknowledged",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "70d0b1c596dce615740de02afad614a4cee5162aa19cf92f6e5f48b832ea7d27",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 1099.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 1152,
+              "bottom": 83,
+              "left": 1099.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 253.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 315.5,
+              "bottom": 673,
+              "left": 253.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 324.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 386.5,
+              "bottom": 673,
+              "left": 324.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 395.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 457.5,
+              "bottom": 673,
+              "left": 395.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 466.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 528.5,
+              "bottom": 673,
+              "left": 466.5
+            }
+          },
+          {
+            "label": "Retry sharing",
+            "disabled": false,
+            "box": {
+              "x": 601.5,
+              "y": 464.5,
+              "width": 306,
+              "height": 64,
+              "top": 464.5,
+              "right": 907.5,
+              "bottom": 528.5,
+              "left": 601.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 601.5,
+              "y": 560.5,
+              "width": 306,
+              "height": 64,
+              "top": 560.5,
+              "right": 907.5,
+              "bottom": 624.5,
+              "left": 601.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-uploaded-no-session-ack-landscape.png",
+      "label": "uploaded-no-session-ack",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "dd44e962e9ec63a6989d4e9157341e6e2768700b54dda5a8b544900ce6275231",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 1099.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 1152,
+              "bottom": 83,
+              "left": 1099.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 253.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 315.5,
+              "bottom": 673,
+              "left": 253.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 324.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 386.5,
+              "bottom": 673,
+              "left": 324.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 395.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 457.5,
+              "bottom": 673,
+              "left": 395.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 466.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 528.5,
+              "bottom": 673,
+              "left": 466.5
+            }
+          },
+          {
+            "label": "Retry sharing",
+            "disabled": false,
+            "box": {
+              "x": 601.5,
+              "y": 464.5,
+              "width": 306,
+              "height": 64,
+              "top": 464.5,
+              "right": 907.5,
+              "bottom": 528.5,
+              "left": 601.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 601.5,
+              "y": 560.5,
+              "width": 306,
+              "height": 64,
+              "top": 560.5,
+              "right": 907.5,
+              "bottom": 624.5,
+              "left": 601.5
+            }
+          }
+        ]
+      }
+    },
+    {
+      "file": "artifacts/visual/host-sharing-ready-exact-session-ack-landscape.png",
+      "label": "ready-exact-session-ack",
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "sha256": "2a522cd0024f8d5641e0836270b7a31f2e427e663386d2e4ba9cb8a1fab2af8e",
+      "layout": {
+        "horizontalOverflow": false,
+        "globalMessage": null,
+        "buttons": [
+          {
+            "label": "Open host controls",
+            "disabled": false,
+            "box": {
+              "x": 1099.203125,
+              "y": 39,
+              "width": 52.796875,
+              "height": 44,
+              "top": 39,
+              "right": 1152,
+              "bottom": 83,
+              "left": 1099.203125
+            }
+          },
+          {
+            "label": "Photo 1, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 253.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 315.5,
+              "bottom": 673,
+              "left": 253.5
+            }
+          },
+          {
+            "label": "Photo 2, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 324.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 386.5,
+              "bottom": 673,
+              "left": 324.5
+            }
+          },
+          {
+            "label": "Photo 3, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 395.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 457.5,
+              "bottom": 673,
+              "left": 395.5
+            }
+          },
+          {
+            "label": "Photo 4, saved on this iPad",
+            "disabled": true,
+            "box": {
+              "x": 466.5,
+              "y": 597,
+              "width": 62,
+              "height": 76,
+              "top": 597,
+              "right": 528.5,
+              "bottom": 673,
+              "left": 466.5
+            }
+          },
+          {
+            "label": "Next guests",
+            "disabled": false,
+            "box": {
+              "x": 674.75,
+              "y": 599,
+              "width": 306,
+              "height": 64,
+              "top": 599,
+              "right": 980.75,
+              "bottom": 663,
+              "left": 674.75
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "qrChecks": [
+    {
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "expectedURL": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "jsQR": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+          "error": ""
+        }
+      ],
+      "matrixModules": 41
+    },
+    {
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "expectedURL": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "jsQR": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+          "error": ""
+        }
+      ],
+      "matrixModules": 41
+    }
+  ],
+  "errors": [],
+  "mockedHealthRequests": [
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health",
+    "https://photobooth.example/health"
+  ],
+  "unexpectedExternalRequests": []
+}

@@ -6,7 +6,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { preparePhysicalTests, PHYSICAL_SCHEME, PHYSICAL_TARGET, REVIEWED_APPLICATION_COMMIT } from './prepare-ios-physical-tests.mjs';
+import { preparePhysicalTests, PHYSICAL_SCHEME, PHYSICAL_TARGET, PREVIOUS_NATIVE_APPLICATION_COMMIT } from './prepare-ios-physical-tests.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const digest = data => createHash('sha256').update(data).digest('hex');
@@ -27,7 +27,10 @@ test('new private project contains only a folder-synchronized UI runner and exac
   assert.equal(/com\.apple\.product-type\.application|PBXTargetDependency|UITargetAppPath|TEST_TARGET_NAME|TEST_HOST|BUNDLE_LOADER|PBXShellScriptBuildPhase/.test(graph), false);
   assert.ok(graph.includes('CODE_SIGNING_ALLOWED = "NO"'));
   assert.equal(plan.applicationTarget, false); assert.equal(plan.sourcePreparationOnly, true);
-  assert.equal(plan.applicationSourceCommit, REVIEWED_APPLICATION_COMMIT);
+  assert.equal(plan.previousNativeApplicationCommit, PREVIOUS_NATIVE_APPLICATION_COMMIT);
+  assert.equal('applicationSourceCommit' in plan, false);
+  assert.deepEqual({ version: plan.applicationReview.version, build: plan.applicationReview.build }, { version: '0.3.5', build: '8' });
+  for (const [path, hash] of Object.entries(plan.applicationReview.sourceSHA256)) assert.equal(hash, digest(readFileSync(join(root, path))));
   assert.equal(plan.runnerBundleID, c.appBundleID + '.physicaltests.xctrunner');
   assert.equal(statSync(c.output).mode & 0o777, 0o700);
   assert.deepEqual(readFileSync(join(c.output, 'Sources', PHYSICAL_TARGET + '.swift')), source);
@@ -79,7 +82,7 @@ test('a later app version or changed accessibility source requires a new review'
   writeFileSync(join(repository, 'apps/ipad/App.tsx'), 'changed interface');
   assert.throws(() => preparePhysicalTests(configuration(t, { repository })), /accessibility source changed/);
   copyFileSync(join(root, 'apps/ipad/App.tsx'), join(repository, 'apps/ipad/App.tsx'));
-  const config = JSON.parse(readFileSync(join(repository, 'apps/ipad/app.json'))); config.expo.version = '0.3.5';
+  const config = JSON.parse(readFileSync(join(repository, 'apps/ipad/app.json'))); config.expo.version = '99.0.0';
   writeFileSync(join(repository, 'apps/ipad/app.json'), JSON.stringify(config));
   assert.throws(() => preparePhysicalTests(configuration(t, { repository })), /new app version/);
 });

@@ -1,4 +1,4 @@
-import type { QueueJob, QueueStore } from '@wedding-booth/core';
+import { requestFailureDiagnostic, type QueueJob, type QueueStore } from '@wedding-booth/core';
 import { readyGuestPage, sessionGuestPage, validateReadyPublication } from './sharing';
 import { publicationAssets, publicationAssetIds, type PublicationSession } from './publication';
 import type { SessionPublicationAssets } from './local-types';
@@ -33,11 +33,19 @@ export async function finalizeReadySessions(ports: FinalizationPorts, now = Date
       // native HTTP adapter; an injected callback cannot bypass role/aspect checks.
       validateReadyPublication(response.value, assets);
       const guest = readyGuestPage(response.value, response.origin, now);
-      for (const job of selected as QueueJob[]) await ports.store.save({ ...job, ...guest });
-    } catch {
+      for (const job of selected as QueueJob[]) {
+        const { lastFailure: _resolved, ...acknowledged } = job;
+        await ports.store.save({ ...acknowledged, ...guest });
+      }
+    } catch (error) {
       // Preserve every local original and acknowledged upload. A later drain
       // repeats only the idempotent ready request, never creates new identities.
       // Provider/network error text can contain private capability links.
+      const failure = requestFailureDiagnostic(error, now);
+      if (failure) {
+        try { for (const job of selected as QueueJob[]) await ports.store.save({ ...job, lastFailure: failure }); }
+        catch { /* Diagnostic persistence cannot expose a QR or abort other sessions. */ }
+      }
     }
   }
 }

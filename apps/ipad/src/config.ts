@@ -1,7 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
 import { validateOrigin, type ConnectionConfig } from './sharing';
-import { authenticateHost } from './host-auth';
-import { DEFAULT_API_ORIGIN, hostPreferences, pairBooth, type HostPreferences } from './provisioning';
+import type { HostActionAuthorization } from './host-action-auth';
+import { DEFAULT_API_ORIGIN, hostPreferences, pairBooth, saveGuardedHostPreferences, type HostPreferences } from './provisioning';
 
 export { DEFAULT_API_ORIGIN, COUNTDOWN_OPTIONS, type HostPreferences } from './provisioning';
 export { DEFAULT_CAPTURE_TIMING, CAPTURE_TIMER_OPTIONS, type CaptureTiming, type CountdownSeconds } from './capture-timing';
@@ -37,17 +37,19 @@ export async function loadHostPreferences(): Promise<HostPreferences> {
   catch { return hostPreferences(null); }
 }
 
-export async function saveHostPreferences(update: Partial<HostPreferences>): Promise<HostPreferences> {
-  const next = hostPreferences({ ...await loadHostPreferences(), ...update });
-  await SecureStore.setItemAsync(PREFERENCES_KEY, JSON.stringify(next), {
-    keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
+export async function saveHostPreferences(update: Partial<HostPreferences>, authorization: Pick<HostActionAuthorization, 'assertCurrent'>): Promise<HostPreferences> {
+  return saveGuardedHostPreferences(update, {
+    load: loadHostPreferences, assertCurrent: authorization.assertCurrent,
+    persist: next => SecureStore.setItemAsync(PREFERENCES_KEY, JSON.stringify(next), {
+      keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
+    }),
   });
-  return next;
 }
 
-export async function provisionBooth(code: string): Promise<void> {
+export async function provisionBooth(code: string, authorization: HostActionAuthorization): Promise<void> {
   await pairBooth(code, {
-    authenticate: authenticateHost,
+    authenticate: authorization.authenticate,
+    assertCurrent: authorization.assertCurrent,
     async request(privateCode) {
       const response = await fetch(`${DEFAULT_API_ORIGIN}/v1/pairing/consume`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },

@@ -5,9 +5,9 @@ import { fileURLToPath } from 'node:url';
 
 export const PHYSICAL_SCHEME = 'WeddingPhotoboothPhysical';
 export const PHYSICAL_TARGET = 'WeddingPhotoboothPhysicalSmokeTests';
-export const REVIEWED_APPLICATION_COMMIT = 'b4e01d3aeb47c3f164f912b829b4807cc3551f8d';
+export const PREVIOUS_NATIVE_APPLICATION_COMMIT = 'b4e01d3aeb47c3f164f912b829b4807cc3551f8d';
 const reviewedUI = {
-  'apps/ipad/App.tsx': 'feab5d929c5f8552e7e72540974bb28c5dd415063072f677ebe2704362353e18',
+  'apps/ipad/App.tsx': '9425fa216f680b9f6add46d16eca4d3a0cca4bfb52aaac6eb010b814b269068e',
   'apps/ipad/src/TimingSheet.tsx': 'c6564a204c7a3a3ebd3fe993c04facc755ba08e18bc1e0cee62c572a0e466210',
 };
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -47,7 +47,7 @@ export function preparePhysicalTests({ repository, output, appBundleID, developm
   }
   if (existsSync(output)) throw new Error('Output already exists; preserve existing work');
   const app = JSON.parse(readFileSync(join(repository, 'apps/ipad/app.json'), 'utf8'));
-  if (app.expo?.version !== '0.3.4' || app.expo?.ios?.buildNumber !== '7') throw new Error('Review this rehearsal against the new app version before preparing it');
+  if (app.expo?.version !== '0.3.5' || app.expo?.ios?.buildNumber !== '8') throw new Error('Review this rehearsal against the new app version before preparing it');
   for (const [path, digest] of Object.entries(reviewedUI)) {
     if (hash(readFileSync(join(repository, path))) !== digest) throw new Error('Reviewed app accessibility source changed; revalidate this runner');
   }
@@ -100,11 +100,12 @@ export function preparePhysicalTests({ repository, output, appBundleID, developm
   copyFileSync(join(repository, sourcePath), join(output, 'Sources', PHYSICAL_TARGET + '.swift'));
   writeFileSync(join(project, 'project.pbxproj'), projectText);
   writeFileSync(join(schemes, PHYSICAL_SCHEME + '.xcscheme'), schemeText);
-  const plan = { project, scheme: PHYSICAL_SCHEME, applicationSourceCommit: REVIEWED_APPLICATION_COMMIT,
+  const plan = { project, scheme: PHYSICAL_SCHEME, previousNativeApplicationCommit: PREVIOUS_NATIVE_APPLICATION_COMMIT,
+    applicationReview: { version: app.expo.version, build: app.expo.ios.buildNumber, sourceSHA256: { ...reviewedUI } },
     sourceSHA256: hash(source), projectSHA256: hash(projectText), schemeSHA256: hash(schemeText),
     appBundleID, runnerBundleID: appBundleID + '.physicaltests.xctrunner', signingAllowed: false,
     ownerReady, readinessInTestAction: marker, applicationTarget: false, sourcePreparationOnly: true,
-    nativeValidation: 'New Node/folder-synchronized generator requires Mac Xcode validation; source-only checks are not device execution.' };
+    nativeValidation: 'The earlier E8 generator passed Mac unsigned preparation. This app-source retarget requires matching Mac validation; source-only checks are not device execution.' };
   writeFileSync(join(output, 'physical-test-plan.json'), JSON.stringify(plan, null, 2) + '\n');
   return plan;
 }
