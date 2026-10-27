@@ -2,7 +2,7 @@
 
 Branch `codex/post-capture-face-effects` contains candidate **0.3.8/build11**. It is based on the stable MVP handoff `642a367`; the installed `9ed36b4` /0.3.7 build10 is unchanged. **No merge, deployment, signing change or installation is approved by this document.**
 
-Current review status: native acceptance remains **27/29 passing**, with 19 JPEGs exported at `0fdaac7`. The coordinate conversion and getter/handler-lifetime hypotheses were not supported by the measured probe. A bounded test-only execution-policy/image-representation comparison is prepared below; production files remain unchanged.
+Current review status: native acceptance remains **27/29 passing**, with 19 JPEGs exported at `fc35797`. Neither the coordinate/lifetime probe nor the execution-policy/image-representation screen supports a production fix. Reliable two-person eye alignment remains blocked; production files are unchanged and the candidate stays isolated.
 
 The reviewed still renderer from exact `9335c18` is copied into the existing local photo module. No camera, countdown, full-original camera patch, device orientation or sharing-provider changes are required. This feature is optional after capture, with **None** as the default. It does not provide live tracking.
 
@@ -119,3 +119,28 @@ The fixed cell names are `warm-cpu-ci`, `warm-default-ci`, `warm-cpu-copy`, `war
 Each normal notice includes the first 12 hash characters, bit depth, pixel depth, row stride, bitmap flags and an sRGB boolean. A per-cell inference error retains the other cells, reports a fixed domain label and exact Int32 code (null if outside that bound), and leaves unmeasured results null. The representation control changes provider/metadata as well as ownership, so it cannot alone prove a specific lifetime defect. There is no production fix or device-readiness claim. Local contract checks for this revision pass **156/156**.
 
 The unchanged source PNG was independently viewed for a future alignment regression: image-left eyes tilt about +8–10° and image-right about −8–10° in top-left coordinates. A count of two placements is insufficient; any measured fix must also be checked against independently annotated eye-centroid windows and actual rendered output.
+
+## Terminal control result and remaining gate
+
+[Native run 40530206605](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40530206605), job `122280613750`, at `fc3579777840412576dd10a253aff3c3ab5bc18c` completed with **27/29 passing, the same two failures, zero skipped and 19 JPEGs exported**. [Linux verification](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40530206361) passed separately.
+
+All four cells had canonical pixel hash prefix `72a92e976d8a`. The exact bitmap equality assertions passed. CI-created images had row stride 4544 / bitmap flags 1; owned copies had stride 4488 / flags 16385. The unchanged geometry reported:
+
+| Cell | CPU restriction | Usable anchors | Placements glasses/crown/hearts | Both eyes aligned with independent source reference |
+| --- | --- | --- | --- | --- |
+| `warm-cpu-ci` | true | 2 | 2 / 2 / 2 | No |
+| `warm-default-ci` | false | 2 | 2 / 2 / 2 | No |
+| `warm-cpu-copy` | true | 2 | 2 / 2 / 2 | No |
+| `warm-default-copy` | false | 1 | 1 / 1 / 1 | No |
+
+See the [public numeric notices](../artifacts/test-results/native-fc35797-public-diagnostics.json) and [offline alignment analysis](../artifacts/test-results/synthetic-eye-alignment-fc35797.json). The latter compares Apple's reported eye centroids with manually authored, independently reviewed source windows and signed-roll/spacing ranges, frozen before reading this control result. It is not rendered-JPEG inspection or a general production threshold. No new fixture image or guest data was acquired.
+
+The sequence of landmark-confidence pairs recurs by request position across the two runs despite changed image variants/settings. The fixed execution order remains a confound; this does not prove a simulator defect or a request-state cause. The screen supplies no reliable configuration to select. It specifically does **not** justify switching to default execution, copying buffers in production, changing face-box scaling, or relaxing safety/acceptance assertions.
+
+**Exact remaining blocker:** trustworthy eye poses and correctly aligned two-person accessories are not demonstrated on the tested iOS runtime. Coordinate conversion agrees with Apple's API; snapshots do not mutate; legacy colour-only bytes match. Landmark inference/input-processing behavior remains unresolved. The production renderer is unchanged and the candidate is not ready to install or merge.
+
+The next useful external gate is the same synthetic fixture/control on the actual M2 iPad, using a separately reviewed fixture-only test runner that does not launch or modify the booth app, capture, use Photos or contact cloud/SMS services. Reuse existing signing identity/profile only within owner authorization; do not create new provisioning or access grants silently. No such physical probe has been prepared, installed or executed here. Do not substitute a macOS Vision pass or another unchanged hosted run for that evidence.
+
+Independent native review recommends a minimal device discriminator: prepare one Warm 40% image, run the current revision-3 / CPU-only / upright request **twice on that same image**, then B&W once with fresh requests. Retain counts, landmark confidence, eye coordinates/roll and unchanged-geometry poses, plus actual Warm glasses/crown/hearts and B&W crown JPEGs. The repeated Warm input tests invocation variability without confounding it with a changed execution policy.
+
+A new fixture-only XCTest class can run inside the existing separately authorized UI-test runner identity; the existing capture-smoke class must not be selected. It needs only pure production Swift and the SHA-pinned resource, sandbox temporary files and explicit synthetic attachments. It must use no `XCUIApplication`, launch/taps, camera, Photos, network or wedding-app Documents access. The installed 0.3.7 app cannot expose the new API without an update and is not part of this probe. Keep the device result bundle private; only provenance-checked synthetic attachments/numbers may be considered for publication. Runner adaptation, its signing/install and actual device execution remain outstanding owner/coordinator-controlled work.

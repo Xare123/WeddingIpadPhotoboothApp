@@ -97,6 +97,11 @@
         "B&W reference success with2detections0usable landmarks,no JPEG,gold0",
         "Legacy colour-only JPEG bytes identical"
       ]
+    },
+    "backendControlLinux": {
+      "run": "40530206361",
+      "commit": "fc3579777840412576dd10a253aff3c3ab5bc18c",
+      "result": "passed"
     }
   },
   "notVerified": [
@@ -117,7 +122,7 @@
     "artifacts/visual/face-effects-evidence.json": "afe58a7707a2e5d3c5f3d31236d7adf8690efe48f69da44e494abdc152ca6af9",
     "artifacts/visual/face-effects-sha256.txt": "48496cf92be55f0ffdf7f007a6b9c638dedcd4f4e06956e502c4e46a9d3de5d1"
   },
-  "lastUpdatedAt": "2026-10-27T15:21:11.071125+00:00",
+  "lastUpdatedAt": "2026-10-27T15:46:47.023958+00:00",
   "diagnosticFollowup": {
     "scope": "Test-only; no production behavior or acceptance change",
     "nativeTestSha256": "c0c167816477d9ffee1e5bd93e8692403a65c323040e164482cd566c176b71e2",
@@ -153,7 +158,8 @@
       "Three actual treatment JPEGs for visual inspection"
     ],
     "installationGate": "NOT APPROVED; isolated candidate only; stable installed0.3.7unchanged",
-    "classification": "Observed Go URL transport Forbidden, consistent with inherited proxy destination policy; not an established GitHub service-permission rejection. Startup policy has no matching denied host or wildcard; runtime enforcement unknown."
+    "classification": "Observed Go URL transport Forbidden, consistent with inherited proxy destination policy; not an established GitHub service-permission rejection. Startup policy has no matching denied host or wildcard; runtime enforcement unknown.",
+    "status": "Historical denied cloud-executor readers; no further attempts. Existing legitimately acquired data and authorized normal public CI summaries supplied numeric diagnostics; device evidence is now the next gate."
   },
   "sameObservationFollowup": {
     "scope": "TEST ONLY; production app/Swift/acceptance unchanged",
@@ -190,6 +196,49 @@
     "timeoutsUnchanged": true,
     "pixelIdentityAssertions": true,
     "defaultAccelerationNotClaimed": true,
-    "runtime": "pending; no fix claimed"
+    "runtime": {
+      "commit": "fc3579777840412576dd10a253aff3c3ab5bc18c",
+      "run": "40530206605",
+      "job": "122280613750",
+      "executed": 29,
+      "passed": 27,
+      "failed": 2,
+      "skipped": 0,
+      "nativeJpegs": 19,
+      "pixelsEqualAcrossCells": true,
+      "pixelShaPrefix": "72a92e976d8a",
+      "allFourManualAlignmentChecksFailed": true,
+      "noProductionFixJustified": true
+    },
+    "publicData": "artifacts/test-results/native-fc35797-public-diagnostics.json",
+    "alignmentAnalysis": "artifacts/test-results/synthetic-eye-alignment-fc35797.json"
+  },
+  "remainingBlocker": "Reliable native landmark fits and two-person alignment remain unproven on the tested iOS runtime; physical M2 iPad synthetic fixture probe needed, with separate runner preparation/approval. No geometry, buffer or compute-mode patch justified.",
+  "noNewArtifactDownloads": true,
+  "productionFilesUnchanged": true,
+  "currentNativeReview": {
+    "testedCommit": "fc3579777840412576dd10a253aff3c3ab5bc18c",
+    "run": "40530206605",
+    "executed": 29,
+    "passed": 27,
+    "failed": 2,
+    "skipped": 0,
+    "nativeJpegs": 19,
+    "productionFix": "none justified",
+    "featureStatus": "isolated and held; stable wedding app unchanged"
+  },
+  "physicalNextGate": {
+    "prepared": false,
+    "executed": false,
+    "plan": "Fixture-only XCTest class inside separately authorized existing runner; identical Warm40% twice thenB&W, same current revision3/CPUonly/up; numeric poses plus actual synthetic accessory JPEGs",
+    "forbiddenScope": [
+      "booth launch/update",
+      "camera",
+      "Photos",
+      "network/SMS",
+      "wedding app Documents",
+      "new signing/provisioning without approval"
+    ],
+    "purpose": "Runtime discriminator, not app acceptance"
   }
 }

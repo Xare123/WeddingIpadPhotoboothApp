@@ -1,0 +1,268 @@
+{
+  "scope": "Offline numeric alignment analysis of public generated-fixture notices; not rendered-JPEG inspection or general production thresholds",
+  "reference": {
+    "scope": "FROZEN_SYNTHETIC_FIXTURE_REFERENCE_NOT_PRODUCTION_THRESHOLDS",
+    "fixtureSHA": "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165",
+    "size": [
+      1122,
+      1402
+    ],
+    "basis": "pixel x/y, top-left; approximate eye-region windows manually inspected from unchanged source",
+    "faces": [
+      {
+        "imageSide": "left",
+        "eyeWindowsXYWH": [
+          [
+            216,
+            482,
+            34,
+            36
+          ],
+          [
+            309,
+            497,
+            36,
+            36
+          ]
+        ],
+        "signedRollDegrees": [
+          3,
+          16
+        ]
+      },
+      {
+        "imageSide": "right",
+        "eyeWindowsXYWH": [
+          [
+            786,
+            454,
+            38,
+            38
+          ],
+          [
+            881,
+            439,
+            38,
+            38
+          ]
+        ],
+        "signedRollDegrees": [
+          -16,
+          -3
+        ]
+      }
+    ],
+    "review": "Source PNG independently viewed by root and fresh visual reviewer before backend-control results; windows cover eye centroids, not every eyelid corner",
+    "interocularPixels": [
+      75,
+      115
+    ],
+    "referenceIsIndependentOfVisionOutput": true
+  },
+  "measurements": [
+    {
+      "cell": "warm-default-copy",
+      "pixelSha256Prefix": "72a92e976d8a",
+      "faces": [
+        {
+          "imageSide": "left",
+          "canonicalEyePixels": [
+            [
+              236.89908,
+              477.12864
+            ],
+            [
+              355.25886,
+              499.06994000000003
+            ]
+          ],
+          "insideEyeWindows": [
+            false,
+            false
+          ],
+          "rollDegrees": 10.502158152079511,
+          "rollWithinFrozenRange": true,
+          "spacingPixels": 120.37631896406539,
+          "spacingWithinFrozenRange": false,
+          "aligned": false
+        },
+        {
+          "imageSide": "right",
+          "canonicalEyePixels": [
+            [
+              827.3291399999999,
+              444.434
+            ],
+            [
+              1008.3750600000001,
+              509.61298
+            ]
+          ],
+          "insideEyeWindows": [
+            false,
+            false
+          ],
+          "rollDegrees": 19.799562412237606,
+          "rollWithinFrozenRange": false,
+          "spacingPixels": 192.42121656014663,
+          "spacingWithinFrozenRange": false,
+          "aligned": false
+        }
+      ],
+      "bothAligned": false
+    },
+    {
+      "cell": "warm-cpu-copy",
+      "pixelSha256Prefix": "72a92e976d8a",
+      "faces": [
+        {
+          "imageSide": "left",
+          "canonicalEyePixels": [
+            [
+              244.4277,
+              525.2592999999999
+            ],
+            [
+              326.51322,
+              551.50474
+            ]
+          ],
+          "insideEyeWindows": [
+            false,
+            false
+          ],
+          "rollDegrees": 17.73078752056144,
+          "rollWithinFrozenRange": false,
+          "spacingPixels": 86.17920697281916,
+          "spacingWithinFrozenRange": true,
+          "aligned": false
+        },
+        {
+          "imageSide": "right",
+          "canonicalEyePixels": [
+            [
+              808.5693,
+              439.58308
+            ],
+            [
+              924.21384,
+              473.86198
+            ]
+          ],
+          "insideEyeWindows": [
+            false,
+            false
+          ],
+          "rollDegrees": 16.510669826210208,
+          "rollWithinFrozenRange": false,
+          "spacingPixels": 120.61800287279509,
+          "spacingWithinFrozenRange": false,
+          "aligned": false
+        }
+      ],
+      "bothAligned": false
+    },
+    {
+      "cell": "warm-default-ci",
+      "pixelSha256Prefix": "72a92e976d8a",
+      "faces": [
+        {
+          "imageSide": "right",
+          "canonicalEyePixels": [
+            [
+              809.2425,
+              492.32632000000007
+            ],
+            [
+              878.57088,
+              478.11003999999997
+            ]
+          ],
+          "insideEyeWindows": [
+            false,
+            false
+          ],
+          "rollDegrees": -11.58826857076833,
+          "rollWithinFrozenRange": true,
+          "spacingPixels": 70.77094665512683,
+          "spacingWithinFrozenRange": false,
+          "aligned": false
+        },
+        {
+          "imageSide": "left",
+          "canonicalEyePixels": [
+            [
+              237.50496,
+              524.8246800000001
+            ],
+            [
+              325.61562000000004,
+              504.5097
+            ]
+          ],
+          "insideEyeWindows": [
+            false,
+            true
+          ],
+          "rollDegrees": -12.98334935471177,
+          "rollWithinFrozenRange": false,
+          "spacingPixels": 90.42226948067609,
+          "spacingWithinFrozenRange": true,
+          "aligned": false
+        }
+      ],
+      "bothAligned": false
+    },
+    {
+      "cell": "warm-cpu-ci",
+      "pixelSha256Prefix": "72a92e976d8a",
+      "faces": [
+        {
+          "imageSide": "right",
+          "canonicalEyePixels": [
+            [
+              854.5713000000001,
+              488.77926
+            ],
+            [
+              880.5231600000001,
+              459.7859
+            ]
+          ],
+          "insideEyeWindows": [
+            false,
+            false
+          ],
+          "rollDegrees": -48.16838200055852,
+          "rollWithinFrozenRange": false,
+          "spacingPixels": 38.911617308320665,
+          "spacingWithinFrozenRange": false,
+          "aligned": false
+        },
+        {
+          "imageSide": "left",
+          "canonicalEyePixels": [
+            [
+              254.94084,
+              517.01554
+            ],
+            [
+              287.83788,
+              480.05881999999997
+            ]
+          ],
+          "insideEyeWindows": [
+            false,
+            false
+          ],
+          "rollDegrees": -48.32610846846884,
+          "rollWithinFrozenRange": false,
+          "spacingPixels": 49.47741296713077,
+          "spacingWithinFrozenRange": false,
+          "aligned": false
+        }
+      ],
+      "bothAligned": false
+    }
+  ]
+}

@@ -1,0 +1,528 @@
+{
+  "source": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40530206605/job/122280613750",
+  "commit": "fc3579777840412576dd10a253aff3c3ab5bc18c",
+  "scope": "Generated fixture numeric public CI notices only; no artifact/log download",
+  "records": [
+    {
+      "commit": "fc3579777840412576dd10a253aff3c3ab5bc18c",
+      "profile": "photo-treatments",
+      "result": "failed",
+      "stage": "native-pixel-acceptance",
+      "expectedTests": 29,
+      "executed": 29,
+      "failures": 2,
+      "skipped": 0,
+      "classes": {
+        "NativePhotoTreatmentEngineTests": 10,
+        "PhotoEffectsEngineTests": 8,
+        "PhotoTemplateEngineTests": 11
+      },
+      "failedCases": [
+        "NativePhotoTreatmentEngineTests.testActualSeparatedPortraitDecoratesBothPeopleAfterLookWithoutReencodingIntermediate",
+        "NativePhotoTreatmentEngineTests.testLookNoneMatchesExistingEnginePixelsAndRecipeOrderKeepsVectorColors"
+      ],
+      "nativeJpegs": 19,
+      "expectedNativeJpegs": 19,
+      "fullExpoSmokeVerified": false,
+      "error": "Every named baseline and treatment test must pass without failure, skip or missing execution"
+    },
+    {
+      "scope": "TEST_ONLY_SHA_PINNED_GENERATED_FIXTURE_NOT_GUEST_DATA",
+      "fixtureSHA": "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165",
+      "legacyLookByteEqual": true,
+      "treatment": {
+        "detected": 2,
+        "landmarked": 0,
+        "decorated": 0
+      },
+      "reference": {
+        "detected": 2,
+        "landmarked": 0,
+        "decorated": 0
+      },
+      "referenceStatus": "success",
+      "referenceFailure": "none",
+      "referenceJpegPresent": false,
+      "goldPixelCount": 0
+    },
+    {
+      "fixtureSHA": "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165",
+      "variant": {
+        "name": "warm-default-copy",
+        "w": 1122,
+        "h": 1402,
+        "handlerReleased": true,
+        "cpuOnly": false,
+        "materialized": true,
+        "pixelSha256": "72a92e976d8a",
+        "representation": {
+          "bpc": 8,
+          "bpp": 32,
+          "rowBytes": 4488,
+          "bitmapInfo": 16385,
+          "isSRGB": true
+        },
+        "status": "success",
+        "error": null,
+        "detected": 2,
+        "landmarked": 1,
+        "faces": [
+          {
+            "i": 0,
+            "b": [
+              0.13757,
+              0.31365,
+              0.21093,
+              0.1688
+            ],
+            "e": [
+              [
+                0.21114,
+                0.34032
+              ],
+              [
+                0.31663,
+                0.35597
+              ]
+            ],
+            "c": 1,
+            "admissionBits": 63,
+            "appleE": [
+              [
+                0.21114,
+                0.34032
+              ],
+              [
+                0.31663,
+                0.35597
+              ]
+            ],
+            "appleDeltaMax": 0,
+            "directDeltaMax": 0.5322728,
+            "landmarkConfidence": 0.76177,
+            "normalizedRepeatDelta": 0
+          },
+          {
+            "i": 1,
+            "b": [
+              0.64986,
+              0.28181,
+              0.22719,
+              0.18182
+            ],
+            "e": null,
+            "c": 1,
+            "admissionBits": 0,
+            "appleE": [
+              [
+                0.73737,
+                0.317
+              ],
+              [
+                0.89873,
+                0.36349
+              ]
+            ],
+            "appleDeltaMax": null,
+            "directDeltaMax": 0.352175,
+            "landmarkConfidence": 0.29337,
+            "normalizedRepeatDelta": 0
+          }
+        ],
+        "individual": [
+          {
+            "g": 1,
+            "c": 1,
+            "h": 1
+          },
+          {
+            "g": 0,
+            "c": 0,
+            "h": 0
+          }
+        ],
+        "full": {
+          "g": 1,
+          "c": 1,
+          "h": 1
+        },
+        "confidence1": {
+          "g": 1,
+          "c": 1,
+          "h": 1
+        },
+        "canonicalFull": {
+          "g": 1,
+          "c": 1,
+          "h": 1
+        }
+      }
+    },
+    {
+      "fixtureSHA": "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165",
+      "variant": {
+        "name": "warm-cpu-copy",
+        "w": 1122,
+        "h": 1402,
+        "handlerReleased": true,
+        "cpuOnly": true,
+        "materialized": true,
+        "pixelSha256": "72a92e976d8a",
+        "representation": {
+          "bpc": 8,
+          "bpp": 32,
+          "rowBytes": 4488,
+          "bitmapInfo": 16385,
+          "isSRGB": true
+        },
+        "status": "success",
+        "error": null,
+        "detected": 2,
+        "landmarked": 2,
+        "faces": [
+          {
+            "i": 0,
+            "b": [
+              0.13757,
+              0.31365,
+              0.21093,
+              0.1688
+            ],
+            "e": [
+              [
+                0.21785,
+                0.37465
+              ],
+              [
+                0.29101,
+                0.39337
+              ]
+            ],
+            "c": 1,
+            "admissionBits": 63,
+            "appleE": [
+              [
+                0.21785,
+                0.37465
+              ],
+              [
+                0.29101,
+                0.39337
+              ]
+            ],
+            "appleDeltaMax": 0,
+            "directDeltaMax": 0.436442,
+            "landmarkConfidence": 0.85305,
+            "normalizedRepeatDelta": 0
+          },
+          {
+            "i": 1,
+            "b": [
+              0.64986,
+              0.28181,
+              0.22719,
+              0.18182
+            ],
+            "e": [
+              [
+                0.72065,
+                0.31354
+              ],
+              [
+                0.82372,
+                0.33799
+              ]
+            ],
+            "c": 1,
+            "admissionBits": 63,
+            "appleE": [
+              [
+                0.72065,
+                0.31354
+              ],
+              [
+                0.82372,
+                0.33799
+              ]
+            ],
+            "appleDeltaMax": 0,
+            "directDeltaMax": 0.4090427,
+            "landmarkConfidence": 0.84331,
+            "normalizedRepeatDelta": 0
+          }
+        ],
+        "individual": [
+          {
+            "g": 1,
+            "c": 1,
+            "h": 1
+          },
+          {
+            "g": 1,
+            "c": 1,
+            "h": 1
+          }
+        ],
+        "full": {
+          "g": 2,
+          "c": 2,
+          "h": 2
+        },
+        "confidence1": {
+          "g": 2,
+          "c": 2,
+          "h": 2
+        },
+        "canonicalFull": {
+          "g": 2,
+          "c": 2,
+          "h": 2
+        }
+      }
+    },
+    {
+      "fixtureSHA": "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165",
+      "variant": {
+        "name": "warm-default-ci",
+        "w": 1122,
+        "h": 1402,
+        "handlerReleased": true,
+        "cpuOnly": false,
+        "materialized": false,
+        "pixelSha256": "72a92e976d8a",
+        "representation": {
+          "bpc": 8,
+          "bpp": 32,
+          "rowBytes": 4544,
+          "bitmapInfo": 1,
+          "isSRGB": true
+        },
+        "status": "success",
+        "error": null,
+        "detected": 2,
+        "landmarked": 2,
+        "faces": [
+          {
+            "i": 0,
+            "b": [
+              0.64986,
+              0.28181,
+              0.22719,
+              0.18182
+            ],
+            "e": [
+              [
+                0.72125,
+                0.35116
+              ],
+              [
+                0.78304,
+                0.34102
+              ]
+            ],
+            "c": 1,
+            "admissionBits": 63,
+            "appleE": [
+              [
+                0.72125,
+                0.35116
+              ],
+              [
+                0.78304,
+                0.34102
+              ]
+            ],
+            "appleDeltaMax": 0,
+            "directDeltaMax": 0.406984,
+            "landmarkConfidence": 0.68563,
+            "normalizedRepeatDelta": 0
+          },
+          {
+            "i": 1,
+            "b": [
+              0.13757,
+              0.31365,
+              0.21093,
+              0.1688
+            ],
+            "e": [
+              [
+                0.21168,
+                0.37434
+              ],
+              [
+                0.29021,
+                0.35985
+              ]
+            ],
+            "c": 1,
+            "admissionBits": 63,
+            "appleE": [
+              [
+                0.21168,
+                0.37434
+              ],
+              [
+                0.29021,
+                0.35985
+              ]
+            ],
+            "appleDeltaMax": 0,
+            "directDeltaMax": 0.4334588,
+            "landmarkConfidence": 0.71899,
+            "normalizedRepeatDelta": 0
+          }
+        ],
+        "individual": [
+          {
+            "g": 1,
+            "c": 1,
+            "h": 1
+          },
+          {
+            "g": 1,
+            "c": 1,
+            "h": 1
+          }
+        ],
+        "full": {
+          "g": 2,
+          "c": 2,
+          "h": 2
+        },
+        "confidence1": {
+          "g": 2,
+          "c": 2,
+          "h": 2
+        },
+        "canonicalFull": {
+          "g": 2,
+          "c": 2,
+          "h": 2
+        }
+      }
+    },
+    {
+      "fixtureSHA": "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165",
+      "variant": {
+        "name": "warm-cpu-ci",
+        "w": 1122,
+        "h": 1402,
+        "handlerReleased": true,
+        "cpuOnly": true,
+        "materialized": false,
+        "pixelSha256": "72a92e976d8a",
+        "representation": {
+          "bpc": 8,
+          "bpp": 32,
+          "rowBytes": 4544,
+          "bitmapInfo": 1,
+          "isSRGB": true
+        },
+        "status": "success",
+        "error": null,
+        "detected": 2,
+        "landmarked": 2,
+        "faces": [
+          {
+            "i": 0,
+            "b": [
+              0.64986,
+              0.28181,
+              0.22719,
+              0.18182
+            ],
+            "e": [
+              [
+                0.76165,
+                0.34863
+              ],
+              [
+                0.78478,
+                0.32795
+              ]
+            ],
+            "c": 1,
+            "admissionBits": 63,
+            "appleE": [
+              [
+                0.76165,
+                0.34863
+              ],
+              [
+                0.78478,
+                0.32795
+              ]
+            ],
+            "appleDeltaMax": 0,
+            "directDeltaMax": 0.2695681,
+            "landmarkConfidence": 0.63328,
+            "normalizedRepeatDelta": 0
+          },
+          {
+            "i": 1,
+            "b": [
+              0.13757,
+              0.31365,
+              0.21093,
+              0.1688
+            ],
+            "e": [
+              [
+                0.22722,
+                0.36877
+              ],
+              [
+                0.25654,
+                0.34241
+              ]
+            ],
+            "c": 1,
+            "admissionBits": 63,
+            "appleE": [
+              [
+                0.22722,
+                0.36877
+              ],
+              [
+                0.25654,
+                0.34241
+              ]
+            ],
+            "appleDeltaMax": 0,
+            "directDeltaMax": 0.3074915,
+            "landmarkConfidence": 0.64935,
+            "normalizedRepeatDelta": 0
+          }
+        ],
+        "individual": [
+          {
+            "g": 1,
+            "c": 1,
+            "h": 1
+          },
+          {
+            "g": 1,
+            "c": 1,
+            "h": 1
+          }
+        ],
+        "full": {
+          "g": 2,
+          "c": 2,
+          "h": 2
+        },
+        "confidence1": {
+          "g": 2,
+          "c": 2,
+          "h": 2
+        },
+        "canonicalFull": {
+          "g": 2,
+          "c": 2,
+          "h": 2
+        }
+      }
+    }
+  ]
+}
