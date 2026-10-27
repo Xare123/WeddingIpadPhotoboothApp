@@ -5,7 +5,8 @@ import { fileURLToPath } from 'node:url';
 import { bounded, diagnosticLines, redact, workflowData } from './ci-summary.mjs';
 import { commandStreams, parseNamedJSON, requireSwiftTools62, selectIpadSimulator, simulatorBuildArchitecture, stopOwnedProcessGroup } from './ci-native-contract.mjs';
 import { createPixelProject, ownedSimulatorRemoval, pixelBuildSettingsArguments, pixelCleanupDecision, PIXEL_LIMITS, PIXEL_REQUIRED_CASES, requireUnhostedPixelSettings, verifyPixelProject } from './native-pixel-project.mjs';
-import { EXPECTED_PIXEL_ATTACHMENTS, exportNamedPixelJpegs, inspectPixelTests, requirePassingPixelTests, safeSchemaShape } from './native-pixel-results.mjs';
+import { EXPECTED_PIXEL_ATTACHMENTS, expectedPixelAttachments, exportNamedPixelJpegs, inspectPixelTests, requirePassingPixelTests, safeSchemaShape } from './native-pixel-results.mjs';
+import { CORE_PIXEL_PROFILE, TREATMENT_PIXEL_PROFILE, nativePixelProfile } from './native-treatment-profile.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const temporary = process.env.RUNNER_TEMP ?? join(root, '.cache');
@@ -15,6 +16,7 @@ mkdirSync(diagnostics, { recursive: true });
 const status = { mode: 'native-pixels', result: 'running', expectedTests: PIXEL_REQUIRED_CASES,
   expectedJpegs: EXPECTED_PIXEL_ATTACHMENTS.length, tests: null, stages: [],
   scope: 'Nineteen real production Core Image/template XCTest methods only. Full Expo app smoke, bridge, camera, Photos, signing and physical iPad remain unverified.' };
+let profile = nativePixelProfile(CORE_PIXEL_PROFILE);
 const saveStatus = () => writeFileSync(join(diagnostics, 'status.json'), JSON.stringify(status, null, 2) + '\n');
 const records = new Set();
 let cancellation, plan, simulator, simulatorCreationRequested = false, phase = 'preparation', deadline = Date.now() + PIXEL_LIMITS.preparationMs;
@@ -107,6 +109,9 @@ function rawSize(directory, limit = 64 * 1024 * 1024) {
 }
 
 async function main() {
+  profile = validation('selected-profile', () => nativePixelProfile(process.argv[2] ?? CORE_PIXEL_PROFILE));
+  status.profile = profile.id; status.expectedTests = profile.expectedTests; status.expectedJpegs = profile.expectedJpegs;
+  if (profile.id === TREATMENT_PIXEL_PROFILE) status.scope = 'Nineteen original Core Image/template cases plus ten production treatment cases in a real iOS simulator. Same-target pure Swift: no Expo bridge/UI, camera, Photos, durable app storage, signing or physical iPad proof.';
   if (process.platform !== 'darwin') throw new Error('Native pixel execution requires the supported macOS/Xcode runner');
   const tools = await command('toolchain', 'xcodebuild', ['-version'], { structured: true, timeout: 30000 });
   validation('selected-xcode', () => { if (!/^Xcode 26\.3\s/m.test(tools.stdout)) throw new Error('Select the reviewed Xcode26.3 installation'); });
@@ -127,7 +132,7 @@ async function main() {
     validation(name + '-syntax', () => { if (!flags.every(flag => help.stdout.includes(flag))) throw new Error(name + ': required CLI syntax unavailable'); });
   }
   const directory = mkdtempSync(join(temporary, 'wedding-native-pixels-project-'));
-  plan = validation('generate-independent-project', () => createPixelProject(root, directory));
+  plan = validation('generate-independent-project', () => createPixelProject(root, directory, profile.id));
   jsonFile('source-manifest.json', plan);
   const inventory = await command('simulator-list', 'xcrun', ['simctl', 'list', 'devices', 'available', '--json'], { structured: true });
   const template = validation('simulator-select', () => selectIpadSimulator(parseNamedJSON('simulator-list', inventory.stdout).devices));
@@ -169,21 +174,21 @@ async function main() {
   const testOutput = await command('xcresult-test-identities', 'xcrun', ['xcresulttool', 'get', 'test-results', 'tests', '--path', resultBundle], { structured: true, timeout: 30000 });
   const tree = parseNamedJSON('xcresult-test-identities', testOutput.stdout); jsonFile('xctest-tests.json', tree);
   const errors = [];
-  try { status.tests = validation('verify-nineteen-identities', () => inspectPixelTests(tree, plan.expectedCases)); }
+  try { status.tests = validation('verify-named-identities', () => inspectPixelTests(tree, plan.expectedCases, profile.id)); }
   catch (error) { errors.push(error); jsonFile('unsupported-schema.json', { shape: safeSchemaShape(tree), stage: 'native-test-identities' }); }
   const exports = join(plan.directory, 'ExportedAttachments');
   await command('xcresult-export-attachments', 'xcrun', ['xcresulttool', 'export', 'attachments', '--path', resultBundle, '--output-path', exports], { timeout: 60000 });
   try {
     const manifest = JSON.parse(readFileSync(join(exports, 'manifest.json'), 'utf8'));
     status.jpegs = validation('verify-native-jpegs', () => exportNamedPixelJpegs({ exportDirectory: exports,
-      outputDirectory: join(diagnostics, 'native-jpegs'), manifest, requireComplete: false }));
+      outputDirectory: join(diagnostics, 'native-jpegs'), manifest, requireComplete: false, profile: profile.id }));
     jsonFile('native-jpeg-evidence.json', status.jpegs);
   } catch (error) { errors.push(error); if (error.diagnosticShape) status.schemaDiagnostic = error.diagnosticShape; }
   if (errors.length) throw errors[0];
   validation('native-pixel-acceptance', () => {
-    requirePassingPixelTests(status.tests, summary);
+    requirePassingPixelTests(status.tests, summary, profile.id);
     if (execution.code !== 0) throw new Error('xcodebuild did not exit successfully');
-    if (!status.jpegs?.complete || status.jpegs.entries.length !== EXPECTED_PIXEL_ATTACHMENTS.length) throw new Error('Expected sixteen native JPEG attachments are incomplete');
+    if (!status.jpegs?.complete || status.jpegs.entries.length !== expectedPixelAttachments(profile.id).length) throw new Error('Required baseline/profile native JPEG attachments are incomplete');
   });
   status.result = 'passed';
 }
@@ -232,9 +237,9 @@ finally {
   const sha = /^[a-f0-9]{40}$/i.test(process.env.GITHUB_SHA ?? '') ? process.env.GITHUB_SHA : 'local';
   const stage = status.result === 'passed' ? 'complete' : status.stages.filter(value => value.result === 'failed').at(-1)?.name ?? status.activeStage ?? phase;
   const classes = status.tests?.cases?.reduce((value, item) => { const name = item.id.split('.')[0]; value[name] = (value[name] ?? 0) + 1; return value; }, {}) ?? {};
-  const message = { commit: sha, result: status.result, stage, executed: status.tests?.executed ?? 'unknown',
+  const message = { commit: sha, profile: profile.id, result: status.result, stage, expectedTests: profile.expectedTests, executed: status.tests?.executed ?? 'unknown',
     failures: status.tests?.failures ?? 'unknown', skipped: status.tests?.skipped ?? 'unknown', classes,
-    nativeJpegs: status.jpegs?.entries?.length ?? 0, expectedNativeJpegs: 16,
+    nativeJpegs: status.jpegs?.entries?.length ?? 0, expectedNativeJpegs: profile.expectedJpegs,
     fullExpoSmokeVerified: false, error: status.error, schema: status.schemaDiagnostic };
   jsonFile('public-evidence.json', message);
   const logs = Object.fromEntries(readdirSync(diagnostics).filter(name => name.endsWith('.log')).map(name => [name, readFileSync(join(diagnostics, name), 'utf8')]));

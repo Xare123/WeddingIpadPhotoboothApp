@@ -719,12 +719,12 @@ test('Release simulator builds exactly the verified host architecture without al
   assert.ok(!/ONLY_ACTIVE_ARCH|ARCHS=|simulatorArchitectureSettings/.test(device));
 });
 
-test('standard ARM runtime preserves opt-in toolchain and verified architecture while device Release stays Intel', () => {
+test('standard ARM runtime preserves opt-in toolchain and verified architecture while stable device Release stays Intel', () => {
   const workflow = readFileSync(new URL('../.github/workflows/ios-release-runtime.yml', import.meta.url), 'utf8');
   const deviceWorkflow = readFileSync(new URL('../.github/workflows/ios-simulator.yml', import.meta.url), 'utf8');
   const runner = readFileSync(new URL('./ci-native.mjs', import.meta.url), 'utf8');
   assert.match(workflow, /^    runs-on: macos-15$/m);
-  assert.match(deviceWorkflow, /^    runs-on: macos-15-intel$/m);
+  assert.ok(deviceWorkflow.includes("runs-on: ${{ github.ref == 'refs/heads/codex/post-capture-face-effects' && 'macos-15' || 'macos-15-intel' }}"));
   assert.ok(workflow.includes("contains(github.event.head_commit.message, '[native-runtime-ci]')"));
   assert.ok(workflow.includes('github.event.repository.private == false'));
   assert.match(workflow, /DEVELOPER_DIR: \/Applications\/Xcode_26\.3\.app\/Contents\/Developer/);

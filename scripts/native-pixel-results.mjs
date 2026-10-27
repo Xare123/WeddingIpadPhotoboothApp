@@ -1,12 +1,12 @@
 import { createHash } from 'node:crypto';
 import { lstatSync, mkdirSync, readFileSync, readdirSync, realpathSync, writeFileSync } from 'node:fs';
 import { isAbsolute, join, relative, resolve, sep } from 'node:path';
+import { CORE_PIXEL_PROFILE, TREATMENT_PIXEL_PROFILE, TREATMENT_CASES, TREATMENT_ATTACHMENTS, nativePixelProfile } from './native-treatment-profile.mjs';
 
 const MAX_NODES = 5000;
 const MAX_DEPTH = 32;
 const MAX_JPEG_BYTES = 6 * 1024 * 1024;
 const MAX_TOTAL_BYTES = 32 * 1024 * 1024;
-const CLASSES = { PhotoEffectsEngineTests: 8, PhotoTemplateEngineTests: 11 };
 const SCHEMA_KEYS = new Set(['testNodes', 'nodeType', 'nodeIdentifier', 'nodeIdentifierURL', 'children', 'name', 'result',
   'testStatus', 'identifier', 'identifierURL', 'attachments', 'exportedFileName', 'suggestedHumanReadableName',
   'testIdentifier', 'totalTestCount', 'totalTests', 'passedTests', 'failedTests', 'skippedTests', 'testFailures',
@@ -40,14 +40,16 @@ function failure(message, value) {
   return error;
 }
 
-function expectedIdentityList(expectedCases) {
-  if (!Array.isArray(expectedCases) || expectedCases.length !== 19 || new Set(expectedCases).size !== 19 ||
-    expectedCases.some(id => typeof id !== 'string' || !/^(PhotoEffectsEngineTests|PhotoTemplateEngineTests)\.test[A-Za-z0-9_]+$/.test(id))) {
-    throw failure('Expected native pixel case inventory must contain nineteen unique known-class methods');
+function expectedIdentityList(expectedCases, profileName = CORE_PIXEL_PROFILE) {
+  const profile = nativePixelProfile(profileName), classes = profile.classes;
+  if (!Array.isArray(expectedCases) || expectedCases.length !== profile.expectedTests || new Set(expectedCases).size !== profile.expectedTests ||
+    expectedCases.some(id => typeof id !== 'string' || !/^[A-Za-z_][A-Za-z0-9_]*\.test[A-Za-z0-9_]+$/.test(id) || !Object.hasOwn(classes, id.split('.')[0]))) {
+    throw failure('Expected native pixel case inventory must contain every unique known-class method');
   }
-  for (const [name, count] of Object.entries(CLASSES)) {
-    if (expectedCases.filter(id => id.startsWith(name + '.')).length !== count) throw failure('Expected native pixel class counts must remain eight plus eleven');
+  for (const [name, count] of Object.entries(classes)) {
+    if (expectedCases.filter(id => id.startsWith(name + '.')).length !== count) throw failure('Expected native pixel class counts must match the reviewed profile');
   }
+  if (profile.id === TREATMENT_PIXEL_PROFILE && TREATMENT_CASES.some(id => !expectedCases.includes(id))) throw failure('Treatment case identities must remain exact');
   return [...expectedCases].sort();
 }
 
@@ -78,8 +80,9 @@ function consistentStatuses(node) {
   return { status: statuses[0], rawStatus: node[fields[0]] };
 }
 
-export function inspectPixelTests(tree, expectedCases) {
-  const expected = expectedIdentityList(expectedCases), expectedSet = new Set(expected);
+export function inspectPixelTests(tree, expectedCases, profileName = CORE_PIXEL_PROFILE) {
+  const profile = nativePixelProfile(profileName);
+  const expected = expectedIdentityList(expectedCases, profile.id), expectedSet = new Set(expected);
   if (!tree || typeof tree !== 'object' || !Array.isArray(tree.testNodes) || !tree.testNodes.length) {
     throw failure('Unsupported native tests-tree schema; testNodes array required', tree);
   }
@@ -112,25 +115,27 @@ export function inspectPixelTests(tree, expectedCases) {
   if (expected.some(id => !found.has(id))) throw failure('Native result is missing required pixel test methods', tree);
   const cases = expected.map(id => found.get(id));
   return {
-    expectedCases: expected, discovered: cases.length,
+    profile: profile.id, expectedCases: expected, discovered: cases.length,
     executed: cases.filter(entry => entry.status === 'passed' || entry.status === 'failed').length,
     passed: cases.filter(entry => entry.status === 'passed').length,
     failures: cases.filter(entry => entry.status === 'failed').length,
     skipped: cases.filter(entry => entry.status === 'skipped').length,
     notRun: cases.filter(entry => entry.status === 'not-run').length,
-    perClass: Object.fromEntries(Object.entries(CLASSES).map(([name, count]) => [name, {
+    perClass: Object.fromEntries(Object.entries(profile.classes).map(([name, count]) => [name, {
       expected: count, passed: cases.filter(entry => entry.id.startsWith(name + '.') && entry.status === 'passed').length,
     }])), cases,
   };
 }
 
-export function requirePassingPixelTests(result, summary) {
-  const expected = expectedIdentityList(result?.expectedCases);
-  if (!Array.isArray(result?.cases) || result.cases.length !== 19 ||
-    new Set(result.cases.map(entry => entry?.id)).size !== 19 ||
+export function requirePassingPixelTests(result, summary, profileName = CORE_PIXEL_PROFILE) {
+  const profile = nativePixelProfile(profileName), totalRequired = profile.expectedTests;
+  const expected = expectedIdentityList(result?.expectedCases, profile.id);
+  if (result.profile !== profile.id || !Array.isArray(result?.cases) || result.cases.length !== totalRequired ||
+    new Set(result.cases.map(entry => entry?.id)).size !== totalRequired ||
     result.cases.some(entry => !expected.includes(entry?.id) || entry.status !== 'passed') ||
-    result.executed !== 19 || result.passed !== 19 || result.failures !== 0 || result.skipped !== 0 || result.notRun !== 0) {
-    throw failure('Every one of the nineteen named native pixel tests must pass without failure, skip or missing execution');
+    result.executed !== totalRequired || result.passed !== totalRequired || result.failures !== 0 || result.skipped !== 0 || result.notRun !== 0) {
+    throw failure(totalRequired === 19 ? 'Every one of the nineteen named native pixel tests must pass without failure, skip or missing execution'
+      : 'Every named baseline and treatment test must pass without failure, skip or missing execution');
   }
   if (summary !== undefined) {
     if (!summary || typeof summary !== 'object' || Array.isArray(summary)) throw failure('Unsupported native result-summary count schema', summary);
@@ -143,8 +148,8 @@ export function requirePassingPixelTests(result, summary) {
     if (values.some(value => !Number.isSafeInteger(value) || value < 0)) throw failure('Unsupported native result-summary count schema', summary);
     if (totals.some(total => total !== totals[0])) throw failure('Conflicting native result-summary total aliases', summary);
     const total = totals[0];
-    if (total !== 19 || summary.passedTests !== 19 || summary.failedTests !== 0 || summary.skippedTests !== 0) {
-      throw failure('Native result summary disagrees with nineteen passing named pixel cases', summary);
+    if (total !== totalRequired || summary.passedTests !== totalRequired || summary.failedTests !== 0 || summary.skippedTests !== 0) {
+      throw failure('Native result summary disagrees with all required passing named pixel cases', summary);
     }
     if (Object.hasOwn(summary, 'result') || Object.hasOwn(summary, 'testStatus')) {
       if (consistentStatuses(summary).status !== 'passed') throw failure('Native result summary reports a nonpassing result', summary);
@@ -163,6 +168,11 @@ export const EXPECTED_PIXEL_ATTACHMENTS = Object.freeze([
   { name: 'native-v2-clean-mixed-EXIF-portrait-grid-sage-FULL', width: 2400, height: 3000 },
   { name: 'native-v2-clean-mixed-EXIF-portrait-grid-sage-PREVIEW', width: 1152, height: 1440 },
 ].map(Object.freeze));
+
+export function expectedPixelAttachments(profileName = CORE_PIXEL_PROFILE) {
+  return nativePixelProfile(profileName).id === TREATMENT_PIXEL_PROFILE
+    ? [...EXPECTED_PIXEL_ATTACHMENTS, ...TREATMENT_ATTACHMENTS] : [...EXPECTED_PIXEL_ATTACHMENTS];
+}
 
 export function jpegDimensions(bytes) {
   if (!Buffer.isBuffer(bytes) || bytes.length < 14 || bytes[0] !== 0xff || bytes[1] !== 0xd8 ||
@@ -215,8 +225,9 @@ function attachmentFile(root, name) {
   return canonical;
 }
 
-export function exportNamedPixelJpegs({ exportDirectory, outputDirectory, manifest, requireComplete = true }) {
-  const expected = new Map(EXPECTED_PIXEL_ATTACHMENTS.map(entry => [entry.name, entry]));
+export function exportNamedPixelJpegs({ exportDirectory, outputDirectory, manifest, requireComplete = true, profile = CORE_PIXEL_PROFILE }) {
+  const specification = expectedPixelAttachments(profile);
+  const expected = new Map(specification.map(entry => [entry.name, entry]));
   if (!manifest || typeof manifest !== 'object') throw failure('Unsupported native attachment manifest schema', manifest);
   const groups = Array.isArray(manifest) ? manifest : Array.isArray(manifest.attachments) ? [manifest] : null;
   if (!groups || groups.length > 1000) throw failure('Unsupported native attachment manifest schema', manifest);
@@ -242,15 +253,15 @@ export function exportNamedPixelJpegs({ exportDirectory, outputDirectory, manife
       const exportedLabel = label.match(/^(.+)_0_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(?:jpg|jpeg)$/i);
       if (!expected.has(name) && exportedLabel?.[0] === label && expected.has(exportedLabel[1])) name = exportedLabel[1];
       if (!expected.has(name)) {
-        if (name.startsWith('native-v2-')) throw failure('Unexpected named native JPEG evidence', record);
+        if (/^(?:native-v2-|treatment-)/.test(name)) throw failure('Unexpected named native JPEG evidence', record);
         continue;
       }
       let producer;
       try { producer = canonicalIdentity(group.testIdentifier); } catch { throw failure('Unsupported native attachment producer schema', group); }
-      if (!PRODUCERS.has(producer)) throw failure('Native JPEG evidence belongs to an unexpected test method', group);
-      const producingMethod = name.startsWith('native-v2-clean-portrait-')
+      if (!PRODUCERS.has(producer) && !specification.some(entry => entry.producer === producer)) throw failure('Native JPEG evidence belongs to an unexpected test method', group);
+      const producingMethod = expected.get(name).producer ?? (name.startsWith('native-v2-clean-portrait-')
         ? 'PhotoTemplateEngineTests.testV2AllSixCleanNativeJpegFullAndPreviewAttachments'
-        : 'PhotoTemplateEngineTests.testV2CleanMixedAspectAndExifNativeJpegAttachments';
+        : 'PhotoTemplateEngineTests.testV2CleanMixedAspectAndExifNativeJpegAttachments');
       if (producer !== producingMethod) throw failure('Named native JPEG belongs to the wrong producing test method', group);
       if (names.has(name)) throw failure('Duplicate named native JPEG evidence', record);
       names.add(name);
@@ -270,7 +281,7 @@ export function exportNamedPixelJpegs({ exportDirectory, outputDirectory, manife
       buffers.push(bytes);
     }
   }
-  const missing = EXPECTED_PIXEL_ATTACHMENTS.filter(entry => !names.has(entry.name)).map(entry => entry.name);
+  const missing = specification.filter(entry => !names.has(entry.name)).map(entry => entry.name);
   if (requireComplete && missing.length) throw failure('Native result lacks required named JPEG outputs', manifest);
   let output;
   try {

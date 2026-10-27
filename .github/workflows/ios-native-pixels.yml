@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - codex/wedding-photobooth-mvp
+      - codex/post-capture-face-effects
 
 permissions:
   contents: read
@@ -28,6 +29,7 @@ jobs:
     env:
       CI: '1'
       DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+      WEDDING_PIXEL_PROFILE: ${{ github.ref == 'refs/heads/codex/post-capture-face-effects' && 'photo-treatments' || 'core-pixels' }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -38,12 +40,12 @@ jobs:
           node-version-file: .nvmrc
       - name: Verify independent project and result guards
         timeout-minutes: 3
-        run: node --test scripts/ci-native-pixels.test.mjs scripts/ci-native-pixels-results.test.mjs
-      - name: Execute nineteen real native engine tests
+        run: node --test scripts/ci-native-pixels.test.mjs scripts/ci-native-pixels-results.test.mjs scripts/native-treatment-profile.test.mjs
+      - name: Execute nineteen baseline cases and selected production extras
         timeout-minutes: 46
         run: |
           mkdir -p "$RUNNER_TEMP/wedding-native-pixels-diagnostics"
-          node scripts/ci-native-pixels.mjs 2>&1 | tee "$RUNNER_TEMP/wedding-native-pixels-diagnostics/invocation.log"
+          node scripts/ci-native-pixels.mjs "$WEDDING_PIXEL_PROFILE" 2>&1 | tee "$RUNNER_TEMP/wedding-native-pixels-diagnostics/invocation.log"
       - name: Publish narrow native evidence summary
         id: evidence
         if: always()
@@ -62,10 +64,13 @@ jobs:
             '## Native pixel XCTest evidence', '',
             'Commit: `' + process.env.GITHUB_SHA + '`',
             'Result: **' + (status?.result ?? 'runner did not produce status') + '**',
-            'Verified named pixel cases: **' + (status?.tests?.executed ?? 'unknown') + ' / 19**',
+            'Profile: **' + (status?.profile ?? 'unknown') + '**',
+            'Verified named iOS pixel cases: **' + (status?.tests?.executed ?? 'unknown') + ' / ' + (status?.expectedTests ?? 'unknown') + '**',
+            'Original Core Image/template methods: **' + ((status?.tests?.perClass?.PhotoEffectsEngineTests?.passed ?? 0) + (status?.tests?.perClass?.PhotoTemplateEngineTests?.passed ?? 0)) + ' / 19**',
             'Failures: **' + (status?.tests?.failures ?? 'unknown') + '**; skipped: **' + (status?.tests?.skipped ?? 'unknown') + '**',
-            'Exported native JPEGs: **' + count + ' / 16**', '',
+            'Exported native JPEGs: **' + count + ' / ' + (status?.expectedJpegs ?? 'unknown') + '**', '',
             'Independent unhosted iOS unit-test bundle; unchanged production engines and XCTest sources; no Expo, Pods, Metro or application target.',
+            'The treatment profile additionally requires all ten production treatment methods and three treatment JPEGs; simulator pixel tests do not exercise the Expo bridge or the app persistence workflow.',
             '**The separate actual full Expo app launch/relaunch/rotation test remains unverified. This does not establish 20 passing tests, app bridge integration, saving, camera, Photos, signing or physical-iPad behavior.**', '',
           ];
           appendFileSync(process.env.GITHUB_STEP_SUMMARY, rows.join('\n'));

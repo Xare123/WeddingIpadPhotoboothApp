@@ -1,9 +1,13 @@
 import type { CaptureTiming } from './capture-timing';
 export type PhotoExportStatus = 'pending' | 'saved' | 'denied' | 'failed' | 'unavailable' | 'uncertain';
 export type PhotoLook = { preset: 'warm' | 'bw' | 'film'; intensity: number; version: 'wedding-ci-srgb-v1' };
+export type FaceAccessory = 'none' | 'glasses' | 'crown' | 'hearts';
+export type PhotoTreatment = { version: 'wedding-photo-treatment-v1'; order: 'look-then-face';
+  look: { preset: 'original' | 'warm' | 'bw' | 'film'; intensity: number; version: 'wedding-ci-srgb-v1' };
+  face: { accessory: FaceAccessory; version: 'wedding-face-prototype-v3' } };
 export type ActiveCapture = {
   id: string; fileUri: string; confirmed: boolean; createdAt: number;
-  sourcePhotoId?: string; look?: PhotoLook;
+  sourcePhotoId?: string; look?: PhotoLook; treatment?: PhotoTreatment;
   relativePath?: string; sessionId?: string; shotIndex?: number; exportStatus?: PhotoExportStatus;
 };
 export type PhotoCrop = { mode: 'fit' | 'fill'; x: number; y: number; zoom: number };

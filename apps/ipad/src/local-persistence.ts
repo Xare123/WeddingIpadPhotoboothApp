@@ -1,16 +1,21 @@
 import { isCountdownSeconds, type CaptureTiming } from './capture-timing';
 import { uploadJob, type QueueJob } from '@wedding-booth/core';
-import type { ActiveCapture, ActiveSession, PhotoExportStatus, PhotoLook, CompositeRecipe, SessionComposite, SessionPublicationAssets, RetakeSessionFields } from './local-types';
+import type { ActiveCapture, ActiveSession, PhotoExportStatus, PhotoLook, PhotoTreatment, FaceAccessory, CompositeRecipe, SessionComposite, SessionPublicationAssets, RetakeSessionFields } from './local-types';
+import { canonicalPhotoTreatment, isDerivedCapture, isPhotoTreatment, samePhotoTreatment } from './photo-treatment';
 import { publicationComposite, validCompositeRecipe } from './publication';
-export type { ActiveCapture, ActiveSession, PhotoExportStatus, PhotoLook, CompositeRecipe, SessionComposite, SessionPublicationAssets, RetakeSessionFields } from './local-types';
+export type { ActiveCapture, ActiveSession, PhotoExportStatus, PhotoLook, PhotoTreatment, FaceAccessory, CompositeRecipe, SessionComposite, SessionPublicationAssets, RetakeSessionFields } from './local-types';
 
-export type RenderedPhotoInput = { id: string; newRenderedURI: string; sourcePhotoId: string; look: PhotoLook; expectedSelectedPhotoId: string; slot: number };
+type RenderedPhotoBase = { id: string; newRenderedURI: string; sourcePhotoId: string; expectedSelectedPhotoId: string; slot: number };
+type LegacyRenderedPhotoInput = RenderedPhotoBase & { look: PhotoLook; treatment?: never; sourceSha256?: never; outputSha256?: never; admit?: never };
+export type RenderedPhotoInput = LegacyRenderedPhotoInput | (RenderedPhotoBase & { treatment: PhotoTreatment; look?: never;
+  sourceSha256: string; outputSha256: string; admit?: () => boolean });
 
 export type RetakeAllInput = { id: string; expectedSelectedPhotoIds: string[]; timing: CaptureTiming };
 export type CompositeInput = { id: string; newRenderedURI: string; recipe: CompositeRecipe; expectedSelectedPhotoIds: string[] };
 
 export interface LocalFiles {
   uri(relative: string): string;
+  sha256?(uri: string): Promise<string>;
   ensureDirectory(): Promise<void>;
   list(): Promise<string[]>;
   stat(uri: string): Promise<{ exists: boolean; size: number | null }>;
@@ -27,14 +32,16 @@ export interface LocalIndex {
 type CaptureRecord = Omit<ActiveCapture, 'fileUri'> & {
   relativePath: string; sessionId: string; shotIndex: number; bytes: number;
   selectionSequence: number; legacy?: boolean;
+  selectionEligible?: false; sourceSha256?: string; outputSha256?: string;
 };
 type CompositeRecord = Omit<SessionComposite, 'fileUri'> & { sessionId: string; relativePath: string; bytes: number; createdAt: number; sequence: number };
 type SessionRecord = RetakeSessionFields & { id: string; createdAt: number; targetCount: number; confirmed: boolean; selected: string[]; compositeId?: string };
 type RecordData = { kind: 'composite'; composite: CompositeRecord } | { kind: 'capture'; capture: CaptureRecord } | { kind: 'session'; session: SessionRecord } |
   { kind: 'active'; sessionId: string | null; captureId: string | null };
 type Journal = RecordData & { version: 1; sequence: number };
-type Model = { composites: Map<string, CompositeRecord>; captures: Map<string, CaptureRecord>; sessions: Map<string, SessionRecord>; sessionSequences: Map<string, number>;
+type Model = { reservedTreatmentIds: Set<string>; treatmentClaims: Map<string, CaptureRecord>; composites: Map<string, CompositeRecord>; captures: Map<string, CaptureRecord>; sessions: Map<string, SessionRecord>; sessionSequences: Map<string, number>;
   active: { sessionId: string | null; captureId: string | null } | null; hasActiveJournal: boolean; sequence: number; files: string[]; journaled: Set<string> };
+const validHash = (value: unknown): value is string => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value);
 const validId = (id: string) => /^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/.test(id);
 const positive = (value: number | null): value is number => typeof value === 'number' && Number.isFinite(value) && value > 0;
 const filename = (id: string, confirmed = false) => `photobooth/${id}${confirmed ? '' : '.draft'}.jpg`;
@@ -60,10 +67,29 @@ export class LocalRepository {
     try { info = await this.files.stat(this.files.uri(path)); } catch { throw new LocalSaveError('file-verify'); }
     return info.exists && positive(info.size) && (expected === undefined || info.size === expected) ? info.size : undefined;
   }
+  private async matchesHash(uri: string, expected: string): Promise<boolean> {
+    try { return !!this.files.sha256 && await this.files.sha256(uri) === expected; } catch { return false; }
+  }
+  private async treatmentRootMatches(id: string, expected: string): Promise<boolean> {
+    if (!validId(id) || !validHash(expected)) return false;
+    // Old four/five-shot records may still own a verified draft JPEG. Read only
+    // these two identity-bound paths; hashing must not promote/rename a root.
+    for (const path of [filename(id, true), filename(id)]) {
+      if (await this.matchesHash(this.files.uri(path), expected)) return true;
+    }
+    return false;
+  }
+  private async treatmentBytesMatch(capture: CaptureRecord, path: string): Promise<boolean> {
+    if (capture.treatment === undefined) return true;
+    return isPhotoTreatment(capture.treatment) && !capture.look && validId(capture.sourcePhotoId ?? '') &&
+      validHash(capture.sourceSha256) && validHash(capture.outputSha256) &&
+      await this.treatmentRootMatches(capture.sourcePhotoId!, capture.sourceSha256) &&
+      await this.matchesHash(this.files.uri(path), capture.outputSha256);
+  }
   private async locate(capture: CaptureRecord): Promise<CaptureRecord | undefined> {
     for (const path of [capture.relativePath, filename(capture.id, true), filename(capture.id), `photobooth/${capture.id}.partial`]) {
       const bytes = await this.verified(path, capture.bytes);
-      if (bytes !== undefined) return { ...capture, relativePath: path, bytes };
+      if (bytes !== undefined && await this.treatmentBytesMatch(capture, path)) return { ...capture, relativePath: path, bytes };
     }
     return undefined;
   }
@@ -72,13 +98,14 @@ export class LocalRepository {
   }
   private async normalize(capture: CaptureRecord, model: Model): Promise<CaptureRecord> {
     const destination = this.canonical(capture, model.sessions.get(capture.sessionId));
+    if (!await this.treatmentBytesMatch(capture, capture.relativePath)) throw new LocalSaveError('treatment-hash');
     if (capture.relativePath === destination) {
-      if (!await this.verified(destination, capture.bytes)) throw new LocalSaveError('original-readback');
+      if (!await this.verified(destination, capture.bytes) || !await this.treatmentBytesMatch(capture, destination)) throw new LocalSaveError('original-readback');
       return capture;
     }
     try { await this.files.move(capture.relativePath, destination); }
-    catch { if (!await this.verified(destination, capture.bytes)) throw new LocalSaveError('original-commit'); }
-    if (!await this.verified(destination, capture.bytes)) throw new LocalSaveError('original-readback');
+    catch { if (!await this.verified(destination, capture.bytes) || !await this.treatmentBytesMatch(capture, destination)) throw new LocalSaveError('original-commit'); }
+    if (!await this.verified(destination, capture.bytes) || !await this.treatmentBytesMatch(capture, destination)) throw new LocalSaveError('original-readback');
     const normalized = { ...capture, relativePath: destination };
     await this.append({ kind: 'capture', capture: normalized }, model);
     model.captures.set(capture.id, normalized);
@@ -103,19 +130,23 @@ export class LocalRepository {
     if (this.cached) return this.cached;
     let names: string[];
     try { await this.files.ensureDirectory(); names = await this.files.list(); } catch { throw new LocalSaveError('local-index-read'); }
-    const model: Model = { composites: new Map(), captures: new Map(), sessions: new Map(), sessionSequences: new Map(), active: null, hasActiveJournal: false,
+    const model: Model = { reservedTreatmentIds: new Set(), treatmentClaims: new Map(), composites: new Map(), captures: new Map(), sessions: new Map(), sessionSequences: new Map(), active: null, hasActiveJournal: false,
       sequence: 0, files: names, journaled: new Set() };
     const records: Journal[] = [];
     const reservedCompositeIds = new Set<string>();
+    const reservedTreatmentIds = model.reservedTreatmentIds;
     for (const name of names.filter(name => /^journal-.*\.json$/.test(name))) {
       try {
         const item = JSON.parse(await this.files.read(`photobooth/${name}`)) as Journal;
+        if (item.version === 1 && item.kind === 'capture' && item.capture?.treatment !== undefined && validId(item.capture.id)) reservedTreatmentIds.add(item.capture.id);
         if (item.version === 1 && item.kind === 'composite' && validId(item.composite.id) && validId(item.composite.sessionId)) reservedCompositeIds.add(item.composite.id);
         if (item.version === 1 && Number.isSafeInteger(item.sequence) && item.sequence > 0 &&
           ((item.kind === 'composite' && validId(item.composite.id) && validId(item.composite.sessionId) && this.validRecipe(item.composite.recipe) &&
             Array.isArray(item.composite.originalPhotoIds) && item.composite.originalPhotoIds.length === 4 && new Set(item.composite.originalPhotoIds).size === 4 &&
             item.composite.originalPhotoIds.every(validId)) ||
-           (item.kind === 'capture' && validId(item.capture.id) && validId(item.capture.sessionId)) ||
+           (item.kind === 'capture' && validId(item.capture.id) && validId(item.capture.sessionId) &&
+             (item.capture.treatment === undefined || (isPhotoTreatment(item.capture.treatment) && !item.capture.look &&
+              validId(item.capture.sourcePhotoId ?? '') && validHash(item.capture.sourceSha256) && validHash(item.capture.outputSha256) && item.capture.selectionEligible === false))) ||
            (item.kind === 'session' && validId(item.session.id) && Array.isArray(item.session.selected)) || item.kind === 'active')) records.push(item);
       } catch { /* A torn append never destroys earlier committed journal records. */ }
     }
@@ -123,7 +154,7 @@ export class LocalRepository {
     for (const item of records) {
       model.sequence = Math.max(model.sequence, item.sequence);
       if (item.kind === 'composite') model.composites.set(item.composite.id, item.composite);
-      if (item.kind === 'capture') { model.captures.set(item.capture.id, item.capture); model.journaled.add(item.capture.id); }
+      if (item.kind === 'capture') { if (item.capture.treatment) model.treatmentClaims.set(item.capture.id, item.capture); model.captures.set(item.capture.id, item.capture); model.journaled.add(item.capture.id); }
       if (item.kind === 'session') { model.sessions.set(item.session.id, item.session); model.sessionSequences.set(item.session.id, item.sequence); }
       if (item.kind === 'active') { model.active = { sessionId: item.sessionId, captureId: item.captureId }; model.hasActiveJournal = true; }
     }
@@ -131,7 +162,7 @@ export class LocalRepository {
     // selecting them for the next guest. Legacy .jpg files were explicit keeps.
     for (const name of names.filter(name => /(?:\.draft\.jpg|\.jpg|\.partial)$/.test(name))) {
       const id = name.replace(/(?:\.draft\.jpg|\.jpg|\.partial)$/, '');
-      if (!validId(id) || model.captures.has(id) || model.composites.has(id) || reservedCompositeIds.has(id)) continue;
+      if (!validId(id) || model.captures.has(id) || model.composites.has(id) || reservedCompositeIds.has(id) || reservedTreatmentIds.has(id)) continue;
       const bytes = await this.verified(`photobooth/${name}`); if (!bytes) continue;
       const confirmed = name.endsWith('.jpg') && !name.endsWith('.draft.jpg');
       const capture: CaptureRecord = { id, sessionId: id, shotIndex: 0, createdAt: 0, confirmed,
@@ -162,7 +193,7 @@ export class LocalRepository {
       model.captures.set(id, found);
       const session = model.sessions.get(found.sessionId);
       if (session && found.legacy && found.confirmed && !session.confirmed) { session.confirmed = true; repairedSessions.add(session.id); }
-      if (session && !session.confirmed && session.retakeState !== 'abandoned' && found.relativePath.endsWith('.jpg') && found.selectionSequence > (model.sessionSequences.get(session.id) ?? 0)) {
+      if (session && !session.confirmed && session.retakeState !== 'abandoned' && found.selectionEligible !== false && found.relativePath.endsWith('.jpg') && found.selectionSequence > (model.sessionSequences.get(session.id) ?? 0)) {
         session.selected[found.shotIndex] = found.id;
         repairedSessions.add(session.id);
       }
@@ -195,7 +226,8 @@ export class LocalRepository {
     return model;
   }
   private hydrate(capture: CaptureRecord): ActiveCapture {
-    return { ...capture, fileUri: this.files.uri(capture.relativePath) };
+    return { ...capture, ...(capture.treatment ? { treatment: JSON.parse(canonicalPhotoTreatment(capture.treatment)) as PhotoTreatment } : {}),
+      fileUri: this.files.uri(capture.relativePath) };
   }
   private session(model: Model, id: string): ActiveSession | null {
     const data = model.sessions.get(id); if (!data) return null;
@@ -233,8 +265,8 @@ export class LocalRepository {
       const selected = model.captures.get(id);
       const original = selected ? model.captures.get(selected.sourcePhotoId ?? selected.id) : undefined;
       if (!selected || selected.sessionId !== session.id || !original || original.sessionId !== session.id ||
-        original.sourcePhotoId || original.look || original.shotIndex !== selected.shotIndex ||
-        !await this.verified(selected.relativePath, selected.bytes) || !await this.verified(original.relativePath, original.bytes)) throw new LocalSaveError('composite-source');
+        isDerivedCapture(original) || original.shotIndex !== selected.shotIndex ||
+        !await this.verified(selected.relativePath, selected.bytes) || !await this.treatmentBytesMatch(selected, selected.relativePath) || !await this.verified(original.relativePath, original.bytes)) throw new LocalSaveError('composite-source');
       originals.push(original);
     }
     if (new Set(originals.map(item => item.id)).size !== 4) throw new LocalSaveError('composite-source');
@@ -338,8 +370,8 @@ export class LocalRepository {
       const photo = model.captures.get(session.selected[slot]!);
       const original = photo ? model.captures.get(photo.sourcePhotoId ?? photo.id) : undefined;
       if (!photo || photo.sessionId !== session.id || photo.shotIndex !== slot || !photo.relativePath.endsWith('.jpg') ||
-        !original || original.sessionId !== session.id || original.shotIndex !== slot || original.sourcePhotoId || original.look ||
-        !await this.verified(photo.relativePath, photo.bytes) || !await this.verified(original.relativePath, original.bytes)) throw new LocalSaveError('retake-original');
+        !original || original.sessionId !== session.id || original.shotIndex !== slot || isDerivedCapture(original) ||
+        !await this.verified(photo.relativePath, photo.bytes) || !await this.treatmentBytesMatch(photo, photo.relativePath) || !await this.verified(original.relativePath, original.bytes)) throw new LocalSaveError('retake-original');
     }
   }
   beginRetakeAll(parentSessionId: string, input: RetakeAllInput): Promise<ActiveSession> {
@@ -391,9 +423,73 @@ export class LocalRepository {
     return this.savePhoto(sessionOrId, id, temporaryUri, shotIndex);
   }
   saveRenderedPhoto(sessionId: string, input: RenderedPhotoInput): Promise<ActiveSession> {
-    return this.savePhoto(sessionId, input.id, input.newRenderedURI, input.slot, input);
+    if (input.treatment !== undefined) {
+      if (input.look !== undefined || !isPhotoTreatment(input.treatment)) return Promise.reject(new LocalSaveError('render-recipe'));
+      const snapshot = { ...input, treatment: JSON.parse(canonicalPhotoTreatment(input.treatment)) as PhotoTreatment };
+      return this.saveTreatment(sessionId, snapshot);
+    }
+    return this.savePhoto(sessionId, input.id, input.newRenderedURI, input.slot, input as LegacyRenderedPhotoInput);
   }
-  private savePhoto(sessionOrId: ActiveSession | string, id: string, temporaryUri: string, shotIndex?: number, rendered?: RenderedPhotoInput): Promise<ActiveSession> {
+  private saveTreatment(sessionId: string, input: Extract<RenderedPhotoInput, { treatment: PhotoTreatment }>): Promise<ActiveSession> {
+    return this.serial(async () => {
+      const model = await this.readModel(), session = model.sessions.get(sessionId);
+      const admit = () => {
+        if (input.admit !== undefined && (typeof input.admit !== 'function' || input.admit() !== true)) throw new LocalSaveError('render-admission');
+      };
+      admit();
+      if (!session || ![4, 5].includes(session.targetCount) || !validId(input.id) || model.active?.sessionId !== sessionId) throw new LocalSaveError('capture-session');
+      this.assertSelection(model, session, input.slot, input.expectedSelectedPhotoId);
+      if (!validHash(input.sourceSha256) || !validHash(input.outputSha256) || !this.files.sha256) throw new LocalSaveError('treatment-hash');
+      const original = model.captures.get(input.sourcePhotoId), selected = model.captures.get(input.expectedSelectedPhotoId);
+      if (!original || isDerivedCapture(original) || original.sessionId !== sessionId || original.shotIndex !== input.slot ||
+        !selected || (selected.sourcePhotoId ?? selected.id) !== original.id ||
+        !await this.verified(original.relativePath, original.bytes) ||
+        !await this.matchesHash(this.files.uri(original.relativePath), input.sourceSha256)) throw new LocalSaveError('render-source');
+      const known = model.treatmentClaims.get(input.id) ?? model.captures.get(input.id);
+      if (model.composites.has(input.id) || model.reservedTreatmentIds.has(input.id) && !known || known && (known.sessionId !== sessionId || known.shotIndex !== input.slot ||
+        known.sourcePhotoId !== original.id || known.look || !samePhotoTreatment(known.treatment, input.treatment) ||
+        known.sourceSha256 !== input.sourceSha256 || known.outputSha256 !== input.outputSha256)) throw new LocalSaveError('photo-id-reused');
+      let capture = model.captures.get(input.id);
+      if (capture) capture = await this.normalize(capture, model);
+      else {
+        let source;
+        try {
+          const uri = new URL(input.newRenderedURI);
+          if (uri.protocol !== 'file:' || uri.hostname || !uri.pathname.startsWith('/') || uri.search || uri.hash ||
+            input.newRenderedURI === this.files.uri(original.relativePath)) throw new Error();
+          source = await this.files.stat(input.newRenderedURI);
+          if (!source.exists || !positive(source.size)) throw new Error();
+        } catch { throw new LocalSaveError('render-file'); }
+        if (!await this.matchesHash(input.newRenderedURI, input.outputSha256)) throw new LocalSaveError('treatment-hash');
+        admit();
+        capture = { id: input.id, sessionId, shotIndex: input.slot, createdAt: this.now(), confirmed: false,
+          relativePath: `photobooth/${input.id}.partial`, bytes: source.size, selectionSequence: 0, exportStatus: 'pending',
+          sourcePhotoId: original.id, treatment: input.treatment, sourceSha256: input.sourceSha256,
+          outputSha256: input.outputSha256, selectionEligible: false };
+        // This claim precedes the copy and never auto-selects, including after
+        // process death or a completed rename followed by a torn session append.
+        await this.append({ kind: 'capture', capture }, model);
+        model.reservedTreatmentIds.add(input.id); model.treatmentClaims.set(input.id, capture); model.captures.set(input.id, capture);
+        try {
+          await this.files.copy(input.newRenderedURI, capture.relativePath);
+          if (!await this.verified(capture.relativePath, capture.bytes) || !await this.treatmentBytesMatch(capture, capture.relativePath)) throw new Error();
+        } catch { throw new LocalSaveError('treatment-copy'); }
+        capture = await this.normalize(capture, model);
+      }
+      admit(); // The exact approved cache bytes are now durable; selection is a separate commit.
+      this.assertSelection(model, session, input.slot, input.expectedSelectedPhotoId);
+      if (model.active?.sessionId !== sessionId) throw new LocalSaveError('stale-selection');
+      if (session.selected[input.slot] !== capture.id) {
+        const updated = { ...session, selected: [...session.selected] };
+        updated.selected[input.slot] = capture.id;
+        await this.append({ kind: 'session', session: updated }, model); model.sessions.set(sessionId, updated);
+      }
+      const result = this.session(model, sessionId)!;
+      if (!await this.indexSession(model, sessionId)) result.storageWarning = 'index-repair-pending';
+      return result;
+    });
+  }
+  private savePhoto(sessionOrId: ActiveSession | string, id: string, temporaryUri: string, shotIndex?: number, rendered?: LegacyRenderedPhotoInput): Promise<ActiveSession> {
     return this.serial(async () => {
       const sessionId = typeof sessionOrId === 'string' ? sessionOrId : sessionOrId.id;
       const model = await this.readModel(), session = model.sessions.get(sessionId);
@@ -408,15 +504,15 @@ export class LocalRepository {
           !Number.isFinite(look.intensity) || look.intensity < 0 || look.intensity > 1) throw new LocalSaveError('render-recipe');
         const original = model.captures.get(rendered.sourcePhotoId);
         const selected = model.captures.get(session.selected[index]!);
-        if (!original || original.sessionId !== sessionId || original.sourcePhotoId || original.look || original.shotIndex !== index ||
+        if (!original || original.sessionId !== sessionId || isDerivedCapture(original) || original.shotIndex !== index ||
           !selected || (selected.sourcePhotoId ?? selected.id) !== original.id || !await this.verified(original.relativePath, original.bytes)) throw new LocalSaveError('render-source');
         const known = model.captures.get(id);
-        if (known && (known.sourcePhotoId !== original.id || known.look?.preset !== look.preset || known.look?.intensity !== look.intensity || known.look?.version !== look.version)) throw new LocalSaveError('photo-id-reused');
+        if (known && (known.treatment !== undefined || known.sourcePhotoId !== original.id || known.look?.preset !== look.preset || known.look?.intensity !== look.intensity || known.look?.version !== look.version)) throw new LocalSaveError('photo-id-reused');
       }
-      if (model.composites.has(id)) throw new LocalSaveError('photo-id-reused');
+      if (model.composites.has(id) || model.reservedTreatmentIds.has(id)) throw new LocalSaveError('photo-id-reused');
       const existing = model.captures.get(id);
       if (existing) {
-        if (existing.sessionId !== sessionId || existing.shotIndex !== index) throw new LocalSaveError('photo-id-reused');
+        if (existing.treatment !== undefined || existing.sessionId !== sessionId || existing.shotIndex !== index) throw new LocalSaveError('photo-id-reused');
         const normalized = await this.normalize(existing, model);
         if (session.selected[index] !== normalized.id && (rendered || normalized.selectionSequence > (model.sessionSequences.get(sessionId) ?? 0))) {
           const updated = { ...session, selected: [...session.selected] };
@@ -469,7 +565,7 @@ export class LocalRepository {
       if (!capture || capture.sessionId !== sessionId || capture.shotIndex !== slot ||
         (capture.sourcePhotoId ?? capture.id) !== (selected.sourcePhotoId ?? selected.id)) throw new LocalSaveError('render-source');
       const original = model.captures.get(capture.sourcePhotoId ?? capture.id);
-      if (!original || original.sessionId !== sessionId || original.sourcePhotoId || original.look ||
+      if (!original || original.sessionId !== sessionId || isDerivedCapture(original) ||
         !await this.verified(original.relativePath, original.bytes)) throw new LocalSaveError('render-source');
       await this.normalize(capture, model);
       if (session.selected[slot] !== photoId) {
@@ -605,7 +701,7 @@ export class LocalRepository {
     for (const capture of model.captures.values()) if (capture.sessionId === sessionId && capture.relativePath.endsWith('.partial')) {
       const normalized = await this.normalize(capture, model);
       const selected = session ? model.captures.get(session.selected[normalized.shotIndex] ?? '') : undefined;
-      if (session && !session.confirmed && session.retakeState !== 'abandoned' && normalized.selectionSequence > previousSequence &&
+      if (session && !session.confirmed && session.retakeState !== 'abandoned' && normalized.selectionEligible !== false && normalized.selectionSequence > previousSequence &&
         (!selected || normalized.selectionSequence > selected.selectionSequence)) {
         session.selected[normalized.shotIndex] = normalized.id; selectionChanged = true;
       }

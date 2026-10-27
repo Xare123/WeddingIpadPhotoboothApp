@@ -32,7 +32,8 @@ import { GlassSurface } from './src/GlassSurface';
 import { createHostVisibility } from './src/host-visibility';
 import { authenticateHostAction, type HostActionLease } from './src/host-action-auth';
 import { createPhotoLookEditor, type PhotoLookEditorState, type PhotoLookPreset } from './src/photo-look-editor';
-import { loadPhotoEffects, loadTemplateEffects } from './src/native-photo-effects';
+import { loadPhotoEffects, loadPhotoTreatments, loadTemplateEffects } from './src/native-photo-effects';
+import { FACE_CHOICES, photoEditStatus, photoEditApplyTitle, photoEditPreviewLabel } from './src/photo-edit-presentation';
 import { createTemplateEditor, type TemplateEditorState } from './src/template-editor';
 import { TemplateStudio } from './src/TemplateStudio';
 import { TimingSheet, TimingControls } from './src/TimingSheet';
@@ -211,6 +212,7 @@ function Photobooth() {
   const [libraryPermission, setLibraryPermission] = useState('undetermined');
   const [fixtureStatus, setFixtureStatus] = useState('');
   const [photoEffects] = useState(loadPhotoEffects);
+  const [photoTreatments] = useState(loadPhotoTreatments);
   const [lookState, setLookState] = useState<PhotoLookEditorState | null>(null);
   const [lookPreviewPresented, setLookPreviewPresented] = useState<string | null>(null);
   const [lookImageFailed, setLookImageFailed] = useState(false);
@@ -237,7 +239,7 @@ function Photobooth() {
   });
   const lookEditor = useRef<ReturnType<typeof createPhotoLookEditor> | null>(null);
   if (!lookEditor.current && photoEffects) lookEditor.current = createPhotoLookEditor({
-    ...photoEffects, id: randomUUID, loadSession: getLocalSession, saveRenderedPhoto, selectSavedPhoto,
+    ...photoEffects, ...(photoTreatments ?? {}), id: randomUUID, loadSession: getLocalSession, saveRenderedPhoto, selectSavedPhoto,
     onState(value) {
       lookActive.current = !!value;
       if (mounted.current) {
@@ -867,13 +869,13 @@ function Photobooth() {
   }
   async function applyLook() {
     if (lookSaving.current || !lookState || lookState.phase !== 'ready' || lookPreviewPresented !== lookState.previewUri || lookImageFailed) return;
-    const slot = lookState.slot;
+    const slot = lookState.slot, editingSessionId = lookState.sessionId;
     lookSaving.current = true; setLookApplying(true);
     try {
-      if (await lookEditor.current?.apply()) {
+      if (await lookEditor.current?.apply() && mounted.current && sessionRef.current?.id === editingSessionId) {
         focusReview(slot);
         const current = sessionRef.current;
-        if (current && preferencesRef.current.photosExportEnabled) void exportPhotos(current, true);
+        if (current && AppState.currentState === 'active' && preferencesRef.current.photosExportEnabled) void exportPhotos(current, true);
       }
     } finally { lookSaving.current = false; if (mounted.current) setLookApplying(false); }
   }
@@ -1009,7 +1011,7 @@ function Photobooth() {
             <Thumbnails compact={landscape} reduceMotion={reduceMotion || !foreground} session={session} active={focusedSlot} onSelect={selectReview} />
             <View style={[styles.reviewActions, landscape && styles.reviewActionsWide]}><Button title={`Retake photo ${focusedSlot + 1}`} testID="retake-photo" secondary disabled={busy || exporting || lookApplying || !!lookState} onPress={retakePhoto} />
               <Button title={lookApplying ? 'Finishing this photo…' : busy ? 'Preparing your session…' : sessionIsComplete(session) ? total === 4 ? 'Make my keepsake' : `Keep all ${total} photos` : 'Finish the session'} testID="use-photo" disabled={busy || lookApplying || !!lookState || templateApplying} onPress={sessionIsComplete(session) ? () => void keepSession() : () => { setRetakeSlot(undefined); setActiveSlot(nextPhotoSlot(session) ?? 0); updateCameraReady(false); setScreen('camera'); }} /></View>
-            <View style={styles.reviewMinorActions}>{photoEffects && <Pressable accessibilityRole="button" testID="choose-look" disabled={busy || exporting || lookApplying || !!lookState} onPress={openLookEditor} style={[styles.lookEntry, { flex: 1 }]}><Text style={styles.lookEntryText}>Choose a look{selectedPhoto?.look ? ` · ${LOOKS.find(value => value.preset === selectedPhoto.look?.preset)?.title}` : ''}</Text></Pressable>}
+            <View style={styles.reviewMinorActions}>{photoEffects && <Pressable accessibilityRole="button" testID="choose-look" disabled={busy || exporting || lookApplying || !!lookState} onPress={openLookEditor} style={[styles.lookEntry, { flex: 1 }]}><Text style={styles.lookEntryText}>{photoTreatments ? 'Looks & accessories' : 'Choose a look'}{!photoTreatments && selectedPhoto?.look ? ` · ${LOOKS.find(value => value.preset === selectedPhoto.look?.preset)?.title}` : ''}</Text></Pressable>}
               {sessionIsComplete(session) && !session.confirmed && <Pressable accessibilityRole="button" testID="retake-all" disabled={busy || exporting || lookApplying || !!lookState || templateApplying} onPress={requestRetakeAll} style={[styles.lookEntry, { flex: 1 }]}><Text style={styles.lookEntryText}>Retake all {total}</Text></Pressable>}
             </View>
             {session.retakeOfSessionId && !session.confirmed && <Pressable accessibilityRole="button" testID="keep-previous-set" accessibilityState={{ disabled: busy || saving || !!failedPhoto || exporting }} style={[styles.textAction, (busy || saving || !!failedPhoto || exporting) && styles.disabled]} disabled={busy || saving || !!failedPhoto || exporting} onPress={() => void keepPreviousSet()}><Text style={styles.mutedButtonText}>Keep the previous set instead</Text></Pressable>}
@@ -1121,16 +1123,28 @@ function Photobooth() {
       {lookState && <SafeAreaView testID="look-editor" style={styles.lookPage}>
         <View style={styles.lookHeader}><View><Text style={styles.reviewEyebrow}>PHOTO {lookState.slot + 1} OF {total}</Text><Text style={styles.reviewTitle}>Make it yours.</Text></View><Pressable accessibilityRole="button" testID="look-cancel" onPress={() => lookEditor.current?.close()} style={styles.lookCancel}><Text style={styles.lookEntryText}>Cancel</Text></Pressable></View>
         <View style={[styles.lookBody, landscape && styles.lookBodyWide]}>
-          <View style={styles.lookStage}><Image key={`${lookState.previewUri}:${lookImageEpoch}`} testID="look-preview" source={{ uri: lookState.previewUri }} resizeMode="contain" style={StyleSheet.absoluteFill} onLoad={() => { if (lookPreviewRef.current === lookState.previewUri) { setLookImageFailed(false); setLookPreviewPresented(lookState.previewUri); } }} onError={() => { if (lookPreviewRef.current === lookState.previewUri) { setLookImageFailed(true); lookEditor.current?.previewFailed(lookState.previewUri); } }} accessibilityLabel={`${lookState.phase === 'error' || lookState.intensity === 0 ? 'Original' : LOOKS.find(value => value.preset === lookState.preset)?.title ?? 'Original'} photo preview`} />
-            {lookState.phase === 'previewing' && <View style={styles.lookRenderBadge}><Text style={styles.savingLookText}>Preparing preview…</Text></View>}
+          <View style={styles.lookStage}><Image key={`${lookState.previewUri}:${lookImageEpoch}`} testID="look-preview" source={{ uri: lookState.previewUri }} resizeMode="contain" style={StyleSheet.absoluteFill} onLoad={() => { if (lookPreviewRef.current === lookState.previewUri) { setLookImageFailed(false); setLookPreviewPresented(lookState.previewUri); } }} onError={() => { if (lookPreviewRef.current === lookState.previewUri) { setLookImageFailed(true); lookEditor.current?.previewFailed(lookState.previewUri); } }} accessibilityLabel={photoEditPreviewLabel(lookState)} />
+            {lookState.phase === 'previewing' && <View style={styles.lookRenderBadge}><Text style={styles.savingLookText}>{lookState.faceSupported ? 'Preparing your photo…' : 'Preparing preview…'}</Text></View>}
           </View>
           <View style={[styles.lookControls, landscape && styles.lookControlsWide]}>
-            <Text style={styles.lookNote}>Looks apply after capture.{`\n`}Your untouched original stays on this iPad.</Text>
+            <Text style={styles.lookNote}>{lookState.faceSupported ? 'Looks and optional accessories apply after capture.' : 'Looks apply after capture.'}{`\n`}Your untouched original stays on this iPad.</Text>
+            {lookState.faceSupported && <View style={styles.lookStrength}>
+              <Text style={styles.lookSectionLabel}>Accessories</Text>
+              <View testID="face-accessories" accessibilityLabel="Optional photo accessories" style={styles.lookOptions}>{FACE_CHOICES.map(choice => <Pressable
+                key={choice.accessory} testID={`face-accessory-${choice.accessory}`} accessibilityRole="button"
+                accessibilityLabel={`Accessory: ${choice.title}`} accessibilityState={{ selected: lookState.faceAccessory === choice.accessory, disabled: lookApplying }}
+                disabled={lookApplying} onPress={() => lookEditor.current?.chooseFace(choice.accessory)}
+                style={[styles.lookOption, lookState.faceAccessory === choice.accessory && styles.lookOptionSelected]}>
+                <Text style={[styles.lookOptionText, lookState.faceAccessory === choice.accessory && styles.lookOptionTextSelected]}>{choice.title}</Text>
+              </Pressable>)}</View>
+              <Text style={styles.lookNote}>None keeps your chosen colour look.</Text>
+              <Text style={styles.lookSectionLabel}>Photo look</Text>
+            </View>}
             <View style={styles.lookOptions}>{LOOKS.map(look => <Pressable key={look.preset} testID={`look-preset-${look.preset}`} accessibilityRole="button" accessibilityState={{ selected: lookState.preset === look.preset, disabled: lookApplying }} disabled={lookApplying} onPress={() => lookEditor.current?.choose(look.preset, look.preset === 'original' ? 0 : lookState.intensity || 0.75)} style={[styles.lookOption, lookState.preset === look.preset && styles.lookOptionSelected]}><Text style={[styles.lookOptionText, lookState.preset === look.preset && styles.lookOptionTextSelected]}>{look.title}</Text></Pressable>)}</View>
             <View style={styles.lookStrength}><Text style={styles.lookNote}>Strength</Text><View style={styles.lookOptions}>{STRENGTHS.map(intensity => <Pressable key={intensity} testID={`look-intensity-${intensity * 100}`} accessibilityRole="button" accessibilityLabel={`Look strength ${intensity * 100} percent`} accessibilityState={{ selected: lookState.intensity === intensity, disabled: lookApplying || lookState.preset === 'original' }} disabled={lookApplying || lookState.preset === 'original'} onPress={() => lookEditor.current?.choose(lookState.preset, intensity)} style={[styles.lookOption, lookState.intensity === intensity && styles.lookOptionSelected]}><Text style={[styles.lookOptionText, lookState.intensity === intensity && styles.lookOptionTextSelected]}>{intensity * 100}%</Text></Pressable>)}</View></View>
-            <Text testID="look-status" accessibilityLiveRegion="polite" style={styles.lookStatus}>{lookImageFailed ? 'This preview could not open. The original is retained.' : lookState.phase === 'ready' && lookPreviewPresented === lookState.previewUri ? 'Preview ready' : lookState.phase === 'previewing' || lookState.phase === 'ready' ? 'Preparing preview…' : lookState.phase === 'saving' ? 'Saving your full-size look…' : 'Original kept. This preview needs a retry.'}</Text>
+            <Text testID="look-status" accessibilityLiveRegion="polite" style={styles.lookStatus}>{photoEditStatus(lookState, lookPreviewPresented === lookState.previewUri, lookImageFailed)}</Text>
             {(lookImageFailed || lookState.phase === 'error') && <Button testID="look-retry" title="Retry preview" secondary onPress={() => { setLookImageFailed(false); setLookImageEpoch(value => value + 1); lookEditor.current?.choose(lookState.preset, lookState.intensity); }} />}
-            <Button testID="look-apply" title={lookApplying ? 'Saving your look…' : lookState.preset === 'original' || lookState.intensity === 0 ? 'Use original' : `Use ${LOOKS.find(value => value.preset === lookState.preset)?.title}`} disabled={lookState.phase !== 'ready' || lookPreviewPresented !== lookState.previewUri || lookApplying || lookImageFailed} onPress={() => void applyLook()} />
+            <Button testID="look-apply" title={photoEditApplyTitle(lookState, lookApplying)} disabled={lookState.phase !== 'ready' || lookPreviewPresented !== lookState.previewUri || lookApplying || lookImageFailed} onPress={() => void applyLook()} />
           </View>
         </View>
       </SafeAreaView>}
@@ -1173,5 +1187,5 @@ const styles = StyleSheet.create({
   keepsakePreview: { width: '100%', maxWidth: 320, height: 300, backgroundColor: '#E9E3D7', borderRadius: 14 },
   lookPage: { flex: 1, backgroundColor: '#101512' }, lookHeader: { minHeight: 76, paddingHorizontal: 26, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }, lookCancel: { minWidth: 64, minHeight: 48, alignItems: 'center', justifyContent: 'center', padding: 12 },
   lookBody: { flex: 1, padding: 18, gap: 18 }, lookBodyWide: { flexDirection: 'row' }, lookStage: { flex: 1, minHeight: 200, backgroundColor: '#070D09', borderRadius: 16, overflow: 'hidden' }, lookControls: { gap: 14, width: '100%', maxWidth: 740, alignSelf: 'center' }, lookControlsWide: { width: 322, alignSelf: 'center' },
-  lookOptions: { flexDirection: 'row', gap: 6 }, lookOption: { minHeight: 48, flex: 1, borderRadius: 13, borderWidth: 1, borderColor: '#879580', justifyContent: 'center', alignItems: 'center', paddingVertical: 11 }, lookOptionSelected: { backgroundColor: '#E8D7B6', borderColor: '#E8D7B6' }, lookOptionText: { color: '#D7E1CD', fontSize: 13, fontWeight: '600' }, lookOptionTextSelected: { color: '#203423' }, lookNote: { color: '#D0D9C7', fontSize: 13, lineHeight: 21, textAlign: 'center' }, lookStrength: { gap: 8 }, lookStatus: { color: '#E4E8D8', fontSize: 13, lineHeight: 21, textAlign: 'center', minHeight: 24 }, lookRenderBadge: { position: 'absolute', alignSelf: 'center', bottom: 18, paddingHorizontal: 18, paddingVertical: 12, backgroundColor: '#102219', borderRadius: 20 }, savingLookText: { color: '#fff', fontSize: 14 },
+  lookOptions: { flexDirection: 'row', gap: 6 }, lookOption: { minHeight: 48, flex: 1, borderRadius: 13, borderWidth: 1, borderColor: '#879580', justifyContent: 'center', alignItems: 'center', paddingVertical: 11 }, lookOptionSelected: { backgroundColor: '#E8D7B6', borderColor: '#E8D7B6' }, lookOptionText: { color: '#D7E1CD', fontSize: 13, fontWeight: '600' }, lookOptionTextSelected: { color: '#203423' }, lookNote: { color: '#D0D9C7', fontSize: 13, lineHeight: 21, textAlign: 'center' }, lookSectionLabel: { color: '#E6DEC6', fontSize: 12, letterSpacing: 1.1, fontWeight: '600', textAlign: 'center' }, lookStrength: { gap: 8 }, lookStatus: { color: '#E4E8D8', fontSize: 13, lineHeight: 21, textAlign: 'center', minHeight: 24 }, lookRenderBadge: { position: 'absolute', alignSelf: 'center', bottom: 18, paddingHorizontal: 18, paddingVertical: 12, backgroundColor: '#102219', borderRadius: 20 }, savingLookText: { color: '#fff', fontSize: 14 },
 });

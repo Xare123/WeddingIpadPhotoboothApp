@@ -108,12 +108,7 @@ public final class PhotoEffectsEngine: @unchecked Sendable {
       let oriented = CIImage(cgImage: cg).oriented(forExifOrientation: orientation)
       let origin = oriented.extent.origin
       let original = oriented.transformed(by: CGAffineTransform(translationX: -origin.x, y: -origin.y))
-      let effect = recipe(original, preset: preset)
-      var image = original
-      if preset != "original" && intensity > 0 {
-        image = original.applyingFilter("CIDissolveTransition", parameters: [
-          kCIInputTargetImageKey: effect, kCIInputTimeKey: intensity]).cropped(to: original.extent)
-      }
+      var image = Self.lookPixels(original, preset: preset, intensity: intensity)
       let scale = preview ? min(1, 1440 / max(image.extent.width, image.extent.height)) : 1
       let outWidth = max(1, Int(floor(image.extent.width * scale)))
       let outHeight = max(1, Int(floor(image.extent.height * scale)))
@@ -141,7 +136,14 @@ public final class PhotoEffectsEngine: @unchecked Sendable {
         width: outWidth, height: outHeight, intensity: intensity, isOriginal: false, preview: preview)
     } }
   }
-  private func recipe(_ input: CIImage, preset: String) -> CIImage {
+  /// Shared pixel-only pipeline: no JPEG, resize, metadata or orientation changes.
+  static func lookPixels(_ original: CIImage, preset: String, intensity: Double) -> CIImage {
+    guard preset != "original", intensity > 0 else { return original }
+    let effect = recipe(original, preset: preset)
+    return original.applyingFilter("CIDissolveTransition", parameters: [
+      kCIInputTargetImageKey: effect, kCIInputTimeKey: intensity]).cropped(to: original.extent)
+  }
+  private static func recipe(_ input: CIImage, preset: String) -> CIImage {
     switch preset {
     case "warm":
       return input.applyingFilter("CIColorMatrix", parameters: [

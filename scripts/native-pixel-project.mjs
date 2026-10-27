@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { basename, join, resolve } from 'node:path';
 import { nativeRuntimeResources } from './ci-native-contract.mjs';
+import { CORE_PIXEL_PROFILE, TREATMENT_PIXEL_PROFILE, nativePixelProfile, treatmentPixelInputs } from './native-treatment-profile.mjs';
 
 export const PIXEL_PROJECT_NAME = 'WeddingPhotoboothNativePixels';
 export const PIXEL_BUNDLE_ID = 'com.example.weddingphotobooth.nativepixels';
@@ -24,7 +25,8 @@ const testClasses = new Map([
 ]);
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 
-export function pixelInputs(root) {
+export function pixelInputs(root, profileName = CORE_PIXEL_PROFILE) {
+  const profile = nativePixelProfile(profileName);
   const sources = pixelSourcePaths.map(path => {
     const bytes = readFileSync(resolve(root, path)), text = bytes.toString('utf8');
     if (/^\s*(?:@testable\s+)?import\s+Expo\w*/m.test(text)) throw new Error('Pixel sources must remain independent of Expo');
@@ -48,6 +50,14 @@ export function pixelInputs(root) {
   if (cases.length !== PIXEL_REQUIRED_CASES || new Set(cases).size !== PIXEL_REQUIRED_CASES || resources.length !== 6) {
     throw new Error('The pixel target must retain all nineteen named methods and six resources');
   }
+  if (profile.id === TREATMENT_PIXEL_PROFILE) {
+    const extra = treatmentPixelInputs(root);
+    sources.push(...extra.sources); resources.push(...extra.resources); cases.push(...extra.cases);
+  }
+  if (cases.length !== profile.expectedTests || new Set(cases).size !== profile.expectedTests ||
+    new Set([...sources, ...resources].map(input => basename(input.generatedSource))).size !== sources.length + resources.length) {
+    throw new Error('Pixel profile source or case inventory is incomplete or duplicated');
+  }
   return { sources, resources, cases };
 }
 
@@ -65,7 +75,10 @@ function projectText(inputs) {
   const add = (name, body) => objects.push(`${id(name)} = { ${body} };`);
   const file = input => {
     const name = basename(input.generatedSource), resource = input.generatedSource.startsWith('Resources/');
-    add('ref:' + name, `isa = PBXFileReference; lastKnownFileType = ${resource ? 'image.jpeg' : 'sourcecode.swift'}; path = ${JSON.stringify(input.generatedSource)}; sourceTree = SOURCE_ROOT;`);
+    // The pinned PNG is an opaque test input, not an optimized app asset. A
+    // generic resource copy preserves its exact bytes for the native hash gate.
+    const type = resource ? name.endsWith('.png') ? 'explicitFileType = file' : 'lastKnownFileType = image.jpeg' : 'lastKnownFileType = sourcecode.swift';
+    add('ref:' + name, `isa = PBXFileReference; ${type}; path = ${JSON.stringify(input.generatedSource)}; sourceTree = SOURCE_ROOT;`);
     add('build:' + name, `isa = PBXBuildFile; fileRef = ${id('ref:' + name)};`);
   };
   inputs.sources.forEach(file); inputs.resources.forEach(file);
@@ -98,7 +111,7 @@ function projectText(inputs) {
     SWIFT_COMPILATION_MODE = wholemodule;
     SWIFT_OPTIMIZATION_LEVEL = "-O";
     SWIFT_VERSION = 5.0;
-    TARGETED_DEVICE_FAMILY = "1,2";
+    TARGETED_DEVICE_FAMILY = "1,2";${inputs.resources.some(input => input.source.endsWith('.png')) ? '\n    COMPRESS_PNG_FILES = NO; STRIP_PNG_TEXT = NO;' : ''}
   `;
   add('project-release', 'isa = XCBuildConfiguration; name = Release; buildSettings = { CLANG_ENABLE_MODULES = YES; SDKROOT = iphonesimulator; };');
   add('target-release', `isa = XCBuildConfiguration; name = Release; buildSettings = { ${settings} };`);
@@ -119,10 +132,10 @@ function schemeText(targetId) {
 `;
 }
 
-export function createPixelProject(root, directory) {
+export function createPixelProject(root, directory, profileName = CORE_PIXEL_PROFILE) {
   root = resolve(root); directory = resolve(directory);
   if (existsSync(directory) && readdirSync(directory).length) throw new Error('Pixel project destination must be empty');
-  const inputs = pixelInputs(root);
+  const profile = nativePixelProfile(profileName), inputs = pixelInputs(root, profile.id);
   mkdirSync(directory, { recursive: true });
   for (const input of [...inputs.sources, ...inputs.resources]) {
     const target = join(directory, input.generatedSource);
@@ -135,19 +148,19 @@ export function createPixelProject(root, directory) {
   writeFileSync(join(project, 'project.pbxproj'), generated.text);
   const scheme = schemeText(generated.targetId);
   writeFileSync(join(schemes, PIXEL_PROJECT_NAME + '.xcscheme'), scheme);
-  const plan = { version: 1, mode: 'native-pixels', directory, project, scheme: PIXEL_PROJECT_NAME,
+  const plan = { version: 1, mode: 'native-pixels', profile: profile.id, directory, project, scheme: PIXEL_PROJECT_NAME,
     product: PIXEL_PROJECT_NAME + '.xctest', bundleId: PIXEL_BUNDLE_ID,
     configuration: 'Release', sdk: 'iphonesimulator', host: 'Xcode built-in xctest; no application target',
     sources: inputs.sources, resources: inputs.resources, expectedCases: inputs.cases,
-    expectedTests: PIXEL_REQUIRED_CASES, projectSHA256: hash(generated.text), schemeSHA256: hash(scheme) };
+    expectedTests: profile.expectedTests, projectSHA256: hash(generated.text), schemeSHA256: hash(scheme) };
   writeFileSync(join(directory, 'native-pixel-plan.json'), JSON.stringify(plan, null, 2) + '\n');
   verifyPixelProject(plan, root);
   return plan;
 }
 
 export function verifyPixelProject(plan, root) {
-  const expected = pixelInputs(resolve(root));
-  if (plan?.version !== 1 || plan.mode !== 'native-pixels' || plan.expectedTests !== PIXEL_REQUIRED_CASES ||
+  const profile = nativePixelProfile(plan?.profile), expected = pixelInputs(resolve(root), profile.id);
+  if (plan?.version !== 1 || plan.mode !== 'native-pixels' || plan.expectedTests !== profile.expectedTests ||
     plan.scheme !== PIXEL_PROJECT_NAME || plan.bundleId !== PIXEL_BUNDLE_ID || plan.configuration !== 'Release' ||
     plan.project !== join(resolve(plan.directory), PIXEL_PROJECT_NAME + '.xcodeproj') ||
     plan.sdk !== 'iphonesimulator' || JSON.stringify(plan.sources) !== JSON.stringify(expected.sources) ||

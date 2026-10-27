@@ -1,0 +1,56 @@
+{
+  "recordedAt": "2026-10-27T13:25:20.805359+00:00",
+  "branch": "codex/post-capture-face-effects",
+  "stableBase": "642a3676a4993ec9880f44e45ee2b6b48aaf7a8d",
+  "candidateVersion": "0.3.8/build11",
+  "scope": "Isolated opt-in post-capture review candidate; no merge, installation, deployment or production calls",
+  "checks": {
+    "productTests": {
+      "passed": 536,
+      "failed": 0,
+      "skipped": 0,
+      "logSha256": "0a611d05f412aa403db813cfa0904eb4920e4b9a01406e32fa51d5fe316abbf7"
+    },
+    "ciContractTests": {
+      "passed": 101,
+      "failed": 0,
+      "skipped": 0
+    },
+    "typecheck": "passed all workspaces",
+    "iosHermesExport": "passed",
+    "browserUI": {
+      "passedGroups": 23,
+      "screenshots": 30,
+      "historicalEvidenceFilesUnchanged": 537,
+      "nativeBoundaries": "explicit substitutes; no successful accessory pixels fabricated"
+    }
+  },
+  "independentReview": {
+    "native": "resolved overlapping cache-lifetime ownership; no remaining P1/P2 reported; Apple execution pending",
+    "persistence": "96 targeted tests including legacy draft-path regression",
+    "composition": "2 real-file workflow tests; raster/Photos/transport substituted",
+    "ui": "both orientations reviewed; no remaining blocker reported"
+  },
+  "hostedGates": {
+    "nativePixels": "pending exact-commit run; requires 29 XCTest cases and 19 native JPEGs",
+    "unsignedRelease": "pending exact-commit run; compile is not bridge/device runtime acceptance"
+  },
+  "notVerified": [
+    "Expo treatment bridge runtime",
+    "actual iPad treatment workflow",
+    "real Photos effect-copy verification",
+    "sustained latency/memory/thermal performance",
+    "live tracking (not implemented)",
+    "production pairing/upload/SMS"
+  ],
+  "sha256": {
+    "apps/ipad/App.tsx": "f5a946ed75a3b3c7961947469ea0085bebd4bcbce9757a1ce92aef81c08c0285",
+    "apps/ipad/src/local-persistence.ts": "10edabccf254568785e025ab7d715ae46d4833efab35b5f3d0d3616e94c4012f",
+    "apps/ipad/src/photo-look-editor.ts": "29b51c9e0cdb08d6591a4958143c254ac7f6873b7d8bfb1e4a3ad91feca9bd6e",
+    "apps/ipad/src/photo-treatment.ts": "350236fc59c5dbc9f3b0875d2350cd145943d5c2e88305b633f598fb944bfca2",
+    "apps/ipad/modules/wedding-photo-effects/ios/PhotoTreatmentEngine.swift": "eaad3d1fec1d6107faa0d82ed11173d52ba7130d300788ae1d847397c1987cec",
+    "apps/ipad/modules/wedding-photo-effects/tests/NativePhotoTreatmentEngineTests.swift": "df1878a9500f1ac09e4cd015e14d8981712fe14a4b69e63a7461b2e2e6c67c09",
+    "artifacts/visual/face-effects-evidence.json": "afe58a7707a2e5d3c5f3d31236d7adf8690efe48f69da44e494abdc152ca6af9",
+    "artifacts/visual/face-effects-sha256.txt": "48496cf92be55f0ffdf7f007a6b9c638dedcd4f4e06956e502c4e46a9d3de5d1"
+  }
+}

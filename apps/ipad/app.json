@@ -2,20 +2,20 @@
   "expo": {
     "name": "Wedding Photobooth",
     "slug": "wedding-ipad-photobooth",
-    "version": "0.3.7",
+    "version": "0.3.8",
     "platforms": [
       "ios"
     ],
     "orientation": "default",
     "userInterfaceStyle": "light",
     "ios": {
-      "buildNumber": "10",
+      "buildNumber": "11",
       "supportsTablet": true,
       "requireFullScreen": true,
       "bundleIdentifier": "com.example.weddingphotobooth",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
-        "NSPhotoLibraryAddUsageDescription": "Save your wedding photos to this iPad\u2019s Photos library."
+        "NSPhotoLibraryAddUsageDescription": "Save your wedding photos to this iPad’s Photos library."
       }
     },
     "plugins": [
@@ -40,7 +40,7 @@
         "expo-media-library",
         {
           "photosPermission": false,
-          "savePhotosPermission": "Save your wedding photos to this iPad\u2019s Photos library.",
+          "savePhotosPermission": "Save your wedding photos to this iPad’s Photos library.",
           "granularPermissions": [
             "photo"
           ],

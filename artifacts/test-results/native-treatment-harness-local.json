@@ -1,0 +1,142 @@
+{
+  "version": 1,
+  "recordedAt": "2026-10-27T13:05:33.299Z",
+  "kind": "local-harness-validation-only",
+  "branch": "codex/post-capture-face-effects",
+  "baseCommit": "642a3676a4993ec9880f44e45ee2b6b48aaf7a8d",
+  "sourceStatus": "uncommitted working-tree candidate; no native execution, commit, push, dispatch or install performed by harness agent",
+  "profile": {
+    "id": "photo-treatments",
+    "baselineTests": 19,
+    "treatmentTests": 10,
+    "totalRequiredTests": 29,
+    "baselineJpegs": 16,
+    "treatmentJpegs": 3,
+    "totalRequiredJpegs": 19,
+    "swiftSources": 9,
+    "resources": 7
+  },
+  "checks": [
+    {
+      "command": "node --test scripts/ci-native-pixels.test.mjs scripts/ci-native-pixels-results.test.mjs scripts/native-treatment-profile.test.mjs",
+      "status": "passed",
+      "tests": 38,
+      "failures": 0,
+      "skipped": 0
+    },
+    {
+      "command": "node --test --test-name-pattern='standard ARM runtime|Release simulator builds exactly|runtime preparation, Xcode' scripts/ci-native.test.mjs",
+      "status": "passed",
+      "tests": 3,
+      "failures": 0,
+      "skipped": 0
+    },
+    {
+      "check": "YAML parse and bash -n of all workflow run blocks",
+      "status": "passed",
+      "workflows": 2,
+      "shellBlocks": 11
+    },
+    {
+      "check": "Node --check of seven modified/new JavaScript modules/tests",
+      "status": "passed",
+      "files": 7
+    },
+    {
+      "check": "scoped git diff --check",
+      "status": "passed"
+    },
+    {
+      "check": "actual generated treatment pbxproj parsed by installed xcode parser, independent structural assertions, canonical project guard",
+      "status": "passed",
+      "unhostedUnitTargets": 1,
+      "targetDependencies": 0,
+      "swiftSources": 9,
+      "resources": 7,
+      "expectedCases": 29,
+      "projectSHA256": "c0a228505d2c2b8e8a0b9b146a0863e33577bd9077d8c6d720421411dd72c887"
+    },
+    {
+      "check": "default baseline graph/scheme, source/resource manifest and 19 identities compared against HEAD generator",
+      "status": "passed",
+      "graph": "byte-identical",
+      "scheme": "byte-identical",
+      "projectSHA256": "5c5b90e70d4cf2200f831f38d7ffc7550b1d581a8af0751686288d7bca93bda6",
+      "schemeSHA256": "d43a2881fa53bcd4b31428ff7a2df7e3309d9a5dc1c286c15484110deafda839"
+    }
+  ],
+  "files": [
+    {
+      "path": ".github/workflows/ios-native-pixels.yml",
+      "sha256": "eac9febf070ea2078924f9dee3396ec81eb9a8ac078c8b0e94328b3d5a275797"
+    },
+    {
+      "path": ".github/workflows/ios-simulator.yml",
+      "sha256": "5553e5732262abf0be0ad94493861f0d98dde203a4c6a8c7344f988279aa6d48"
+    },
+    {
+      "path": "scripts/ci-native-pixels.mjs",
+      "sha256": "38eb265a2251c18cf9b3e8f9cac13094f7e27b1b8c78ae2cddd16872e1e50ff6"
+    },
+    {
+      "path": "scripts/ci-native.test.mjs",
+      "sha256": "79c5df0de0299b49c389fb0771ee98b5df41ce99128f96f43fed0c41170edff4"
+    },
+    {
+      "path": "scripts/native-pixel-project.mjs",
+      "sha256": "2df138f95ddbca207ceca82c7169bdd1d4ebe2bab92ab8fa189cca524a6eb37c"
+    },
+    {
+      "path": "scripts/native-pixel-results.mjs",
+      "sha256": "7eab3630ec1e93d76c1e1f955f2f9bb63fac4b1b93e6c4f43fe0f1cd42d60b99"
+    },
+    {
+      "path": "scripts/prepare-native-pixels.mjs",
+      "sha256": "0aa7e949bc14f836e148b924293a41c80e19443b37bd1209ab1d1b57ffcb38d0"
+    },
+    {
+      "path": "scripts/native-treatment-profile.mjs",
+      "sha256": "7f7ebded94233f06956ad106143c2f6144f7b96fc0b3564fafe58112fda459cd"
+    },
+    {
+      "path": "scripts/native-treatment-profile.test.mjs",
+      "sha256": "3e5e4800b05ae361e1c313e1b37043226215ebd5ed2b8c06fde815bcdacade88"
+    },
+    {
+      "path": "apps/ipad/native-tests/PHOTO_TREATMENT_CI.md",
+      "sha256": "bd2081a92f66904482e988e671dc36b02fa8439fa13467680ab4dfb4666eced0"
+    },
+    {
+      "path": "apps/ipad/native-tests/fixtures/treatments/README.md",
+      "sha256": "ec5f0b301949d8410c9f827226f01ccb6109985cda92aabbda3e56d5b787e56a"
+    },
+    {
+      "path": "apps/ipad/native-tests/fixtures/treatments/separated-portrait.png",
+      "sha256": "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165"
+    }
+  ],
+  "nativeInputFreeze": [
+    {
+      "path": "apps/ipad/modules/wedding-photo-effects/ios/PhotoTreatmentEngine.swift",
+      "sha256": "eaad3d1fec1d6107faa0d82ed11173d52ba7130d300788ae1d847397c1987cec"
+    },
+    {
+      "path": "apps/ipad/modules/wedding-photo-effects/tests/NativePhotoTreatmentEngineTests.swift",
+      "sha256": "df1878a9500f1ac09e4cd015e14d8981712fe14a4b69e63a7461b2e2e6c67c09"
+    }
+  ],
+  "notRun": [
+    "iOS simulator 29-case XCTest execution",
+    "actual 19 native JPEG exports/visual review",
+    "new treatment Expo bridge/UI runtime",
+    "new treatment unsigned physical-SDK Release build",
+    "installation or real iPad capture/Photos/rehearsal"
+  ],
+  "limitations": [
+    "Node JPEG fixtures verify exporter admission only; they are not Apple rendered image evidence.",
+    "PNG is an opaque resource with optimization disabled; the actual bundled fixture checksum must pass on the first Apple run.",
+    "Same-target pure Swift XCTest does not exercise the Expo bridge, app persistence, camera, Photos, cloud uploads, pairing, SMS or device performance.",
+    "The separate full-Expo 20-case runtime workflow and its existing acceptance requirements were not modified.",
+    "Unsigned physical-SDK Release arguments are unchanged; only integration-branch opt-in/standard ARM runner selection was added."
+  ]
+}

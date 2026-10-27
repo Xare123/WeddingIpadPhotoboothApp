@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - codex/wedding-photobooth-mvp
+      - codex/post-capture-face-effects
 
 permissions:
   contents: read
@@ -19,8 +20,8 @@ jobs:
       github.repository == 'Xare123/WeddingIpadPhotoboothApp' &&
       github.event.repository.private == false &&
       (contains(github.event.head_commit.message, '[native-ci]') || contains(github.event.head_commit.message, '[native-ui]'))
-    # Standard Intel image; avoids observed macos-15 ARM runner acquisition failures.
-    runs-on: macos-15-intel
+    # Preserve the MVP Intel lane; the isolated integration branch uses standard ARM.
+    runs-on: ${{ github.ref == 'refs/heads/codex/post-capture-face-effects' && 'macos-15' || 'macos-15-intel' }}
     timeout-minutes: 45
     defaults:
       run:

@@ -7,6 +7,11 @@ struct TemplatePhotoSource: Record {
 }
 
 public final class WeddingPhotoEffectsModule: Module {
+  private let treatments = PhotoTreatmentEngine(cacheDirectory:
+    FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
+      .appendingPathComponent("WeddingTreatments", isDirectory: true), originalsDirectory:
+    FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+      .appendingPathComponent("photobooth", isDirectory: true))
   private let templates = PhotoTemplateEngine(cacheDirectory:
     FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
       .appendingPathComponent("WeddingTemplates", isDirectory: true))
@@ -30,6 +35,27 @@ public final class WeddingPhotoEffectsModule: Module {
   public func definition() -> ModuleDefinition {
     Name("WeddingPhotoEffects")
     Constant("capabilityVersion") { 1 }
+    Constant("treatmentVersion") { PhotoTreatmentEngine.version }
+    AsyncFunction("renderTreatment") { (sourceUri: String, recipeJSON: String, requestUUID: String, promise: Promise) in
+      guard let source = URL(string: sourceUri), let id = UUID(uuidString: requestUUID) else {
+        promise.reject("ERR_PHOTO_TREATMENT_INVALIDINPUT", "Invalid photo treatment request."); return
+      }
+      self.treatments.render(source: source, recipeJSON: recipeJSON, id: id) { result in
+        switch result {
+        case .success(let output): promise.resolve(output.dictionary)
+        case .failure(let failure):
+          promise.reject("ERR_PHOTO_TREATMENT_" + String(describing: failure).uppercased(), "Photo treatment could not complete.")
+        }
+      }
+    }
+    Function("cancelTreatment") { (requestUUID: String) in
+      guard let id = UUID(uuidString: requestUUID) else { throw PhotoTreatmentEngine.Failure.invalidInput }
+      self.treatments.cancel(id)
+    }
+    AsyncFunction("releaseTreatment") { (uri: String) in
+      guard let url = URL(string: uri) else { throw PhotoTreatmentEngine.Failure.invalidInput }
+      try self.treatments.release(url)
+    }
     Constant("templateVersion") { PhotoTemplateEngine.currentVersion }
     Constant("supportedTemplateVersions") { PhotoTemplateEngine.supportedVersions }
     AsyncFunction("inspectTemplateSources") { (sources: [TemplatePhotoSource]) -> [String: Any] in

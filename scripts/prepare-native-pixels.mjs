@@ -7,4 +7,4 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const base = process.env.RUNNER_TEMP ?? join(root, '.cache');
 mkdirSync(base, { recursive: true });
 const directory = mkdtempSync(join(base, 'wedding-native-pixels-'));
-console.log(JSON.stringify(createPixelProject(root, directory), null, 2));
+console.log(JSON.stringify(createPixelProject(root, directory, process.argv[2]), null, 2));

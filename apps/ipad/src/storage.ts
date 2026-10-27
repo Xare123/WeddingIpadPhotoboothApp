@@ -1,13 +1,13 @@
 import { Directory, File, Paths } from 'expo-file-system';
 import * as SQLite from 'expo-sqlite';
-import { randomUUID } from 'expo-crypto';
+import { randomUUID, digest, CryptoDigestAlgorithm } from 'expo-crypto';
 import { type QueueJob, type QueueStore } from '@wedding-booth/core';
 import { ensureUploadJob, usableQueueRows } from './queue-index';
 import { relativeDocumentPhotoPath, uploadDocumentPhotoPath } from './local-paths';
 import { createNativeFilePorts } from './native-file-ports';
 import { LocalRepository, type LocalIndex, type RenderedPhotoInput, type CompositeInput, type RetakeAllInput } from './local-persistence';
-import type { ActiveCapture, ActiveSession, PhotoExportStatus, PhotoLook, PhotoCrop, CompositeRecipe, SessionComposite, SessionPublicationAssets, TemplateDefaults, RetakeSessionFields } from './local-types';
-export type { ActiveCapture, ActiveSession, PhotoExportStatus, PhotoLook, PhotoCrop, CompositeRecipe, SessionComposite, SessionPublicationAssets, TemplateDefaults, RetakeSessionFields } from './local-types';
+import type { ActiveCapture, ActiveSession, PhotoExportStatus, PhotoLook, PhotoTreatment, FaceAccessory, PhotoCrop, CompositeRecipe, SessionComposite, SessionPublicationAssets, TemplateDefaults, RetakeSessionFields } from './local-types';
+export type { ActiveCapture, ActiveSession, PhotoExportStatus, PhotoLook, PhotoTreatment, FaceAccessory, PhotoCrop, CompositeRecipe, SessionComposite, SessionPublicationAssets, TemplateDefaults, RetakeSessionFields } from './local-types';
 
 const photos = new Directory(Paths.document, 'photobooth');
 let opening: Promise<SQLite.SQLiteDatabase> | undefined;
@@ -53,12 +53,17 @@ export const store: QueueStore = {
     await (await database()).runAsync('INSERT INTO jobs(id, payload) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET payload=excluded.payload', job.id, JSON.stringify(serializeJob(job)));
   },
 };
-const files = createNativeFilePorts<File>({
+const nativeFiles = createNativeFilePorts<File>({
   uri: documentPhotoURI,
   file: uri => new File(uri),
   directory: photos,
   isFile: (entry): entry is File => entry instanceof File,
 });
+const files = { ...nativeFiles, async sha256(uri: string): Promise<string> {
+  const bytes = await new File(uri).bytes();
+  const result = await digest(CryptoDigestAlgorithm.SHA256, bytes);
+  return Array.from(new Uint8Array(result), value => value.toString(16).padStart(2, '0')).join('');
+} };
 const index: LocalIndex = {
   async read(key) { const row = await (await database()).getFirstAsync<{ payload: string }>('SELECT payload FROM metadata WHERE key = ?', key); return row ? JSON.parse(row.payload) as unknown : null; },
   async write(key, value) {

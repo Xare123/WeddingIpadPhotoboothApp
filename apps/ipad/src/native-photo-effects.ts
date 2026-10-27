@@ -12,6 +12,15 @@ export function loadPhotoEffects(): NativePhotoEffects | null {
     return { render: (...args) => module.render(...args), cancel: id => module.cancel(id), release: uri => module.release(uri) };
   } catch { return null; }
 }
+export type NativePhotoTreatments = Required<Pick<PhotoLookEditorPorts, 'renderTreatment' | 'cancelTreatment' | 'releaseTreatment'>>;
+export function loadPhotoTreatments(): NativePhotoTreatments | null {
+  try {
+    const module = requireOptionalNativeModule<NativePhotoTreatments & { treatmentVersion?: string }>('WeddingPhotoEffects');
+    if (module?.treatmentVersion !== 'wedding-photo-treatment-v1' || typeof module.renderTreatment !== 'function'
+      || typeof module.cancelTreatment !== 'function' || typeof module.releaseTreatment !== 'function') return null;
+    return { renderTreatment: (...args) => module.renderTreatment(...args), cancelTreatment: id => module.cancelTreatment(id), releaseTreatment: uri => module.releaseTreatment(uri) };
+  } catch { return null; }
+}
 export type NativeTemplateEffects = Pick<TemplateEditorPorts, 'renderTemplate' | 'cancelTemplate' | 'releaseTemplate' | 'inspectTemplateSources'>;
 export function loadTemplateEffects(): NativeTemplateEffects | null {
   try {

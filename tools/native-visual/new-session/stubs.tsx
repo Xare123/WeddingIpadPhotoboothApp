@@ -11,6 +11,8 @@ export { hostAuthenticationCode } from '../../../apps/ipad/src/host-auth-policy'
 
 import { originalImageVariants } from './effects-stub';
 import { syntheticTemplatesV2 as syntheticTemplates } from './template-v2-stub';
+import { syntheticPhotoTreatments } from './face-effects-stub';
+import { syntheticSource, syntheticRenderedBlobs } from './effects-stub';
 const parameters = new URLSearchParams(location.search);
 const targetCount = parameters.get('count') === '5' ? 5 : 4;
 const clone = <T,>(value: T): T => structuredClone(value);
@@ -300,7 +302,7 @@ export const CameraView = forwardRef(function SyntheticCamera({ onCameraReady, o
 });
 
 // Browser has no Expo native-module capability; never claim native preservation.
-export const requireOptionalNativeModule = (name: string) => name === 'WeddingPhotoEffects' && (fixtureControls.effectsAvailable || fixtureControls.templatesAvailable) ? { ...(fixtureControls.effectsAvailable ? syntheticPhotoEffects : {}), ...(fixtureControls.templatesAvailable ? syntheticTemplates : {}) } : undefined;
+export const requireOptionalNativeModule = (name: string) => name === 'WeddingPhotoEffects' && (fixtureControls.effectsAvailable || fixtureControls.templatesAvailable || fixtureControls.facesAvailable) ? { ...(fixtureControls.effectsAvailable || fixtureControls.facesAvailable ? syntheticPhotoEffects : {}), ...(fixtureControls.facesAvailable ? syntheticPhotoTreatments : {}), ...(fixtureControls.templatesAvailable ? syntheticTemplates : {}) } : undefined;
 
 import { syntheticPhotoEffects, copyRenderedImage } from './effects-stub';
 import type { RenderedPhotoInput } from '../../../apps/ipad/src/local-persistence';
@@ -309,10 +311,22 @@ export async function saveRenderedPhoto(sessionId: string, input: RenderedPhotoI
   if (session) assertMutableRetake(session);
   if (!session || session.confirmed || session.shots[input.slot]?.id !== input.expectedSelectedPhotoId) throw new Error('stale-selection');
   const original = [...session.shots, ...(session.retakes ?? [])].find(photo => photo.id === input.sourcePhotoId);
-  if (!original || original.sourcePhotoId || original.look) throw new Error('render-source');
+  if (!original || original.sourcePhotoId || original.look || original.treatment) throw new Error('render-source');
+  if (input.treatment) {
+    fixtureControls.treatmentCopyInputs.push({ id: input.id, sourceUri: input.newRenderedURI, recipeJSON: JSON.stringify(input.treatment), sourceSha256: input.sourceSha256, outputSha256: input.outputSha256 });
+    event('synthetic-treatment-copy-started', input.id, input.slot);
+    if (fixtureControls.treatmentSaveBlocked) await new Promise<void>(resolve => fixtureControls.treatmentSaveWaiters.add(resolve));
+    if (input.admit && !input.admit()) throw new Error('Synthetic treatment admission revoked');
+    if (fixtureControls.failNextTreatmentSave) { fixtureControls.failNextTreatmentSave = false; throw new Error('Synthetic private treatment-copy failure'); }
+    const source = await syntheticSource(original.fileUri), output = syntheticRenderedBlobs.get(input.newRenderedURI);
+    const outputHash = output && [...new Uint8Array(await crypto.subtle.digest('SHA-256', await output.arrayBuffer()))].map(value => value.toString(16).padStart(2, '0')).join('');
+    if (input.sourceSha256 !== source.hash || input.outputSha256 !== outputHash) throw new Error('Synthetic treatment receipt/hash mismatch');
+    if (input.admit && !input.admit()) throw new Error('Synthetic treatment admission revoked');
+  }
   const uri = shotURI(input.id);
   await copyRenderedImage(input.newRenderedURI, uri);
-  const derivative: ActiveCapture = { id: input.id, fileUri: uri, createdAt: Date.now(), confirmed: false, sourcePhotoId: original.id, look: clone(input.look), sessionId, shotIndex: input.slot, exportStatus: 'pending' };
+  if (input.treatment && input.admit && !input.admit()) throw new Error('Synthetic treatment admission revoked after copy');
+  const derivative: ActiveCapture = { id: input.id, fileUri: uri, createdAt: Date.now(), confirmed: false, sourcePhotoId: original.id, ...(input.treatment ? { treatment: clone(input.treatment) } : { look: clone(input.look) }), sessionId, shotIndex: input.slot, exportStatus: 'pending' };
   const previous = session.shots[input.slot];
   event('synthetic-rendered-save', derivative.id, input.slot);
   return commit({ ...session, composite: undefined, shots: session.shots.map((photo, slot) => slot === input.slot ? derivative : photo), retakes: [...(session.retakes ?? []), previous] });
@@ -335,7 +349,7 @@ export async function saveComposite(sessionId: string, input: CompositeInput): P
   const originals = input.recipe.photoIds.map(id => {
     const selected = session.shots.find(p => p.id === id);
     const original = [...session.shots, ...(session.retakes ?? [])].find(p => p.id === (selected?.sourcePhotoId ?? selected?.id));
-    if (!selected || !original || original.sourcePhotoId || original.look) throw new Error('composite-source');
+    if (!selected || !original || original.sourcePhotoId || original.look || original.treatment) throw new Error('composite-source');
     return original.id;
   });
   const uri = `file:///synthetic/photobooth/${input.id}.jpg`;

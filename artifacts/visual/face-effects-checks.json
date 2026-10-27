@@ -1,0 +1,1805 @@
+{
+  "generatedAt": "2026-10-27T13:17:46.488Z",
+  "status": "passed",
+  "scope": "Actual Root JSX and treatment controller in Chromium with explicit synthetic native no-face/error ports. No fake accessory pixels or CSS overlay. Colour-only JPEGs use a separately labeled Canvas approximation. No native Vision, face placement, JPEG engine parity, durable iPad storage, Photos, upload, SMS or VoiceOver proof.",
+  "sourceHashes": {
+    "apps/ipad/app.json": "87b91a8980c598699a6686c5ca77b962adf98bac3e650d1c8c2f4b6521b2c73d",
+    "apps/ipad/src/config.ts": "707cfb41dfb6ed03e4493784940510c7e64ba018e058b5f426967ad3d432e460",
+    "apps/ipad/src/TimingSheet.tsx": "c6564a204c7a3a3ebd3fe993c04facc755ba08e18bc1e0cee62c572a0e466210",
+    "apps/ipad/src/capture-timing.ts": "83eec4ead6d14e43e6061b63201d6b432c1e0f17a24a4d35035944c8638c5683",
+    "apps/ipad/src/timing-controls.ts": "b73ced2d2ba25beaffbf4f0ec3fcda648de0bafebcae44534052d7649facc5b1",
+    "apps/ipad/src/provisioning.ts": "2aedb7ccf9192d7668d616ded440ee46da75287e67aa3fadb6e821aa4862f621",
+    "apps/ipad/App.tsx": "f5a946ed75a3b3c7961947469ea0085bebd4bcbce9757a1ce92aef81c08c0285",
+    "apps/ipad/src/GlassSurface.tsx": "ace64a22e740d69040689495c0aa7147f7456038bbd0ee9aba6f2d52b58af972",
+    "apps/ipad/src/glass-policy.ts": "d3e33995484239887dde90f2743919c17bb2e8ff23093ceb45a804e530499e9e",
+    "apps/ipad/src/host-visibility.ts": "94f81920ae080b7182483e376bd782f062fb43e6b603ec53a8af0296733acc49",
+    "apps/ipad/src/photo-look-editor.ts": "29b51c9e0cdb08d6591a4958143c254ac7f6873b7d8bfb1e4a3ad91feca9bd6e",
+    "apps/ipad/src/native-photo-effects.ts": "ffc83ff5a1dabebf5d712a2f3a3c6359e5e1de61c007e51a5c7d4edab9336f1b",
+    "apps/ipad/src/local-types.ts": "72ff60ce0c5be7c3de353eb350017571b333e8850a22d5fdf6ae0a3558e2585d",
+    "apps/ipad/src/template-editor.ts": "55b367816053a894fb2cc019a514ee9401d27816006f3c8ca2fa64f7b96adceb",
+    "apps/ipad/src/TemplateStudio.tsx": "361817e99605bd003a73205d37bfbeb5fb52403211a563ec2789a50ac81f28c1",
+    "apps/ipad/src/publication.ts": "33d26658c1c2de8781bc62ded35c80cbd00394c7413c70fdedf1fbc834875357",
+    "apps/ipad/src/session-capture.ts": "544104e153dab9b9d8f7996f15e4b79180d9dede1819620de7fec07c076f4763",
+    "apps/ipad/src/review-selection.ts": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
+    "apps/ipad/src/sharing.ts": "6bce9b315a8dc7064f858d7ff9d10c5d5587b1b2bf66a56923f738823c1df271",
+    "apps/ipad/src/SmsShare.tsx": "79464043a0e40a6cc7850c0e46cacfab33b3b19e477fee87192c0b38195d7541",
+    "apps/ipad/src/sms-state.ts": "4c7125d4f710c97848b6690196fa328edc83e85488ce3626dd7e843e2e99497a",
+    "apps/ipad/src/booth-presentation.ts": "2304a00680203a83d2a4f5f499f41c207a152b603a908cb3449b5ac2161699d8",
+    "apps/ipad/src/host-originals.ts": "82f920cbdaf79672a872130d016cabb4d7c2bcae951aea1b0c1c950ff80f2001",
+    "apps/ipad/src/photo-export.ts": "8360fc824ece4d972c317f3cb743f71ba95fa3718e02a6e81796ce89c4f5ac36",
+    "apps/ipad/src/photo-library.ts": "800b9dd768d660c16720fda134fe33a1a14db1061f7f31531063b136b670b6a8",
+    "packages/core/src/index.ts": "bb8196ebd2672c74f74ceab333e70e8a3abef481d6e341b8763c4e396431e2de",
+    "apps/ipad/assets/attract-scene.png": "6ca6274beba9483104f19fb35d1ef9b8bfaae458208025e8fb4e8d4890f45cdf",
+    "apps/ipad/src/host-auth.ts": "1f71cedabd1a67bd56cb4b66d5c6e9861eccc798cf72321b24cb975e48cd0fbf",
+    "apps/ipad/src/host-auth-policy.ts": "9b52b7473a2f874dd93367607d48b0b2046cd9d6e67ef0e6ec575863bb0a6111",
+    "apps/ipad/src/host-action-auth.ts": "9619fc4e5f3b935ead8c5828d1e4bb99804c4440cb864362c2feb421cd493bdb",
+    "apps/ipad/src/share-readiness.ts": "8c518ae80702a09e81e17f3ae67d8a477783bebba57284ffdc8af76f95617178",
+    "apps/ipad/src/sharing-request.ts": "446dfb0e0ccf09675d56c7cf50cf3b5b1442050373d13a8dfe73a68c213576d9",
+    "apps/ipad/src/sync-preflight.ts": "8b703821a286d20a482192eff763e5cee0c67418c238457c11aa76d5955597c2",
+    "apps/ipad/src/sync.ts": "14e13d7c73810c2a6405de63ed452d3133411184afee7363cb6a1c856881280b",
+    "apps/ipad/src/session-sync.ts": "c3ae9b040ba69daac29024a014745682d656aa7ae26f5df76006bfc15c20e658",
+    "apps/ipad/src/queue-index.ts": "75de31a5a38a4142f18c6683ac8cc212f941bad1a902606bafd9906739482e84",
+    "apps/ipad/src/orientation-controller.ts": "3252c288387c0d453328aab2fc15e70f5863b42636be5c5ae7b9eb196ea424a4",
+    "apps/ipad/src/orientation-native.ts": "030f647fb04da3538cb96dc9cf9235e5fcbcfee72fbf02c2ed7da11e3acd3e31",
+    "apps/ipad/src/local-persistence.ts": "10edabccf254568785e025ab7d715ae46d4833efab35b5f3d0d3616e94c4012f",
+    "apps/ipad/src/storage.ts": "1cdf5a85226533f64483b1522a9bd27fc20ac58aec9e5d03e3d64091a81662a6",
+    "apps/ipad/package.json": "b05451330af50e84043b69f39197cba32e1d824bc085a647ba1968efbd22c1f1",
+    "package-lock.json": "80bcfad7bce5db6f55f87189c688c49cb13dfc61a4f1e023bc75a08a2d8cb7d7",
+    "apps/ipad/src/photo-treatment.ts": "350236fc59c5dbc9f3b0875d2350cd145943d5c2e88305b633f598fb944bfca2",
+    "apps/ipad/src/photo-edit-presentation.ts": "474eee7d9564aa6ff76e398ee42443d01e4243d611d46dea879c8989100421c8"
+  },
+  "fixtureSourceHashes": {
+    "tools/native-visual/new-session/serve.mjs": "9257c0709d388c94f7f610b92adf64e35b579e9e015beef9a3341edf9d645031",
+    "tools/native-visual/new-session/entry.tsx": "5c7fdc4664d93084da204b364cfcfdd81c283b6b8758552ca2e6b4180fc2a6b3",
+    "tools/native-visual/new-session/fixture-controls.ts": "0d3a90a20700b50e6df2eeb1f513d4166fc6f8afc901eec069bedd3280d92af5",
+    "tools/native-visual/new-session/stubs.tsx": "2948795c8aaf6b26d289e483d904aa70640547083b05e1dc32e4711669770931",
+    "tools/native-visual/new-session/native-runtime.ts": "4977e8404fdc5d83980286ee3f00c2b4b35716643edd73afba5504924664896d",
+    "tools/native-visual/new-session/safe-area-stub.tsx": "4b9fc1218f6a64c71ff6bbb51a57c50826ccca1a957c5d021bd5dc9643e505f7",
+    "tools/native-visual/new-session/glass-stub.tsx": "3712d3272cb137bfba9c4d19cf4913a0cbafd53a6b43225c6876cf19f97b8e7f",
+    "tools/native-visual/new-session/effects-stub.ts": "2aabd78a80740fcf405d630a18af6c83fb350e5853db2c5bdbe697181a377724",
+    "tools/native-visual/new-session/template-stub.ts": "0bc1ecdf6cd578fa5fb5ac8203438389806e3b76b161b3d389e096174ea49d6d",
+    "tools/native-visual/new-session/template-v2-stub.ts": "db4497c78eb087ae6459da7b0425b7fda221b4abcd941fa3ad4521f382bbaa6d",
+    "tools/native-visual/new-session/native-fixture-disabled.ts": "628425cf7b23d8b839e04bed27881ad6308301904bd1ad8a8b6acc275b856986",
+    "tools/native-visual/new-session/face-effects-stub.ts": "ca20e07d0c2d15cf3b2e5c5257cf45c2ca66d6708cfda8877eabbbc0b027073e"
+  },
+  "sourceSHA256": "f5a946ed75a3b3c7961947469ea0085bebd4bcbce9757a1ce92aef81c08c0285",
+  "nativeSourceHashes": {
+    "apps/ipad/modules/wedding-photo-effects/ios/AppleFaceEffects.swift": "01a87b5454f3f5b52947054302acc717b80510eead06df9e4a71bf94a3a4a8a0",
+    "apps/ipad/modules/wedding-photo-effects/ios/FaceGeometry.swift": "62866121340d52308afbe16d454aae81ce4873d3de99563b625a24b48c2ffaeb",
+    "apps/ipad/modules/wedding-photo-effects/ios/PhotoEffectsEngine.swift": "f0ae112a9db22137b4207e2c7b9870715311cca772f1c4aa4b25323384747e97",
+    "apps/ipad/modules/wedding-photo-effects/ios/PhotoTemplateEngine.swift": "be94e177327e212fc8d0c623c0b81b917319c6bc111e3350a551095301bdf098",
+    "apps/ipad/modules/wedding-photo-effects/ios/PhotoTreatmentEngine.swift": "eaad3d1fec1d6107faa0d82ed11173d52ba7130d300788ae1d847397c1987cec",
+    "apps/ipad/modules/wedding-photo-effects/ios/WeddingPhotoEffectsModule.swift": "93903898e2832f1e9c8046a32856717d3483c6f0e6fa49a11f5404086c3ea185",
+    "apps/ipad/modules/wedding-photo-effects/ios/FrameFreshnessGate.swift": "2d1d6615c49a501302cf44861825c7cda3ad26fe161cd0db53f84cb396ee55f3",
+    "apps/ipad/modules/wedding-photo-effects/tests/NativePhotoTreatmentEngineTests.swift": "df1878a9500f1ac09e4cd015e14d8981712fe14a4b69e63a7461b2e2e6c67c09",
+    "apps/ipad/modules/wedding-photo-effects/tests/PhotoEffectsEngineTests.swift": "593d1d210c8055d49b5b57fa840be1fc4269351fcd7b702daef5bbf9e57401ae",
+    "apps/ipad/modules/wedding-photo-effects/tests/PhotoTemplateEngineTests.swift": "f5e0e09eae39dad072245821422076324c7ab2b5e4ee48ca00aaaeae10e81790"
+  },
+  "toolHashes": {
+    "tools/native-visual/new-session/face-effects-checks.mjs": "b49b34a27102af6e4c2a37fe124ee5cf820451e1a362f7e95756839d01db6f6c",
+    "tools/native-visual/new-session/face-effects-build-evidence.mjs": "03bc447498e8697c80d22cd4b1592e9bdc7caa6c235cd605182b6fe812cb045f",
+    "tools/native-visual/new-session/browser.mjs": "388467a8410346640f9de5af5656a9985cdbd09b0b2c230419a1e1fc19b17900"
+  },
+  "nativeFaceOutputFixtures": false,
+  "facePixelScope": "Original/color-only pixels with synthetic no-face/errors. No fabricated accessory pixels, native face detection or Vision proof.",
+  "checks": [
+    {
+      "name": "capture-remains-unfiltered-opt-in-only",
+      "orientation": "portrait",
+      "passed": true,
+      "fullBleed": true,
+      "fourPhotos": true,
+      "nativeTreatmentRequestsBeforeOptIn": 0
+    },
+    {
+      "name": "none-and-three-truthful-no-face-fallbacks",
+      "orientation": "portrait",
+      "passed": true,
+      "accessoryPixelsProduced": false,
+      "originalHash": "fa7aab6c4948c559a6c2acfbe426ff79293b75edfd15229dbeacf2f8cbd0d365",
+      "metadataAndSelectionUnchanged": true
+    },
+    {
+      "name": "unsafe-placement-fallback-keeps-original",
+      "orientation": "portrait",
+      "passed": true,
+      "detectedFacesSynthetic": 2,
+      "decoratedFaces": 0,
+      "nativeDetectionVerified": false
+    },
+    {
+      "name": "native-error-actionable-retry-preserves-intent",
+      "orientation": "portrait",
+      "passed": true,
+      "applyDisabledDuringFailure": true,
+      "safeGuestMessage": true,
+      "retryAccessory": "glasses"
+    },
+    {
+      "name": "rapid-choice-serial-cancel-and-late-result",
+      "orientation": "portrait",
+      "passed": true,
+      "overlappingNativeRequests": 0,
+      "newestChoice": "hearts",
+      "cancelPreservesOriginals": true,
+      "lateResultCannotReopen": true
+    },
+    {
+      "name": "fullres-cache-copy-on-apply-and-reopen",
+      "orientation": "portrait",
+      "passed": true,
+      "cacheHash": "cd1433a1bb45c84d0816b7ee70f9c9f50b9f39af70fc7dd1a37300552d5f258c",
+      "durableSelectionHash": "cd1433a1bb45c84d0816b7ee70f9c9f50b9f39af70fc7dd1a37300552d5f258c",
+      "nativeAccessoryRenderingVerified": false,
+      "noApplyOrReopenRender": true,
+      "rootOriginalPreserved": true
+    },
+    {
+      "name": "private-copy-failure-keeps-selection-and-retries",
+      "orientation": "portrait",
+      "passed": true,
+      "failedApplyDidNotRender": true,
+      "originalIDsPreserved": true,
+      "laterExplicitRetrySucceeds": true,
+      "filesystemFailureVerified": false
+    },
+    {
+      "name": "jpeg-acknowledgement-and-stale-sdk-error",
+      "orientation": "portrait",
+      "passed": true,
+      "failedImageCannotApply": true,
+      "explicitRetryAcknowledgedFreshCache": true,
+      "oldSDKErrorCannotInvalidateNewest": true,
+      "nativeJPEGDecoderVerified": false
+    },
+    {
+      "name": "background-copy-does-not-admit-stale-treatment",
+      "orientation": "portrait",
+      "passed": true,
+      "selectedIDsUnchanged": true,
+      "noLatePhotosPromptOrCopy": true,
+      "editorRemainsClosed": true,
+      "realPowerLossRecoveryVerified": false
+    },
+    {
+      "name": "keyboard-opt-in-and-next-guests-reset",
+      "orientation": "portrait",
+      "passed": true,
+      "keyboardActivation": true,
+      "nativeVoiceOverVerified": false,
+      "offlineQRHidden": true,
+      "nextGuestHasNoTreatment": true
+    },
+    {
+      "name": "normal-and-reduced-motion-editor-interruption",
+      "orientation": "portrait",
+      "passed": true,
+      "reducedMotionMainMatrix": true,
+      "syntheticOSPreferenceSwitchedLive": true,
+      "normalMotionSettledScreenshot": true,
+      "cancelLeavesNoEditor": true,
+      "nativeAnimationVerified": false
+    },
+    {
+      "name": "capture-remains-unfiltered-opt-in-only",
+      "orientation": "landscape",
+      "passed": true,
+      "fullBleed": true,
+      "fourPhotos": true,
+      "nativeTreatmentRequestsBeforeOptIn": 0
+    },
+    {
+      "name": "none-and-three-truthful-no-face-fallbacks",
+      "orientation": "landscape",
+      "passed": true,
+      "accessoryPixelsProduced": false,
+      "originalHash": "fa7aab6c4948c559a6c2acfbe426ff79293b75edfd15229dbeacf2f8cbd0d365",
+      "metadataAndSelectionUnchanged": true
+    },
+    {
+      "name": "unsafe-placement-fallback-keeps-original",
+      "orientation": "landscape",
+      "passed": true,
+      "detectedFacesSynthetic": 2,
+      "decoratedFaces": 0,
+      "nativeDetectionVerified": false
+    },
+    {
+      "name": "native-error-actionable-retry-preserves-intent",
+      "orientation": "landscape",
+      "passed": true,
+      "applyDisabledDuringFailure": true,
+      "safeGuestMessage": true,
+      "retryAccessory": "glasses"
+    },
+    {
+      "name": "rapid-choice-serial-cancel-and-late-result",
+      "orientation": "landscape",
+      "passed": true,
+      "overlappingNativeRequests": 0,
+      "newestChoice": "hearts",
+      "cancelPreservesOriginals": true,
+      "lateResultCannotReopen": true
+    },
+    {
+      "name": "fullres-cache-copy-on-apply-and-reopen",
+      "orientation": "landscape",
+      "passed": true,
+      "cacheHash": "cd1433a1bb45c84d0816b7ee70f9c9f50b9f39af70fc7dd1a37300552d5f258c",
+      "durableSelectionHash": "cd1433a1bb45c84d0816b7ee70f9c9f50b9f39af70fc7dd1a37300552d5f258c",
+      "nativeAccessoryRenderingVerified": false,
+      "noApplyOrReopenRender": true,
+      "rootOriginalPreserved": true
+    },
+    {
+      "name": "private-copy-failure-keeps-selection-and-retries",
+      "orientation": "landscape",
+      "passed": true,
+      "failedApplyDidNotRender": true,
+      "originalIDsPreserved": true,
+      "laterExplicitRetrySucceeds": true,
+      "filesystemFailureVerified": false
+    },
+    {
+      "name": "jpeg-acknowledgement-and-stale-sdk-error",
+      "orientation": "landscape",
+      "passed": true,
+      "failedImageCannotApply": true,
+      "explicitRetryAcknowledgedFreshCache": true,
+      "oldSDKErrorCannotInvalidateNewest": true,
+      "nativeJPEGDecoderVerified": false
+    },
+    {
+      "name": "background-copy-does-not-admit-stale-treatment",
+      "orientation": "landscape",
+      "passed": true,
+      "selectedIDsUnchanged": true,
+      "noLatePhotosPromptOrCopy": true,
+      "editorRemainsClosed": true,
+      "realPowerLossRecoveryVerified": false
+    },
+    {
+      "name": "keyboard-opt-in-and-next-guests-reset",
+      "orientation": "landscape",
+      "passed": true,
+      "keyboardActivation": true,
+      "nativeVoiceOverVerified": false,
+      "offlineQRHidden": true,
+      "nextGuestHasNoTreatment": true
+    },
+    {
+      "name": "normal-and-reduced-motion-editor-interruption",
+      "orientation": "landscape",
+      "passed": true,
+      "reducedMotionMainMatrix": true,
+      "syntheticOSPreferenceSwitchedLive": true,
+      "normalMotionSettledScreenshot": true,
+      "cancelLeavesNoEditor": true,
+      "nativeAnimationVerified": false
+    },
+    {
+      "name": "legacy-native-capability-keeps-existing-looks",
+      "passed": true,
+      "faceControlsAbsent": true
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "artifacts/visual/face-effects-unchanged-camera-portrait.png",
+      "label": "unchanged-camera",
+      "orientation": "portrait",
+      "sha256": "76cea828c1629ee5f33770dae2ef97318c93a4145dbf46cb0d8471fefcff12b2",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "status": null,
+      "faceButtons": []
+    },
+    {
+      "file": "artifacts/visual/face-effects-none-original-portrait.png",
+      "label": "none-original",
+      "orientation": "portrait",
+      "sha256": "dd2a7c9296cd0ba763a2c07c27841b3bbdc48917818d7cfe80e01c60122ecb46",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "status": "Photo ready",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 40,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 220.5,
+          "bottom": 842,
+          "left": 40
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 226.5,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 407,
+          "bottom": 842,
+          "left": 226.5
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 413,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 593.5,
+          "bottom": 842,
+          "left": 413
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 599.5,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 780,
+          "bottom": 842,
+          "left": 599.5
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-synthetic-no-face-glasses-portrait.png",
+      "label": "synthetic-no-face-glasses",
+      "orientation": "portrait",
+      "sha256": "6147cf15a8a3d0e447eb048bad63d8993a956d9afc430c6ea9e3735e15bbb7d8",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "status": "No face was found. Your photo is kept without an accessory.",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 40,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 220.5,
+          "bottom": 842,
+          "left": 40
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 226.5,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 407,
+          "bottom": 842,
+          "left": 226.5
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 413,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 593.5,
+          "bottom": 842,
+          "left": 413
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 599.5,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 780,
+          "bottom": 842,
+          "left": 599.5
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-synthetic-no-face-crown-portrait.png",
+      "label": "synthetic-no-face-crown",
+      "orientation": "portrait",
+      "sha256": "6147cf15a8a3d0e447eb048bad63d8993a956d9afc430c6ea9e3735e15bbb7d8",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "status": "No face was found. Your photo is kept without an accessory.",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 40,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 220.5,
+          "bottom": 842,
+          "left": 40
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 226.5,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 407,
+          "bottom": 842,
+          "left": 226.5
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 413,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 593.5,
+          "bottom": 842,
+          "left": 413
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 599.5,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 780,
+          "bottom": 842,
+          "left": 599.5
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-synthetic-no-face-hearts-portrait.png",
+      "label": "synthetic-no-face-hearts",
+      "orientation": "portrait",
+      "sha256": "6147cf15a8a3d0e447eb048bad63d8993a956d9afc430c6ea9e3735e15bbb7d8",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "status": "No face was found. Your photo is kept without an accessory.",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 40,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 220.5,
+          "bottom": 842,
+          "left": 40
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 226.5,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 407,
+          "bottom": 842,
+          "left": 226.5
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 413,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 593.5,
+          "bottom": 842,
+          "left": 413
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 599.5,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 780,
+          "bottom": 842,
+          "left": 599.5
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-synthetic-no-usable-face-portrait.png",
+      "label": "synthetic-no-usable-face",
+      "orientation": "portrait",
+      "sha256": "dd94d2b359882097a70b4a1917e3ac6058ee4ecf538e833b1a368a008201fe6e",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "status": "No accessory could be placed safely. Your photo is kept.",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 40,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 220.5,
+          "bottom": 842,
+          "left": 40
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 226.5,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 407,
+          "bottom": 842,
+          "left": 226.5
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 413,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 593.5,
+          "bottom": 842,
+          "left": 413
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 599.5,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 780,
+          "bottom": 842,
+          "left": 599.5
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-synthetic-processing-error-portrait.png",
+      "label": "synthetic-processing-error",
+      "orientation": "portrait",
+      "sha256": "2797a75672605b704c3fded2055cc159163e78b52284c88429fe69931534741c",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "status": "Original kept. Try this edit again.",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 40,
+          "y": 716,
+          "width": 180.5,
+          "height": 48,
+          "top": 716,
+          "right": 220.5,
+          "bottom": 764,
+          "left": 40
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 226.5,
+          "y": 716,
+          "width": 180.5,
+          "height": 48,
+          "top": 716,
+          "right": 407,
+          "bottom": 764,
+          "left": 226.5
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 413,
+          "y": 716,
+          "width": 180.5,
+          "height": 48,
+          "top": 716,
+          "right": 593.5,
+          "bottom": 764,
+          "left": 413
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 599.5,
+          "y": 716,
+          "width": 180.5,
+          "height": 48,
+          "top": 716,
+          "right": 780,
+          "bottom": 764,
+          "left": 599.5
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-synthetic-pending-no-accessory-pixels-portrait.png",
+      "label": "synthetic-pending-no-accessory-pixels",
+      "orientation": "portrait",
+      "sha256": "25e1561ae020024f71764a6b513742b4d7b3a18039bc1224e1abab42740f8ff4",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "status": "Preparing your photo\u2026",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 40,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 220.5,
+          "bottom": 842,
+          "left": 40
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 226.5,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 407,
+          "bottom": 842,
+          "left": 226.5
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 413,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 593.5,
+          "bottom": 842,
+          "left": 413
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 599.5,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 780,
+          "bottom": 842,
+          "left": 599.5
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-saved-colour-only-cache-copy-portrait.png",
+      "label": "saved-colour-only-cache-copy",
+      "orientation": "portrait",
+      "sha256": "d4e8624b06ea94c0b3251b93dc49657b43a3567bb132ad5b61aa434b9c28d8e5",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "status": null,
+      "faceButtons": []
+    },
+    {
+      "file": "artifacts/visual/face-effects-reopened-colour-only-cache-portrait.png",
+      "label": "reopened-colour-only-cache",
+      "orientation": "portrait",
+      "sha256": "c060741298968c1784043a8b28fbfdb8025c8a2ae5af14b8f0fe31a3f8480abb",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "status": "Photo ready",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 40,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 220.5,
+          "bottom": 842,
+          "left": 40
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 226.5,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 407,
+          "bottom": 842,
+          "left": 226.5
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 413,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 593.5,
+          "bottom": 842,
+          "left": 413
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 599.5,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 780,
+          "bottom": 842,
+          "left": 599.5
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-private-copy-failure-portrait.png",
+      "label": "private-copy-failure",
+      "orientation": "portrait",
+      "sha256": "77bf259df590a4126c28a250430845342434dcc5834564cadbb1653b852afa14",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "status": "Original kept. Try this edit again.",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 40,
+          "y": 716,
+          "width": 180.5,
+          "height": 48,
+          "top": 716,
+          "right": 220.5,
+          "bottom": 764,
+          "left": 40
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 226.5,
+          "y": 716,
+          "width": 180.5,
+          "height": 48,
+          "top": 716,
+          "right": 407,
+          "bottom": 764,
+          "left": 226.5
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 413,
+          "y": 716,
+          "width": 180.5,
+          "height": 48,
+          "top": 716,
+          "right": 593.5,
+          "bottom": 764,
+          "left": 413
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 599.5,
+          "y": 716,
+          "width": 180.5,
+          "height": 48,
+          "top": 716,
+          "right": 780,
+          "bottom": 764,
+          "left": 599.5
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-jpeg-presentation-failure-portrait.png",
+      "label": "jpeg-presentation-failure",
+      "orientation": "portrait",
+      "sha256": "77bf259df590a4126c28a250430845342434dcc5834564cadbb1653b852afa14",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "status": "Original kept. Try this edit again.",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 40,
+          "y": 716,
+          "width": 180.5,
+          "height": 48,
+          "top": 716,
+          "right": 220.5,
+          "bottom": 764,
+          "left": 40
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 226.5,
+          "y": 716,
+          "width": 180.5,
+          "height": 48,
+          "top": 716,
+          "right": 407,
+          "bottom": 764,
+          "left": 226.5
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 413,
+          "y": 716,
+          "width": 180.5,
+          "height": 48,
+          "top": 716,
+          "right": 593.5,
+          "bottom": 764,
+          "left": 413
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 599.5,
+          "y": 716,
+          "width": 180.5,
+          "height": 48,
+          "top": 716,
+          "right": 780,
+          "bottom": 764,
+          "left": 599.5
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-background-copy-admission-revoked-portrait.png",
+      "label": "background-copy-admission-revoked",
+      "orientation": "portrait",
+      "sha256": "08c1c13560400b2b7d3d3adf16ca18d50911ba7b8ee3464b3d82541ac898efb3",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "status": null,
+      "faceButtons": []
+    },
+    {
+      "file": "artifacts/visual/face-effects-next-guests-none-default-portrait.png",
+      "label": "next-guests-none-default",
+      "orientation": "portrait",
+      "sha256": "dd2a7c9296cd0ba763a2c07c27841b3bbdc48917818d7cfe80e01c60122ecb46",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "status": "Photo ready",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 40,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 220.5,
+          "bottom": 842,
+          "left": 40
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 226.5,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 407,
+          "bottom": 842,
+          "left": 226.5
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 413,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 593.5,
+          "bottom": 842,
+          "left": 413
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 599.5,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 780,
+          "bottom": 842,
+          "left": 599.5
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-normal-motion-settled-no-face-portrait.png",
+      "label": "normal-motion-settled-no-face",
+      "orientation": "portrait",
+      "sha256": "dde2b27343d1462cc17682e27e17de3ac4c52c78a6d435ac254ae7ecd056e770",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "status": "No face was found. Your photo is kept without an accessory.",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 40,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 220.5,
+          "bottom": 842,
+          "left": 40
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 226.5,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 407,
+          "bottom": 842,
+          "left": 226.5
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 413,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 593.5,
+          "bottom": 842,
+          "left": 413
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 599.5,
+          "y": 794,
+          "width": 180.5,
+          "height": 48,
+          "top": 794,
+          "right": 780,
+          "bottom": 842,
+          "left": 599.5
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-unchanged-camera-landscape.png",
+      "label": "unchanged-camera",
+      "orientation": "landscape",
+      "sha256": "8d9a0d987d859a3f9c09008138ad2e9d493a5e6f5b5940b3807cfe322ad44947",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "status": null,
+      "faceButtons": []
+    },
+    {
+      "file": "artifacts/visual/face-effects-none-original-landscape.png",
+      "label": "none-original",
+      "orientation": "landscape",
+      "sha256": "9f5f6f54a943d53e2ea15b5265d78ecb93028add76c4a2aa23429e549742e1fd",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "status": "Photo ready",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 840,
+          "y": 303,
+          "width": 76,
+          "height": 48,
+          "top": 303,
+          "right": 916,
+          "bottom": 351,
+          "left": 840
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 922,
+          "y": 303,
+          "width": 76,
+          "height": 48,
+          "top": 303,
+          "right": 998,
+          "bottom": 351,
+          "left": 922
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 1004,
+          "y": 303,
+          "width": 76,
+          "height": 48,
+          "top": 303,
+          "right": 1080,
+          "bottom": 351,
+          "left": 1004
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 1086,
+          "y": 303,
+          "width": 76,
+          "height": 48,
+          "top": 303,
+          "right": 1162,
+          "bottom": 351,
+          "left": 1086
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-synthetic-no-face-glasses-landscape.png",
+      "label": "synthetic-no-face-glasses",
+      "orientation": "landscape",
+      "sha256": "4d996108bd25f635da63f3072d10b8d999ff864ee179a5293173b6397d29751f",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "status": "No face was found. Your photo is kept without an accessory.",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 840,
+          "y": 294,
+          "width": 76,
+          "height": 48,
+          "top": 294,
+          "right": 916,
+          "bottom": 342,
+          "left": 840
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 922,
+          "y": 294,
+          "width": 76,
+          "height": 48,
+          "top": 294,
+          "right": 998,
+          "bottom": 342,
+          "left": 922
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 1004,
+          "y": 294,
+          "width": 76,
+          "height": 48,
+          "top": 294,
+          "right": 1080,
+          "bottom": 342,
+          "left": 1004
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 1086,
+          "y": 294,
+          "width": 76,
+          "height": 48,
+          "top": 294,
+          "right": 1162,
+          "bottom": 342,
+          "left": 1086
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-synthetic-no-face-crown-landscape.png",
+      "label": "synthetic-no-face-crown",
+      "orientation": "landscape",
+      "sha256": "35b07e31af63c184b689a2ba898993ff12395aa2c518d578602328a645ddfe9c",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "status": "No face was found. Your photo is kept without an accessory.",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 840,
+          "y": 294,
+          "width": 76,
+          "height": 48,
+          "top": 294,
+          "right": 916,
+          "bottom": 342,
+          "left": 840
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 922,
+          "y": 294,
+          "width": 76,
+          "height": 48,
+          "top": 294,
+          "right": 998,
+          "bottom": 342,
+          "left": 922
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 1004,
+          "y": 294,
+          "width": 76,
+          "height": 48,
+          "top": 294,
+          "right": 1080,
+          "bottom": 342,
+          "left": 1004
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 1086,
+          "y": 294,
+          "width": 76,
+          "height": 48,
+          "top": 294,
+          "right": 1162,
+          "bottom": 342,
+          "left": 1086
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-synthetic-no-face-hearts-landscape.png",
+      "label": "synthetic-no-face-hearts",
+      "orientation": "landscape",
+      "sha256": "4d996108bd25f635da63f3072d10b8d999ff864ee179a5293173b6397d29751f",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "status": "No face was found. Your photo is kept without an accessory.",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 840,
+          "y": 294,
+          "width": 76,
+          "height": 48,
+          "top": 294,
+          "right": 916,
+          "bottom": 342,
+          "left": 840
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 922,
+          "y": 294,
+          "width": 76,
+          "height": 48,
+          "top": 294,
+          "right": 998,
+          "bottom": 342,
+          "left": 922
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 1004,
+          "y": 294,
+          "width": 76,
+          "height": 48,
+          "top": 294,
+          "right": 1080,
+          "bottom": 342,
+          "left": 1004
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 1086,
+          "y": 294,
+          "width": 76,
+          "height": 48,
+          "top": 294,
+          "right": 1162,
+          "bottom": 342,
+          "left": 1086
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-synthetic-no-usable-face-landscape.png",
+      "label": "synthetic-no-usable-face",
+      "orientation": "landscape",
+      "sha256": "3e4d3976d692d2cbe13e09c1809f15f6f4d7250d3db3f56b0a81616d0cd53d6d",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "status": "No accessory could be placed safely. Your photo is kept.",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 840,
+          "y": 294,
+          "width": 76,
+          "height": 48,
+          "top": 294,
+          "right": 916,
+          "bottom": 342,
+          "left": 840
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 922,
+          "y": 294,
+          "width": 76,
+          "height": 48,
+          "top": 294,
+          "right": 998,
+          "bottom": 342,
+          "left": 922
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 1004,
+          "y": 294,
+          "width": 76,
+          "height": 48,
+          "top": 294,
+          "right": 1080,
+          "bottom": 342,
+          "left": 1004
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 1086,
+          "y": 294,
+          "width": 76,
+          "height": 48,
+          "top": 294,
+          "right": 1162,
+          "bottom": 342,
+          "left": 1086
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-synthetic-processing-error-landscape.png",
+      "label": "synthetic-processing-error",
+      "orientation": "landscape",
+      "sha256": "0b6908e3eb3f151135ec0d789a244174e4826eb31b65c8c32735e6bda606f2a7",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "status": "Original kept. Try this edit again.",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 840,
+          "y": 264,
+          "width": 76,
+          "height": 48,
+          "top": 264,
+          "right": 916,
+          "bottom": 312,
+          "left": 840
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 922,
+          "y": 264,
+          "width": 76,
+          "height": 48,
+          "top": 264,
+          "right": 998,
+          "bottom": 312,
+          "left": 922
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 1004,
+          "y": 264,
+          "width": 76,
+          "height": 48,
+          "top": 264,
+          "right": 1080,
+          "bottom": 312,
+          "left": 1004
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 1086,
+          "y": 264,
+          "width": 76,
+          "height": 48,
+          "top": 264,
+          "right": 1162,
+          "bottom": 312,
+          "left": 1086
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-synthetic-pending-no-accessory-pixels-landscape.png",
+      "label": "synthetic-pending-no-accessory-pixels",
+      "orientation": "landscape",
+      "sha256": "bdf2fdfdba3318d6e1fd8ea53f64f0a8e87789f0548b9d9223efa827484feabd",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "status": "Preparing your photo\u2026",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 840,
+          "y": 303,
+          "width": 76,
+          "height": 48,
+          "top": 303,
+          "right": 916,
+          "bottom": 351,
+          "left": 840
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 922,
+          "y": 303,
+          "width": 76,
+          "height": 48,
+          "top": 303,
+          "right": 998,
+          "bottom": 351,
+          "left": 922
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 1004,
+          "y": 303,
+          "width": 76,
+          "height": 48,
+          "top": 303,
+          "right": 1080,
+          "bottom": 351,
+          "left": 1004
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 1086,
+          "y": 303,
+          "width": 76,
+          "height": 48,
+          "top": 303,
+          "right": 1162,
+          "bottom": 351,
+          "left": 1086
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-saved-colour-only-cache-copy-landscape.png",
+      "label": "saved-colour-only-cache-copy",
+      "orientation": "landscape",
+      "sha256": "0741a8026d04957e2466ee28bb9f53cff6ad94f8131ff119989a76e6137084e0",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "status": null,
+      "faceButtons": []
+    },
+    {
+      "file": "artifacts/visual/face-effects-reopened-colour-only-cache-landscape.png",
+      "label": "reopened-colour-only-cache",
+      "orientation": "landscape",
+      "sha256": "038c2c14f7565a61e9fdb2a73809af2408aee1930d2f135333663e99266ace97",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "status": "Photo ready",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 840,
+          "y": 303,
+          "width": 76,
+          "height": 48,
+          "top": 303,
+          "right": 916,
+          "bottom": 351,
+          "left": 840
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 922,
+          "y": 303,
+          "width": 76,
+          "height": 48,
+          "top": 303,
+          "right": 998,
+          "bottom": 351,
+          "left": 922
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 1004,
+          "y": 303,
+          "width": 76,
+          "height": 48,
+          "top": 303,
+          "right": 1080,
+          "bottom": 351,
+          "left": 1004
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 1086,
+          "y": 303,
+          "width": 76,
+          "height": 48,
+          "top": 303,
+          "right": 1162,
+          "bottom": 351,
+          "left": 1086
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-private-copy-failure-landscape.png",
+      "label": "private-copy-failure",
+      "orientation": "landscape",
+      "sha256": "d29ad67e916ee8e0da1c7ee673f2f15d5cad4ee4526309e4c98e58a3d85f5a7f",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "status": "Original kept. Try this edit again.",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 840,
+          "y": 264,
+          "width": 76,
+          "height": 48,
+          "top": 264,
+          "right": 916,
+          "bottom": 312,
+          "left": 840
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 922,
+          "y": 264,
+          "width": 76,
+          "height": 48,
+          "top": 264,
+          "right": 998,
+          "bottom": 312,
+          "left": 922
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 1004,
+          "y": 264,
+          "width": 76,
+          "height": 48,
+          "top": 264,
+          "right": 1080,
+          "bottom": 312,
+          "left": 1004
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 1086,
+          "y": 264,
+          "width": 76,
+          "height": 48,
+          "top": 264,
+          "right": 1162,
+          "bottom": 312,
+          "left": 1086
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-jpeg-presentation-failure-landscape.png",
+      "label": "jpeg-presentation-failure",
+      "orientation": "landscape",
+      "sha256": "d29ad67e916ee8e0da1c7ee673f2f15d5cad4ee4526309e4c98e58a3d85f5a7f",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "status": "Original kept. Try this edit again.",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 840,
+          "y": 264,
+          "width": 76,
+          "height": 48,
+          "top": 264,
+          "right": 916,
+          "bottom": 312,
+          "left": 840
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 922,
+          "y": 264,
+          "width": 76,
+          "height": 48,
+          "top": 264,
+          "right": 998,
+          "bottom": 312,
+          "left": 922
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 1004,
+          "y": 264,
+          "width": 76,
+          "height": 48,
+          "top": 264,
+          "right": 1080,
+          "bottom": 312,
+          "left": 1004
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 1086,
+          "y": 264,
+          "width": 76,
+          "height": 48,
+          "top": 264,
+          "right": 1162,
+          "bottom": 312,
+          "left": 1086
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-background-copy-admission-revoked-landscape.png",
+      "label": "background-copy-admission-revoked",
+      "orientation": "landscape",
+      "sha256": "1943ce78b2b80548efe78171fdbee96f333e1ae966ee594babb12b13af056f47",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "status": null,
+      "faceButtons": []
+    },
+    {
+      "file": "artifacts/visual/face-effects-next-guests-none-default-landscape.png",
+      "label": "next-guests-none-default",
+      "orientation": "landscape",
+      "sha256": "9f5f6f54a943d53e2ea15b5265d78ecb93028add76c4a2aa23429e549742e1fd",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "status": "Photo ready",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 840,
+          "y": 303,
+          "width": 76,
+          "height": 48,
+          "top": 303,
+          "right": 916,
+          "bottom": 351,
+          "left": 840
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 922,
+          "y": 303,
+          "width": 76,
+          "height": 48,
+          "top": 303,
+          "right": 998,
+          "bottom": 351,
+          "left": 922
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 1004,
+          "y": 303,
+          "width": 76,
+          "height": 48,
+          "top": 303,
+          "right": 1080,
+          "bottom": 351,
+          "left": 1004
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 1086,
+          "y": 303,
+          "width": 76,
+          "height": 48,
+          "top": 303,
+          "right": 1162,
+          "bottom": 351,
+          "left": 1086
+        }
+      ]
+    },
+    {
+      "file": "artifacts/visual/face-effects-normal-motion-settled-no-face-landscape.png",
+      "label": "normal-motion-settled-no-face",
+      "orientation": "landscape",
+      "sha256": "b10251a55b1f941ab00d93e2cc4e2a6c256a15f0e6ba18a0fa36bf95a0b15b68",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "status": "No face was found. Your photo is kept without an accessory.",
+      "faceButtons": [
+        {
+          "id": "face-accessory-none",
+          "label": "Accessory: None",
+          "x": 840,
+          "y": 294,
+          "width": 76,
+          "height": 48,
+          "top": 294,
+          "right": 916,
+          "bottom": 342,
+          "left": 840
+        },
+        {
+          "id": "face-accessory-glasses",
+          "label": "Accessory: Glasses",
+          "x": 922,
+          "y": 294,
+          "width": 76,
+          "height": 48,
+          "top": 294,
+          "right": 998,
+          "bottom": 342,
+          "left": 922
+        },
+        {
+          "id": "face-accessory-crown",
+          "label": "Accessory: Tiara",
+          "x": 1004,
+          "y": 294,
+          "width": 76,
+          "height": 48,
+          "top": 294,
+          "right": 1080,
+          "bottom": 342,
+          "left": 1004
+        },
+        {
+          "id": "face-accessory-hearts",
+          "label": "Accessory: Hearts",
+          "x": 1086,
+          "y": 294,
+          "width": 76,
+          "height": 48,
+          "top": 294,
+          "right": 1162,
+          "bottom": 342,
+          "left": 1086
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "mockedHealthRequests": [
+    "https://photobooth.example/health",
+    "https://photobooth.example/health"
+  ],
+  "unexpectedExternalRequests": [],
+  "capturePromotion": {
+    "sourceReportSHA256": "49230ee0545ab54d48020f9bc0949cd62197fc40b00771f3c7cbc5bde5b809ba",
+    "executionCommand": "node tools/native-visual/new-session/face-effects-checks.mjs --provisional",
+    "mode": "Final frozen-source guarded capture promoted without image re-rendering; only evidence paths normalized."
+  }
+}
