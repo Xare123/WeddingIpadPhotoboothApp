@@ -69,6 +69,25 @@ jobs:
       - name: Verify native CI parsing and diagnostic contracts
         id: contracts
         run: node --test --test-reporter=tap scripts/ci-native.test.mjs scripts/native-camera-capability.test.mjs 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/ci-contracts.log"
+      - name: Typecheck standalone Release smoke source before dependencies
+        id: swift_smoke
+        timeout-minutes: 3
+        run: |
+          set -euo pipefail
+          WEDDING_SMOKE_ARCH="$(uname -m)"
+          case "$WEDDING_SMOKE_ARCH" in
+            arm64|x86_64) ;;
+            *) printf '%s\n' 'Unsupported simulator compiler architecture' >&2; exit 1 ;;
+          esac
+          WEDDING_SIM_SDK="$(xcrun --sdk iphonesimulator --show-sdk-path)"
+          xcrun --sdk iphonesimulator swiftc \
+            -swift-version 5 \
+            -target "$WEDDING_SMOKE_ARCH-apple-ios16.4-simulator" \
+            -sdk "$WEDDING_SIM_SDK" \
+            -F "$DEVELOPER_DIR/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks" \
+            -module-cache-path "$RUNNER_TEMP/wedding-smoke-module-cache" \
+            -typecheck apps/ipad/native-tests/WeddingPhotoboothReleaseSmokeTests.swift \
+            2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/swift-smoke-typecheck.log"
       - name: Frozen dependency installation
         id: npmci
         timeout-minutes: 10
@@ -102,6 +121,7 @@ jobs:
                 steps.setup_node.outcome == 'failure' && 'node-setup' ||
                 steps.bootstrap.outcome == 'failure' && 'bootstrap' ||
                 steps.contracts.outcome == 'failure' && 'ci-contracts' ||
+                steps.swift_smoke.outcome == 'failure' && 'swift-smoke-typecheck' ||
                 steps.npmci.outcome == 'failure' && 'npm-ci' ||
                 steps.typecheck.outcome == 'failure' && 'typecheck' ||
                 steps.cocoapods.outcome == 'failure' && 'cocoapods-install' ||

@@ -81,7 +81,7 @@ export function diagnosticLines(logs, stages = [], limit = 3) {
   return selected;
 }
 
-const workflowSteps = new Set(['checkout', 'node-setup', 'bootstrap', 'ci-contracts', 'npm-ci', 'typecheck', 'cocoapods-install', 'native-invocation']);
+const workflowSteps = new Set(['checkout', 'node-setup', 'bootstrap', 'ci-contracts', 'swift-smoke-typecheck', 'npm-ci', 'typecheck', 'cocoapods-install', 'native-invocation']);
 export function publicAnnotations({ kind = 'native', jobStatus, status, sha, logs = {}, failedStep, nativeMode }) {
   const exactSha = /^[a-f0-9]{40}$/i.test(sha ?? '') ? sha : 'unavailable';
   const title = kind === 'native' ? ((status?.mode ?? nativeMode) === 'release-build' ? 'Unsigned Release iOS diagnostics' : 'Native simulator diagnostics') : 'Linux verification diagnostics';

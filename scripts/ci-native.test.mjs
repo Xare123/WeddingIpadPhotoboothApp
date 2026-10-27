@@ -675,6 +675,55 @@ test('standard ARM runtime preserves opt-in toolchain and verified architecture 
     ['ONLY_ACTIVE_ARCH=YES', 'ARCHS=arm64']);
 });
 
+test('Release smoke SDK preflight runs before dependencies and preserves compiler failures', t => {
+  const workflow = readFileSync(new URL('../.github/workflows/ios-release-runtime.yml', import.meta.url), 'utf8');
+  const step = workflow.match(/      - name: Typecheck standalone Release smoke source before dependencies\n([\s\S]*?)(?=      - name:)/)?.[1];
+  assert.ok(step);
+  assert.match(step, /id: swift_smoke\n        timeout-minutes: 3/);
+  assert.ok(workflow.indexOf('id: swift_smoke') < workflow.indexOf('id: npmci'));
+  assert.ok(workflow.indexOf('id: swift_smoke') < workflow.indexOf('id: cocoapods'));
+  assert.match(workflow, /steps\.swift_smoke\.outcome == 'failure' && 'swift-smoke-typecheck'/);
+  const body = step.split('        run: |\n')[1].replace(/^          /gm, '');
+  assert.equal(spawnSync('bash', ['-n'], { input: body }).status, 0);
+  const directory = mkdtempSync(join(tmpdir(), 'wedding-swift-preflight-'));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const bin = join(directory, 'bin'), runner = join(directory, 'runner'), argsFile = join(directory, 'args');
+  mkdirSync(bin);
+  mkdirSync(join(runner, 'wedding-native-diagnostics'), { recursive: true });
+  writeFileSync(join(bin, 'uname'), '#!/bin/bash\nprintf "%s\\n" "$WEDDING_TEST_ARCH"\n', { mode: 0o755 });
+  writeFileSync(join(bin, 'xcrun'), '#!/bin/bash\nset -eu\n' +
+    'if [[ "$*" == "--sdk iphonesimulator --show-sdk-path" ]]; then\n' +
+    '  printf "%s\\n" "/test simulator.sdk"\nelse\n' +
+    '  printf "%s\\n" "$@" > "$WEDDING_TEST_ARGUMENTS"\n' +
+    '  exit "${WEDDING_TEST_COMPILER_EXIT:-0}"\nfi\n', { mode: 0o755 });
+  const env = { ...process.env, PATH: bin + ':' + process.env.PATH, RUNNER_TEMP: runner,
+    DEVELOPER_DIR: '/test Xcode.app/Contents/Developer', WEDDING_TEST_ARGUMENTS: argsFile };
+  for (const architecture of ['arm64', 'x86_64']) {
+    const result = spawnSync('bash', ['--noprofile', '--norc', '-c', body],
+      { env: { ...env, WEDDING_TEST_ARCH: architecture }, encoding: 'utf8' });
+    assert.equal(result.status, 0, result.stderr);
+    assert.deepEqual(readFileSync(argsFile, 'utf8').trimEnd().split('\n'), [
+      '--sdk', 'iphonesimulator', 'swiftc', '-swift-version', '5',
+      '-target', architecture + '-apple-ios16.4-simulator', '-sdk', '/test simulator.sdk',
+      '-F', '/test Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks',
+      '-module-cache-path', join(runner, 'wedding-smoke-module-cache'),
+      '-typecheck', 'apps/ipad/native-tests/WeddingPhotoboothReleaseSmokeTests.swift',
+    ]);
+  }
+  const failed = spawnSync('bash', ['--noprofile', '--norc', '-c', body],
+    { env: { ...env, WEDDING_TEST_ARCH: 'arm64', WEDDING_TEST_COMPILER_EXIT: '17' } });
+  assert.equal(failed.status, 17, 'tee must not hide a failed compiler');
+  rmSync(argsFile);
+  const unsupported = spawnSync('bash', ['--noprofile', '--norc', '-c', body],
+    { env: { ...env, WEDDING_TEST_ARCH: 'i386' } });
+  assert.equal(unsupported.status, 1);
+  assert.throws(() => readFileSync(argsFile), /ENOENT/, 'Unsupported architecture must not reach compilation');
+  const [annotation] = publicAnnotations({ jobStatus: 'failure', failedStep: 'swift-smoke-typecheck',
+    logs: { 'swift-smoke-typecheck.log': 'ReleaseSmoke.swift:20:3: error: diagnostic fixture compiler failure' } });
+  assert.ok(annotation.includes('Failed stage: swift-smoke-typecheck: failed'));
+  assert.ok(annotation.includes('diagnostic fixture compiler failure'));
+});
+
 test('runtime preparation, Xcode, stop and cleanup budgets fit the workflow backstop without another boot extension', () => {
   const workflow = readFileSync(new URL('../.github/workflows/ios-release-runtime.yml', import.meta.url), 'utf8');
   const runner = readFileSync(new URL('./ci-native.mjs', import.meta.url), 'utf8');
