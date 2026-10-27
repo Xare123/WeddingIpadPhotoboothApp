@@ -29,7 +29,7 @@ The workflow uploads only bounded logs, a source/case manifest, SwiftPM manifest
 For an optional separate trusted Mac source checkout, without changing the active booth build:
 
 ```sh
-swift test --configuration release --enable-xctest --disable-swift-testing \
+swift test --configuration release --parallel --num-workers 2 --enable-xctest --disable-swift-testing \
   --package-path prototypes/FaceEffects --scratch-path /tmp/wedding-face-prototype-build
 ```
 
@@ -45,3 +45,7 @@ Tests read the bundled synthetic fixture. They write no image files unless `FACE
 - Rehearse groups, occlusion, varied skin tones/lighting, crossings, small/distant faces, lost faces, reduced motion, latency, memory and thermal pressure on the actual iPad. No face association/smoothing or stable-person identity is implemented here. On failure/overload keep None and the ordinary camera available.
 
 Keep the reliable wedding app available throughout. Do not hold its installation, durable saving or private sharing for this enhancement. No Snapchat/Lens parity or live-tracking readiness is claimed.
+
+## Initial native harness result
+
+At6edb84d, [prototype run40477207626](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40477207626) failed in1m36s at evidence collection because `tests.xml` was absent; [Linux40477207510](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40477207510) passed in1m40s. Do not infer verified native counts from that failed evidence gate. Official [SwiftPM6.3 source](https://github.com/swiftlang/swift-package-manager/blob/swift-6.3-RELEASE/Sources/Commands/SwiftTestCommand.swift#L306) calls its xUnit generator only inside the parallel-runner branch. The bounded repair adds `--parallel --num-workers 2`; it keeps the native implementation and all29 required cases unchanged. A fresh exact-source result is required.

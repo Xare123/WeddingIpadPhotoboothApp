@@ -103,6 +103,6 @@ test('symlinks and hardlinks are refused before publication', t => {
 test('current source manifest proves shipping isolation and the fixed synthetic fixture', () => {
   const manifest = faceInputs(root);
   assert.equal(manifest.shippingSourceUnchanged, true); assert.equal(manifest.expectedCases.length, 29);
-  assert.equal(Object.keys(manifest.sourceSHA256).length, 8);
+  assert.equal(Object.keys(manifest.sourceSHA256).length, 11);
   assert.ok(Object.values(manifest.sourceSHA256).every(hash => /^[a-f0-9]{64}$/.test(hash)));
 });

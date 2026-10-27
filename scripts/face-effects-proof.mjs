@@ -109,7 +109,8 @@ export function faceInputs(root) {
   const fixture = boundedFile(join(root, 'prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/Fixtures/portrait.jpg'), 1024 * 1024);
   if (digest(fixture) !== FACE_FIXTURE_SHA) throw new Error('Only the approved generated portrait fixture may enter native testing');
   const sources = {};
-  for (const path of ['prototypes/FaceEffects/Package.swift', 'prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/Fixtures/provenance.json'])
+  for (const path of ['prototypes/FaceEffects/Package.swift', 'prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/Fixtures/provenance.json',
+    '.github/workflows/face-effects-prototype.yml', 'scripts/face-effects-proof.mjs', 'scripts/face-effects-proof.test.mjs'])
     sources[path] = digest(boundedFile(join(root, path), 128 * 1024));
   for (const [name, expected] of Object.entries(methods)) {
     const path = `prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/${name}.swift`, text = boundedFile(join(root, path), 128 * 1024).toString();
@@ -123,7 +124,7 @@ export function faceInputs(root) {
     const path = `prototypes/FaceEffects/Sources/FaceEffectsPrototype/${name}`;
     sources[path] = digest(boundedFile(join(root, path), 128 * 1024));
   }
-  return { baseline: FACE_BASELINE, shippingSourceUnchanged: true, changed, expectedCases: FACE_CASES,
+  return { baseline: FACE_BASELINE, sourceCommit: git(['rev-parse', 'HEAD'])[0], shippingSourceUnchanged: true, changed, expectedCases: FACE_CASES,
     fixtureSha256: FACE_FIXTURE_SHA, sourceSHA256: sources, dependencies: 'Apple frameworks only; no package dependencies',
     scope: 'Isolated still-image and pure frame-admission prototype; no camera, app, live tracking or device proof' };
 }
@@ -142,6 +143,7 @@ function cli() {
   for (const marker of ['ios-typecheck.ok', 'swift-test.ok']) {
     if (boundedFile(join(directory, marker), 32).toString() !== 'passed\n') throw new Error('Both native phases must pass');
   }
+  if (!existsSync(join(directory, 'tests.xml'))) throw new Error('SwiftPM produced no structured XCTest report; verify parallel XCTest mode');
   const tests = parseFaceXunit(boundedFile(join(directory, 'tests.xml'), 1024 * 1024).toString());
   requireAppleOnlyPackage(JSON.parse(boundedFile(join(directory, 'package-manifest.json'), 128 * 1024)));
   const images = inspectFaceJpegs(directory);

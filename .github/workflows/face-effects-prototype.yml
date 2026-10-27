@@ -52,7 +52,8 @@ jobs:
           FACE_EFFECTS_EVIDENCE_DIR: ${{ runner.temp }}/face-effects-evidence
         run: |
           set -euo pipefail
-          swift test --configuration release --enable-xctest --disable-swift-testing --package-path prototypes/FaceEffects \
+          # SwiftPM 6.3 emits XCTest xUnit only through its parallel runner.
+          swift test --configuration release --parallel --num-workers 2 --enable-xctest --disable-swift-testing --package-path prototypes/FaceEffects \
             --scratch-path "$RUNNER_TEMP/face-swift-build" \
             --xunit-output "$RUNNER_TEMP/face-effects-evidence/tests.xml" \
             2>&1 | tee "$RUNNER_TEMP/face-effects-evidence/swift-test.log"
