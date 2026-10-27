@@ -26,13 +26,20 @@ The generator pins every copied source and the fixture, verifies the complete ge
 
 The cloud compile lane uses a **fictional identity**, `NOT_ARMED`, Xcode 26.3, generic `iphoneos`, and `CODE_SIGNING_ALLOWED=NO`/`CODE_SIGNING_REQUIRED=NO`. The PNG is copied as opaque test data with compression and metadata stripping disabled, matching the native pixel lane. It verifies the actual built `.xctestrun` selects only this method, has no target app, remains unarmed, and bundles the exact uncompressed fixture. It publishes compile status/provenance and bounded redacted logs, not a runner app, raw `.xctestrun`, signing material or private identifiers. **Build-for-testing is zero XCTest executions and zero device-runtime proof.**
 
-The exact published commit and terminal build result will be recorded below after validation. A successful unsigned compile is preparation evidence; it does not clear the held feature's acceptance failures.
+Validated producer commit: **`e4b4a57f53c3238dc5abd06e33e4ee10f654e44c`** on `codex/post-capture-face-effects`.
+
+- **173/173** local CI contracts pass, including **27** preparation/build guard cases; zero skipped.
+- [Linux CI 40540393296](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40540393296): **passed**.
+- [Unsigned iOS build 40540393640](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40540393640): **passed**, Xcode 26.3, real generic `iphoneos` build-for-testing. The built `.xctestrun` remains `NOT_ARMED`; runner/test identities, sole selected method, exact bundled PNG and owned-process cleanup all passed. **Zero XCTest executions.**
+- Earlier build [40539422776](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40539422776) compiled but failed the exact bundled-PNG check. Opaque copying and disabled PNG processing corrected packaging; the source fixture and its acceptance hash were not changed.
+
+See the [machine-readable preparation report](../artifacts/test-results/synthetic-ipad-probe-preparation.json). A successful unsigned compile is preparation evidence; it does not clear the held feature's acceptance failures. No new full-app runtime, physical Vision or camera/Photos tests were executed in this phase.
 
 ## Future owner-attended preparation
 
 These steps are for a future supported Mac session. They are not instructions for the current cloud agent to connect or execute on a device.
 
-1. The coordinator confirms supported Mac access, owner availability and the actual wedding **M2 iPad Air**. The source only enforces physical iOS, not the device's processor model. Preserve the installed app, bundle identity, files and queue.
+1. The coordinator confirms supported Mac access, owner availability and the actual wedding **M2 iPad Air**. Record the iPadOS and Xcode versions privately for comparison. The source only enforces physical iOS, not the device's processor model. Preserve the installed app, bundle identity, files and queue.
 2. Reuse the **already authorized physical-test runner bundle ID and existing Apple team/certificate/profile** from private local records. Do not invent an identifier, create certificates/profiles, register devices, accept agreements or use automatic-provisioning flags. If the existing signing assets are unavailable, stop and report the missing asset.
 3. In a private local shell, set `PHOTOBOOTH_SYNTHETIC_VISION_RUNNER_BUNDLE_ID` and `PHOTOBOOTH_DEVELOPMENT_TEAM` from those records. These are identifiers, not app/API secrets; still keep the generated project and diagnostics out of the public repository. Use a new directory inside ignored `.cache` or a private directory outside the checkout.
 4. Generate the default **NOT_ARMED** project:

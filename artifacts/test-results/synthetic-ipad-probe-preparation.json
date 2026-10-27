@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "scope": "Synthetic-only standalone physical-iOS probe preparation; unsigned hosted compilation, no physical execution",
+  "producerCommit": "e4b4a57f53c3238dc5abd06e33e4ee10f654e44c",
+  "branch": "codex/post-capture-face-effects",
+  "sourceSHA256": {
+    "apps/ipad/native-tests/WeddingPhotoboothSyntheticVisionProbeTests.swift": "6f0416721c06d5cc8cabae1910ea7b8015a2ac80d030d7ef441d9faf8a025175",
+    "apps/ipad/modules/wedding-photo-effects/ios/FaceGeometry.swift": "62866121340d52308afbe16d454aae81ce4873d3de99563b625a24b48c2ffaeb",
+    "apps/ipad/modules/wedding-photo-effects/ios/FrameFreshnessGate.swift": "2d1d6615c49a501302cf44861825c7cda3ad26fe161cd0db53f84cb396ee55f3",
+    "apps/ipad/modules/wedding-photo-effects/ios/AppleFaceEffects.swift": "01a87b5454f3f5b52947054302acc717b80510eead06df9e4a71bf94a3a4a8a0",
+    "apps/ipad/modules/wedding-photo-effects/ios/PhotoEffectsEngine.swift": "f0ae112a9db22137b4207e2c7b9870715311cca772f1c4aa4b25323384747e97",
+    "apps/ipad/native-tests/fixtures/treatments/separated-portrait.png": "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165",
+    "scripts/prepare-ios-vision-probe.mjs": "4988f18ac6155c134a5817f1a84b2738bf9e54815aea6059629fb08f36c492bd",
+    "scripts/prepare-ios-vision-probe.test.mjs": "8e1f16658cc34cae485c06bce9ca1a37af96fc91222a0dcadd1a1c359f000fad",
+    "scripts/ci-build-ios-vision-probe.mjs": "5ffde3c62b151574be9bfdf7975cde16f32595910538ec4576338a83ad8b21fc",
+    "scripts/ci-build-ios-vision-probe.test.mjs": "85c5e70d339a7624662c4400f9b907f3dadd6218166213cec0a28ddb05e83b05",
+    ".github/workflows/ios-vision-probe-build.yml": "c6102eb44862bd30cf7b26a693f850c0c10442a6a66694ac228fe88ae19a7bcd"
+  },
+  "review": {
+    "nativeProbe": "independent source review passed at exact pinned hash",
+    "preparationAndBuildBoundary": "independent read-only review passed, including packaging repair",
+    "sdkCompile": "passed; not runtime proof"
+  },
+  "localChecks": {
+    "ciContracts": {
+      "executed": 173,
+      "passed": 173,
+      "failed": 0,
+      "skipped": 0
+    },
+    "newPreparationBuildContracts": 27,
+    "nodeSyntax": "passed",
+    "workflowYamlAndShellSyntax": "passed",
+    "documentationLinks": "passed"
+  },
+  "hostedChecks": {
+    "linux": {
+      "runId": "40540393296",
+      "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40540393296",
+      "result": "passed",
+      "commit": "e4b4a57f53c3238dc5abd06e33e4ee10f654e44c"
+    },
+    "unsignedProbeBuild": {
+      "runId": "40540393640",
+      "jobId": "122316899151",
+      "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40540393640",
+      "result": "passed",
+      "commit": "e4b4a57f53c3238dc5abd06e33e4ee10f654e44c",
+      "xcode": "26.3",
+      "sdk": "generic iphoneos",
+      "action": "build-for-testing",
+      "compileOnly": true,
+      "testsExecuted": 0,
+      "ownerReady": false,
+      "readiness": "NOT_ARMED",
+      "signingAllowed": false,
+      "provisioning": false,
+      "deviceDiscovery": false,
+      "installation": false,
+      "builtXctestrunSoleMethodVerified": true,
+      "builtRunnerAndTestIdentitiesVerified": true,
+      "fixtureVerified": true,
+      "builtFixture": {
+        "bytes": 2150366,
+        "sha256": "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165",
+        "pngSignatureHex": "89504e470d0a1a0a"
+      },
+      "ownedProcessCleanupVerified": true
+    },
+    "earlierPackagingFailure": {
+      "runId": "40539422776",
+      "commit": "40a2153431e4d34f656147e38ed76ded1c129dc3",
+      "result": "failed",
+      "stage": "verify-bundled-png-and-identities",
+      "reason": "Compiled PNG bytes did not match the pinned source fixture",
+      "testsExecuted": 0,
+      "cleanupVerified": true,
+      "repair": "Opaque file copy plus COMPRESS_PNG_FILES=NO and STRIP_PNG_TEXT=NO; unchanged source bytes and hash requirement"
+    }
+  },
+  "retainedFeatureAcceptance": {
+    "result": "held",
+    "previousRun": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40530206605",
+    "executed": 29,
+    "passed": 27,
+    "failed": 2,
+    "skipped": 0,
+    "rerunThisPhase": false,
+    "failingCases": [
+      "NativePhotoTreatmentEngineTests.testActualSeparatedPortraitDecoratesBothPeopleAfterLookWithoutReencodingIntermediate",
+      "NativePhotoTreatmentEngineTests.testLookNoneMatchesExistingEnginePixelsAndRecipeOrderKeepsVectorColors"
+    ],
+    "physicalProbeExecuted": false,
+    "liveTrackingProven": false
+  },
+  "preservation": {
+    "productionChangesSincePhaseBase": false,
+    "phaseBaseCommit": "63cbb8afdc751b52dbe924445d59e2f940b61790",
+    "stableReviewBranchCommit": "642a3676a4993ec9880f44e45ee2b6b48aaf7a8d",
+    "installedAppRevision": "9ed36b4",
+    "installedAppVersion": "0.3.7",
+    "installedAppBuild": "10",
+    "deviceOrStableAppActionsThisPhase": false,
+    "realPhotosOrSessionDataAccessedThisPhase": false,
+    "credentialsOrProfilesCreated": false,
+    "mergeOrDeployment": false,
+    "smsSends": 0,
+    "artifactDownloadsThisPhase": 0
+  },
+  "cloudEnvironment": {
+    "savedDraftId": "0cebfe70-de1b-4f37-bc6b-8e688559c14e~cecfgdraft_6ade733892ac819daa2844b78940472e",
+    "savedDraftRevision": 30,
+    "pinnedRepositoryCommit": "642a3676a4993ec9880f44e45ee2b6b48aaf7a8d",
+    "configurationChangedThisPhase": false,
+    "snapshotPublicationVerified": false,
+    "freshRestoreVerifiedThisPhase": false
+  },
+  "futureDeviceGate": "Wait for supported Mac access for this task context and action-time owner readiness; reuse only the existing authorized runner identity/signing assets. No alternate-machine route or keep-awake action.",
+  "handoff": "docs/SYNTHETIC_IPAD_PROBE_HANDOFF.md",
+  "ownerAttendedCoreReleaseChecklist": "docs/OWNER_ATTENDED_RELEASE_CHECKLIST.md",
+  "releasePriority": [
+    "local saving and retakes",
+    "supported private pairing and approved queued upload",
+    "real-phone QR and full-resolution downloads",
+    "eligible consent-based SMS within coordinator-owned approved test allowance",
+    "optional face-effects probe and remaining feature acceptance"
+  ]
+}
