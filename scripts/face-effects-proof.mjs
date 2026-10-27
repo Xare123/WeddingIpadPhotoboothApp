@@ -31,6 +31,8 @@ const methods = {
     'testBlankImageReturnsUntouchedInputWithoutEncodingOrFakeFace', 'testNoneUnconditionallyBypassesDetectionAndEncoding',
     'testControlledAnchorsPlaceCrownAtExpectedPixelsAndKeepOuterPixels',
     'testNormalizedExifInputDoesNotPropagateGpsOrOriginalOrientation', 'testSingleFlightRejectsBacklogAndCancellationDoesNotBlockNone',
+    'testAsymmetricUprightImagePreservesMarkersAndAlignsRolledGlassesWithBothEyes',
+    'testCallerNormalizesAllEightExifOrientationsOnceBeforeRendering',
   ],
 };
 export const FACE_CASES = Object.freeze(Object.entries(methods).flatMap(([name, entries]) => entries.map(entry => name + '.' + entry)));
@@ -55,7 +57,7 @@ function boundedFile(path, maximum) {
 export function requireFaceCases(cases) {
   if (!Array.isArray(cases) || cases.length !== FACE_CASES.length || new Set(cases.map(row => row?.id)).size !== FACE_CASES.length ||
     cases.some(row => !FACE_CASES.includes(row?.id) || row?.failed !== false || row?.skipped !== false))
-    throw new Error('All 29 exact native prototype methods must execute and pass without skips');
+    throw new Error(`All ${FACE_CASES.length} exact native prototype methods must execute and pass without skips`);
   return { executed: cases.length, passed: cases.length, failed: 0, skipped: 0 };
 }
 export function parseFaceXunit(xml) {
@@ -150,7 +152,7 @@ function cli() {
   const report = { ...inputs, result: 'passed', tests, images, iosSDKTypecheck: 'passed', macOSVisionAndRenderer: 'passed',
     unverified: ['iOS runtime', 'camera/session attachment', 'live tracking/smoothing', 'M2 iPad performance/thermal', 'app integration and durability/export', 'real guests/device'] };
   writeFileSync(join(directory, 'report.json'), JSON.stringify(report, null, 2) + '\n');
-  console.log('::notice title=Face prototype evidence::29 exact native methods passed; three native still JPEGs; iOS SDK typecheck. Shipping app unchanged. No live camera, tracking or physical-iPad proof.');
+  console.log(`::notice title=Face prototype evidence::${FACE_CASES.length} exact native methods passed; three native still JPEGs; iOS SDK typecheck. Shipping app unchanged. No live camera, tracking or physical-iPad proof.`);
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try { cli(); } catch (error) { console.error('::error title=Face prototype gate::' + error.message.replace(/[\r\n%]/g, ' ').slice(0, 300)); process.exitCode = 1; }

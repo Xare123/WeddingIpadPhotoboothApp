@@ -36,8 +36,9 @@ test('source guard permits only prototype files and its independent runner', () 
   }
   assert.throws(() => requireIsolatedChanges(null));
 });
-test('native evidence requires all 29 exact identities without omission, duplication, unknown or nonpassing rows', () => {
-  assert.deepEqual(requireFaceCases(passing()), { executed: 29, passed: 29, failed: 0, skipped: 0 });
+test('native evidence requires all 31 exact identities without omission, duplication, unknown or nonpassing rows', () => {
+  assert.equal(FACE_CASES.length, 31);
+  assert.deepEqual(requireFaceCases(passing()), { executed: 31, passed: 31, failed: 0, skipped: 0 });
   const duplicate = passing(); duplicate[0] = { ...duplicate[1] };
   const unknown = passing(); unknown[0].id = 'Unrecognized.testFake';
   const failed = passing(); failed[3].failed = true;
@@ -52,13 +53,13 @@ test('actual SwiftPM manifest must exclude external dependencies, plugins and ap
     { dependencies: [], targets: [{ name: 'FaceEffectsPrototype', type: 'executable' }, targets[1]] }]) assert.throws(() => requireAppleOnlyPackage(value));
 });
 test('actual XCTest XML shape normalizes module/class names and verifies executed cases', () => {
-  const result = parseFaceXunit(xml()); assert.equal(result.executed, 29); assert.equal(result.failed, 0);
+  const result = parseFaceXunit(xml()); assert.equal(result.executed, 31); assert.equal(result.failed, 0);
   assert.deepEqual(result.cases, [...FACE_CASES].sort());
   const withClass = xml().replace(/name="(test\w+)"/g, (_whole, method) => {
     const cls = FACE_CASES.find(id => id.endsWith('.' + method)).split('.')[0];
     return `name="${cls}.${method}"`;
   });
-  assert.equal(parseFaceXunit(withClass).executed, 29);
+  assert.equal(parseFaceXunit(withClass).executed, 31);
 });
 test('XML omissions, failed/error/skipped cases and suite failures never pass', () => {
   const failed = passing(); failed[0].failed = true;
@@ -102,7 +103,7 @@ test('symlinks and hardlinks are refused before publication', t => {
 });
 test('current source manifest proves shipping isolation and the fixed synthetic fixture', () => {
   const manifest = faceInputs(root);
-  assert.equal(manifest.shippingSourceUnchanged, true); assert.equal(manifest.expectedCases.length, 29);
+  assert.equal(manifest.shippingSourceUnchanged, true); assert.equal(manifest.expectedCases.length, 31);
   assert.equal(Object.keys(manifest.sourceSHA256).length, 11);
   assert.ok(Object.values(manifest.sourceSHA256).every(hash => /^[a-f0-9]{64}$/.test(hash)));
 });

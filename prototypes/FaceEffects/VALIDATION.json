@@ -4,6 +4,19 @@
   "baselineShippingCommit": "c6920138de3fe239571b1c65cf6750dfd96664ff",
   "shippingSourceUnchanged": true,
   "localNodeProofTests": 11,
+  "pendingRegressionCandidate": {
+    "scope": "Tests, proof inventory and handoff documentation only; renderer and shipping app unchanged",
+    "expectedNativeMethods": 31,
+    "existingMethodsRetained": 29,
+    "addedMethods": [
+      "AppleFaceEffectsTests.testAsymmetricUprightImagePreservesMarkersAndAlignsRolledGlassesWithBothEyes",
+      "AppleFaceEffectsTests.testCallerNormalizesAllEightExifOrientationsOnceBeforeRendering"
+    ],
+    "appleTestSourceSHA256": "36092db9b8ae17d84b8831a37e5adcc883514ab4f50284863f85fa56c9ed6d9c",
+    "nativeResult": "not run yet; prior29-case success below does not cover these additional methods",
+    "visualReview": "blocked: actual native JPEGs have not been transferred to this executor through a supported route",
+    "handoff": "REVIEW_AND_NEXT_STEPS.md"
+  },
   "nativeRun": {
     "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40477995823",
     "job": "122100889924",

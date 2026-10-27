@@ -173,5 +173,130 @@ final class AppleFaceEffectsTests: XCTestCase {
     resumed = true; queue.resume()
     wait(for: [first, second, none, afterNone], timeout: 10)
   }
+  // Raw pixels have independently identifiable top/right/bottom/left edges and TL/TR/BR/BL corners.
+  // These are caller-contract fixtures, not an integrated EXIF adapter or a Vision identity fixture.
+  private var asymmetricEdges: [[UInt8]] { [[240,220,20], [230,90,20], [20,210,220], [150,40,210]] }
+  private var asymmetricCorners: [[UInt8]] { [[220,35,45], [40,190,60], [35,70,220], [210,35,185]] }
+  private func asymmetricImage() throws -> CGImage {
+    let width = 320, height = 200, edges = asymmetricEdges, corners = asymmetricCorners
+    var data = [UInt8](repeating: 255, count: width * height * 4)
+    for y in 0..<height { for x in 0..<width {
+      var color: [UInt8] = [245,245,245]
+      if y < 12 { color = edges[0] }
+      else if x >= width - 12 { color = edges[1] }
+      else if y >= height - 12 { color = edges[2] }
+      else if x < 12 { color = edges[3] }
+      if x < 32 && y < 32 { color = corners[0] }
+      else if x >= width - 32 && y < 32 { color = corners[1] }
+      else if x >= width - 32 && y >= height - 32 { color = corners[2] }
+      else if x < 32 && y >= height - 32 { color = corners[3] }
+      let offset = (y * width + x) * 4
+      for channel in 0..<3 { data[offset + channel] = color[channel] }
+    } }
+    let provider = try XCTUnwrap(CGDataProvider(data: Data(data) as CFData))
+    return try XCTUnwrap(CGImage(width: width, height: height, bitsPerComponent: 8, bitsPerPixel: 32,
+      bytesPerRow: width * 4, space: CGColorSpace(name: CGColorSpace.sRGB)!,
+      bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipLast.rawValue), provider: provider,
+      decode: nil, shouldInterpolate: false, intent: .defaultIntent))
+  }
+  private func color(_ image: CGImage, x: Int, y: Int) throws -> [UInt8] {
+    let pixel = try XCTUnwrap(image.cropping(to: CGRect(x: CGFloat(x), y: CGFloat(y), width: 1, height: 1)))
+    return Array(try pixels(pixel).prefix(3))
+  }
+  private func assertMarkers(_ image: CGImage, edges: [Int], corners: [Int], tolerance: Int,
+                             file: StaticString = #filePath, line: UInt = #line) throws {
+    let w = image.width, h = image.height
+    let edgePoints = [(w / 2, 6), (w - 7, h / 2), (w / 2, h - 7), (6, h / 2)]
+    let cornerPoints = [(16,16), (w - 17,16), (w - 17,h - 17), (16,h - 17)]
+    for index in 0..<4 {
+      let edge = try color(image, x: edgePoints[index].0, y: edgePoints[index].1)
+      let corner = try color(image, x: cornerPoints[index].0, y: cornerPoints[index].1)
+      for channel in 0..<3 {
+        XCTAssertLessThanOrEqual(abs(Int(edge[channel]) - Int(asymmetricEdges[edges[index]][channel])), tolerance,
+          "asymmetric edge must stay in the expected upright location", file: file, line: line)
+        XCTAssertLessThanOrEqual(abs(Int(corner[channel]) - Int(asymmetricCorners[corners[index]][channel])), tolerance,
+          "asymmetric corner must stay in the expected upright location", file: file, line: line)
+      }
+    }
+  }
+  private func renderForOrientationTest(_ image: CGImage, placements: [AccessoryPlacement]) throws -> AppleFaceEffectsOutput {
+    let done = expectation(description: "asymmetric fixture rendered off main")
+    var result: Result<AppleFaceEffectsOutput, Error>?
+    DispatchQueue.global(qos: .userInitiated).async {
+      result = Result { try AppleFaceEffectsWorker.renderPlacements(uprightImage: image, placements: placements) }
+      done.fulfill()
+    }
+    wait(for: [done], timeout: 10)
+    return try XCTUnwrap(result).get()
+  }
+  func testAsymmetricUprightImagePreservesMarkersAndAlignsRolledGlassesWithBothEyes() throws {
+    let image = try asymmetricImage(), original = try pixels(image)
+    try assertMarkers(image, edges: [0,1,2,3], corners: [0,1,2,3], tolerance: 0)
+    let eyes = [UnitPoint(x: 0.38, y: 0.48), UnitPoint(x: 0.62, y: 0.56)]
+    let face = FaceAnchors(bounds: UnitRect(x: 0.15, y: 0.2, width: 0.7, height: 0.65),
+      leftEye: eyes[0], rightEye: eyes[1], confidence: 1)
+    let placements = FaceGeometry.placements(faces: [face], image: ImageSize(width: 320, height: 200), accessory: .glasses)
+    XCTAssertEqual(placements.count, 1)
+    XCTAssertGreaterThan(try XCTUnwrap(placements.first).rotation, 0.15, "non-square fixture must exercise genuine roll")
+    let output = try renderForOrientationTest(image, placements: placements)
+    let jpeg = try decode(XCTUnwrap(output.jpegData))
+    XCTAssertEqual(jpeg.width, 320); XCTAssertEqual(jpeg.height, 200)
+    try assertMarkers(output.image, edges: [0,1,2,3], corners: [0,1,2,3], tolerance: 1)
+    try assertMarkers(jpeg, edges: [0,1,2,3], corners: [0,1,2,3], tolerance: 22)
+    // Independent expected outer lens rims: eye +/- 0.36*interocular vector.
+    // Centers must remain on BOTH known eyes; a centered sticker alone cannot satisfy this.
+    let dx = (eyes[1].x - eyes[0].x) * 320, dy = (eyes[1].y - eyes[0].y) * 200
+    for index in 0..<2 {
+      let sign = index == 0 ? -1.0 : 1.0
+      let x = Int((eyes[index].x * 320 + sign * 0.36 * dx).rounded())
+      let y = Int((eyes[index].y * 200 + sign * 0.36 * dy).rounded())
+      for rendered in [output.image, jpeg] {
+        var dark = 0
+        for oy in -2...2 { for ox in -2...2 {
+          let value = try color(rendered, x: x + ox, y: y + oy)
+          if value.allSatisfy({ $0 < 110 }) { dark += 1 }
+        } }
+        XCTAssertGreaterThan(dark, 0, "expected rolled outer lens rim must align with each eye")
+        let eye = try color(rendered, x: Int((eyes[index].x * 320).rounded()), y: Int((eyes[index].y * 200).rounded()))
+        XCTAssertTrue(eye.allSatisfy({ $0 > 220 }), "eye centers remain clear inside the original vector frames")
+      }
+    }
+    XCTAssertEqual(try pixels(image), original, "asymmetric source pixels remain immutable")
+  }
+  func testCallerNormalizesAllEightExifOrientationsOnceBeforeRendering() throws {
+    let sourceImage = try asymmetricImage()
+    // Independent EXIF permutations; neither table is computed with Core Image or renderer transforms.
+    let edges = [[0,1,2,3], [0,3,2,1], [2,3,0,1], [2,1,0,3],
+      [3,2,1,0], [3,0,1,2], [1,0,3,2], [1,2,3,0]]
+    let corners = [[0,1,2,3], [1,0,3,2], [2,3,0,1], [3,2,1,0],
+      [0,3,2,1], [3,0,1,2], [2,1,0,3], [1,2,3,0]]
+    let context = CIContext(options: [.workingColorSpace: CGColorSpace(name: CGColorSpace.sRGB)!])
+    for orientation in 1...8 {
+      let bytes = NSMutableData()
+      let destination = try XCTUnwrap(CGImageDestinationCreateWithData(bytes as CFMutableData, UTType.jpeg.identifier as CFString, 1, nil))
+      CGImageDestinationAddImage(destination, sourceImage, [kCGImageDestinationLossyCompressionQuality: 1,
+        kCGImagePropertyOrientation: orientation] as CFDictionary)
+      XCTAssertTrue(CGImageDestinationFinalize(destination))
+      let source = bytes as Data, raw = try decode(source)
+      // This explicit normalization is CALLER code under test; the renderer accepts upright pixels only.
+      let oriented = CIImage(cgImage: raw).oriented(forExifOrientation: Int32(orientation))
+      let upright = try XCTUnwrap(context.createCGImage(oriented, from: oriented.extent))
+      XCTAssertEqual(upright.width, orientation >= 5 ? 200 : 320)
+      XCTAssertEqual(upright.height, orientation >= 5 ? 320 : 200)
+      try assertMarkers(upright, edges: edges[orientation - 1], corners: corners[orientation - 1], tolerance: 22)
+      let placement = AccessoryPlacement(accessory: .glasses, center: UnitPoint(x: 0.5, y: 0.5),
+        width: 0.35, height: 0.14, rotation: 0)
+      let output = try renderForOrientationTest(upright, placements: [placement]), jpeg = try XCTUnwrap(output.jpegData)
+      let decoded = try decode(jpeg)
+      XCTAssertEqual(decoded.width, upright.width); XCTAssertEqual(decoded.height, upright.height)
+      try assertMarkers(output.image, edges: edges[orientation - 1], corners: corners[orientation - 1], tolerance: 22)
+      try assertMarkers(decoded, edges: edges[orientation - 1], corners: corners[orientation - 1], tolerance: 26)
+      let metadata = try XCTUnwrap(CGImageSourceCreateWithData(jpeg as CFData, nil))
+      let props = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(metadata, 0, nil) as? [String: Any])
+      XCTAssertEqual((props[kCGImagePropertyOrientation as String] as? NSNumber)?.intValue ?? 1, 1)
+      XCTAssertEqual(bytes as Data, source, "normalization/rendering never rewrites the EXIF-tagged source")
+    }
+  }
+
 }
 #endif
