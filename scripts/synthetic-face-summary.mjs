@@ -4,7 +4,7 @@
 export const SYNTHETIC_FACE_SCOPE = 'TEST_ONLY_SHA_PINNED_GENERATED_FIXTURE_NOT_GUEST_DATA';
 export const SYNTHETIC_FACE_SHA = 'c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165';
 export const SYNTHETIC_VARIANTS = Object.freeze([
-  'raw-png', 'root-jpeg-original-pixels', 'root-jpeg-warm-0.4-pixels', 'root-jpeg-bw-1-pixels',
+  'warm-cpu-ci', 'warm-default-ci', 'warm-cpu-copy', 'warm-default-copy',
 ]);
 const object = value => value && typeof value === 'object' && !Array.isArray(value);
 function requireValue(condition) { if (!condition) throw new Error('Synthetic diagnostic schema rejected'); }
@@ -29,9 +29,29 @@ export function validatePlacementSummary(value) {
   keys(value, ['scope', 'fixtureSHA', 'variants']); header(value);
   requireValue(Array.isArray(value.variants) && value.variants.length === SYNTHETIC_VARIANTS.length);
   const variants = value.variants.map((variant, index) => {
-    keys(variant, ['name', 'w', 'h', 'detected', 'landmarked', 'faces', 'individual', 'full', 'confidence1', 'canonicalFull', 'handlerReleased']);
+    keys(variant, ['name', 'w', 'h', 'detected', 'landmarked', 'faces', 'individual', 'full', 'confidence1', 'canonicalFull', 'handlerReleased',
+      'cpuOnly', 'materialized', 'pixelSha256', 'representation', 'status', 'error']);
     requireValue(variant.name === SYNTHETIC_VARIANTS[index]);
-    requireValue(typeof variant.handlerReleased === 'boolean');
+    requireValue(typeof variant.handlerReleased === 'boolean' && typeof variant.cpuOnly === 'boolean' && typeof variant.materialized === 'boolean');
+    requireValue(variant.materialized === (index >= 2));
+    requireValue(index % 2 !== 0 || variant.cpuOnly === true);
+    requireValue(typeof variant.pixelSha256 === 'string' && /^[a-f0-9]{12}$/.test(variant.pixelSha256));
+    keys(variant.representation, ['bpc', 'bpp', 'rowBytes', 'bitmapInfo', 'isSRGB']);
+    requireValue(typeof variant.representation.isSRGB === 'boolean');
+    const metadata = { name: variant.name, w: integer(variant.w, 1, 24000), h: integer(variant.h, 1, 24000),
+      handlerReleased: variant.handlerReleased, cpuOnly: variant.cpuOnly, materialized: variant.materialized, pixelSha256: variant.pixelSha256,
+      representation: { bpc: integer(variant.representation.bpc, 1, 128), bpp: integer(variant.representation.bpp, 1, 512),
+        rowBytes: integer(variant.representation.rowBytes, 0, 3_072_000), bitmapInfo: integer(variant.representation.bitmapInfo, 0, 0xffffffff),
+        isSRGB: variant.representation.isSRGB } };
+    requireValue(['success', 'failure'].includes(variant.status));
+    if (variant.status === 'failure') {
+      keys(variant.error, ['domain', 'code']); requireValue(['vision', 'other'].includes(variant.error.domain));
+      requireValue(variant.detected === null && variant.landmarked === null && variant.full === null && variant.confidence1 === null && variant.canonicalFull === null);
+      requireValue(Array.isArray(variant.faces) && variant.faces.length === 0 && Array.isArray(variant.individual) && variant.individual.length === 0);
+      return { ...metadata, status: 'failure', error: { domain: variant.error.domain, code: variant.error.code === null ? null : integer(variant.error.code, -0x80000000, 0x7fffffff) },
+        detected: null, landmarked: null, faces: [], individual: [], full: null, confidence1: null, canonicalFull: null };
+    }
+    requireValue(variant.error === null);
     const detected = integer(variant.detected, 0, 8), landmarked = integer(variant.landmarked, 0, detected);
     requireValue(Array.isArray(variant.faces) && variant.faces.length === detected);
     const seen = new Set();
@@ -44,9 +64,9 @@ export function validatePlacementSummary(value) {
         landmarkConfidence: nullableNumber(face.landmarkConfidence, 1), normalizedRepeatDelta: nullableNumber(face.normalizedRepeatDelta, 8) };
     });
     requireValue(Array.isArray(variant.individual) && variant.individual.length === detected);
-    return { name: variant.name, w: integer(variant.w, 1, 24000), h: integer(variant.h, 1, 24000), detected, landmarked,
+    return { ...metadata, status: 'success', error: null, detected, landmarked,
       faces, individual: variant.individual.map(counts), full: counts(variant.full), confidence1: counts(variant.confidence1),
-      canonicalFull: counts(variant.canonicalFull), handlerReleased: variant.handlerReleased };
+      canonicalFull: counts(variant.canonicalFull) };
   });
   return { scope: SYNTHETIC_FACE_SCOPE, fixtureSHA: SYNTHETIC_FACE_SHA, variants };
 }

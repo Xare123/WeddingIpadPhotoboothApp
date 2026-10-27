@@ -295,21 +295,60 @@ final class NativePhotoTreatmentEngineTests: XCTestCase {
         let raw = try XCTUnwrap(CGImageSourceCreateImageAtIndex(input, 0, [kCGImageSourceShouldCache: false] as CFDictionary))
         let oriented = CIImage(cgImage: raw).oriented(forExifOrientation: orientation)
         let upright = oriented.transformed(by: CGAffineTransform(translationX: -oriented.extent.minX, y: -oriented.extent.minY))
-        let variants: [(String, CGImage)] = try PhotoEffectsEngine.queue.sync {
-          let original = try XCTUnwrap(PhotoEffectsEngine.context.createCGImage(upright, from: upright.extent, format: .RGBA8, colorSpace: PhotoEffectsEngine.sRGB))
+        let warm: CGImage = try PhotoEffectsEngine.queue.sync {
           let looked = PhotoEffectsEngine.lookPixels(upright, preset: "warm", intensity: 0.4)
-          let warm = try XCTUnwrap(PhotoEffectsEngine.context.createCGImage(looked, from: upright.extent, format: .RGBA8, colorSpace: PhotoEffectsEngine.sRGB))
-          let bw = PhotoEffectsEngine.lookPixels(upright, preset: "bw", intensity: 1)
-          let monochrome = try XCTUnwrap(PhotoEffectsEngine.context.createCGImage(bw, from: upright.extent, format: .RGBA8, colorSpace: PhotoEffectsEngine.sRGB))
-          return [("raw-png", try self.image(png)), ("root-jpeg-original-pixels", original),
-            ("root-jpeg-warm-0.4-pixels", warm), ("root-jpeg-bw-1-pixels", monochrome)]
+          return try XCTUnwrap(PhotoEffectsEngine.context.createCGImage(looked, from: upright.extent, format: .RGBA8, colorSpace: PhotoEffectsEngine.sRGB))
         }
-        var reports = [[String: Any]]()
-        for (name, cg) in variants {
-          let request = VNDetectFaceLandmarksRequest(); request.revision = 3; request.usesCPUOnly = true
+        // "ci" labels the uncopied CI-origin image, not a proven lazy-render state.
+        // No test CGContext read occurs before request0; post-request hashing may warm request1.
+        // Owned-copy creation occurs only after both CI-origin attempts have completed.
+        let variants: [(String, Bool, Bool)] = [("warm-cpu-ci",true,false), ("warm-default-ci",false,false),
+          ("warm-cpu-copy",true,true), ("warm-default-copy",false,true)]
+        var ownedCopy: CGImage?, reports = [[String: Any]]()
+        for (name, forceCPU, materialized) in variants {
+          let cg: CGImage
+          if materialized {
+            if ownedCopy == nil {
+              // Only reached AFTER both CI-origin requests. makeImage retains an owned bitmap; no escaping pointers.
+              let bitmap = try XCTUnwrap(CGContext(data: nil, width: warm.width, height: warm.height, bitsPerComponent: 8,
+                bytesPerRow: warm.width * 4, space: PhotoEffectsEngine.sRGB,
+                bitmapInfo: CGBitmapInfo.byteOrder32Big.rawValue | CGImageAlphaInfo.premultipliedLast.rawValue))
+              bitmap.draw(warm, in: CGRect(x: 0, y: 0, width: CGFloat(warm.width), height: CGFloat(warm.height)))
+              let copy = try XCTUnwrap(bitmap.makeImage())
+              let deferredPixels = try self.pixels(warm), copyPixels = try self.pixels(copy)
+              let equal = deferredPixels == copyPixels
+              XCTAssertTrue(equal, "Owned RGBA copy must preserve every pixel before its Vision requests; CI=" + self.sha(Data(deferredPixels)) + "; copy=" + self.sha(Data(copyPixels)))
+              // Preserve the measured report even if this asserted control identity fails; hashes expose the confound.
+              ownedCopy = copy
+            }
+            cg = try XCTUnwrap(ownedCopy)
+          } else { cg = warm }
+          let request = VNDetectFaceLandmarksRequest(); request.revision = 3
+          if forceCPU { request.usesCPUOnly = true }
+          // Default cells leave the property untouched. false permits platform choice; it does NOT prove GPU/ANE use.
+          let observedCPUOnly = request.usesCPUOnly
           var handler: VNImageRequestHandler? = VNImageRequestHandler(cgImage: cg, orientation: .up, options: [:])
           weak var weakHandler = handler
-          try XCTUnwrap(handler).perform([request])
+          func representation() -> [String: Any] {
+            let isSRGB = (cg.colorSpace?.name).map { ($0 as String) == (CGColorSpace.sRGB as String) } ?? false
+            return ["bpc": cg.bitsPerComponent, "bpp": cg.bitsPerPixel, "rowBytes": cg.bytesPerRow,
+              "bitmapInfo": Int(cg.bitmapInfo.rawValue), "isSRGB": isSRGB]
+          }
+          do { try XCTUnwrap(handler).perform([request]) }
+          catch {
+            let nativeError = error as NSError
+            let safeCode: Any
+            if let exact = Int32(exactly: nativeError.code) { safeCode = Int(exact) } else { safeCode = NSNull() }
+            let safeError: [String: Any] = ["domain": nativeError.domain == VNErrorDomain ? "vision" : "other", "code": safeCode]
+            handler = nil
+            reports.append(["variant": name, "width": cg.width, "height": cg.height,
+              "handlerReleased": weakHandler == nil, "cpuOnly": observedCPUOnly, "materialized": materialized,
+              "pixelSha256": self.sha(Data(try self.pixels(cg))), "representation": representation(),
+              "status": "failure", "error": safeError, "detected": NSNull(), "landmarked": NSNull(),
+              "observations": [], "pairDiagnostics": [], "allPlacements": NSNull(),
+              "TEST_ONLY_confidenceOnePlacements": NSNull(), "TEST_ONLY_canonicalApplePlacements": NSNull()])
+            continue
+          }
           let observations = request.results ?? []
           guard observations.count <= 8 else { throw PhotoTreatmentEngine.Failure.resourceLimit }
           func workerReads(_ region: VNFaceLandmarkRegion2D) -> [CGPoint] {
@@ -442,16 +481,20 @@ final class NativePhotoTreatmentEngineTests: XCTestCase {
           }
           let confidenceOne = anchors.map { FaceAnchors(bounds: $0.bounds, leftEye: $0.leftEye, rightEye: $0.rightEye, confidence: 1) }
           reports.append(["variant": name, "width": cg.width, "height": cg.height, "handlerReleased": handlerReleased,
-            "pixelSha256": self.sha(Data(try self.pixels(cg))), "detected": observations.count, "landmarked": anchors.count,
+            "cpuOnly": observedCPUOnly, "materialized": materialized, "status": "success", "error": NSNull(),
+            "representation": representation(), "pixelSha256": self.sha(Data(try self.pixels(cg))), "detected": observations.count, "landmarked": anchors.count,
             "observations": rows, "rawObstructionsTopLeft": obstructions.map(rectangle), "pairDiagnostics": pairs,
             "allPlacements": styles(anchors, obstructions),
             "TEST_ONLY_canonicalApplePlacements": styles(canonicalAnchors, canonicalObstructions),
             "TEST_ONLY_confidenceOnePlacements": styles(confidenceOne, obstructions)])
           withExtendedLifetime((request,retained)) {} // Request/observations/regions outlive every after-release getter.
         }
+        let postRequestHashes = reports.compactMap { $0["pixelSha256"] as? String }
+        XCTAssertEqual(postRequestHashes.count, 4)
+        XCTAssertEqual(Set(postRequestHashes).count, 1, "All four post-inference canonical pixel hashes must match: " + postRequestHashes.joined(separator: ","))
         let report: [String: Any] = ["scope": "TEST_ONLY_SHA_PINNED_GENERATED_FIXTURE_NOT_GUEST_DATA",
           "fixturePngSha256": self.sha(png), "rootJpegSha256": self.sha(try Data(contentsOf: source)), "visionRevision": 3,
-          "requestOrientation": "up", "usesCPUOnly": true, "recipeVersion": FaceGeometry.recipeVersion,
+          "requestOrientation": "up", "backendPolicies": ["forced-cpu", "unmodified-default"], "recipeVersion": FaceGeometry.recipeVersion,
           "productionWarmGlassesReceipt": ["detected": receipt.detectedFaceCount ?? -1, "landmarked": receipt.landmarkedFaceCount ?? -1,
             "decorated": receipt.decoratedFaceCount, "fallbackReason": receipt.fallbackReason],
           "independentRepeatsMayVary": true, "variants": reports]
@@ -492,6 +535,7 @@ final class NativePhotoTreatmentEngineTests: XCTestCase {
     let bitNames = ["confidenceAtLeast0.5", "faceWidthAtLeast0.035", "bothEyesInsideFace", "eyeDistanceAtLeastMinimum", "eyeDistanceWithinFaceWidth", "rollWithinPiOver3"]
     var summaries = [[String: Any]]()
     for variant in variants {
+      let failed = variant["status"] as? String == "failure"
       let rows = variant["observations"] as? [[String: Any]] ?? []
       guard rows.count <= 8 else { throw PhotoTreatmentEngine.Failure.resourceLimit }
       var faces = [[String: Any]]()
@@ -511,10 +555,14 @@ final class NativePhotoTreatmentEngineTests: XCTestCase {
       }
       summaries.append(["name": variant["variant"] ?? "unknown", "w": variant["width"] ?? 0, "h": variant["height"] ?? 0,
         "handlerReleased": variant["handlerReleased"] ?? false,
-        "detected": variant["detected"] ?? -1, "landmarked": variant["landmarked"] ?? -1, "faces": faces,
+        "cpuOnly": variant["cpuOnly"] ?? NSNull(), "materialized": variant["materialized"] ?? NSNull(),
+        "pixelSha256": String((variant["pixelSha256"] as? String ?? "").prefix(12)),
+        "representation": variant["representation"] ?? NSNull(), "status": variant["status"] ?? "failure", "error": variant["error"] ?? NSNull(),
+        "detected": variant["detected"] ?? NSNull(), "landmarked": variant["landmarked"] ?? NSNull(), "faces": faces,
         "individual": rows.map { counts($0["individualNoNeighborPlacements"]) },
-        "full": counts(variant["allPlacements"]), "confidence1": counts(variant["TEST_ONLY_confidenceOnePlacements"]),
-        "canonicalFull": counts(variant["TEST_ONLY_canonicalApplePlacements"])])
+        "full": failed ? (NSNull() as Any) : (counts(variant["allPlacements"]) as Any),
+        "confidence1": failed ? (NSNull() as Any) : (counts(variant["TEST_ONLY_confidenceOnePlacements"]) as Any),
+        "canonicalFull": failed ? (NSNull() as Any) : (counts(variant["TEST_ONLY_canonicalApplePlacements"]) as Any)])
     }
     let summary: [String: Any] = ["scope": "TEST_ONLY_SHA_PINNED_GENERATED_FIXTURE_NOT_GUEST_DATA", "fixtureSHA": report["fixturePngSha256"]!, "variants": summaries]
     let compact = try JSONSerialization.data(withJSONObject: summary, options: [.sortedKeys])

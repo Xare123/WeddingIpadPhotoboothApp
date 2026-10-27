@@ -5,7 +5,9 @@ import { SYNTHETIC_FACE_SCOPE, SYNTHETIC_FACE_SHA, SYNTHETIC_VARIANTS, readSynth
 // Parser fixtures only; these do not represent a Vision execution.
 function fixture() {
   return { scope: SYNTHETIC_FACE_SCOPE, fixtureSHA: SYNTHETIC_FACE_SHA,
-    variants: SYNTHETIC_VARIANTS.map(name => ({ name, w: 1122, h: 1402, detected: 1, landmarked: 1,
+    variants: SYNTHETIC_VARIANTS.map((name, index) => ({ name, w: 1122, h: 1402, detected: 1, landmarked: 1,
+      cpuOnly: index % 2 === 0, materialized: index >= 2, pixelSha256: '72a92e976d8a', status: 'success', error: null,
+      representation: { bpc: 8, bpp: 32, rowBytes: 4488, bitmapInfo: 1, isSRGB: true },
       faces: [{ i: 0, b: [0.2, 0.2, 0.3, 0.4], e: [[0.3, 0.4], [0.4, 0.4]], c: 0.9, admissionBits: 63,
         appleE: [[0.3, 0.4], [0.4, 0.4]], appleDeltaMax: 0, directDeltaMax: 0.2, landmarkConfidence: 1, normalizedRepeatDelta: 0 }],
       individual: [{ g: 1, c: 1, h: 1 }], full: { g: 1, c: 1, h: 1 }, confidence1: { g: 1, c: 1, h: 1 },
@@ -38,6 +40,16 @@ test('unknown landmark positions remain unknown instead of becoming zero-coordin
   stage.landmarked = 0; stage.individual = [{ g: 0, c: 0, h: 0 }];
   Object.assign(stage.faces[0], { e: null, appleE: null, appleDeltaMax: null, directDeltaMax: null, admissionBits: 0 });
   assert.deepEqual(validatePlacementSummary(value).variants[0].faces[0], stage.faces[0]);
+});
+
+test('a failed backend cell reports its fixed error code and leaves other measurements intact', () => {
+  const value = fixture();
+  Object.assign(value.variants[1], { status: 'failure', error: { domain: 'vision', code: 9 },
+    detected: null, landmarked: null, faces: [], individual: [], full: null, confidence1: null, canonicalFull: null });
+  assert.deepEqual(validatePlacementSummary(value), value);
+  value.variants[1].error.code = null; assert.equal(validatePlacementSummary(value).variants[1].error.code, null);
+  value.variants[1].detected = 0; assert.throws(() => validatePlacementSummary(value));
+  value.variants[1].detected = null; value.variants[1].error.domain = 'private host or path'; assert.throws(() => validatePlacementSummary(value));
 });
 
 test('order summary distinguishes worker failure, absent result and successful no-placement fallback', () => {

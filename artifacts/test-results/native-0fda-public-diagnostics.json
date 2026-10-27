@@ -1,0 +1,480 @@
+{
+  "source": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40526129427/job/122266097603",
+  "commit": "0fdaac71c8c95cdd34c43aaf4f48f8a5b1f9a68c",
+  "scope": "Generated fixture numeric public CI notices only; no artifact/log download",
+  "records": [
+    {
+      "commit": "0fdaac71c8c95cdd34c43aaf4f48f8a5b1f9a68c",
+      "profile": "photo-treatments",
+      "result": "failed",
+      "stage": "native-pixel-acceptance",
+      "expectedTests": 29,
+      "executed": 29,
+      "failures": 2,
+      "skipped": 0,
+      "classes": {
+        "NativePhotoTreatmentEngineTests": 10,
+        "PhotoEffectsEngineTests": 8,
+        "PhotoTemplateEngineTests": 11
+      },
+      "failedCases": [
+        "NativePhotoTreatmentEngineTests.testActualSeparatedPortraitDecoratesBothPeopleAfterLookWithoutReencodingIntermediate",
+        "NativePhotoTreatmentEngineTests.testLookNoneMatchesExistingEnginePixelsAndRecipeOrderKeepsVectorColors"
+      ],
+      "nativeJpegs": 19,
+      "expectedNativeJpegs": 19,
+      "fullExpoSmokeVerified": false,
+      "error": "Every named baseline and treatment test must pass without failure, skip or missing execution"
+    },
+    {
+      "scope": "TEST_ONLY_SHA_PINNED_GENERATED_FIXTURE_NOT_GUEST_DATA",
+      "fixtureSHA": "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165",
+      "legacyLookByteEqual": true,
+      "treatment": {
+        "detected": 2,
+        "landmarked": 0,
+        "decorated": 0
+      },
+      "reference": {
+        "detected": 2,
+        "landmarked": 0,
+        "decorated": 0
+      },
+      "referenceStatus": "success",
+      "referenceFailure": "none",
+      "referenceJpegPresent": false,
+      "goldPixelCount": 0
+    },
+    {
+      "fixtureSHA": "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165",
+      "variant": {
+        "name": "root-jpeg-bw-1-pixels",
+        "w": 1122,
+        "h": 1402,
+        "detected": 2,
+        "landmarked": 1,
+        "faces": [
+          {
+            "i": 0,
+            "b": [
+              0.13837,
+              0.31365,
+              0.21068,
+              0.1686
+            ],
+            "e": [
+              [
+                0.20988,
+                0.33878
+              ],
+              [
+                0.31596,
+                0.35452
+              ]
+            ],
+            "c": 1,
+            "admissionBits": 63,
+            "appleE": [
+              [
+                0.20988,
+                0.33878
+              ],
+              [
+                0.31596,
+                0.35452
+              ]
+            ],
+            "appleDeltaMax": 0,
+            "directDeltaMax": 0.5269942,
+            "landmarkConfidence": 0.76177,
+            "normalizedRepeatDelta": 0
+          },
+          {
+            "i": 1,
+            "b": [
+              0.64976,
+              0.28123,
+              0.22879,
+              0.1831
+            ],
+            "e": null,
+            "c": 1,
+            "admissionBits": 0,
+            "appleE": [
+              [
+                0.7364,
+                0.31637
+              ],
+              [
+                0.89901,
+                0.36322
+              ]
+            ],
+            "appleDeltaMax": null,
+            "directDeltaMax": 0.3577011,
+            "landmarkConfidence": 0.29337,
+            "normalizedRepeatDelta": 0
+          }
+        ],
+        "individual": [
+          {
+            "g": 1,
+            "c": 1,
+            "h": 1
+          },
+          {
+            "g": 0,
+            "c": 0,
+            "h": 0
+          }
+        ],
+        "full": {
+          "g": 1,
+          "c": 1,
+          "h": 1
+        },
+        "confidence1": {
+          "g": 1,
+          "c": 1,
+          "h": 1
+        },
+        "canonicalFull": {
+          "g": 1,
+          "c": 1,
+          "h": 1
+        },
+        "handlerReleased": true
+      }
+    },
+    {
+      "fixtureSHA": "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165",
+      "variant": {
+        "name": "root-jpeg-warm-0.4-pixels",
+        "w": 1122,
+        "h": 1402,
+        "detected": 2,
+        "landmarked": 2,
+        "faces": [
+          {
+            "i": 0,
+            "b": [
+              0.64986,
+              0.28181,
+              0.22719,
+              0.18182
+            ],
+            "e": [
+              [
+                0.73661,
+                0.34533
+              ],
+              [
+                0.81507,
+                0.3654
+              ]
+            ],
+            "c": 1,
+            "admissionBits": 63,
+            "appleE": [
+              [
+                0.73661,
+                0.34533
+              ],
+              [
+                0.81507,
+                0.3654
+              ]
+            ],
+            "appleDeltaMax": 0,
+            "directDeltaMax": 0.3547424,
+            "landmarkConfidence": 0.85305,
+            "normalizedRepeatDelta": 0
+          },
+          {
+            "i": 1,
+            "b": [
+              0.13757,
+              0.31365,
+              0.21093,
+              0.1688
+            ],
+            "e": [
+              [
+                0.20296,
+                0.34501
+              ],
+              [
+                0.29907,
+                0.36781
+              ]
+            ],
+            "c": 1,
+            "admissionBits": 63,
+            "appleE": [
+              [
+                0.20296,
+                0.34501
+              ],
+              [
+                0.29907,
+                0.36781
+              ]
+            ],
+            "appleDeltaMax": 0,
+            "directDeltaMax": 0.4665862,
+            "landmarkConfidence": 0.84331,
+            "normalizedRepeatDelta": 0
+          }
+        ],
+        "individual": [
+          {
+            "g": 1,
+            "c": 1,
+            "h": 1
+          },
+          {
+            "g": 1,
+            "c": 1,
+            "h": 1
+          }
+        ],
+        "full": {
+          "g": 2,
+          "c": 2,
+          "h": 2
+        },
+        "confidence1": {
+          "g": 2,
+          "c": 2,
+          "h": 2
+        },
+        "canonicalFull": {
+          "g": 2,
+          "c": 2,
+          "h": 2
+        },
+        "handlerReleased": true
+      }
+    },
+    {
+      "fixtureSHA": "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165",
+      "variant": {
+        "name": "root-jpeg-original-pixels",
+        "w": 1122,
+        "h": 1402,
+        "detected": 2,
+        "landmarked": 2,
+        "faces": [
+          {
+            "i": 0,
+            "b": [
+              0.64929,
+              0.28191,
+              0.2273,
+              0.1819
+            ],
+            "e": [
+              [
+                0.72113,
+                0.35122
+              ],
+              [
+                0.78293,
+                0.34108
+              ]
+            ],
+            "c": 1,
+            "admissionBits": 63,
+            "appleE": [
+              [
+                0.72113,
+                0.35122
+              ],
+              [
+                0.78293,
+                0.34108
+              ]
+            ],
+            "appleDeltaMax": 0,
+            "directDeltaMax": 0.4050839,
+            "landmarkConfidence": 0.68563,
+            "normalizedRepeatDelta": 0
+          },
+          {
+            "i": 1,
+            "b": [
+              0.13793,
+              0.31395,
+              0.211,
+              0.16886
+            ],
+            "e": [
+              [
+                0.21168,
+                0.37423
+              ],
+              [
+                0.29042,
+                0.3597
+              ]
+            ],
+            "c": 1,
+            "admissionBits": 63,
+            "appleE": [
+              [
+                0.21168,
+                0.37423
+              ],
+              [
+                0.29042,
+                0.3597
+              ]
+            ],
+            "appleDeltaMax": 0,
+            "directDeltaMax": 0.4322972,
+            "landmarkConfidence": 0.71899,
+            "normalizedRepeatDelta": 0
+          }
+        ],
+        "individual": [
+          {
+            "g": 1,
+            "c": 1,
+            "h": 1
+          },
+          {
+            "g": 1,
+            "c": 1,
+            "h": 1
+          }
+        ],
+        "full": {
+          "g": 2,
+          "c": 2,
+          "h": 2
+        },
+        "confidence1": {
+          "g": 2,
+          "c": 2,
+          "h": 2
+        },
+        "canonicalFull": {
+          "g": 2,
+          "c": 2,
+          "h": 2
+        },
+        "handlerReleased": true
+      }
+    },
+    {
+      "fixtureSHA": "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165",
+      "variant": {
+        "name": "raw-png",
+        "w": 1122,
+        "h": 1402,
+        "detected": 2,
+        "landmarked": 2,
+        "faces": [
+          {
+            "i": 0,
+            "b": [
+              0.13679,
+              0.31388,
+              0.21083,
+              0.16872
+            ],
+            "e": [
+              [
+                0.2413,
+                0.37763
+              ],
+              [
+                0.26292,
+                0.3583
+              ]
+            ],
+            "c": 1,
+            "admissionBits": 63,
+            "appleE": [
+              [
+                0.2413,
+                0.37763
+              ],
+              [
+                0.26292,
+                0.3583
+              ]
+            ],
+            "appleDeltaMax": 0,
+            "directDeltaMax": 0.3353683,
+            "landmarkConfidence": 0.63328,
+            "normalizedRepeatDelta": 0
+          },
+          {
+            "i": 1,
+            "b": [
+              0.65022,
+              0.2822,
+              0.22622,
+              0.18104
+            ],
+            "e": [
+              [
+                0.74653,
+                0.33907
+              ],
+              [
+                0.77795,
+                0.31083
+              ]
+            ],
+            "c": 1,
+            "admissionBits": 63,
+            "appleE": [
+              [
+                0.74653,
+                0.33907
+              ],
+              [
+                0.77795,
+                0.31083
+              ]
+            ],
+            "appleDeltaMax": 0,
+            "directDeltaMax": 0.3207956,
+            "landmarkConfidence": 0.64935,
+            "normalizedRepeatDelta": 0
+          }
+        ],
+        "individual": [
+          {
+            "g": 1,
+            "c": 1,
+            "h": 1
+          },
+          {
+            "g": 1,
+            "c": 1,
+            "h": 1
+          }
+        ],
+        "full": {
+          "g": 2,
+          "c": 2,
+          "h": 2
+        },
+        "confidence1": {
+          "g": 2,
+          "c": 2,
+          "h": 2
+        },
+        "canonicalFull": {
+          "g": 2,
+          "c": 2,
+          "h": 2
+        },
+        "handlerReleased": true
+      }
+    }
+  ]
+}

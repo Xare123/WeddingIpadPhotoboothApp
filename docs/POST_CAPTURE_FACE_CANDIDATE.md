@@ -2,6 +2,8 @@
 
 Branch `codex/post-capture-face-effects` contains candidate **0.3.8/build11**. It is based on the stable MVP handoff `642a367`; the installed `9ed36b4` /0.3.7 build10 is unchanged. **No merge, deployment, signing change or installation is approved by this document.**
 
+Current review status: native acceptance remains **27/29 passing**, with 19 JPEGs exported at `0fdaac7`. The coordinate conversion and getter/handler-lifetime hypotheses were not supported by the measured probe. A bounded test-only execution-policy/image-representation comparison is prepared below; production files remain unchanged.
+
 The reviewed still renderer from exact `9335c18` is copied into the existing local photo module. No camera, countdown, full-original camera patch, device orientation or sharing-provider changes are required. This feature is optional after capture, with **None** as the default. It does not provide live tracking.
 
 ## One approved file through the workflow
@@ -100,4 +102,20 @@ Public summary fields are deliberately small:
 - `g`, `c`, `h` counts mean glasses, crown and hearts placements. `canonicalFull` uses Apple-converted anchors with the same unchanged safety geometry; no resulting image is substituted for the production render.
 - The ordering summary distinguishes `success`, `failure` and `absent`; `referenceJpegPresent` and `goldPixelCount` are observed independently.
 
-Native SDK compilation and these measurements are pending. A coordinate/lifetime change requires evidence from this comparison; normal summaries do not change the required 29 passing cases or 19 JPEGs.
+The selected iOS SDK compiled and executed this probe at `0fdaac7`; normal summaries do not change the required 29 passing cases or 19 JPEGs.
+
+## Measured outcome and bounded backend control
+
+[Run 40526129427](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40526129427), job `122266097603`, again executed 29 methods with 27 passing, the same two failing, none skipped and all 19 JPEGs exported. Its [public numeric notices](../artifacts/test-results/native-0fda-public-diagnostics.json) establish:
+
+- Manual projection matched Apple's conversion exactly for usable eyes (`appleDeltaMax=0`); the unprojected points did not. Changing face-box scaling is not justified.
+- No same-region value changes were observed across getter patterns and handler release (`normalizedRepeatDelta=0`, actual handler release true).
+- Detection confidence was 1, but landmark confidence was lower and varied. In B&W the production and independent reference both completed successfully with two detections, zero usable landmarks, no accessory JPEG and zero ornament-gold pixels. Legacy colour-only JPEG bytes still matched.
+
+The remaining discrepancy is in landmark inference/input processing, not demonstrated coordinate math, result-buffer lifetime or JPEG re-encoding. The copied prototype forces the deprecated CPU-only execution setting. The next test-only screen replaces the earlier four variant requests with **four requests on the same Warm pixels**: forced CPU versus untouched platform default, each with the CI-created image and with a separately owned RGBA bitmap. No requests or timeouts are added. The app renderer and all 29/19 acceptance requirements remain unchanged.
+
+The fixed cell names are `warm-cpu-ci`, `warm-default-ci`, `warm-cpu-copy`, `warm-default-copy`. `cpuOnly` is the observed restriction property; default does not prove GPU/ANE use. `materialized` means an explicit owned bitmap copy only: production's four-argument `createCGImage` does not promise deferred evaluation. The first request precedes any diagnostic CGContext read; hashing after that request may warm the second. The copy is made only after both CI-created-image attempts. Exact canonical RGBA equality and matching post-request hashes are asserted, with measurements retained if an identity assertion fails.
+
+Each normal notice includes the first 12 hash characters, bit depth, pixel depth, row stride, bitmap flags and an sRGB boolean. A per-cell inference error retains the other cells, reports a fixed domain label and exact Int32 code (null if outside that bound), and leaves unmeasured results null. The representation control changes provider/metadata as well as ownership, so it cannot alone prove a specific lifetime defect. There is no production fix or device-readiness claim. Local contract checks for this revision pass **156/156**.
+
+The unchanged source PNG was independently viewed for a future alignment regression: image-left eyes tilt about +8–10° and image-right about −8–10° in top-left coordinates. A count of two placements is insufficient; any measured fix must also be checked against independently annotated eye-centroid windows and actual rendered output.
