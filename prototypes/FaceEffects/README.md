@@ -2,7 +2,7 @@
 
 This is **not part of the wedding app**. It is a separate Swift package on `codex/face-effects-prototype`, based on the preserved `c692013` handoff / native-tested `9ed36b4` app source. No app import, Expo module, CocoaPods change, camera patch or autolinking entry consumes it. Do not switch the active Mac/iPad rehearsal checkout to this branch or install it as a replacement for 0.3.7.
 
-The coordinator reports that signed 0.3.7/build10 is installed in place, with one physical startup/relaunch/orientation check passed and all110 existing saved entries preserved. That evidence belongs to the working app, not this prototype. Current capture/Photos/private-sharing acceptance remains separate.
+The coordinator reports that signed 0.3.7/build10 is installed in place, with physical startup/relaunch/orientation plus a separate four-ceiling-photo persistence/timing/relaunch check passed, with all110 prior saved entries unchanged. That evidence belongs to the working app, not this prototype. Individual/whole-shoot retakes and independent Photos inspection on that run remain unverified; private sharing is still separate.
 
 ## What this advances
 
@@ -49,3 +49,9 @@ Keep the reliable wedding app available throughout. Do not hold its installation
 ## Initial native harness result
 
 At6edb84d, [prototype run40477207626](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40477207626) failed in1m36s at evidence collection because `tests.xml` was absent; [Linux40477207510](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40477207510) passed in1m40s. Do not infer verified native counts from that failed evidence gate. Official [SwiftPM6.3 source](https://github.com/swiftlang/swift-package-manager/blob/swift-6.3-RELEASE/Sources/Commands/SwiftTestCommand.swift#L306) calls its xUnit generator only inside the parallel-runner branch. The bounded repair adds `--parallel --num-workers 2`; it keeps the native implementation and all29 required cases unchanged. A fresh exact-source result is required.
+
+## Verified prototype checkpoint
+
+Exact **537c352f4a0ca56cb4d82582911549d10c16b8cd** now passes [the isolated Apple workflow40477995823](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40477995823), job122100889924, in1m28s: **29 exact native methods, zero failures/skips, iOS SDK typecheck and three distinct native still JPEGs**. [Linux40477995974](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40477995974) passes in1m24s;11 local Node proof cases pass. [The validation record](VALIDATION.json) preserves exact source hashes and boundaries. The native artifact is named `isolated-face-effects-537c352f4a0ca56cb4d82582911549d10c16b8cd`; its three synthetic images await independent visual review by the coordinator. This cloud executor has not downloaded or viewed those outputs. Documentation-only follow-up does not change the tested native implementation or runner.
+
+The public artifact contains actual still-renderer evidence, not app screenshots or live tracking. It is not included in the shipping app or installed on the iPad. Keep the existing wedding app branch/candidate unchanged while deciding whether any later integration is worthwhile.

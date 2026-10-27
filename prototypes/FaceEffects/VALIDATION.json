@@ -1,0 +1,47 @@
+{
+  "branch": "codex/face-effects-prototype",
+  "nativeTestedCommit": "537c352f4a0ca56cb4d82582911549d10c16b8cd",
+  "baselineShippingCommit": "c6920138de3fe239571b1c65cf6750dfd96664ff",
+  "shippingSourceUnchanged": true,
+  "localNodeProofTests": 11,
+  "nativeRun": {
+    "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40477995823",
+    "job": "122100889924",
+    "result": "passed",
+    "duration": "1m28s",
+    "executed": 29,
+    "failed": 0,
+    "skipped": 0,
+    "coverage": [
+      "actual iOS SDK source typecheck",
+      "macOS Release XCTest:10geometry,13framefreshness,6AppleVision/rendering",
+      "three actual still-image JPEGs,960x1200,distincthashes,sourcepreserved"
+    ],
+    "proof": "Public exact-commit CI gate; this executor has not independently downloaded/visually inspected the JPEG artifact"
+  },
+  "linuxRun": {
+    "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40477995974",
+    "result": "passed",
+    "duration": "1m24s"
+  },
+  "sourceSHA256": {
+    "prototypes/FaceEffects/Package.swift": "d182d430a227dd5669d5720e889ae721d2c8d134879c5f02d2bbc45d0d684226",
+    "prototypes/FaceEffects/Sources/FaceEffectsPrototype/AppleFaceEffects.swift": "32058860f72434c7823ed2837d296700e1be0235e712584c0b040eca8daff1fe",
+    "prototypes/FaceEffects/Sources/FaceEffectsPrototype/FaceGeometry.swift": "bba85bd69a07ff69ed711685af9b6953005a6438a8bb72c3172127179a18206e",
+    "prototypes/FaceEffects/Sources/FaceEffectsPrototype/FrameFreshnessGate.swift": "2d1d6615c49a501302cf44861825c7cda3ad26fe161cd0db53f84cb396ee55f3",
+    "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/AppleFaceEffectsTests.swift": "b906e7c2c27c632859b722f4d892e095cda8a00e95fabddea096d1d4aa7db5e7",
+    "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/FrameFreshnessGateTests.swift": "03cc3280f46b51e34a3f462595974836840afe2082edef9ed05cce2a9abbec26",
+    "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/GeometryTests.swift": "b179f19604328a30c41750244b57e7a70deafb17c65590fffc98139a1946e244",
+    "scripts/face-effects-proof.mjs": "e357aadab0c340351f384e395f4dfec75bf8cf914bbb42db5c4826babf61a1a2",
+    "scripts/face-effects-proof.test.mjs": "decfa9ed728f2ad48ae76f779b58030572316c636fe4b5713b1d4170e48a9700",
+    ".github/workflows/face-effects-prototype.yml": "cfa62e2b26558faabedf8418f9b235f605bb26ab616a9a0a953c9bd12878b92b"
+  },
+  "unverified": [
+    "live camera/session attachment",
+    "live tracking or smoothing",
+    "physical M2 iPad Vision/runtime/performance",
+    "app integration/UI/durable face derivatives",
+    "visual signoff of native prototype JPEGs"
+  ],
+  "noProductionActions": true
+}
