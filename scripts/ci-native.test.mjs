@@ -11,6 +11,25 @@ import { annotationText, bounded, diagnosticLines, publicAnnotations, redact, wo
 const ipad = { udid: '11111111-1111-4111-8111-111111111111', name: 'iPad Pro 13-inch (M4)',
   isAvailable: true, state: 'Shutdown', deviceTypeIdentifier: 'com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M4-16GB' };
 
+test('Release UI failure reports bounded geometry without changing its orientation/readiness assertions', () => {
+  const source = readFileSync(new URL('../apps/ipad/native-tests/WeddingPhotoboothReleaseSmokeTests.swift', import.meta.url), 'utf8');
+  assert.equal((source.match(/func test\w+\(/g) ?? []).length, 1);
+  assert.match(source, /frame\.height > frame\.width : frame\.width > frame\.height/);
+  assert.match(source, /XCTWaiter\.wait\(for: \[rotated\], timeout: 15\)/);
+  assert.match(source, /identity\.waitForExistence\(timeout: 40\)/);
+  assert.match(source, /XCTAssertEqual\(result, \.completed, "App must adopt the requested orientation\. \\\(diagnostic\)"\)/);
+  const helper = source.slice(source.indexOf('private func geometryDiagnostic'), source.indexOf('private func assertAttract'));
+  const keys = [...helper.matchAll(/"([A-Za-z]+)":/g)].map(match => match[1]);
+  assert.deepEqual(keys.sort(), ['stage', 'requestedOrientation', 'deviceOrientation', 'appState', 'appExists', 'applicationFrame', 'windowFrames', 'identityExists', 'startExists', 'startHittable', 'systemAlertCount'].sort());
+  assert.match(helper, /prefix\(4\)/);
+  assert.match(helper, /number\.isFinite/);
+  for (const unsafe of ['debugDescription', 'launchEnvironment', 'ProcessInfo', '.label']) assert.equal(helper.includes(unsafe), false);
+  const assertion = source.indexOf('XCTAssertEqual(result, .completed');
+  assert.ok(source.indexOf('geometryDiagnostic(result') < assertion);
+  assert.ok(source.indexOf('XCUIScreen.main.screenshot()') < assertion);
+  assert.match(source, /assertAttract\(\.portrait\)[\s\S]*assertAttract\(\.landscapeLeft\)[\s\S]*app\.terminate\(\)[\s\S]*app\.launch\(\)[\s\S]*assertAttract\(\.landscapeLeft\)[\s\S]*assertAttract\(\.portrait\)/);
+});
+
 test('Swift tools gate rejects the observed Xcode16.4 compiler and absent compiler evidence before Pods', () => {
   assert.throws(() => requireSwiftTools62('Apple Swift version 6.1.0 (swiftlang-6.1.0)\nTarget: arm64-apple-macosx15.0'), /requires Swift tools 6\.2/);
   assert.throws(() => requireSwiftTools62('Apple Swift version 6.1.2\nTarget: Swift tools 6.2.0'), /selected compiler is 6\.1\.2/);

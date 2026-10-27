@@ -1,6 +1,6 @@
 # Mac-to-iPad handoff
 
-The locally validated **0.3.6/build9** adds [orientation and Retake All](ORIENTATION_RETAKES.md). Its App SHA is `d49e6318af58b395d1b90a97359beb4ae542acc7a6f90a7c29b25414b943cd63`; use its exact published/native-verified revision once available for those features. The commands below retain the tested 0.3.5 Host-fix fallback, which is the currently installed version.
+The published exact **`d44b2629ce8275ddbede6f42fd2227db44b85dcb` 0.3.6/build9** adds [orientation and Retake All](ORIENTATION_RETAKES.md). Its App SHA is `d49e6318af58b395d1b90a97359beb4ae542acc7a6f90a7c29b25414b943cd63`; its hosted unsigned Release passed and the coordinator verified a signed Mac candidate with the existing identity/profile, orientation module and camera marker. **Installation remains held** for the unresolved initial-portrait runtime assertion and owner acceptance; see [the diagnostic](NATIVE_RUNTIME_DIAGNOSTIC.md). The commands below retain the tested 0.3.5 Host-fix fallback, which is the currently installed version.
 
 The **0.3.5/build 8 Host-access repair** is published at **`3cc16e6e6780e97fdb3fad7568ac99fab6f43e76`**. Hosted [Linux40433500707](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40433500707) passed in 1m 8s and [unsigned Release40433500769](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40433500769) passed in 21m 8s. Local 380 integrated tests, 97 guards and 30 browser groups/48 screenshots pass. Use that exact revision for the next same-identity Mac build. Actual iPad PIN/biometric verification remains open; never uninstall/reset to test it. Later orientation/Retake All work is separate from this frozen revision.
 
@@ -100,3 +100,5 @@ The separate [private physical XCUITest preparation](PHYSICAL_REHEARSAL.md) is s
 - Verify a second copy/export of originals before any cleanup. Link expiry closes access and does not delete originals. Real SMS remains disabled until provider eligibility, consent/retention handling and budget are approved.
 
 The [native simulator instructions](../apps/ipad/native-tests/README.md) distinguish the standalone Release lane (actual native effects/template tests plus launch smoke) from the historical, unrun Debug synthetic-camera/real-files/SQLite fixture requiring Metro. Neither substitutes for this physical-iPad rehearsal. The current local Swift module and guarded camera plugin require this rebuilt native binary; Expo Go cannot provide the wedding workflow.
+
+After creating Retake All records in0.3.6, stay on0.3.6 or newer. Older clients do not understand attempt state; do not downgrade or reset storage as a repair. Preserve every original and coordinate recovery.

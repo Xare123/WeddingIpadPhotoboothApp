@@ -88,5 +88,50 @@
     "actual R2/guest download/phone QR proof",
     "provider eligibility and coordinator-owned SMS scope"
   ],
-  "faceTracking": "feasibility only, not implemented"
+  "faceTracking": "feasibility only, not implemented",
+  "hosted": {
+    "appCommit": "d44b2629ce8275ddbede6f42fd2227db44b85dcb",
+    "linux": {
+      "run": "40440776662",
+      "result": "passed",
+      "duration": "1m16s"
+    },
+    "unsignedRelease": {
+      "run": "40440776739",
+      "job": "121980331189",
+      "result": "passed",
+      "duration": "15m24s",
+      "coverage": "iphoneos compilation, embedded JS/iPad metadata; no signing/device execution"
+    },
+    "fullRuntime": {
+      "run": "40440776828",
+      "job": "121980331378",
+      "executed": 20,
+      "passed": 19,
+      "failed": 1,
+      "skipped": 0,
+      "failure": "WeddingPhotoboothReleaseSmokeTests.testReleaseColdLaunchAndRelaunchWithoutMetro initial portrait application-frame assertion",
+      "cause": "undetermined: startup, window geometry and XCUIApplication.frame reporting not distinguished by retained evidence",
+      "hostOrientationControlsExercised": false,
+      "appRelaunchExercised": false,
+      "rawXcresult": "withheld by existing artifact guard; no bypass"
+    }
+  },
+  "signedMacCandidate": {
+    "version": "0.3.6/build9",
+    "appCommit": "d44b2629ce8275ddbede6f42fd2227db44b85dcb",
+    "compiled": true,
+    "duration": "4m34s",
+    "existingIdentityPreserved": true,
+    "orientationModuleCompiled": "58.0.3",
+    "cameraMarkerVerified": true,
+    "installed": false
+  },
+  "diagnosticFollowup": {
+    "productionAppChanged": false,
+    "sourcePreparationContractsPassed": 99,
+    "swiftCompilation": "pending Mac/Xcode validation",
+    "change": "fixed-key state/application-window geometry in existing smoke failure message; same predicate, waits and20 required tests",
+    "rerun": "not started by this diagnostic source publication"
+  }
 }

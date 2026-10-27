@@ -6,6 +6,8 @@ The app does not contain a Cloudflare account token, Textbelt key, gallery-signi
 
 ## Data-scope approval before pairing
 
+The coordinator’s current approval gate covers the dedicated Worker/iPad credential and existing confirmed real-photo uploads. It remains **pending**. Do not infer it from installation approval, prepare a live code early, configure credentials here or upload photos.
+
 **Pairing automatically starts upload of EXISTING CONFIRMED queued sessions, including real photos already on this iPad.** It is not just a connectivity or login test. A successful pairing can transmit those confirmed originals/derivatives/keepsakes to private R2 and later create working guest links. Pending counts and retry counts do not prove any such transfer has occurred.
 
 The latest authorized app-container check found four originals with matching journals, one keepsake, SQLite integrity and five pending uploads at attempt count 15, with no URL or error. Pairing state is unknown; no Keychain value was read. The owner confirmed all test photos were in Apple Photos and then intentionally deleted some. Do not restore/re-export those copies or inspect unrelated Photos content.
