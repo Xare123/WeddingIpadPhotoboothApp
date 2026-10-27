@@ -1,0 +1,69 @@
+{
+  "candidate": {
+    "version": "0.3.7",
+    "build": "10",
+    "baselineAppCommit": "d44b2629ce8275ddbede6f42fd2227db44b85dcb",
+    "sourceSHA256": {
+      "apps/ipad/app.json": "274f822e55c5ac16b967f5cfea80ed2df915ad3af738363ea1878e2b19930475",
+      "apps/ipad/index.ts": "af10e01cf5fa6d399a83829926cc80d935c1dca8fb01313ab7cb54aab84c028b",
+      "apps/ipad/src/orientation-native.ts": "030f647fb04da3538cb96dc9cf9235e5fcbcfee72fbf02c2ed7da11e3acd3e31",
+      "apps/ipad/test/native-startup-entry.test.ts": "316f5af0a2dce3da38df4b2043ccccfb90e77fc16f978e98b063c1cb813a0f2e",
+      "apps/ipad/test/orientation-import-boundary.test.ts": "c1098af413fdfcbde0a8b0b7ae07fc2a68747fa7928d3f44b877e536b2b04a72",
+      "scripts/prepare-ios-physical-tests.mjs": "4a210de144ba544238fa00b9661b9d1ac8545916224d5c66ba820d7abd113739",
+      "scripts/prepare-ios-physical-tests.test.mjs": "fd7f18cb3d7045e5ddff946d7510fbda60027fb180b4e3f1aa3ec1bdbfeb1742",
+      "scripts/reproduce-rn-namespace.mjs": "7158a1b27afafef75399cab697ddfc5742c8db1e479380cb7a621603ad47f1b6",
+      "artifacts/test-results/rn-namespace-mechanism.json": "a3d1ccc32fbb27d3d410a14e894749de2ab5138bda95dc7cc21b45a86a953ba2",
+      "docs/NATIVE_RUNTIME_DIAGNOSTIC.md": "5f098d0e4756636d23cb0c55f00fdc3356b891299369a707e4c87b1bcc241d75",
+      "docs/ORIENTATION_RETAKES.md": "e502b28b49164ad01036e59ad7c38ccb805838d8a29259535c4e5381be160cd3",
+      "docs/OWNER_IPAD_HANDOFF.md": "535f4bfef5e82e8a78188dbc8fe829768781655c66d378109e6f7c0646efac9e",
+      "docs/VALIDATION.md": "61655c13cc5ce96e924ba1690550fabf8f6f3aca1f8aa4fd9a7ff0398a533107",
+      "docs/WORKING_GOAL.md": "5cf00352042870e3856e896468959fc7173ef609e8ca8a6718314bed390de248"
+    }
+  },
+  "checks": {
+    "applicationTests": {
+      "executed": 474,
+      "passed": 474,
+      "failed": 0,
+      "skipped": 0
+    },
+    "toolingTests": {
+      "executed": 138,
+      "passed": 138,
+      "failed": 0,
+      "skipped": 0
+    },
+    "workspaceTypechecks": "passed",
+    "iosHermesExport": {
+      "passed": true,
+      "modules": 1060,
+      "assets": 2
+    },
+    "independentInstalledSourceMechanismControls": 3,
+    "actualMetroAdapterBoundaryCases": 3,
+    "publicationContentCheck": "passed_for_explicit_candidate_files"
+  },
+  "priorDiagnostic": {
+    "commit": "d553a00e2cd67a0a00753183a3af8fbb878828dc",
+    "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40459566660",
+    "job": "122040702149",
+    "state": "failed",
+    "duration": "36m23s",
+    "termination": "EXC_CRASH / SIGABRT / SIGNAL code 6",
+    "availability": {
+      "KeyboardObserver": "available",
+      "AppState": "available",
+      "WebSocketModule": "available",
+      "Animated": "available"
+    },
+    "app": "notRunning_no_window",
+    "fullCaseTotals": "awaiting_authenticated_summary"
+  },
+  "limitations": [
+    "Initial bare npm run check passed typechecks/tests but export failed on the unconfigured Expo cache path; sourcing scripts/cloud-env.sh and rerunning only the export passed.",
+    "VM controls substitute platform/native and unrelated UI boundaries; they do not run Hermes, TurboModule registration, UIKit or the physical iPad.",
+    "Fresh native runtime, unsigned device Release and matching signed Mac build remain pending.",
+    "No UI, native Swift, dependency, storage, auth or Worker change; prior UI evidence stays at its exact original boundaries.",
+    "No credential generation, pairing, production upload, real SMS, installation or owner authentication prompt occurred."
+  ]
+}

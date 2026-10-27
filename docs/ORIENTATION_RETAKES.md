@@ -1,6 +1,6 @@
 # Display orientation and whole-shoot retakes
 
-Version **0.3.6 / build 9** adds persisted **Auto / Portrait / Landscape** Host settings and a non-destructive **Retake all 4** flow. The frozen App SHA-256 is `d49e6318af58b395d1b90a97359beb4ae542acc7a6f90a7c29b25414b943cd63`. This candidate is locally validated; publication and fresh hosted results must be recorded separately. The coordinator verified that the earlier Host repair, exact `3cc16e6e6780e97fdb3fad7568ac99fab6f43e76` (0.3.5/build 8), is installed in place with the existing identity and data preserved. It has not yet been launched or authenticated.
+Version **0.3.6 / build 9** adds persisted **Auto / Portrait / Landscape** Host settings and a non-destructive **Retake all 4** flow. The frozen App SHA-256 is `d49e6318af58b395d1b90a97359beb4ae542acc7a6f90a7c29b25414b943cd63`. That feature source passed local and device compilation checks but failed startup; the targeted0.3.7/build10 repair now needs its own native results. See [startup evidence](NATIVE_RUNTIME_DIAGNOSTIC.md). The coordinator verified that the earlier Host repair, exact `3cc16e6e6780e97fdb3fad7568ac99fab6f43e76` (0.3.5/build 8), is installed in place with the existing identity and data preserved. The owner now confirms Host Settings opens; controlled authentication/relocking acceptance remains separate.
 
 ## Display controls
 

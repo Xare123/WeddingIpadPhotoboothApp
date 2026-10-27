@@ -47,7 +47,7 @@ export function preparePhysicalTests({ repository, output, appBundleID, developm
   }
   if (existsSync(output)) throw new Error('Output already exists; preserve existing work');
   const app = JSON.parse(readFileSync(join(repository, 'apps/ipad/app.json'), 'utf8'));
-  if (app.expo?.version !== '0.3.6' || app.expo?.ios?.buildNumber !== '9') throw new Error('Review this rehearsal against the new app version before preparing it');
+  if (app.expo?.version !== '0.3.7' || app.expo?.ios?.buildNumber !== '10') throw new Error('Review this rehearsal against the new app version before preparing it');
   for (const [path, digest] of Object.entries(reviewedUI)) {
     if (hash(readFileSync(join(repository, path))) !== digest) throw new Error('Reviewed app accessibility source changed; revalidate this runner');
   }

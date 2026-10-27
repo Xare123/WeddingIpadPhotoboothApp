@@ -29,7 +29,7 @@ test('new private project contains only a folder-synchronized UI runner and exac
   assert.equal(plan.applicationTarget, false); assert.equal(plan.sourcePreparationOnly, true);
   assert.equal(plan.previousNativeApplicationCommit, PREVIOUS_NATIVE_APPLICATION_COMMIT);
   assert.equal('applicationSourceCommit' in plan, false);
-  assert.deepEqual({ version: plan.applicationReview.version, build: plan.applicationReview.build }, { version: '0.3.6', build: '9' });
+  assert.deepEqual({ version: plan.applicationReview.version, build: plan.applicationReview.build }, { version: '0.3.7', build: '10' });
   for (const [path, hash] of Object.entries(plan.applicationReview.sourceSHA256)) assert.equal(hash, digest(readFileSync(join(root, path))));
   assert.equal(plan.runnerBundleID, c.appBundleID + '.physicaltests.xctrunner');
   assert.equal(statSync(c.output).mode & 0o777, 0o700);

@@ -1,0 +1,64 @@
+{
+  "result": "three-controls-passed",
+  "installedSources": [
+    {
+      "path": "node_modules/@expo/cli/build/metro-require/require.js",
+      "sha256": "ea850a7bf97d58f00424e61a96702ae6a27973ec6d6ab173bdf30fbfc46ddc28"
+    },
+    {
+      "path": "node_modules/react-native/index.js",
+      "sha256": "5334aaacd835aa6e30a2fc18a6fb258af4e84b107d59aa91a10db1fa58439248"
+    },
+    {
+      "path": "node_modules/react-native/Libraries/PushNotificationIOS/PushNotificationIOS.js",
+      "sha256": "80f5f87cc9f8777c71886f990bb79e5b5d251ce1b5b28742a81414069d57e9bd"
+    },
+    {
+      "path": "node_modules/react-native/Libraries/EventEmitter/NativeEventEmitter.js",
+      "sha256": "ca25a6d9d649270c512fe6a6ee5fd8a33d418fc571cb0f649846187961c2ef54"
+    },
+    {
+      "path": "node_modules/expo/src/async-require/asyncRequireModule.ts",
+      "sha256": "4eb2fd570e3ed539ecbbf6117c62d7641aa0a40bde570fbc35d4cf30c824b7b8"
+    },
+    {
+      "path": "apps/ipad/src/orientation-native.ts",
+      "sha256": "030f647fb04da3538cb96dc9cf9235e5fcbcfee72fbf02c2ed7da11e3acd3e31"
+    }
+  ],
+  "controls": [
+    {
+      "mode": "named-commonjs-dimensions",
+      "nativePushPresent": false,
+      "pushGetterEvaluated": false,
+      "realNativeEventEmitterEvaluated": false,
+      "dimensionsReturned": true,
+      "threwExactInvariant": false,
+      "errorMessage": null
+    },
+    {
+      "mode": "actual-expo-async-import-all",
+      "nativePushPresent": false,
+      "pushGetterEvaluated": true,
+      "realNativeEventEmitterEvaluated": true,
+      "dimensionsReturned": false,
+      "threwExactInvariant": true,
+      "errorMessage": "`new NativeEventEmitter()` requires a non-null argument."
+    },
+    {
+      "mode": "actual-expo-async-import-all",
+      "nativePushPresent": true,
+      "pushGetterEvaluated": true,
+      "realNativeEventEmitterEvaluated": true,
+      "dimensionsReturned": true,
+      "threwExactInvariant": false,
+      "errorMessage": null
+    }
+  ],
+  "actualExpoLoader": "The same @expo/cli loader path appears in the existing exported iOS source map; source evaluates exports[key] in metroImportAll.",
+  "limitations": [
+    "Production RN index, PushNotificationIOS, NativeEventEmitter and Expo async-require/loader sources were unmodified; Babel strips types/module syntax for this VM.",
+    "Only platform/native dependency boundaries and unrelated RN getters were substituted. No simulator, TurboModule registration, UIKit, Hermes or app lifecycle was executed.",
+    "This proves the eager namespace-import failure mechanism, not that the active hosted run reached this call or that the proposed app change passes on iOS."
+  ]
+}

@@ -66,7 +66,9 @@ export async function loadNativeOrientationPort(options: NativeOrientationOption
   try {
     [sdk, window] = await Promise.all([
       (options.loadSDK ?? (() => import('expo-screen-orientation')))(),
-      (options.loadWindow ?? (async () => (await import('react-native')).Dimensions))(),
+      // Metro's namespace import reads every CommonJS export getter. RN keeps
+      // optional native APIs behind those getters; read only the one we need.
+      (options.loadWindow ?? (async () => require('react-native').Dimensions))(),
     ]);
     if (!sdk || !window || typeof sdk.supportsOrientationLockAsync !== 'function'
       || typeof sdk.lockAsync !== 'function' || typeof sdk.unlockAsync !== 'function'
