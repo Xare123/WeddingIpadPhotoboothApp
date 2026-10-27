@@ -34,18 +34,22 @@
   },
   "hostedGates": {
     "nativePixels": {
-      "run": "40512638049",
-      "job": "122218157449",
-      "commit": "6492010409d499399277ce9d0ecea6c911a1acc4",
+      "run": "40516218241",
+      "job": "122230704240",
+      "commit": "316ce2daf31e2149168c954ba1cb3bd1e0e881df",
       "result": "failed acceptance",
       "executed": 29,
       "passed": 27,
-      "failedMethods": 2,
+      "failedMethods": [
+        "NativePhotoTreatmentEngineTests.testActualSeparatedPortraitDecoratesBothPeopleAfterLookWithoutReencodingIntermediate",
+        "NativePhotoTreatmentEngineTests.testLookNoneMatchesExistingEnginePixelsAndRecipeOrderKeepsVectorColors"
+      ],
       "skipped": 0,
       "nativeJpegs": 19,
       "expectedNativeJpegs": 19,
-      "knownAssertion": "Separated-pair Warm/glasses decorated1 vs2 and partial vsnone; second failed method requires full result inventory",
-      "diagnosis": "test-only generated-fixture PNG/JPEG/Warm comparison prepared; production renderer unchanged; no fix claimed"
+      "baselineMethodsPassed": 19,
+      "knownAssertion": "Separated-pair Warm/glasses decorated1 vs2 and partial vsnone",
+      "detailAccess": "Direct artifact and job-log downloads returned Forbidden; no geometry or parity fix claimed"
     },
     "unsignedRelease": {
       "run": "40512638110",
@@ -60,6 +64,25 @@
     "linux": {
       "run": "40512638138",
       "commit": "6492010409d499399277ce9d0ecea6c911a1acc4",
+      "result": "passed"
+    },
+    "firstNativePixels": {
+      "run": "40512638049",
+      "job": "122218157449",
+      "commit": "6492010409d499399277ce9d0ecea6c911a1acc4",
+      "result": "failed acceptance",
+      "executed": 29,
+      "passed": 27,
+      "failedMethods": 2,
+      "skipped": 0,
+      "nativeJpegs": 19,
+      "expectedNativeJpegs": 19,
+      "knownAssertion": "Separated-pair Warm/glasses decorated1 vs2 and partial vsnone; second failed method requires full result inventory",
+      "diagnosis": "test-only generated-fixture PNG/JPEG/Warm comparison prepared; production renderer unchanged; no fix claimed"
+    },
+    "diagnosticLinux": {
+      "run": "40516218265",
+      "commit": "316ce2daf31e2149168c954ba1cb3bd1e0e881df",
       "result": "passed"
     }
   },
@@ -81,14 +104,41 @@
     "artifacts/visual/face-effects-evidence.json": "afe58a7707a2e5d3c5f3d31236d7adf8690efe48f69da44e494abdc152ca6af9",
     "artifacts/visual/face-effects-sha256.txt": "48496cf92be55f0ffdf7f007a6b9c638dedcd4f4e06956e502c4e46a9d3de5d1"
   },
-  "lastUpdatedAt": "2026-10-27T13:54:08.356660+00:00",
+  "lastUpdatedAt": "2026-10-27T14:15:26.996771+00:00",
   "diagnosticFollowup": {
     "scope": "Test-only; no production behavior or acceptance change",
     "nativeTestSha256": "c0c167816477d9ffee1e5bd93e8692403a65c323040e164482cd566c176b71e2",
     "nativeProductionBytesUnchanged": true,
     "localContracts": 149,
     "stdout": "SHA-guarded ASCII synthetic JSON in indexed6000-byte chunks, below logger line cap",
-    "runtime": "pending targeted iOS run; no fix claimed",
-    "independentReview": "GO; original stdout-cap caveat repaired by chunking"
+    "runtime": "29 executed;27passed;2same methods failed;19JPEGs exported; no fix claimed",
+    "independentReview": "GO; original stdout-cap caveat repaired by chunking",
+    "commit": "316ce2daf31e2149168c954ba1cb3bd1e0e881df"
+  },
+  "accessBlocker": {
+    "actions": [
+      {
+        "action": "Read official Actions artifacts",
+        "target": "productionresultssa4.blob.core.windows.net",
+        "outcome": "Forbidden; download did not complete"
+      },
+      {
+        "action": "Read official Actions job log",
+        "target": "results-receiver.actions.githubusercontent.com",
+        "outcome": "Forbidden; log was not downloaded"
+      },
+      {
+        "action": "Read GitHub run metadata after environment recovery",
+        "target": "api.github.com",
+        "outcome": "Forbidden; public github.com status/annotation reads had succeeded"
+      }
+    ],
+    "noBypassOrCredentialChanges": true,
+    "smallestNeededHandoff": [
+      "Full assertion messages for testLookNoneMatchesExistingEnginePixelsAndRecipeOrderKeepsVectorColors",
+      "Synthetic JSON chunks from xcode-test.log, or synthetic-face-placement-diagnostic attachment",
+      "Three actual treatment JPEGs for visual inspection"
+    ],
+    "installationGate": "NOT APPROVED; isolated candidate only; stable installed0.3.7unchanged"
   }
 }

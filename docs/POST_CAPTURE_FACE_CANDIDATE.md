@@ -65,3 +65,18 @@ At source `6492010409d499399277ce9d0ecea6c911a1acc4`, hosted [Linux verification
 The public annotation identifies separated-pair Warm/glasses assertions: one decorated face instead of two, with partial instead of complete placement. The other failed method must be identified from the full result inventory; the first two assertion lines do not establish its identity. This pure Swift failure occurs before Expo/JavaScript conversion. PNG/JPEG conversion, colour processing and iOS/macOS Vision differences remain hypotheses, not established causes.
 
 A test-only follow-up compares raw PNG, decoded root JPEG and the exact Warm pixel path on one iOS runtime. It emits bounded, SHA-guarded **fictional-fixture-only** geometry and actual unchanged placement results into `xcode-test.log` under indexed `SYNTHETIC_FACE_PLACEMENT_JSON_CHUNK i/n` lines of at most 6,000 payload bytes (concatenate payloads in order), with an attachment named `synthetic-face-placement-diagnostic`. All copied production sources and acceptance assertions remain unchanged. This diagnostic is not a fix or a claim of two-person success. The existing browser evidence fingerprints the earlier native test source; App, native production code and all browser-rendered inputs are unchanged.
+
+The diagnostic-only revision `316ce2daf31e2149168c954ba1cb3bd1e0e881df` completed [Linux verification](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40516218265) successfully. Its [iOS run](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40516218241), job `122230704240`, again executed 29 methods: **27 passed, two failed, zero skipped; 19 JPEGs exported**. All 19 baseline methods passed. The failed methods are:
+
+- `NativePhotoTreatmentEngineTests.testActualSeparatedPortraitDecoratesBothPeopleAfterLookWithoutReencodingIntermediate`
+- `NativePhotoTreatmentEngineTests.testLookNoneMatchesExistingEnginePixelsAndRecipeOrderKeepsVectorColors`
+
+The native production files, app and bridge are byte-identical to the successful unsigned Release revision. The Release lane was intentionally skipped for the diagnostic-only change. No production fix, merge, deployment or installation was performed.
+
+### Exact blocker and next evidence
+
+The executor could read public run status/annotations and initially read authenticated GitHub metadata. Official artifact downloads were denied with **Forbidden** at `productionresultssa4.blob.core.windows.net`; the official job-log read was denied at `results-receiver.actions.githubusercontent.com`. After an automatic executor recovery, the final `api.github.com` metadata read was also denied. Downloads did not complete; no alternate proxy, host, credential extraction or network grant was used.
+
+An authorized coordinator must inspect the full assertion messages for the second method, the synthetic JSON chunks in `xcode-test.log` (or the JSON attachment), and the three actual treatment JPEGs. The retained artifact names are `native-pixels-evidence-316ce2daf31e2149168c954ba1cb3bd1e0e881df` and `native-pixels-jpegs-316ce2daf31e2149168c954ba1cb3bd1e0e881df`. Use an already authorized supported connector or an approved managed-access remedy. Do not repeat the unchanged run, relax protection/assertions, or infer a geometry/encoding fix from the two known method names alone.
+
+The isolated candidate remains held. The installed wedding app remains 0.3.7/build10. Environment draft revision 30 still pins stable source `642a3676a4993ec9880f44e45ee2b6b48aaf7a8d`; it was not repinned to this experimental branch. Snapshot publication/fresh restoration is not established by these checks.
