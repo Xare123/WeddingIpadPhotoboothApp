@@ -4,7 +4,7 @@ The owner has approved one dedicated booth credential and private upload of the 
 
 The connected automation explicitly denies requests to this origin. The Cloudflare management API cannot issue the application's one-use setup code. **Do not run the issuance request through an agent, Mac executor, preview, proxy or alternative hostname to bypass that denial.** No supported connector-access remedy has been verified. The procedure below is for the owner to run personally in their own terminal/session; it is not a connector workaround to be executed by automation.
 
-The installed 0.3.5 app's Host Settings now opens according to the owner. The separate [0.3.7 startup repair](RELEASE_0_3_7.md) now passes its hosted native checks; its matching signed Mac build and iPad acceptance remain pending. The older signed 0.3.6 artifact remains held. Pairing and native-update acceptance are independent. Keep every original, app container and signing identity intact.
+The matching signed [0.3.7/build10 app](RELEASE_0_3_7.md) is now installed, with coordinator-verified startup and four-photo persistence/timing/relaunch checks. Host access was earlier owner-confirmed; current retakes and independent current-run Photos inspection remain open. No rebuild/reinstall is required to use private setup. The older signed0.3.6 artifact remains held. Pairing is independent of the source-only test-harness correction. Keep every original, app container and signing identity intact.
 
 ## Prepare the private handoff
 
