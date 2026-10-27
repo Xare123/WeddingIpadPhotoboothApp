@@ -1,0 +1,29 @@
+{
+  "scope": "owner-operated manual setup utility; automation tests offline only",
+  "ownerCLI": "scripts/owner-private-setup.mjs",
+  "sourceSHA256": "86bbfd96536cffc901ee35d1a464502f33b7e37c491301746c5a219fa6f9df8e",
+  "offlineTests": {
+    "executed": 18,
+    "passed": 18,
+    "failures": 0,
+    "skipped": 0
+  },
+  "networkRequestsInAutomation": 0,
+  "productionCredentialsGenerated": 0,
+  "liveCodesIssued": 0,
+  "realSmsSent": 0,
+  "fixedOrigin": "https://photos.gizelleandrami.com",
+  "newAdminScopes": false,
+  "transport": "owner-only native HTTPS, TLS verification, no redirects/retries,10s deadline,8KiB cap",
+  "privateFiles": "0700 folder outside Git;0600 files; no symlinks or overwrite; durable issuance marker before request",
+  "cleanup": "only temporary pairing code and issuance metadata; retains DEVICE_TOKEN and unknown files",
+  "connectorRemedyVerified": false,
+  "agentExecutionOfDeniedRequestAuthorized": false,
+  "ownerApproval": "dedicated credential/private confirmed queued-photo uploads approved; no values or recipient identifiers in this report",
+  "physicalHostEvidence": "owner confirms installed0.3.5 Host Settings opens; controlled authentication paths remain separate",
+  "limits": [
+    "This utility does not deploy or configure the Worker.",
+    "No claim of live pairing,upload,SMS,or actual owner execution.",
+    "Held0.3.6 native startup gate remains open."
+  ]
+}
