@@ -6,7 +6,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { preparePhysicalTests, PHYSICAL_SCHEME, PHYSICAL_TARGET, PREVIOUS_NATIVE_APPLICATION_COMMIT } from './prepare-ios-physical-tests.mjs';
+import { preparePhysicalTests, PHYSICAL_SCHEME, PHYSICAL_TARGET, PREVIOUS_NATIVE_APPLICATION_COMMIT, PHYSICAL_APPLICATION_REVIEWS } from './prepare-ios-physical-tests.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const digest = data => createHash('sha256').update(data).digest('hex');
@@ -29,7 +29,7 @@ test('new private project contains only a folder-synchronized UI runner and exac
   assert.equal(plan.applicationTarget, false); assert.equal(plan.sourcePreparationOnly, true);
   assert.equal(plan.previousNativeApplicationCommit, PREVIOUS_NATIVE_APPLICATION_COMMIT);
   assert.equal('applicationSourceCommit' in plan, false);
-  assert.deepEqual({ version: plan.applicationReview.version, build: plan.applicationReview.build }, { version: '0.3.7', build: '10' });
+  assert.deepEqual({ version: plan.applicationReview.version, build: plan.applicationReview.build }, { version: '0.3.8', build: '11' });
   for (const [path, hash] of Object.entries(plan.applicationReview.sourceSHA256)) assert.equal(hash, digest(readFileSync(join(root, path))));
   assert.equal(plan.runnerBundleID, c.appBundleID + '.physicaltests.xctrunner');
   assert.equal(statSync(c.output).mode & 0o777, 0o700);
@@ -85,6 +85,21 @@ test('a later app version or changed accessibility source requires a new review'
   const config = JSON.parse(readFileSync(join(repository, 'apps/ipad/app.json'))); config.expo.version = '99.0.0';
   writeFileSync(join(repository, 'apps/ipad/app.json'), JSON.stringify(config));
   assert.throws(() => preparePhysicalTests(configuration(t, { repository })), /new app version/);
+});
+
+test('explicit review inventory preserves the installed build and rejects mismatched candidate build numbers', t => {
+  assert.deepEqual(PHYSICAL_APPLICATION_REVIEWS.map(({ version, build }) => ({ version, build })), [
+    { version: '0.3.7', build: '10' }, { version: '0.3.8', build: '11' },
+  ]);
+  assert.equal(PHYSICAL_APPLICATION_REVIEWS[0].sourceSHA256['apps/ipad/App.tsx'], 'd49e6318af58b395d1b90a97359beb4ae542acc7a6f90a7c29b25414b943cd63');
+  assert.ok(Object.isFrozen(PHYSICAL_APPLICATION_REVIEWS));
+  const repository = join(directory(t), 'repository'), path = join(repository, 'apps/ipad/app.json');
+  mkdirSync(dirname(path), { recursive: true });
+  const config = JSON.parse(readFileSync(join(root, 'apps/ipad/app.json')));
+  config.expo.ios.buildNumber = '12'; writeFileSync(path, JSON.stringify(config));
+  const c = configuration(t, { repository });
+  assert.throws(() => preparePhysicalTests(c), /new app version/);
+  assert.equal(existsSync(c.output), false);
 });
 
 test('cache, cache-child and external aliases cannot redirect generated identity data into public artifacts', t => {

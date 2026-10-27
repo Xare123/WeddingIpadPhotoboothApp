@@ -12,9 +12,10 @@
       "logSha256": "0a611d05f412aa403db813cfa0904eb4920e4b9a01406e32fa51d5fe316abbf7"
     },
     "ciContractTests": {
-      "passed": 101,
+      "passed": 149,
       "failed": 0,
-      "skipped": 0
+      "skipped": 0,
+      "scope": "Complete Linux preflight plus treatment profile, after adding the exact candidate to the source-only physical runner review registry"
     },
     "typecheck": "passed all workspaces",
     "iosHermesExport": "passed",
@@ -33,7 +34,12 @@
   },
   "hostedGates": {
     "nativePixels": "pending exact-commit run; requires 29 XCTest cases and 19 native JPEGs",
-    "unsignedRelease": "pending exact-commit run; compile is not bridge/device runtime acceptance"
+    "unsignedRelease": "pending exact-commit run; compile is not bridge/device runtime acceptance",
+    "firstLinuxRun": {
+      "run": "40511920808",
+      "commit": "9fa06d76dd6b1e07cd255d9ab8c3288f32423cdf",
+      "result": "failed before product tests: source-preparation guard correctly rejected unreviewed 0.3.8/build11; reproduced locally; exact-version/UI review added without arming or execution"
+    }
   },
   "notVerified": [
     "Expo treatment bridge runtime",
