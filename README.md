@@ -27,7 +27,10 @@ bash scripts/dev-api.sh
 
 ```sh
 npm run smoke
+node scripts/smoke-four-keepsake.mjs
 ```
+
+The first check covers legacy five-photo sessions and mocked sharing; the second checks four originals plus a V2 keepsake, exact download bytes and revocation.
 
 The API binds to loopback port 8787, uses local disk-backed R2, and never sends texts. Its URLs are local test artifacts, not guest-accessible links. No Cloudflare account, SMS credential, or paid service is needed for these checks. `npm run dev:ipad` starts the native Metro development server for internal readiness checks; it does not install an iPad app or expose a cloud preview.
 

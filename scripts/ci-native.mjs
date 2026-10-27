@@ -12,6 +12,7 @@ const derived = join(process.env.RUNNER_TEMP ?? '/tmp', 'wedding-native-derived'
 const resultBundle = join(diagnostics, 'native-tests.xcresult');
 const mode = process.argv[2] ?? 'ui-tests';
 const settings = nativeModeSettings(mode);
+const invocationStartedAt = new Date().toISOString();
 const status = { mode, nativeBuild: 'unrun', result: 'running', stages: [], fixture: settings.fixture };
 mkdirSync(diagnostics, { recursive: true });
 const saveStatus = () => writeFileSync(join(diagnostics, 'status.json'), JSON.stringify(status, null, 2));
@@ -320,6 +321,23 @@ try { await main(); }
 catch (error) {
   status.result = cancellation ? 'cancelled' : 'failed'; status.error = redact(error instanceof Error ? error.message : String(error)); process.exitCode = cancellation?.code ?? 1;
   if (mode === 'release-build' && status.nativeBuild === 'running') status.nativeBuild = 'failed';
+  // A missing application frame can mean the app stopped. Collect only this
+  // run's disposable-simulator startup evidence before deleting that simulator.
+  // The collector emits reduced JSON, never raw OS logs or crash reports.
+  if (mode === 'release-runtime' && createdHere && simulator && !cancellation &&
+      status.stages.some(stage => stage.name === 'xcode-test' && stage.result === 'failed')) {
+    runtimePhase = 'startup-diagnostics'; phaseDeadline = Date.now() + 30_000;
+    try {
+      const collected = await command('startup-diagnostics', process.execPath,
+        ['scripts/collect-ios-startup-diagnostics.mjs', '--simulator', simulator.udid, '--since', invocationStartedAt],
+        { timeout: 25_000, allowFailure: true, structured: 'json', stdoutLimit: 20_000 });
+      const report = collected.json;
+      if (collected.code === 0 && report?.schemaVersion === 1 && Array.isArray(report.publicMessages)) {
+        writeFileSync(join(diagnostics, 'runtime-startup-diagnostics.json'), JSON.stringify(report, null, 2) + '\n');
+        status.startupEvidence = report.status;
+      } else status.startupEvidence = 'unavailable';
+    } catch { status.startupEvidence = 'unavailable'; }
+  }
   if (metro) {
     try {
       status.metroProcessTree = ownedProcessTree(metro.pid);

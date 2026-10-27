@@ -33,7 +33,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - name: Verify native CI and physical preparation guards
-        run: node --test scripts/ci-native.test.mjs scripts/native-camera-capability.test.mjs scripts/ci-native-pixels.test.mjs scripts/ci-native-pixels-results.test.mjs scripts/prepare-ios-physical-tests.test.mjs
+        run: node --test scripts/ci-native.test.mjs scripts/native-camera-capability.test.mjs scripts/ci-native-pixels.test.mjs scripts/ci-native-pixels-results.test.mjs scripts/prepare-ios-physical-tests.test.mjs scripts/collect-ios-startup-diagnostics.test.mjs
       - run: npm ci --no-audit --no-fund
       - name: Typecheck, test and bundle iOS JavaScript
         shell: bash

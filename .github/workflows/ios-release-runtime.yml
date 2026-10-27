@@ -68,7 +68,7 @@ jobs:
           JS
       - name: Verify native CI parsing and diagnostic contracts
         id: contracts
-        run: node --test --test-reporter=tap scripts/ci-native.test.mjs scripts/native-camera-capability.test.mjs 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/ci-contracts.log"
+        run: node --test --test-reporter=tap scripts/ci-native.test.mjs scripts/native-camera-capability.test.mjs scripts/collect-ios-startup-diagnostics.test.mjs 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/ci-contracts.log"
       - name: Typecheck standalone Release smoke source before dependencies
         id: swift_smoke
         timeout-minutes: 3
@@ -112,7 +112,7 @@ jobs:
           } 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/cocoapods-install.log"
       - name: Verify selected unsigned native target
         id: native
-        # 18m preparation + 40m Xcode + 2m cleanup + stop grace <63m.
+        # 18m preparation + 40m Xcode + 30s failure evidence + 2m cleanup + stop grace <63m.
         # Single-arch cold compilation still progressed at the former 25m limit.
         timeout-minutes: 63
         run: node scripts/ci-native.mjs "$WEDDING_NATIVE_MODE" 2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/native-invocation.log"

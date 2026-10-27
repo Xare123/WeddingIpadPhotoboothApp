@@ -129,10 +129,38 @@
   },
   "diagnosticFollowup": {
     "productionAppChanged": false,
-    "sourcePreparationContractsPassed": 100,
-    "swiftCompilation": "pending three-minute standalone Xcode simulator-SDK preflight before dependency installation",
+    "sourcePreparationContractsPassed": 119,
+    "swiftCompilation": "standalone simulator-SDK preflight and actual XCTest source compilation verified by5ac56c1/run40447306302 reaching its existing UI assertion",
     "change": "fixed-key state/application-window geometry in existing smoke failure message; same predicate, waits and20 required tests",
-    "rerun": "7d0c86e/run40446729780 failed at standalone Swift preflight in52s; zero native tests executed; Linux40446729708 passed in1m22s",
-    "preflightRepair": "add the selected simulator platform Developer/usr/lib Swift test-library include path alongside XCTest frameworks; Apple compiler validation pending; no app or assertion change"
+    "rerun": "one new bounded startup-evidence run after collector review; no timeout, app, assertion or suite-identity changes",
+    "preflightRepair": "verified: selected simulator platform Developer/usr/lib include path restores XCTest assertion helpers",
+    "latestRuntime": {
+      "commit": "5ac56c13c1895f2d8f4388e26532c145ad048894",
+      "run": "40447306302",
+      "job": "122001538000",
+      "result": "failed",
+      "duration": "22m16s",
+      "publicObservedFacts": {
+        "appState": 1,
+        "appExists": false,
+        "applicationFrame": {},
+        "deviceOrientation": 1,
+        "identityExists": false,
+        "requestedOrientation": 1
+      },
+      "meaning": "app stopped at first UI check; launch/early termination cause unverified",
+      "executedSuiteTotals": null,
+      "countsLimit": "exact latest suite totals require retained XCTest summary; do not reuse prior19/20 counts"
+    },
+    "collector": {
+      "localTests": 16,
+      "status": "passed, zero skips",
+      "nativeCollection": "unverified",
+      "sourceSHA256": "9c3b09986770fd84c0bb1fccb1f09e9450400cac3c18cb58aee66a1ad193b1ae",
+      "independentReview": "79 overlapping collector/integration checks passed; no concrete blocker",
+      "rawCrashReportsPublished": false,
+      "scope": "fresh owned simulator only, exact public bundle/process/path/time correlation",
+      "outerBudgetSeconds": 25
+    }
   }
 }

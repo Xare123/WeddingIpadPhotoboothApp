@@ -1,0 +1,30 @@
+{
+  "scope": "loopback local Worker/R2 only",
+  "assertionsPassed": 46,
+  "selectedOriginals": 4,
+  "keepsakes": 1,
+  "downloadedFilesWithMatchingSHA256": 5,
+  "fixtureScope": "committed synthetic photos and browser-rendered JPEG; no renderer or device claim",
+  "readinessWaitedForKeepsake": true,
+  "immutableV2RecipeReplay": true,
+  "revokedAllRoles": true,
+  "smsEndpointInvoked": false,
+  "productionRequests": 0,
+  "productionAppCommit": "d44b2629ce8275ddbede6f42fd2227db44b85dcb",
+  "harnessCommitUnderTest": "5ac56c13c1895f2d8f4388e26532c145ad048894",
+  "node": "v24.19.0",
+  "commands": [
+    "bash scripts/dev-api.sh",
+    "npm run smoke",
+    "node scripts/smoke-four-keepsake.mjs"
+  ],
+  "sourceSHA256": "33875237e0ab9debb2cd6552a2d12c6199aef6100ec4c549ca16ac9ea783fffd",
+  "legacyFivePhotoSmoke": "passed, including mocked consent/share and revocation; no real SMS",
+  "ownedServerStopped": true,
+  "port8787ClosedAfterValidation": true,
+  "limits": [
+    "Local emulator success does not establish live Cloudflare access or upload.",
+    "Synthetic JPEG transport does not establish native image-renderer, camera or Photos behavior.",
+    "46 HTTP assertions are separate from 461 integrated application tests."
+  ]
+}

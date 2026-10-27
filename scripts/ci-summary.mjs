@@ -81,8 +81,56 @@ export function diagnosticLines(logs, stages = [], limit = 3) {
   return selected;
 }
 
+// Fixed numeric/boolean facts from our fresh-simulator XCTest marker. Publish
+// these separately so a long compiler path cannot truncate startup evidence.
+export function releaseRuntimeGeometry(logs) {
+  const fields = ['stage', 'requestedOrientation', 'deviceOrientation', 'appState', 'appExists',
+    'applicationFrame', 'windowFrames', 'identityExists', 'startExists', 'startHittable', 'systemAlertCount'];
+  const rectangle = value => {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('shape');
+    if (!Object.keys(value).length) return 'unavailable';
+    if (Object.keys(value).sort().join() !== 'height,width,x,y') throw new Error('shape');
+    for (const n of Object.values(value)) if (!Number.isFinite(n) || Math.abs(n) > 100_000) throw new Error('coordinate');
+    if (value.width < 0 || value.height < 0) throw new Error('size');
+    return [value.x, value.y, value.width, value.height].map(n => Math.round(n * 100) / 100).join(',');
+  };
+  const results = [];
+  for (const line of bounded(logs['xcode-test.log'] ?? '', 400, 96_000).split('\n')) {
+    const index = line.indexOf('PHOTOBOOTH_RELEASE_DIAGNOSTIC ');
+    if (index < 0) continue;
+    const raw = line.slice(index + 'PHOTOBOOTH_RELEASE_DIAGNOSTIC '.length);
+    if (raw.length > 4096) continue;
+    try {
+      const value = JSON.parse(raw);
+      if (Object.keys(value).sort().join() !== [...fields].sort().join()) continue;
+      if (!['orientation-observed', 'orientation-unconfirmed'].includes(value.stage)) continue;
+      if (![value.requestedOrientation, value.deviceOrientation].every(n => Number.isInteger(n) && n >= 0 && n <= 6)) continue;
+      if (!Number.isInteger(value.appState) || value.appState < 0 || value.appState > 4) continue;
+      if (!['appExists', 'identityExists', 'startExists', 'startHittable'].every(key => typeof value[key] === 'boolean')) continue;
+      if (!Number.isInteger(value.systemAlertCount) || value.systemAlertCount < 0 || value.systemAlertCount > 100) continue;
+      if (!Array.isArray(value.windowFrames) || value.windowFrames.length > 4) continue;
+      const windows = value.windowFrames.map(rectangle).join('; ') || 'none';
+      const states = ['unknown', 'notRunning', 'runningBackground', 'runningBackgroundSuspended', 'runningForeground'];
+      const message = `Requested orientation ${value.requestedOrientation}; device ${value.deviceOrientation}; ` +
+        `app ${states[value.appState]}; exists ${value.appExists}; app frame(x,y,w,h) ${rectangle(value.applicationFrame)}; ` +
+        `windows ${windows}; identity ${value.identityExists}; Start ${value.startExists}; hittable ${value.startHittable}; alerts ${value.systemAlertCount}.`;
+      if (!results.includes(message)) results.push(message);
+      if (results.length === 4) break;
+    } catch { /* Unrecognized text never becomes a public diagnostic. */ }
+  }
+  return results;
+}
+
+export function startupEvidenceMessages(report) {
+  if (report?.schemaVersion !== 1 || report?.scope?.freshSimulatorOnly !== true ||
+      !Array.isArray(report.publicMessages) || report.publicMessages.length > 3 ||
+      !report.publicMessages.every(message => typeof message === 'string' && message.length <= 400 && !/[\r\n]/.test(message))) return [];
+  return report.publicMessages.map(message => annotationText(message, 400)
+    .replace(/(^|\s)\/[A-Za-z0-9._~!$&'()*+,;=:@%/-]+/g, '$1[redacted path]')).filter(Boolean);
+}
+
 const workflowSteps = new Set(['checkout', 'node-setup', 'bootstrap', 'ci-contracts', 'swift-smoke-typecheck', 'npm-ci', 'typecheck', 'cocoapods-install', 'native-invocation']);
-export function publicAnnotations({ kind = 'native', jobStatus, status, sha, logs = {}, failedStep, nativeMode }) {
+export function publicAnnotations({ kind = 'native', jobStatus, status, sha, logs = {}, failedStep, nativeMode, startupEvidence }) {
   const exactSha = /^[a-f0-9]{40}$/i.test(sha ?? '') ? sha : 'unavailable';
   const title = kind === 'native' ? ((status?.mode ?? nativeMode) === 'release-build' ? 'Unsigned Release iOS diagnostics' : 'Native simulator diagnostics') : 'Linux verification diagnostics';
   const failed = ['failure', 'failed'].includes(jobStatus) || status?.result === 'failed';
@@ -98,7 +146,11 @@ export function publicAnnotations({ kind = 'native', jobStatus, status, sha, log
       ...(status?.error ? ['Failure: ' + annotationText(status.error)] : []),
       ...diagnosticLines(logs, stages),
     ].join('\n');
-    return ['::error title=' + title + '::' + workflowData(context)];
+    const geometry = kind === 'native' && (status?.mode ?? nativeMode) === 'release-runtime'
+      ? releaseRuntimeGeometry(logs).map(message => '::notice title=Release simulator startup state::' + workflowData(message)) : [];
+    const startup = kind === 'native' && (status?.mode ?? nativeMode) === 'release-runtime'
+      ? startupEvidenceMessages(startupEvidence).map(message => '::notice title=Release simulator termination evidence::' + workflowData(message)) : [];
+    return ['::error title=' + title + '::' + workflowData(context), ...geometry, ...startup];
   }
   const succeeded = jobStatus === 'success' || status?.result === 'passed';
   const release = status?.releaseEvidence;
@@ -134,6 +186,11 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(new URL(import.meta.
     try { status = JSON.parse(readFileSync(nativeStatus, 'utf8')); } catch { /* Show job status below. */ }
   }
   const nativeMode = status?.mode ?? process.env.WEDDING_NATIVE_MODE;
+  let startupEvidence;
+  const startupPath = join(directory, 'runtime-startup-diagnostics.json');
+  if (existsSync(startupPath)) {
+    try { startupEvidence = JSON.parse(readFileSync(startupPath, 'utf8')); } catch { /* Unavailable is not a diagnosis. */ }
+  }
   // Only these bounded, redacted text files are included in the public summary.
   const files = readdirSync(directory).filter(name => name.endsWith('.log') || name === 'toolchain.txt');
   for (const name of files) {
@@ -156,6 +213,9 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(new URL(import.meta.
     if (status.releaseEvidence) summary.push('Release build: **' + status.nativeBuild + '**; SDK: **iphoneos**; embedded JavaScript: **' + status.releaseEvidence.bundleBytes + ' bytes**; SHA-256: ' + status.releaseEvidence.bundleSha256 + '.', '');
     if (status.error) summary.push(`Failure: ${bounded(status.error, 8, 2000).replaceAll('`', "'")}`, '');
   }
+  if (kind === 'native' && nativeMode === 'release-runtime') {
+    for (const message of startupEvidenceMessages(startupEvidence)) summary.push(message.replaceAll('`', "'"), '');
+  }
   if (kind === 'native' && nativeMode === 'release-build') summary.push(
     'Unsigned Release build with embedded JavaScript and the synthetic fixture disabled. No Metro development server or simulator is used.',
     'This verifies compilation and bundle contents. No XCTest executed; signing, installation and real-device behavior remain unverified.', '',
@@ -176,7 +236,7 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(new URL(import.meta.
   if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary.join('\n'));
   else process.stdout.write(summary.join('\n'));
   const logs = Object.fromEntries(files.map(name => [name, readFileSync(join(directory, name), 'utf8')]));
-  for (const annotation of publicAnnotations({ kind, jobStatus: process.env.WEDDING_JOB_STATUS, failedStep: process.env.WEDDING_FAILED_STEP, nativeMode, status, sha: process.env.GITHUB_SHA, logs })) {
+  for (const annotation of publicAnnotations({ kind, jobStatus: process.env.WEDDING_JOB_STATUS, failedStep: process.env.WEDDING_FAILED_STEP, nativeMode, status, sha: process.env.GITHUB_SHA, logs, startupEvidence })) {
     process.stdout.write(annotation + '\n');
   }
 }

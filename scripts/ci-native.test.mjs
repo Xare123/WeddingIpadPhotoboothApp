@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createServer } from 'node:http';
 import { NATIVE_RUNTIME_LIMITS, simulatorBuildArchitecture, simulatorArchitectureSettings, ownedProcessGroupState, stopOwnedProcessGroup, runtimeOutputRemovalAllowed, runtimeResultInspectionAllowed, nativeModeSettings, requireNativeTestPlan, nativeRuntimeResources, nativeRuntimeSources, verifyNativeRuntimeSources, passingExpectedXCTestCounts, commandStreams, MAX_MACHINE_STDOUT, metroErrorCodes, metroHTTPStatus, ownedProcessTree, parseNamedJSON, passingXCTestCounts, requireSwiftTools62, resolveExpoEntry, selectIpadSimulator, verifyReleaseApp, waitForMetro } from './ci-native-contract.mjs';
-import { annotationText, bounded, diagnosticLines, publicAnnotations, redact, workflowData } from './ci-summary.mjs';
+import { annotationText, bounded, diagnosticLines, publicAnnotations, redact, releaseRuntimeGeometry, startupEvidenceMessages, workflowData } from './ci-summary.mjs';
 
 const ipad = { udid: '11111111-1111-4111-8111-111111111111', name: 'iPad Pro 13-inch (M4)',
   isAvailable: true, state: 'Shutdown', deviceTypeIdentifier: 'com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M4-16GB' };
@@ -28,6 +28,63 @@ test('Release UI failure reports bounded geometry without changing its orientati
   assert.ok(source.indexOf('geometryDiagnostic(result') < assertion);
   assert.ok(source.indexOf('XCUIScreen.main.screenshot()') < assertion);
   assert.match(source, /assertAttract\(\.portrait\)[\s\S]*assertAttract\(\.landscapeLeft\)[\s\S]*app\.terminate\(\)[\s\S]*app\.launch\(\)[\s\S]*assertAttract\(\.landscapeLeft\)[\s\S]*assertAttract\(\.portrait\)/);
+});
+
+test('public Release diagnostics preserve stopped-app and actual-window facts without path truncation', () => {
+  const fact = { stage: 'orientation-unconfirmed', requestedOrientation: 1, deviceOrientation: 1,
+    appState: 1, appExists: false, applicationFrame: {}, windowFrames: [], identityExists: false,
+    startExists: false, startHittable: false, systemAlertCount: 0 };
+  const marker = value => 'PHOTOBOOTH_RELEASE_DIAGNOSTIC ' + JSON.stringify(value);
+  const log = value => ({'xcode-test.log': marker(value)});
+  const [stopped] = releaseRuntimeGeometry(log(fact));
+  assert.match(stopped, /app notRunning; exists false/);
+  assert.match(stopped, /app frame\(x,y,w,h\) unavailable; windows none/);
+  const ready = {...fact, appState: 4, appExists: true, identityExists: true, startExists: true, startHittable: true,
+    applicationFrame: {x: 0, y: 0, width: 1366, height: 1024}, windowFrames: [{x: 0, y: 0, width: 1024, height: 1366}]};
+  assert.match(releaseRuntimeGeometry(log(ready))[0], /1366,1024; windows 0,0,1024,1366/);
+  const annotations = publicAnnotations({jobStatus: 'failure', nativeMode: 'release-runtime', logs: log(fact)});
+  assert.equal(annotations.length, 2);
+  assert.ok(annotations[1].includes('app notRunning; exists false'));
+  assert.equal(publicAnnotations({jobStatus: 'failure', nativeMode: 'release-build', logs: log(fact)}).length, 1);
+  for (const wrong of [{...fact, extra: 'never-publish'}, {...fact, appState: 'never-publish'},
+    {...ready, windowFrames: Array(5).fill(ready.applicationFrame)}, {...ready, applicationFrame: {private: 'never-publish'}},
+    {...fact, startExists: 'never-publish'}, {...fact, systemAlertCount: -1}, {...fact, stage: 'never-publish'},
+    {...ready, applicationFrame: {...ready.applicationFrame, width: -1}}]) assert.deepEqual(releaseRuntimeGeometry(log(wrong)), []);
+  assert.deepEqual(releaseRuntimeGeometry({'untrusted.log': marker(fact)}), []);
+  assert.deepEqual(releaseRuntimeGeometry({'xcode-test.log': 'PHOTOBOOTH_RELEASE_DIAGNOSTIC {invalid'}), []);
+  assert.equal(releaseRuntimeGeometry({'xcode-test.log': Array(20).fill(marker(fact)).join('\n')}).length, 1);
+});
+
+test('public startup evidence requires disposable scope and bounds/redacts every published message', () => {
+  const report = {schemaVersion: 1, scope: {freshSimulatorOnly: true}, publicMessages: ['App termination SIGABRT; native module ExpoScreenOrientation.']};
+  assert.deepEqual(startupEvidenceMessages(report), report.publicMessages);
+  const annotations = publicAnnotations({jobStatus: 'failure', nativeMode: 'release-runtime', startupEvidence: report});
+  assert.equal(annotations.length, 2);
+  assert.ok(annotations[1].includes('Release simulator termination evidence'));
+  const dirty = {...report, publicMessages: ['Read https://private.invalid/g/' + 'a'.repeat(64) + ' +12025550123 /private/guest/photo.jpg']};
+  const message = startupEvidenceMessages(dirty)[0];
+  for (const value of ['private.invalid', 'a'.repeat(64), '+12025550123', '/private/guest/photo.jpg']) assert.ok(!message.includes(value));
+  for (const wrong of [undefined, {}, {...report, schemaVersion: 2}, {...report, scope: {freshSimulatorOnly: false}},
+    {...report, publicMessages: Array(4).fill('value')}, {...report, publicMessages: [{}]},
+    {...report, publicMessages: ['x'.repeat(401)]}, {...report, publicMessages: ['line\n::error::never-publish']}]) {
+    assert.deepEqual(startupEvidenceMessages(wrong), []);
+  }
+  assert.equal(publicAnnotations({jobStatus: 'failure', nativeMode: 'release-build', startupEvidence: report}).length, 1);
+});
+
+test('failure evidence is bounded to the owned fresh simulator before cleanup and never weakens XCTest', () => {
+  const runner = readFileSync(new URL('./ci-native.mjs', import.meta.url), 'utf8');
+  const catchIndex = runner.indexOf("status.result = cancellation ? 'cancelled' : 'failed'");
+  const section = runner.slice(catchIndex, runner.indexOf('finally {\n  try { await cleanup(); }', catchIndex));
+  assert.match(section, /mode === 'release-runtime' && createdHere && simulator && !cancellation/);
+  assert.match(section, /stage\.name === 'xcode-test' && stage\.result === 'failed'/);
+  assert.match(section, /'--simulator', simulator\.udid, '--since', invocationStartedAt/);
+  assert.match(section, /timeout: 25_000, allowFailure: true, structured: 'json', stdoutLimit: 20_000/);
+  assert.ok(!section.includes("status.result = 'passed'"));
+  assert.ok(section.includes('runtime-startup-diagnostics.json'));
+  assert.ok(!section.includes('process.env.HOME ='));
+  assert.ok(NATIVE_RUNTIME_LIMITS.preparationMs + NATIVE_RUNTIME_LIMITS.xcodeMs + 30_000 +
+    NATIVE_RUNTIME_LIMITS.cleanupMs + NATIVE_RUNTIME_LIMITS.processStopMs < NATIVE_RUNTIME_LIMITS.nativeStepMinutes * 60_000);
 });
 
 test('Swift tools gate rejects the observed Xcode16.4 compiler and absent compiler evidence before Pods', () => {
