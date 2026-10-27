@@ -1,6 +1,6 @@
 # Display orientation and whole-shoot retakes
 
-Version **0.3.6 / build 9** adds persisted **Auto / Portrait / Landscape** Host settings and a non-destructive **Retake all 4** flow. The frozen App SHA-256 is `d49e6318af58b395d1b90a97359beb4ae542acc7a6f90a7c29b25414b943cd63`. That feature source passed local and device compilation checks but failed startup; the targeted0.3.7/build10 repair now needs its own native results. See [startup evidence](NATIVE_RUNTIME_DIAGNOSTIC.md). The coordinator verified that the earlier Host repair, exact `3cc16e6e6780e97fdb3fad7568ac99fab6f43e76` (0.3.5/build 8), is installed in place with the existing identity and data preserved. The owner now confirms Host Settings opens; controlled authentication/relocking acceptance remains separate.
+Version **0.3.6 / build 9** adds persisted **Auto / Portrait / Landscape** Host settings and a non-destructive **Retake all 4** flow. The frozen App SHA-256 is `d49e6318af58b395d1b90a97359beb4ae542acc7a6f90a7c29b25414b943cd63`. That original feature source passed local/device compilation but failed startup. Exact9ed36b4 0.3.7/build10 now passes all20 Release simulator cases plus unsigned device Release, with this App JSX unchanged; matching signed Mac/device acceptance remains. See [startup evidence](NATIVE_RUNTIME_DIAGNOSTIC.md). The coordinator verified that the earlier Host repair, exact `3cc16e6e6780e97fdb3fad7568ac99fab6f43e76` (0.3.5/build 8), is installed in place with the existing identity and data preserved. The owner now confirms Host Settings opens; controlled authentication/relocking acceptance remains separate.
 
 ## Display controls
 
@@ -24,7 +24,7 @@ App cancellation must not abandon an exposed photo. The return action is disable
 
 The camera's zero-save copy says **this set**; it never implies that previously retained photos disappeared. Portrait strip Full photo remains uncropped; contextual guidance offers explicit Fill frames and asks guests to check each face. No crop is applied silently, and original downloads remain untouched.
 
-## Exact local validation
+## Historical 0.3.6 local validation
 
 The final clean setup passed **591 locked packages, all workspace typechecks, 461 integrated tests and a 1,060-module iOS Hermes export with two assets**. **98 CI/source-preparation guards** pass. These totals include, rather than add to, the focused orientation and persistence tests.
 
@@ -36,8 +36,8 @@ The existing eight high audit entries remain; the new orientation package has no
 
 ## Hosted and owner acceptance
 
-The published d44b262 candidate passed hosted Linux and unsigned device Release; the coordinator also prepared a signed same-identity Mac artifact. The full runtime failed its first UI check. Follow-up5ac56c1 recorded the app **notRunning** at that check, so [startup investigation](NATIVE_RUNTIME_DIAGNOSTIC.md) now takes priority over a rotation-code change. The prepared update remains held. The standard ARM runtime keeps Xcode26.3, all20 identities and finite budgets; the device Release lane remains Intel. No larger runner, new cache, credential or paid test resource is provisioned. Report actual execution, not enumeration or compilation.
+The published d44b262 candidate passed hosted Linux and unsigned device Release; the coordinator also prepared a signed same-identity Mac artifact. The full runtime failed its first UI check. Follow-up5ac56c1 recorded the app **notRunning** at that check, so [startup investigation](NATIVE_RUNTIME_DIAGNOSTIC.md) now takes priority over a rotation-code change. The old signed d44 update remains held. Use the passed9ed36b4 0.3.7/build10 application source for a new matching signed build; see [the handoff](RELEASE_0_3_7.md). The standard ARM runtime keeps Xcode26.3, all20 identities and finite budgets; the device Release lane remains Intel. No larger runner, new cache, credential or paid test resource is provisioned. Report actual execution, not enumeration or compilation.
 
-On the owner iPad, preserve the installed identity/data and first verify the 0.3.5 Host passcode/biometric route. For the matching rebuilt 0.3.6 candidate, save each orientation and relaunch, test actual Auto rotation and fixed preferences in full-screen/windowed modes, then four-shot timing, Retake All/individual retake, pause/save/return, restart/reboot, original byte preservation, Photos and full-resolution keepsake parity. Do not recreate intentionally deleted Photos copies. Pairing automatically uploads existing confirmed real-photo sessions and remains coordinator-controlled with explicit data-scope approval; SMS eligibility and live sends remain separate.
+On the owner iPad, preserve the installed identity/data and first verify the 0.3.5 Host passcode/biometric route. For the matching rebuilt 0.3.7 candidate, save each orientation and relaunch, test actual Auto rotation and fixed preferences in full-screen/windowed modes, then four-shot timing, Retake All/individual retake, pause/save/return, restart/reboot, original byte preservation, Photos and full-resolution keepsake parity. Do not recreate intentionally deleted Photos copies. Pairing automatically uploads existing confirmed real-photo sessions and remains coordinator-controlled with explicit data-scope approval; SMS eligibility and live sends remain separate.
 
 Live face-tracking effects are a separate enhancement under feasibility review. Existing Warm/B&W/Film are actual offline post-capture derivatives, not a live filtered camera.

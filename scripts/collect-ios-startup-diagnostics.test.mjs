@@ -153,7 +153,7 @@ test('missing, unavailable, malformed ports and cancellation remain diagnostic-o
     const report = await collectIOSStartupDiagnostics({ simulatorId, since, now, includeLogs: false }, {
       listReports: () => ({ status, entries: [] }),
     });
-    assert.equal(report.reports.length, 0); assert.ok(report.publicMessages[0].includes('original test failure'));
+    assert.equal(report.reports.length, 0); assert.ok(report.publicMessages[0].includes('recorded test result'));
   }
   const report = await collectIOSStartupDiagnostics({ simulatorId, since, now }, {
     listReports() { throw new Error('private-path'); }, readLogs() { throw new Error('private-secret'); },

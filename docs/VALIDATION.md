@@ -1,12 +1,20 @@
-# Current startup repair candidate — 0.3.7 / build 10
+# Current verified application — 0.3.7 / build 10
 
-The targeted loader change and normal Expo/App entry need fresh exact-source native verification. App JSX, native engines, dependencies, camera patch and Worker remain unchanged. The old namespace import is reproduced through actual installed Metro/Expo machinery, including a negative control against the previous adapter expression. [Startup evidence](NATIVE_RUNTIME_DIAGNOSTIC.md) separates these VM checks from Apple execution.
+Exact application source **`9ed36b4eac6ce558b82b22db4e08037308b87a2c`** passes all currently requested hosted gates:
 
-**474/474 application tests,138/138 tooling checks, all workspace typechecks and the1,060-module/two-asset iOS Hermes export pass.** Three actual-Metro adapter cases are included in474, not added to it. The separate three installed-source mechanism controls pass. The initial bare export cache failure and successful wrapped retry are recorded in [the local report](../artifacts/test-results/native-namespace-repair-local.json).
+| Check | Result and boundary |
+| --- | --- |
+| [Linux40463998107](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40463998107) | Pass,1m11s. |
+| [Release simulator40463998097](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40463998097), job122054941203 | Pass,25m38s. **20 executed,0failures,0skips**:19 production engine cases plus app attract cold launch/relaunch/portrait/landscape, standalone embeddedJS, fixture disabled. |
+| [Unsigned device Release40463998043](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40463998043), job122054941218 | Pass,21m08s. iPhoneOS compilation, embeddedJS/iPad metadata; compiled camera marker is mandatory in the passing script. No signing/install/XCTest/device proof from this lane. |
+| Cloud local | **474/474 application tests,138/138 tooling checks**, workspace typechecks and1,060-module/two-asset Hermes export pass. Three actual-Metro adapter cases are included in474; three installed-source mechanism controls are separate. |
+| Matching signed Mac/iPad | Not yet reported for this candidate. Preserve existing identity/profile/container and verify the same source before the already approved update. Real camera/Photos/Host/orientation/Retake All/offline/reboot/phone-QR acceptance remains open. |
 
-Diagnostic d553a00/run40459566660 failed after36m23s with SIGABRT and no running app/window, despite all four probed core families being available. Its Linux40459566732 passed1m24s. Earlier84db1c8 had coordinator-verified20 executed/19engine passes/1UI failure/0skips. Do not count compile/probe success as an app-runtime pass or reuse the held signed d44 artifact for this new candidate.
+[The hosted record](../artifacts/test-results/native-namespace-hosted.json) records exact source hashes, public CI annotation evidence and limits. This cloud executor did not download current raw xcresult/JPEG/binary artifacts independently. Historical B4E16-JPEG visual proof remains bound to its unchanged engine source. The optional startup collector retained no correlated diagnostic on the passing run; a neutral notice fixes its legacy failure-only wording without changing tests or application source.
 
-Installed3cc16e6 0.3.5/build8 and all data remain preserved; the owner now confirms Host Settings opens. Earlier manual Photos success and intentional deletions remain respected. Current pairing/private queued transfer is approved but unexecuted here; use the reviewed owner-operated procedure rather than routing around an explicitly denied origin.
+The repair removes a reproduced namespace-import path into an unused optional native notification module and restores normal Expo/App entry. App JSX/Swift/dependencies/storage/auth/Worker remain unchanged. [Cause and earlier failures](NATIVE_RUNTIME_DIAGNOSTIC.md); [Mac/iPad handoff](RELEASE_0_3_7.md). The first bare local export lacked the cloud wrapper; its wrapped retry passed, as recorded in [local evidence](../artifacts/test-results/native-namespace-repair-local.json).
+
+Installed3cc16e6 0.3.5/build8 remains preserved; owner confirms Host Settings opens. Earlier manual Photos success and intentional deletions remain respected. Private confirmed-queue transfer is approved but unexecuted here. Use the reviewed owner-operated setup rather than routing around the explicitly denied connector origin. SMS provider eligibility/ready page/consent remain separate, and the coordinator owns the capped owner test sends.
 
 ## Historical 0.3.6 orientation / Retake All source
 

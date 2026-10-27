@@ -4,7 +4,7 @@ The owner has approved one dedicated booth credential and private upload of the 
 
 The connected automation explicitly denies requests to this origin. The Cloudflare management API cannot issue the application's one-use setup code. **Do not run the issuance request through an agent, Mac executor, preview, proxy or alternative hostname to bypass that denial.** No supported connector-access remedy has been verified. The procedure below is for the owner to run personally in their own terminal/session; it is not a connector workaround to be executed by automation.
 
-The installed 0.3.5 app's Host Settings now opens according to the owner. The separate 0.3.6 update remains held for its native startup investigation. Pairing and native-update acceptance are independent. Keep every original, app container and signing identity intact.
+The installed 0.3.5 app's Host Settings now opens according to the owner. The separate [0.3.7 startup repair](RELEASE_0_3_7.md) now passes its hosted native checks; its matching signed Mac build and iPad acceptance remain pending. The older signed 0.3.6 artifact remains held. Pairing and native-update acceptance are independent. Keep every original, app container and signing identity intact.
 
 ## Prepare the private handoff
 
@@ -68,6 +68,13 @@ node scripts/owner-private-setup.mjs cleanup "$HOME/.wedding-photobooth-setup"
 Cleanup retains `DEVICE_TOKEN`. Store that credential in the owner's password manager before deliberately removing its local plaintext file. Do not delete any iPad photo data, queue state or unrelated files. The coordinator can disable new pairing after success without changing the existing booth credential.
 
 ## Failure, revocation and SMS
+
+- The durable issuance marker intentionally blocks a second `issue` command. If the first request/reply is uncertain, keep its files, check whether the iPad already shows paired, and do not reconsume or retry automatically. For an unpaired iPad, wait at least 15 minutes after the uncertain attempt (the reviewed server limits codes to ten minutes), resolve any reported configuration/TLS problem, and deliberately remove only temporary issuance files with `cleanup` before one fresh `issue`. Use the same private folder and `DEVICE_TOKEN`; do **not** run `prepare` again or rotate either production key just to get another code. Run these owner commands only when the owner and iPad are ready:
+
+  ```sh
+  node scripts/owner-private-setup.mjs cleanup "$HOME/.wedding-photobooth-setup"
+  node scripts/owner-private-setup.mjs issue "$HOME/.wedding-photobooth-setup"
+  ```
 
 - If the script reports an HTTP/configuration or TLS failure, preserve the private files and report only its nonsecret category/status. Never send a token, code, response body or screenshot of the private files in chat. No automatic retries occur.
 - If a code expires or its claim/Keychain reply is uncertain, deliberately issue a fresh code; do not reconsume automatically. Keep all local originals.

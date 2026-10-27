@@ -1,0 +1,100 @@
+{
+  "applicationCommit": "9ed36b4eac6ce558b82b22db4e08037308b87a2c",
+  "version": "0.3.7",
+  "build": "10",
+  "reviewBranch": "codex/wedding-photobooth-mvp",
+  "applicationSHA256": {
+    "apps/ipad/App.tsx": "d49e6318af58b395d1b90a97359beb4ae542acc7a6f90a7c29b25414b943cd63",
+    "apps/ipad/index.ts": "af10e01cf5fa6d399a83829926cc80d935c1dca8fb01313ab7cb54aab84c028b",
+    "apps/ipad/app.json": "274f822e55c5ac16b967f5cfea80ed2df915ad3af738363ea1878e2b19930475",
+    "apps/ipad/src/orientation-native.ts": "030f647fb04da3538cb96dc9cf9235e5fcbcfee72fbf02c2ed7da11e3acd3e31",
+    "apps/ipad/test/orientation-import-boundary.test.ts": "c1098af413fdfcbde0a8b0b7ae07fc2a68747fa7928d3f44b877e536b2b04a72",
+    "scripts/prepare-ios-physical-tests.mjs": "4a210de144ba544238fa00b9661b9d1ac8545916224d5c66ba820d7abd113739"
+  },
+  "hostedChecks": {
+    "linux": {
+      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40463998107",
+      "job": "122054941333",
+      "result": "passed",
+      "duration": "1m11s"
+    },
+    "releaseSimulator": {
+      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40463998097",
+      "job": "122054941203",
+      "result": "passed",
+      "duration": "25m38s",
+      "executed": 20,
+      "failed": 0,
+      "skipped": 0,
+      "coverage": [
+        "19 production Core Image effects/template cases",
+        "Release attract cold launch, relaunch and portrait/landscape checks",
+        "embedded JavaScript without Metro",
+        "fixture disabled"
+      ],
+      "evidenceSource": "Exact-commit public CI annotation; raw xcresult and current JPEGs not independently downloaded by this cloud executor"
+    },
+    "unsignedDeviceRelease": {
+      "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40463998043",
+      "job": "122054941218",
+      "result": "passed",
+      "duration": "21m08s",
+      "coverage": [
+        "iPhoneOS Release compilation",
+        "embedded JavaScript",
+        "iPad bundle metadata"
+      ],
+      "nativeCameraMarkerRequiredByPassingStage": true,
+      "artifactIndependentlyDownloaded": false,
+      "signed": false,
+      "installed": false,
+      "xctestExecuted": false
+    }
+  },
+  "localChecks": {
+    "applicationTests": 474,
+    "toolingChecks": 138,
+    "workspaceTypechecks": "passed",
+    "iosExportModules": 1060,
+    "iosExportAssets": 2,
+    "separateMechanismControls": 3,
+    "adapterRegressionCasesIncludedInApplicationTotal": 3
+  },
+  "unchanged": [
+    "App JSX",
+    "Swift image engines",
+    "camera patch",
+    "dependencies and lock",
+    "authentication and photo storage",
+    "Worker/API contract"
+  ],
+  "separateGates": [
+    "Matching signed Mac build and compiled-camera/provenance checks",
+    "Same-identity in-place iPad update with all app data preserved",
+    "Actual camera/Photos/orientation/Retake All/restart/offline rehearsal",
+    "Approved owner-operated private pairing and complete-session/download/phone-QR verification",
+    "SMS provider eligibility, ready page and consent; coordinator owns up to three approved owner test texts"
+  ],
+  "notes": [
+    "The optional startup collector found no safely correlated diagnostic on the passing runtime. Its old failure-only fallback wording was misleading; a neutral wording-only correction follows without changing test outcomes or application source.",
+    "The current runtime does not establish camera capture, saving, Apple Photos, physical-device behavior, full Host settings interaction or live cloud/SMS readiness.",
+    "The previous 16 actual JPEGs belong to unchanged historical B4E engine evidence, not a newly inspected image artifact here.",
+    "No production credential generation, live pairing request, real-photo upload or SMS occurred in this cloud executor; it performed no iPad installation or owner OS-authentication prompt."
+  ],
+  "review": {
+    "independentHandoffReview": "passed after correcting two wording issues",
+    "corrections": [
+      "Attribute old startup failure to hosted simulator execution, not the unexecuted held signed Mac artifact",
+      "Record current native gates as passed, distinct from pending signed build/device acceptance"
+    ],
+    "manualRetryTTLReviewed": true,
+    "manualCleanupPreservesDeviceToken": true
+  },
+  "handoffChecks": {
+    "applicationSourceUnchangedFromNativePassedCommit": true,
+    "toolingTestsAfterNeutralNoticeChange": 138,
+    "newPublicationContentCheck": "passed_on_added_lines;existing_synthetic_redaction_fixtures_unchanged",
+    "localMarkdownTargets": "exist",
+    "noNewNativeRunRequiredForHandoffOnlyChange": true
+  }
+}

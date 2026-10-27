@@ -227,7 +227,7 @@ export function createStartupDiagnosticsPort({ reportsDirectory = join(homedir()
 }
 
 function emptyReport(status) {
-  return { schemaVersion: 1, status, scope: SCOPE, publicMessages: ['No safely correlated startup diagnostic was available; the original test failure remains decisive.'],
+  return { schemaVersion: 1, status, scope: SCOPE, publicMessages: ['No safely correlated startup diagnostic was available; the recorded test result remains decisive.'],
     reports: [], log: { status: 'not-requested', messages: [], quiescent: true } };
 }
 export async function collectIOSStartupDiagnostics(options = {}, port = createStartupDiagnosticsPort()) {
