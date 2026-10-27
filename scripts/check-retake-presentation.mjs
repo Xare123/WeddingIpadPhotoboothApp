@@ -33,7 +33,7 @@ function actual(name, dependencies) {
   }).outputText;
   return new Function(...Object.keys(dependencies), source + `\nreturn ${name};`)(...Object.values(dependencies));
 }
-function fixture() {
+function fixture({ cameraReady = false } = {}) {
   const session = {
     id: 'synthetic-session', targetCount: 4, createdAt: 0, confirmed: false,
     shots: Array.from({ length: 4 }, (_, shotIndex) => ({
@@ -41,7 +41,7 @@ function fixture() {
       fileUri: `file:///synthetic-original-${shotIndex}.jpg`, exportStatus: 'saved',
     })),
   };
-  const state = { screen: 'review', retakeSlot: undefined, activeSlot: 3, cameraReady: false, message: 'old status', modal: false };
+  const state = { screen: 'review', retakeSlot: undefined, activeSlot: 3, cameraReady, message: 'old status', modal: false };
   const reviewSelection = { current: createReviewSelection() };
   const dependencies = {
     sessionRef: { current: session }, busy: false, exporting: false,
@@ -62,7 +62,7 @@ function fixture() {
 }
 const results = [];
 {
-  const f = fixture(); const before = structuredClone(f.session);
+  const f = fixture({ cameraReady: true }); const before = structuredClone(f.session);
   f.dependencies.reviewSelection.current.select(0);
   // Intermediate native-scroll positions must not displace explicit slot intent.
   f.dependencies.reviewSelection.current.scroll(900, 300, [0, 1, 2, 3]);
@@ -70,7 +70,7 @@ const results = [];
   assert.equal(f.state.screen, 'camera');
   assert.equal(f.state.retakeSlot, 0);
   assert.equal(f.state.activeSlot, 0);
-  assert.equal(f.state.cameraReady, false);
+  assert.equal(f.state.cameraReady, false, 'Individual Retake must clear previously-ready camera state');
   assert.equal(f.state.modal, false, 'Individual Retake has no confirmation modal');
   assert.deepEqual(f.session, before, 'Navigation never replaces or deletes an original');
   results.push('individual Retake selects camera/slot one without a modal or original mutation');
