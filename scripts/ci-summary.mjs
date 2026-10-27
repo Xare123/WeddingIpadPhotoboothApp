@@ -164,7 +164,8 @@ export function publicAnnotations({ kind = 'native', jobStatus, status, sha, log
   if (succeeded && kind === 'native' && status?.result === 'passed' && status.mode === 'release-runtime' &&
     status.fixture === 'disabled' && Number.isSafeInteger(status.expectedTestCount) && status.expectedTestCount >= 15 && status.tests?.executed >= status.expectedTestCount && status.tests.failures === 0 && (status.tests.skipped ?? 0) === 0) {
     return ['::notice title=Release simulator runtime evidence::' + workflowData(
-      'Commit: ' + exactSha + '; executed XCTest tests: ' + status.tests.executed + '; failures: 0; skipped: 0. Core Image effects/template pixel tests and Release attract launch/relaunch/orientation passed; embedded JavaScript without Metro; fixture disabled. Camera, saving, Photos, signing and physical devices untested.')];
+      'Commit: ' + exactSha + '; executed XCTest tests: ' + status.tests.executed + '; failures: 0; skipped: 0. Core Image effects/template pixel tests and Release attract launch/relaunch/orientation passed; embedded JavaScript without Metro; fixture disabled. Camera, saving, Photos, signing and physical devices untested.'),
+      ...startupEvidenceMessages(startupEvidence).map(message => '::notice title=Release simulator bootstrap evidence::' + workflowData(message))];
   }
   if (succeeded && kind === 'native' && status?.result === 'passed' && (status.mode === 'ui-tests' || status.mode === undefined) &&
     status.tests?.executed > 0 && status.tests.failures === 0 && (status.tests.skipped ?? 0) === 0) {

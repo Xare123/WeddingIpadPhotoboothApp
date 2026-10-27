@@ -1,0 +1,54 @@
+{
+  "scope": "new diagnostic app entry; not a registration fix or approved device installation",
+  "heldMacAppCommit": "d44b2629ce8275ddbede6f42fd2227db44b85dcb",
+  "appJsxSHA256": "d49e6318af58b395d1b90a97359beb4ae542acc7a6f90a7c29b25414b943cd63",
+  "entrySHA256": "c849d486e12c87c8aaab7abb3917eb85c9d4e0ee406debbcae92c3f1566996f7",
+  "probeSHA256": "8a85854f239b7663f0cbce51c53367f826489377ef392af8a9504a1804c95ab9",
+  "lastNativeRun": {
+    "commit": "84db1c8f84feee8a5a609b8ae974ce22d538c064",
+    "run": "40451321760",
+    "job": "122014466279",
+    "result": "failed",
+    "duration": "24m38s",
+    "observed": "EXC_CRASH,SIGABRT,SIGNALcode6; constructor non-null invariant; appnotRunning/no windows",
+    "caseTotals": null,
+    "cause": "module not identified; sourceKeyboardObserver lead only"
+  },
+  "local": {
+    "applicationTestsPassed": 471,
+    "toolingChecksPassed": 138,
+    "workspaceTypechecks": "passed",
+    "iosHermesExportModules": 1061,
+    "assets": 2,
+    "probeUnitTestsIncluded": 9,
+    "entryVmTestIncluded": 1
+  },
+  "probe": {
+    "fixedLogicalFields": [
+      "KeyboardObserver",
+      "AppState",
+      "WebSocketModule",
+      "Animated"
+    ],
+    "animatedAlternatives": [
+      "NativeAnimatedModule",
+      "NativeAnimatedTurboModule"
+    ],
+    "nativeMethodsCalled": false,
+    "returnedModuleDataInspected": false,
+    "appFailureSuppressed": false,
+    "canInitializeModulesAndChangeTiming": true
+  },
+  "nativeProbeExecution": "pending",
+  "physicalInstallation": "not performed",
+  "heldMacArtifactMatchesNewEntry": false,
+  "ownerManualUtilityCommit": "7b68bd7900b52c7650fa02b307ac13f4843fd679",
+  "productionRequests": 0,
+  "productionCredentialsGenerated": 0,
+  "realSmsSent": 0,
+  "limits": [
+    "Prior browser evidence shows unchanged App JSX only, not this native entry.",
+    "VM and filesystem fixtures do not establish Hermes/SDK initialization.",
+    "Native tests/predicates/timeouts remain unchanged; no install claim."
+  ]
+}

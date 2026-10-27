@@ -61,6 +61,11 @@ test('public startup evidence requires disposable scope and bounds/redacts every
   const annotations = publicAnnotations({jobStatus: 'failure', nativeMode: 'release-runtime', startupEvidence: report});
   assert.equal(annotations.length, 2);
   assert.ok(annotations[1].includes('Release simulator termination evidence'));
+  const passed = publicAnnotations({jobStatus: 'success', startupEvidence: report,
+    status: {mode: 'release-runtime', result: 'passed', fixture: 'disabled', expectedTestCount: 20,
+      tests: {executed: 20, failures: 0, skipped: 0}}});
+  assert.equal(passed.length, 2);
+  assert.ok(passed[1].includes('Release simulator bootstrap evidence'));
   const dirty = {...report, publicMessages: ['Read https://private.invalid/g/' + 'a'.repeat(64) + ' +12025550123 /private/guest/photo.jpg']};
   const message = startupEvidenceMessages(dirty)[0];
   for (const value of ['private.invalid', 'a'.repeat(64), '+12025550123', '/private/guest/photo.jpg']) assert.ok(!message.includes(value));
@@ -72,17 +77,18 @@ test('public startup evidence requires disposable scope and bounds/redacts every
   assert.equal(publicAnnotations({jobStatus: 'failure', nativeMode: 'release-build', startupEvidence: report}).length, 1);
 });
 
-test('failure evidence is bounded to the owned fresh simulator before cleanup and never weakens XCTest', () => {
+test('startup evidence is bounded to the owned fresh simulator after XCTest and never changes its outcome', () => {
   const runner = readFileSync(new URL('./ci-native.mjs', import.meta.url), 'utf8');
-  const catchIndex = runner.indexOf("status.result = cancellation ? 'cancelled' : 'failed'");
-  const section = runner.slice(catchIndex, runner.indexOf('finally {\n  try { await cleanup(); }', catchIndex));
-  assert.match(section, /mode === 'release-runtime' && createdHere && simulator && !cancellation/);
-  assert.match(section, /stage\.name === 'xcode-test' && stage\.result === 'failed'/);
+  const section = runner.slice(runner.indexOf('async function captureStartupDiagnostics()'), runner.indexOf('async function cleanup()'));
+  assert.match(section, /mode !== 'release-runtime' \|\| !createdHere \|\| !simulator \|\| cancellation/);
+  assert.match(section, /stage\.name === 'xcode-test' && \['passed', 'failed'\]\.includes\(stage\.result\)/);
   assert.match(section, /'--simulator', simulator\.udid, '--since', invocationStartedAt/);
   assert.match(section, /timeout: 25_000, allowFailure: true, structured: 'json', stdoutLimit: 20_000/);
   assert.ok(!section.includes("status.result = 'passed'"));
+  assert.ok(!section.includes('process.exitCode ='));
   assert.ok(section.includes('runtime-startup-diagnostics.json'));
   assert.ok(!section.includes('process.env.HOME ='));
+  assert.match(runner, /finally \{[\s\S]*await captureStartupDiagnostics\(\);\s+try \{ await cleanup\(\);/);
   assert.ok(NATIVE_RUNTIME_LIMITS.preparationMs + NATIVE_RUNTIME_LIMITS.xcodeMs + 30_000 +
     NATIVE_RUNTIME_LIMITS.cleanupMs + NATIVE_RUNTIME_LIMITS.processStopMs < NATIVE_RUNTIME_LIMITS.nativeStepMinutes * 60_000);
 });

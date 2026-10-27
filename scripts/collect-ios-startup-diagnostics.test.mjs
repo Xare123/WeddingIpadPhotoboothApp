@@ -33,6 +33,24 @@ function temporary(t) {
 }
 function candidate(index = 0) { return { name: 'WeddingPhotobooth-2026-10-27-' + index + '.ips', regular: true, bytes: 1000, mtimeMs: now - index - 1000 }; }
 
+test('fixed pre-import CoreModule facts survive technical projection and take priority over crash summaries', async () => {
+  const message = 'Native module bootstrap: KeyboardObserver=missing; AppState=available; WebSocketModule=available; Animated=unknown';
+  const projected = reduceStartupLogs(JSON.stringify([logRecord(message),
+    { ...logRecord('ordinary private text'), messageType: 'Info' },
+    { ...logRecord(message), processImagePath: processPath.replace(simulatorId, 'ABCDEF12-3456-7890-ABCD-1234567890AB') }]), scope);
+  assert.equal(projected?.length, 1);
+  assert.ok(projected);
+  assert.match(projected[0], /KeyboardObserver missing; AppState available; WebSocketModule available; Animated unknown/);
+  assert.ok(!projected[0].includes('='));
+  const report = await collectIOSStartupDiagnostics({ simulatorId, since, now }, {
+    listReports: () => ({status: 'ready', entries: [candidate()]}), readReport: () => encoded(),
+    readLogs: async () => ({status: 'collected', messages: projected, quiescent: true}),
+  });
+  assert.ok(report.publicMessages[0].includes('native module bootstrap:'));
+  assert.ok(report.publicMessages.some(value => value.includes('SIGABRT')));
+  assert.ok(!JSON.stringify(report).includes('ordinary private text'));
+});
+
 test('scope requires a fresh explicit timestamp and canonical simulator UUID without returning caller inputs on failure', async () => {
   assert.equal(scope.simulatorId, simulatorId);
   for (const options of [{ simulatorId: 'booted', since, now }, { simulatorId: simulatorId + '/outside', since, now },

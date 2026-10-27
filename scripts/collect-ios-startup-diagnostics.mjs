@@ -12,7 +12,8 @@ const REPORT_NAME = /^WeddingPhotobooth(?:[-_][A-Za-z0-9_.-]{1,180})?\.ips$/;
 const SCOPE = Object.freeze({ freshSimulatorOnly: true,
   limitation: 'Startup evidence only; absence cannot distinguish a crash, launch denial or other termination. No running-app or iPad verification.' });
 const vocabulary = (`fatal error uncaught exception terminating termination abort aborted called unhandled JS JavaScript JSError
-  TypeError ReferenceError SyntaxError RangeError Error RCTFatal RCTFatalException RCTJSErrorException
+  TypeError ReferenceError SyntaxError RangeError Error RCTFatal RCTFatalException RCTJSErrorException new NativeEventEmitter
+  bootstrap KeyboardObserver AppState WebSocketModule Animated NativeAnimatedModule NativeAnimatedTurboModule unknown
   NSException NSInvalidArgumentException NSInternalInconsistencyException NSUnknownKeyException NSRangeException NSGenericException
   ExpoScreenOrientation ExpoGlassEffect ExpoCamera ExpoModulesCore React ReactNative ReactCore RCTBridge WeddingPhotobooth UIKit
   TurboModuleRegistry getEnforcing Hermes hermes dyld libdyld libsystem_c libc objc
@@ -128,7 +129,7 @@ export function reduceStartupLogs(text, scope) {
     if (!record || typeof record !== 'object' || !fresh(timestamp(record.timestamp), scope) ||
       !ownedProcessPath(record.processImagePath, scope) || (record.process !== undefined && record.process !== PROCESS)) continue;
     const errorLevel = typeof record.messageType === 'string' && ['error', 'fault'].includes(record.messageType.toLowerCase());
-    if (!errorLevel && !(typeof record.eventMessage === 'string' && /fatal|uncaught|JSError|TypeError|ReferenceError|SyntaxError|RangeError|dyld/i.test(record.eventMessage))) continue;
+    if (!errorLevel && !(typeof record.eventMessage === 'string' && /fatal|uncaught|JSError|TypeError|ReferenceError|SyntaxError|RangeError|dyld|Native module bootstrap:/i.test(record.eventMessage))) continue;
     const reason = sanitizeStartupReason(record.eventMessage);
     if (reason && !messages.includes(reason)) messages.push(reason);
     if (messages.length >= STARTUP_LIMITS.messages) break;
@@ -139,7 +140,7 @@ export function reduceStartupLogs(text, scope) {
 export function startupLogArguments(scope) {
   if (!scope || !UUID.test(scope.simulatorId)) throw new Error('Invalid startup diagnostic scope');
   return ['simctl', 'spawn', scope.simulatorId, 'log', 'show', '--style', 'json', '--last', '5m', '--predicate',
-    '(process == "WeddingPhotobooth") AND (messageType == error OR messageType == fault OR eventMessage CONTAINS[c] "fatal" OR eventMessage CONTAINS[c] "uncaught" OR eventMessage CONTAINS[c] "JSError" OR eventMessage CONTAINS[c] "dyld")'];
+    '(process == "WeddingPhotobooth") AND (messageType == error OR messageType == fault OR eventMessage CONTAINS[c] "fatal" OR eventMessage CONTAINS[c] "uncaught" OR eventMessage CONTAINS[c] "JSError" OR eventMessage CONTAINS[c] "dyld" OR eventMessage CONTAINS[c] "Native module bootstrap:")'];
 }
 
 export function queryStartupLogs(scope, { spawnImpl = spawn, timeoutMs = STARTUP_LIMITS.logMs, signal, killGraceMs = 500, killWaitMs = 1500 } = {}) {
@@ -257,7 +258,8 @@ export async function collectIOSStartupDiagnostics(options = {}, port = createSt
       } else report.log = { status: 'unavailable', messages: [], quiescent: false };
     } catch { report.log = { status: 'unavailable', messages: [], quiescent: false }; }
   }
-  const reasons = [...report.reports.flatMap(entry => {
+  const moduleFacts = report.log.messages.filter(message => message.includes('native module bootstrap:'));
+  const reasons = [...moduleFacts, ...report.reports.flatMap(entry => {
     const termination = [entry.termination.namespace,
       entry.termination.code !== undefined ? 'code ' + entry.termination.code : ''].filter(Boolean).join(' ');
     return [[entry.exception.type, entry.exception.signal, termination].filter(Boolean).join(' / '), ...entry.reasons];

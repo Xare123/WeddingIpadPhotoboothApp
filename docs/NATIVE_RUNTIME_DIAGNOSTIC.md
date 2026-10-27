@@ -1,6 +1,20 @@
 # Release runtime investigation
 
-Production app code remains **d44b2629ce8275ddbede6f42fd2227db44b85dcb**, version **0.3.6 / build 9**, App SHA-256 `d49e6318af58b395d1b90a97359beb4ae542acc7a6f90a7c29b25414b943cd63`. Hosted Linux and unsigned device Release passed. The coordinator also verified a signed Mac artifact with the existing identity/profile, orientation module and native camera marker. **It is not installed.** Keep the installed 0.3.5 Host fix and all owner data intact.
+## Current diagnostic candidate
+
+Run **40451321760**, job **122014466279**, at **84db1c8f84feee8a5a609b8ae974ce22d538c064** failed in **24m38s**. The bounded Apple-host collector worked: it captured **EXC_CRASH / SIGABRT / SIGNAL code 6**, an invariant whose technical projection matches React Native's `` `new NativeEventEmitter()` requires a non-null argument ``, and an app with no running process/window. Source review identifies `ScrollView → Keyboard → KeyboardObserver` as a credible eager path; no native registration defect is proven. The latest complete case totals still require its XCTest summary.
+
+The next diagnostic candidate changes **the app entry**, adding a tiny pre-import availability record for KeyboardObserver, AppState, WebSocketModule and the Animated family (both classic/Turbo alternatives). It then imports Expo/App sequentially and registers the normal App once. It does not catch those imports, bypass native invariants, call returned native methods, inspect module data, change SDKs or alter the 20 tests. The fixed record uses error severity because React Native Release filters info logs. No guest data or credentials are logged.
+
+**Registry queries may initialize native modules and change startup timing.** This is a different candidate from the held signed d44b262 artifact, even though the App JSX and development version label remain unchanged. A successful run applies to the probed entry; it cannot establish that the old artifact was fixed. Do not install the diagnostic build or reuse the old Mac provenance for it. The collector now records reduced evidence after either completed runtime-test outcome, on the owned fresh simulator before cleanup, without changing that outcome.
+
+Local checks pass: **471 application tests**, all workspace typechecks, an iOS Hermes export of **1,061 modules / two assets**, and **138 tooling checks**. The entry's VM test verifies probe/import/registration ordering and exception containment; it does not establish actual Hermes/native initialization. Independent read-only review found no concrete API/import blocker and confirmed that limitation.
+
+The owner now confirms Host Settings opens on installed **0.3.5**; controlled authentication/relocking tests remain separate. Credential/private queued-photo upload scope is approved. The connector still denies this origin, and the [owner-operated handoff](OWNER_MANUAL_PRIVATE_SETUP.md) is published at7b68bd7; no agent request, key generation, pairing, upload or SMS occurred.
+
+## Preserved application baseline and earlier diagnostics
+
+The preserved application baseline is **d44b2629ce8275ddbede6f42fd2227db44b85dcb**, version **0.3.6 / build 9**, App SHA-256 `d49e6318af58b395d1b90a97359beb4ae542acc7a6f90a7c29b25414b943cd63`. Hosted Linux and unsigned device Release passed. The coordinator also verified a signed Mac artifact with the existing identity/profile, orientation module and native camera marker. **It is not installed.** Keep the installed 0.3.5 Host fix and all owner data intact.
 
 The diagnostic at **5ac56c13c1895f2d8f4388e26532c145ad048894**, [run 40447306302](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40447306302), job `122001538000`, failed after **22m16s**. The Swift preflight and native compilation reached the real XCTest smoke. At its first portrait check, the recorded facts were:
 

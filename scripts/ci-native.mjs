@@ -138,6 +138,21 @@ async function asyncValidationStage(name, validate) {
   catch (error) { entry.result = 'failed'; throw error; }
   finally { entry.seconds = Math.round((Date.now() - started) / 1000); saveStatus(); }
 }
+async function captureStartupDiagnostics() {
+  if (mode !== 'release-runtime' || !createdHere || !simulator || cancellation ||
+      !status.stages.some(stage => stage.name === 'xcode-test' && ['passed', 'failed'].includes(stage.result))) return;
+  runtimePhase = 'startup-diagnostics'; phaseDeadline = Date.now() + 30_000;
+  try {
+    const collected = await command('startup-diagnostics', process.execPath,
+      ['scripts/collect-ios-startup-diagnostics.mjs', '--simulator', simulator.udid, '--since', invocationStartedAt],
+      { timeout: 25_000, allowFailure: true, structured: 'json', stdoutLimit: 20_000 });
+    const report = collected.json;
+    if (collected.code === 0 && report?.schemaVersion === 1 && Array.isArray(report.publicMessages)) {
+      writeFileSync(join(diagnostics, 'runtime-startup-diagnostics.json'), JSON.stringify(report, null, 2) + '\n');
+      status.startupEvidence = report.status;
+    } else status.startupEvidence = 'unavailable';
+  } catch { status.startupEvidence = 'unavailable'; }
+}
 async function cleanup() {
   if (cleanupPromise) return cleanupPromise;
   cleanupPromise = (async () => {
@@ -321,23 +336,6 @@ try { await main(); }
 catch (error) {
   status.result = cancellation ? 'cancelled' : 'failed'; status.error = redact(error instanceof Error ? error.message : String(error)); process.exitCode = cancellation?.code ?? 1;
   if (mode === 'release-build' && status.nativeBuild === 'running') status.nativeBuild = 'failed';
-  // A missing application frame can mean the app stopped. Collect only this
-  // run's disposable-simulator startup evidence before deleting that simulator.
-  // The collector emits reduced JSON, never raw OS logs or crash reports.
-  if (mode === 'release-runtime' && createdHere && simulator && !cancellation &&
-      status.stages.some(stage => stage.name === 'xcode-test' && stage.result === 'failed')) {
-    runtimePhase = 'startup-diagnostics'; phaseDeadline = Date.now() + 30_000;
-    try {
-      const collected = await command('startup-diagnostics', process.execPath,
-        ['scripts/collect-ios-startup-diagnostics.mjs', '--simulator', simulator.udid, '--since', invocationStartedAt],
-        { timeout: 25_000, allowFailure: true, structured: 'json', stdoutLimit: 20_000 });
-      const report = collected.json;
-      if (collected.code === 0 && report?.schemaVersion === 1 && Array.isArray(report.publicMessages)) {
-        writeFileSync(join(diagnostics, 'runtime-startup-diagnostics.json'), JSON.stringify(report, null, 2) + '\n');
-        status.startupEvidence = report.status;
-      } else status.startupEvidence = 'unavailable';
-    } catch { status.startupEvidence = 'unavailable'; }
-  }
   if (metro) {
     try {
       status.metroProcessTree = ownedProcessTree(metro.pid);
@@ -346,6 +344,9 @@ catch (error) {
   }
 }
 finally {
+  // Preserve either test outcome. Only reduced evidence from this disposable
+  // simulator is collected; queries also make a passing probe build observable.
+  await captureStartupDiagnostics();
   try { await cleanup(); }
   catch (error) {
     status.cleanupError = redact(error instanceof Error ? error.message : String(error));
