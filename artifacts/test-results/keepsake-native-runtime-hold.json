@@ -18,5 +18,14 @@
   "accessBoundary": "Public annotations read; raw artifacts require coordinator GitHub connector not exposed here. No unchanged denied API retry.",
   "nextAction": "Hold another simulator retry until actual logs diagnose stage; publish reviewedV2 and independently verify current physicalSDK Release build plusLinux.",
   "newV2RequiredTests": 20,
-  "newV2NativeVerified": false
+  "newV2NativeVerified": false,
+  "coordinatorDiagnosis": {
+    "artifact": "12676910782",
+    "bootPassed": true,
+    "bootSeconds": 254,
+    "stage": "dualarchitecturecoldcompilation interrupted byouter35minute step",
+    "xctestExecutions": 0,
+    "remedy": "d2c0577singlearchitecture+phasedbudgets+safeownedprocesscleanup"
+  },
+  "historicalHoldResolved": true
 }

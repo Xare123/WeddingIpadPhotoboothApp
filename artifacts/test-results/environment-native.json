@@ -1,0 +1,73 @@
+{
+  "scope": "Verified reusable environment draft checkpoint before final documentation publication",
+  "verifiedAt": "2026-10-26T23:32:55.989111+00:00",
+  "draftId": "0cebfe70-de1b-4f37-bc6b-8e688559c14e~cecfgdraft_6ade733892ac819daa2844b78940472e",
+  "revision": 19,
+  "status": "saved",
+  "exactReadback": true,
+  "repository": "Xare123/WeddingIpadPhotoboothApp",
+  "ref": "b4e01d3aeb47c3f164f912b829b4807cc3551f8d",
+  "mountPath": "WeddingIpadPhotoboothApp",
+  "installScriptChars": 105,
+  "startSkillChars": 25268,
+  "startSkillSHA256": "81166cb14c98ec303415792d36364df1181ffd7fad5f0b82ee86706a2dd19c4c",
+  "networkPreserved": true,
+  "secretsPreserved": true,
+  "secretCount": 0,
+  "repositoriesInspection": {
+    "complete": true,
+    "directoriesInspectedOutsideClassifiedCaches": 138,
+    "classifiedCaches": [
+      {
+        "path": "WeddingIpadPhotoboothApp/node_modules",
+        "kind": "known dependency/generated/test cache",
+        "exists": true
+      },
+      {
+        "path": "WeddingIpadPhotoboothApp/.cache",
+        "kind": "known dependency/generated/test cache",
+        "exists": true
+      },
+      {
+        "path": "WeddingIpadPhotoboothApp/apps/ipad/ios",
+        "kind": "known dependency/generated/test cache",
+        "exists": true
+      },
+      {
+        "path": "WeddingIpadPhotoboothApp/apps/ipad/dist",
+        "kind": "known dependency/generated/test cache",
+        "exists": true
+      },
+      {
+        "path": ".git",
+        "kind": "managed read-only empty protection directory; no HEAD/config/objects/refs, not an unborn or actual checkout",
+        "exists": true
+      }
+    ],
+    "directorySymlinksInspected": 0,
+    "repositories": [
+      {
+        "name": "Xare123/WeddingIpadPhotoboothApp",
+        "host": "github.com",
+        "commit": "b4e01d3aeb47c3f164f912b829b4807cc3551f8d",
+        "mount_path": "WeddingIpadPhotoboothApp"
+      }
+    ],
+    "errors": []
+  },
+  "currentInstanceChecks": [
+    "frozen590package install",
+    "typechecks",
+    "311tests",
+    "89CIcontracts",
+    "1048module iOSJS export",
+    "0.3.4prebuild and camera-only source autolinking18modules",
+    "local authenticated immutable-upload/gallery/download/mock/revocation smoke",
+    "Metro readiness",
+    "owned server stop/ports closed"
+  ],
+  "requiresPublish": true,
+  "snapshotPublicationVerified": false,
+  "freshTaskRestoreVerified": false,
+  "boundary": "Saving does not execute/apply/publish. Final documentation-only publication will require a later exact-ref draft/readback; this checkpoint remains historical and no future revision is invented."
+}

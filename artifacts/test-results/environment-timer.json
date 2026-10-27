@@ -1,0 +1,31 @@
+{
+  "generatedAt": "2026-10-26T20:28:47.186053+00:00",
+  "repository": "Xare123/WeddingIpadPhotoboothApp",
+  "ref": "bebee183e1f81f808a143e0e6304de0195735625",
+  "mountPath": "WeddingIpadPhotoboothApp",
+  "draftRevision": 18,
+  "status": "saved and exact readback verified",
+  "installScriptCharacters": 105,
+  "startupInstructionsCharacters": 22336,
+  "startupInstructionsSHA256": "738ab9ee69791d5cb30845e23ac6014de7a955c3e4c598c5dca3580ebeb6790d",
+  "networkPolicyPreserved": true,
+  "secretsAdded": 0,
+  "repositoryInspection": {
+    "actualGitRoots": 1,
+    "directoriesInspected": 57,
+    "publishedRefReadVerified": true,
+    "knownGeneratedCachesPruned": true
+  },
+  "currentLinuxWorkflow": {
+    "packages": 590,
+    "tests": 310,
+    "ciContracts": 57,
+    "historicalFaults": 4,
+    "iosModules": 1048,
+    "sourceMapEntries": 1033
+  },
+  "requiresPublish": true,
+  "snapshotPublishedByExecutor": false,
+  "freshTaskRestoreVerified": false,
+  "nativeAndDeviceAcceptance": "Device-SDK Release passed for unchanged d592cfc app; bounded native XCTest retry40393553131 remains active; owner iPad and live integration remain separate gates."
+}

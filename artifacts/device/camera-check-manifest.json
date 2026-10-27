@@ -1,0 +1,35 @@
+{
+  "scope": "Original printable/displayable vector card for owner camera rehearsal; not an executed device test or calibrated color target. No photographs or private data.",
+  "generatedAt": "2026-10-26T20:40:36.703341+00:00",
+  "pdfPages": 1,
+  "pdfPagePoints": [
+    960,
+    720
+  ],
+  "pngPixels": [
+    1920,
+    1440
+  ],
+  "createdWith": {
+    "reportlab": "4.4.9",
+    "renderer": "pdftoppm; font cache prepared through existing cloud-env.sh"
+  },
+  "font": "Embedded DejaVu Sans subset; full notice in PDF Keywords and FONT_LICENSE.txt.",
+  "files": [
+    {
+      "file": "camera-check.pdf",
+      "bytes": 47196,
+      "sha256": "dab5ad57b130e3b27e226e9d1fbbff4696cb43723281b5cc50f14e4628b6c52c"
+    },
+    {
+      "file": "camera-check.png",
+      "bytes": 99697,
+      "sha256": "7b3b228804604269184fd21ff2c91076f10bccd15d9f4f14a70c1992d6a438a2"
+    },
+    {
+      "file": "FONT_LICENSE.txt",
+      "bytes": 2732,
+      "sha256": "562c8f5e92af7a06339292a1bb0b9a3e9c8d5142af5d7167f2866fc50261b993"
+    }
+  ]
+}

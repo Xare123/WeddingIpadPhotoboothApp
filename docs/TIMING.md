@@ -1,6 +1,6 @@
 # Timing the booth
 
-Version **0.3.2 / build 5** gives a group a little longer to get ready, then keeps the remaining photos moving. New host defaults are **5 seconds for the first photo** and **3 seconds for following photos**. Each control snaps to 2, 3, 5, 8 or 10 seconds.
+Version **0.3.4 / build 7** retains the timing workflow introduced in 0.3.2: a little longer to get ready, then a steady pace for the remaining photos. New host defaults are **5 seconds for the first photo** and **3 seconds for following photos**. Each control snaps to 2, 3, 5, 8 or 10 seconds.
 
 Before starting, tap the small **5s first · 3s next** chip on the camera screen. The bottom sheet has independent First photo and Next photos sliders, labelled stops and accessible minus/plus controls. Changes remain a draft until **Use this timing**. Cancel or tapping outside discards the draft; Use booth defaults restores the saved pair. The controls support both orientations and reduced motion. They disappear while capture is running; no prompt interrupts each shot.
 

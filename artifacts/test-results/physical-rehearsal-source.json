@@ -1,0 +1,106 @@
+{
+  "scope": "Independent physical UI runner source and unsigned preparation only",
+  "reviewedAt": "2026-10-27T00:01:16.111868+00:00",
+  "sourceCommit": "e8f18833444ed3867805a9ffa51754fbd962f13a",
+  "shippingApplicationCommit": "b4e01d3aeb47c3f164f912b829b4807cc3551f8d",
+  "applicationVersion": "0.3.4",
+  "applicationBuild": "7",
+  "shippingSourcesUnchanged": true,
+  "sourceHashes": {
+    ".github/workflows/ci.yml": "360079e06002f5a1c30d7d0d17685efa6a20dcd8b5e40a5e5ae442dd3c970182",
+    "apps/ipad/native-tests/WeddingPhotoboothPhysicalSmokeTests.swift": "db1f8191217e8b2817b4dd7737bba460af559a6e59faf894e2242ac01b476460",
+    "scripts/prepare-ios-physical-tests.mjs": "4b738ee16e9e43277312e8a8a76874440f91a6d3854c10612cd7f98d4b5a9615",
+    "scripts/prepare-ios-physical-tests.test.mjs": "549b71e214b2aff3e018bebae2b4be9db289f6dbb00fbdbfe3e0c993dcdd93ab",
+    "docs/PHYSICAL_REHEARSAL.md": "ad6e703f919d17062b846735286306c506141de589b2caa6ade66acea335781b"
+  },
+  "sourcePreparationChecks": {
+    "executed": 8,
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0
+  },
+  "combinedCiContracts": {
+    "executed": 97,
+    "passed": 97,
+    "failed": 0,
+    "skipped": 0
+  },
+  "independentReview": {
+    "originalFinding": "Lexical output privacy check could follow .cache symlink into public artifacts",
+    "reproducedWithSyntheticInputs": true,
+    "fixed": "Canonical nearest-existing-ancestor plus missing components, same canonical output for checking and writing; mode0700 output",
+    "regressions": [
+      "cache itself points into public artifacts",
+      "cache child points into public artifacts",
+      "external alias points into public artifacts"
+    ],
+    "independentRecheckPassed": true,
+    "otherCriticalBlockersFound": false
+  },
+  "targetScope": {
+    "onlyUiTestTarget": true,
+    "synchronizedSourceFolder": true,
+    "applicationTargetOrDependency": false,
+    "defaultSigningAllowed": false,
+    "defaultActualTestActionReadiness": "NOT_ARMED",
+    "armRequires": [
+      "explicit --owner-ready",
+      "OWNER_READY signal after owner readiness"
+    ],
+    "shellSignalAloneArms": false,
+    "markerForwardedToShippingApp": false,
+    "sourcePreparationExecutesNativeCommands": false
+  },
+  "nativeValidation": {
+    "originalRelayedSource": "Coordinator-reported Mac Swift typecheck/unsigned Ruby-generator build passed",
+    "reviewedNodeAdaptation": "PASS: exactE8unsignedphysicalSDKbuild-for-testing and actual xctestrun NOT_ARMED onMacXcode27.1/iOS27.1",
+    "physicalCaseExecuted": false,
+    "signedRunnerCreated": false,
+    "appIdOrProfileCreated": false,
+    "installed": false,
+    "macSourcePreparation": {
+      "sourceCommit": "e8f18833444ed3867805a9ffa51754fbd962f13a",
+      "evidenceSource": "Authorized Mac executor via coordinator",
+      "nodeChecksPassed": 8,
+      "unsignedPhysicalSdkBuildForTestingPassed": true,
+      "toolchain": "Xcode27.1/iOS27.1",
+      "actualXctestrunTestEnvironment": "NOT_ARMED",
+      "applicationTarget": false,
+      "targetAppDependency": false,
+      "uiTargetAppPath": false,
+      "signedShippingAppHashUnchanged": true,
+      "signing": false,
+      "provisioning": false,
+      "installation": false,
+      "launch": false,
+      "capture": false,
+      "physicalExecution": false,
+      "ownerExecutionApproval": "pending"
+    }
+  },
+  "safeguards": [
+    "existing active/recovered session stops",
+    "simulator/fixture refused",
+    "only new4-photo guest session",
+    "guest5s/3s only",
+    "stop on save/permission-induced pause",
+    "terminate/relaunch only after4savedUIindicators",
+    "leave newreview intact",
+    "no nextguest/delete/confirm/share/pair/hostauthbypass",
+    "private diagnostics only"
+  ],
+  "limits": [
+    "UI labels and restored review do not prove file hashes or actual Photos copies",
+    "coordinator must verify unpaired app before running; no network suppression",
+    "separate owner approval for app update and runner registration/profile/install/execution remains pending",
+    "no real photos or device diagnostics published"
+  ],
+  "privateValuesIncluded": false,
+  "hostedLinux": {
+    "run": 40423117679,
+    "result": "passed",
+    "duration": "1m25s",
+    "checks": "97source/nativeCIguard contracts,311integrated,typechecks,iOSJSexport,recovery faults andlocalHTTP; no physical execution"
+  },
+  "sourceHashesBoundary": "Exact E8 source/tooling and original document snapshot. Later clarification-only documentation changes do not change the source preparation or shipping app."
+}

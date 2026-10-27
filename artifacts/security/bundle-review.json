@@ -1,5 +1,5 @@
 {
-  "scope": "Current V2 Linux Release-mode iOS source-map graph only; no native-binary or deployed infrastructure security audit",
+  "scope": "Historical0.3.2 Linux Release-mode source-map graph; unchanged reviewed App/timer sources carry forward, not a new native-binary/CocoaPods/infrastructure audit.",
   "app_source_sha256": "feab5d929c5f8552e7e72540974bb28c5dd415063072f677ebe2704362353e18",
   "source_module_count": 1033,
   "appSourceContentMatched": true,
@@ -38,8 +38,12 @@
   "exposure": "Expo certificate/validation CLI plus local Wrangler/Miniflare image/network tooling. Expo Metro require loader is present; do not equate all @expo/cli modules with affected code. None of the affected libraries above appears in this inspected app graph. The newly rebuilt Worker bundle is separately hashed and locally tested; this is not a native-binary or production audit.",
   "safeFixStatus": "Applied tested Wrangler4.153.0; Expo/directMiniflare findings remain. See studio-advisory-assessment.json and keepsake-tooling-candidate.json; no forced major/ineffective override.",
   "native_release_build": {
-    "current_source_passed": false,
-    "status": "Newtimer exact-commit nativepending; baseline00ephysicalcompilePASS"
+    "sourceCommit": "d592cfc36773a136f24d38e5bc71c1928fb57de7",
+    "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40386078669",
+    "job": "121794579426",
+    "scope": "PublicexactSHAannotationconfirmsunsignediPhoneOSRelease+embeddedJS+iPadmetadata; noXCTest/sign/install/device/nativebinarysecurityaudit",
+    "historical_source_passed": true,
+    "currentCandidateBoundary": "This is the earlier d592cfc unsigned result, not a b4e01d3 result. Current hosted/Mac/native evidence is separately recorded in test-results/native-fix-local.json."
   },
   "generatedAt": "2026-10-26T19:18:50.134450+00:00",
   "sourceContents": {
@@ -73,5 +77,12 @@
     }
   },
   "workerBundleSHA256": "43dabd6c9dcda6aa44f23ca11ac544f2588f9efd5428f0837dc839f4f98c9ded",
-  "fixtureBoundary": "Production export with EXPO_PUBLIC_E2E_FIXTURE=0. nativeFixtureEnabled additionally requires __DEV__; synthetic fixture asset presence is not a live camera substitution. Neither JS graph nor binary inspection proves physical iPad behavior."
+  "fixtureBoundary": "Production export with EXPO_PUBLIC_E2E_FIXTURE=0. nativeFixtureEnabled additionally requires __DEV__; synthetic fixture asset presence is not a live camera substitution. Neither JS graph nor binary inspection proves physical iPad behavior.",
+  "currentCandidateCarryForward": {
+    "sourceCommit": "b4e01d3aeb47c3f164f912b829b4807cc3551f8d",
+    "reviewedJavaScriptSourceHashesUnchanged": true,
+    "dependencyLockUnchanged": true,
+    "freshAuditRun": false,
+    "freshNativeBinarySecurityAudit": false
+  }
 }

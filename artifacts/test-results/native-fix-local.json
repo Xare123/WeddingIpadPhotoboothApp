@@ -1,0 +1,503 @@
+{
+  "scope": "0.3.4/build7 native cache repair, upright EXIF visual regression and patched-camera compilation gate",
+  "generatedAt": "2026-10-26T23:16:57.122410+00:00",
+  "sourceCommit": "b4e01d3aeb47c3f164f912b829b4807cc3551f8d",
+  "branch": "codex/wedding-photobooth-mvp",
+  "appVersion": "0.3.4",
+  "iosBuild": "7",
+  "sourceHashes": {
+    ".github/workflows/ci.yml": "9d23796ac30b200d942b1b8a53dc0fcdbd89fdd4e6793d7ee6af84677e401094",
+    ".github/workflows/ios-native-pixels.yml": "9db79f0868e5bf7d4e8a1edfdd128c01b941138b212beca201166a7d325fcb3d",
+    ".github/workflows/ios-release-runtime.yml": "6891cfb93ff5c231826958b74d2e95c6865536f2f2a6978bc9f0db494bdda12f",
+    ".github/workflows/ios-simulator.yml": "618bdc6d6c7ae4825dc9acfd937071504236ce7da7c2f8b54fb73a1a16312e61",
+    ".nvmrc": "7e8a2fa94951112b894a3dbe3d05efef5e9263741fa49125f0a70f40fedab4cc",
+    "apps/ipad/App.tsx": "feab5d929c5f8552e7e72540974bb28c5dd415063072f677ebe2704362353e18",
+    "apps/ipad/app.json": "a2a5e2f7ec49e6450477eb8e987bae3d9b108f0f72a9deb2fbeec9fae91f26ba",
+    "apps/ipad/index.ts": "af10e01cf5fa6d399a83829926cc80d935c1dca8fb01313ab7cb54aab84c028b",
+    "apps/ipad/modules/wedding-photo-effects/expo-module.config.json": "a7cad1c4a09492b2d823e4e5d739db0db01cc7039f415fb59bdbfe57808c63f5",
+    "apps/ipad/modules/wedding-photo-effects/ios/PhotoEffectsEngine.swift": "6955e9ce7b0fae700e19f754d3472239be36d15d49d7da1679de0a0e74ba67aa",
+    "apps/ipad/modules/wedding-photo-effects/ios/PhotoTemplateEngine.swift": "be94e177327e212fc8d0c623c0b81b917319c6bc111e3350a551095301bdf098",
+    "apps/ipad/modules/wedding-photo-effects/ios/WeddingPhotoEffects.podspec": "7ccb1a10a7a396b8aa67d194095d3a6c0fdecd6f3a3616fbca3b7a4c6bcefd85",
+    "apps/ipad/modules/wedding-photo-effects/ios/WeddingPhotoEffectsModule.swift": "17571647c399a6a2e15bdf89b49628246dd2826b8d99e29d55d21c6093a3ed1c",
+    "apps/ipad/modules/wedding-photo-effects/package.json": "03e767c9c29501ffccd82b81dbbd05359a0641d845766cb93b0996576ff5e525",
+    "apps/ipad/modules/wedding-photo-effects/tests/PhotoEffectsEngineTests.swift": "593d1d210c8055d49b5b57fa840be1fc4269351fcd7b702daef5bbf9e57401ae",
+    "apps/ipad/modules/wedding-photo-effects/tests/PhotoTemplateEngineTests.swift": "f5e0e09eae39dad072245821422076324c7ab2b5e4ee48ca00aaaeae10e81790",
+    "apps/ipad/native-tests/WeddingPhotoboothReleaseSmokeTests.swift": "c5a6b71bf5864d1f0326d0dce274ebd5f5001d055d1551b1aa49c824a1ba494f",
+    "apps/ipad/native-tests/WeddingPhotoboothUITests.swift": "0d1c388a9d5f9495f98d83667e16a2b2e42681a1908ad7fb5aa594b4e8f1071a",
+    "apps/ipad/native-tests/fixtures/studio/provenance.json": "5e04b41e8a7c80090005f5f22db10caf6c7fb54243ae2bc8dcbf8cb029183bb2",
+    "apps/ipad/package.json": "2ce1f27989333e5eb711f41574a61c53d3d7b03e2bc7b181e09639757ae64807",
+    "apps/ipad/src/GlassSurface.tsx": "ace64a22e740d69040689495c0aa7147f7456038bbd0ee9aba6f2d52b58af972",
+    "apps/ipad/src/SmsShare.tsx": "79464043a0e40a6cc7850c0e46cacfab33b3b19e477fee87192c0b38195d7541",
+    "apps/ipad/src/TemplateStudio.tsx": "2ce75e3831efeff05e6c841440ace23dfb34d220f09af30f0c80a418800113fc",
+    "apps/ipad/src/TimingSheet.tsx": "c6564a204c7a3a3ebd3fe993c04facc755ba08e18bc1e0cee62c572a0e466210",
+    "apps/ipad/src/booth-presentation.ts": "c9bee7d01b75b29e5c3cb958483adf155dd843824c2216e60219fb3bd0d0c507",
+    "apps/ipad/src/capture-state.ts": "0778f13dee0bb5a14c71dc5fe15c9162cfe5fdc68dedd2b2fef336de6a4893c6",
+    "apps/ipad/src/capture-timing.ts": "83eec4ead6d14e43e6061b63201d6b432c1e0f17a24a4d35035944c8638c5683",
+    "apps/ipad/src/config.ts": "9344c5f7b5292b941e1b2a2f0028e78dc94e1fbb5626148e09aba736cff1566f",
+    "apps/ipad/src/glass-policy.ts": "d3e33995484239887dde90f2743919c17bb2e8ff23093ceb45a804e530499e9e",
+    "apps/ipad/src/host-auth.ts": "dc1bc95165362c110beded9a10d18bd9207c1cb1c5a145da918193e5545d6a32",
+    "apps/ipad/src/host-originals.ts": "938e564eb50d984754abf5ec2d07a4671faa2110bb01ad4394f5377f4d271c1e",
+    "apps/ipad/src/host-visibility.ts": "9b8033279a1249c59cd04e3f185792fa2a61c14f892f2cb9cf98953ceab02014",
+    "apps/ipad/src/local-paths.ts": "15be650f8a2e7f3c91441ecc2e559ac38feba76fa26a01d5038776dfe6d31e9a",
+    "apps/ipad/src/local-persistence.ts": "3d4dbd4d52b50d14fa35fe6f57815e18ca472294f0675e97cc9f821ad09df90a",
+    "apps/ipad/src/local-types.ts": "ab3e1e69d051a7a7c91886445781cbe306bb8839a60c2c4cbbafb49d488bde47",
+    "apps/ipad/src/native-file-ports.ts": "49107b78dd8d96b75375b588d7c68af3fcc1858ecaa63046847008314996af14",
+    "apps/ipad/src/native-fixture.ts": "fd50a3d03462b362aad6e7a4eeb60fac1949de6dd79186695d411cdd94eeaaf9",
+    "apps/ipad/src/native-photo-effects.ts": "372b1250d399429dc7396d09be1affa44b063216ba471d5cc4ed2d953394f0c9",
+    "apps/ipad/src/photo-export.ts": "8ba8baae4fe425bd0f99079619e0a693f5c3fcf83ee73a93e167c7c93f7fb633",
+    "apps/ipad/src/photo-library.ts": "800b9dd768d660c16720fda134fe33a1a14db1061f7f31531063b136b670b6a8",
+    "apps/ipad/src/photo-look-editor.ts": "38d6dc47fb34d9d9da58cf96a7daa6102d9616c7f54720c0406c1962548f817b",
+    "apps/ipad/src/provisioning.ts": "926f7bdbd4a7799a839f6e72ba11719ae644080bb50fa263a00ffde37dca89dd",
+    "apps/ipad/src/publication.ts": "33d26658c1c2de8781bc62ded35c80cbd00394c7413c70fdedf1fbc834875357",
+    "apps/ipad/src/queue-index.ts": "02d23ad2dadeb024cfb9f0eb8ce8d6f908b35a4f447f01d9a17d854a93708623",
+    "apps/ipad/src/recipient-retention.ts": "9956155c952418fd5ad31976b09e830a48d1d91443a963fa85253e42f0d7d842",
+    "apps/ipad/src/recipients.ts": "b5131ec99a4a7b14e0dd99318b32f05c71f56af48d321489c8fedfbbe33dccec",
+    "apps/ipad/src/review-selection.ts": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
+    "apps/ipad/src/session-capture.ts": "544104e153dab9b9d8f7996f15e4b79180d9dede1819620de7fec07c076f4763",
+    "apps/ipad/src/session-sync.ts": "4aa8b3242424286990704f3e343e0b1709f322edbcf4a234b5fa767dde16ea99",
+    "apps/ipad/src/sharing.ts": "6bce9b315a8dc7064f858d7ff9d10c5d5587b1b2bf66a56923f738823c1df271",
+    "apps/ipad/src/sms-state.ts": "4c7125d4f710c97848b6690196fa328edc83e85488ce3626dd7e843e2e99497a",
+    "apps/ipad/src/storage.ts": "05b03145effb4f3a251504a11fac8a96cc1a09e6d41f4ed6ba9b05e41eed7ae0",
+    "apps/ipad/src/sync.ts": "9c113f3d6a2a9434f90d3e67cc676f8676cc0c096f00a36a18b49013af830038",
+    "apps/ipad/src/template-editor.ts": "ad02f03cb5cae30d801e5262fd8f363f4e023b3c7f815f7e22e56ee604abe3df",
+    "apps/ipad/src/timing-controls.ts": "b73ced2d2ba25beaffbf4f0ec3fcda648de0bafebcae44534052d7649facc5b1",
+    "apps/ipad/test/booth-presentation.test.ts": "dc037d3affacb439cc4df8c82928232b297a6402de97dbd07bc6ba9d53823670",
+    "apps/ipad/test/capture-timing.test.ts": "944daed045f44370e8ef290236037cb3a5f42c5c4cac94d9c92e6a255cfbceb6",
+    "apps/ipad/test/composite-export.test.ts": "5b4ef28be27c2f95056307e2747841550415bc95341f77a88b23a3297d138ac6",
+    "apps/ipad/test/glass-policy.test.ts": "937e9e8610c68bace03277e7d099cdd09536c737b295f7495abe217c05399a82",
+    "apps/ipad/test/host-originals.test.ts": "c946c4f09b0f72cbe7e7c6a3af2ba65b58eae6ce8840be2460f9da45668831f2",
+    "apps/ipad/test/host-visibility.test.ts": "85667e32e346afd678d1c4f696eaae186a9a4bccccaec0651a512b56974ac7d5",
+    "apps/ipad/test/photo-look-editor.test.ts": "dd80de93e6c4741e1692afa7a9db7349d1ec44170e913de7e0eef26181709a45",
+    "apps/ipad/test/recipient-retention.test.ts": "3f099ea23723ba6bb6dd5f3b5cb5c2a83d550a9e5d33547eb597034a8d34b80e",
+    "apps/ipad/test/review-selection.test.ts": "9baff3e1079486e8491c4132e9dffa50ae69d59986b411e1800772ae649548ae",
+    "apps/ipad/test/session-capture.test.ts": "4fbbf06c15c767ae721d4c0b098122913b26bb270768824161849228a2819134",
+    "apps/ipad/test/template-editor.test.ts": "95e8b2b5bd71bd4bf367757b1e76913d07279aee234a324fc640910ced8d8ffe",
+    "apps/ipad/test/timing-controls.test.ts": "2567afa083512ceb05b1bb364a5c2b8f3c63b76bc799e33bc67bd9aa2f3c7794",
+    "apps/ipad/tsconfig.json": "07ff61ecb082cfc0027ea79cb7413b93cc52848224655690c32965e2f90565fb",
+    "package-lock.json": "3e641bdf69fb8255425da63d4d1b827c0cf811c431ea64ab12a4c8fcfad55bf3",
+    "package.json": "21ab07c98e468f97bf05dc8789ab508bb3ee18ae9fbdd724f2cfadb42bf90a30",
+    "packages/core/package.json": "b7f38e962b36d12b967ac99584b9e50957ab51d9be7f52620f61e706bf042aa2",
+    "packages/core/src/index.ts": "945d97743a621558369c7029acbc5b61daae85d2c08156368c188aedbbb9a991",
+    "packages/core/test/capture.test.ts": "cb6a19b254876a4435274b1000d55031c94380daece2ea519ddc1177d8bfca76",
+    "packages/core/test/consumer.test.ts": "7c9ff40aa04582af127e512adbb5514672bb3108e3a07186469732b7d1f04c0c",
+    "packages/core/test/local-disk-sqlite.test.ts": "6e33d3af814b22a59f0cb7085ac3510e1e3d4353f8fac93551da6c3aaff72b2c",
+    "packages/core/test/local-persistence.test.ts": "543f6067f862d8e1f0ffe398f9171b79014ef6a09cc66fab72b73ef23e36570e",
+    "packages/core/test/native-file-ports.test.ts": "77767f320ab9b05596222819c68ac8ccd1bc68f066d68b42eca944a6c9cb563d",
+    "packages/core/test/native-fixture.test.ts": "5933a50f626eba3ff07341842300e0723773c2e7d1026e99c7d51c4697dc58d6",
+    "packages/core/test/provisioning.test.ts": "8f73f8a499d475253e43f516ac2ee7ce6ab262f557ac6facf78aa580752916f1",
+    "packages/core/test/queue.test.ts": "bc70b4a65b51c6e876facdb5725b8148f76c9b142366b3ff04c0f70d5468daab",
+    "packages/core/test/session-sync.test.ts": "2aee9a80c7909cd4f4051fab2d64b6670e89d5e182ddb36a8dc92efcedc0cda0",
+    "packages/core/test/sharing.test.ts": "dff441ed28f4d61b2b43553d188299e17548250a36dbcf17075b064e3a8ae1a3",
+    "packages/core/test/sms-state.test.ts": "fdfd6a661bc267d30674866c960844a2dd93d24e64b6c81670a343b693ccb3b3",
+    "packages/core/tsconfig.json": "2e44ffec34f89750b512b1d993b350250ab727bb250bcfba7ab846ded3e0d7cc",
+    "plugins/test/fixtures/expo-camera-58.0.12/ios/CameraViewModule.swift": "383e39a5262a31624039055fbd074e3ce5579883cb26eec12c5d2bccfe60f742",
+    "plugins/test/fixtures/expo-camera-58.0.12/ios/Common/PictureOptions.swift": "318736c97915d28290aaec001c818f1ffa2ab0150aef499a9177501f0ab435e3",
+    "plugins/test/fixtures/expo-camera-58.0.12/ios/Current/CameraPhotoCapture.swift": "032170efecad59a2902659d9cfa7959cf77f45c24c39f9c9272eadaf0f81a394",
+    "plugins/test/fixtures/expo-camera-58.0.12/package.json": "9018db1a48c3f927676cd28a03659c8aa5c0e41fab7989ea53c480d4478a8d86",
+    "plugins/test/full-photo.test.cjs": "f8590d078719fa21e18ac8a5ac44af83bcb5c474fc118ffebc7ecfe0b8b203b5",
+    "plugins/with-full-photo.cjs": "1d16c909a06a4011401addd5185d69afcf30255365fd6e40d853f2545e4ca816",
+    "scripts/build-worker.mjs": "0952be77a29b9cf5efa58d3f3830aeff814d634b74bd35d44162166996d7e07c",
+    "scripts/ci-native-contract.mjs": "9797005a52ad28da581ed699ba08929d276a50afa1cc5acc649599f09c4d1ab1",
+    "scripts/ci-native-pixels-results.test.mjs": "0e78f549e03276990c3d2351aa764ba05778708cd7939dfe90f059bef8980657",
+    "scripts/ci-native-pixels.mjs": "a43583b5e8ca9913c66fc4033ab499c19e254406f62ce347f4d8d53323735037",
+    "scripts/ci-native-pixels.test.mjs": "06c1374be392558b83e31da60c4366e21ec4e0db79b8f9c24b593216e2da1622",
+    "scripts/ci-native.mjs": "f88572080d640bd906d5861c48302164dfa17562474f0521c0d89ca12230b0bf",
+    "scripts/ci-native.test.mjs": "65ce45a754c9717f3472d7f23cd682e311e964fcffb72c528e5df96f5e55136c",
+    "scripts/ci-summary.mjs": "4d229a8f5527e5ac78fe915d6974ecce2d96c9c95b024c53bf9112b8e124b564",
+    "scripts/cloud-env.sh": "89b85573922b1bcf9258621c04fb731b317fc28f2ae4e0eff2af2d0ca784667b",
+    "scripts/dev-api.sh": "ddd24553f3971a6540bef897239b4a07d138fc40c62d46246adf3525d0f7accb",
+    "scripts/dev-ipad.sh": "924d60b8892dabf185a7654d2e30d54ad6b4001c9ddd416a72baedf1f89f6744",
+    "scripts/native-camera-capability.mjs": "6ed8eb6eb0e45044f20ca533f4b40fd56b71520048bd18339a91ce622cbcb152",
+    "scripts/native-camera-capability.test.mjs": "58582b054e09312878a68d5f7ff908030325bcd9b06152e07c0d4469aff33e92",
+    "scripts/native-pixel-project.mjs": "8f38948c0b2e549432928d64f5b9f0746d5e3a5b4e57a82e6f928c21befd065c",
+    "scripts/native-pixel-results.mjs": "09d51720019d5e049e1bdd81b60974a1cf3681261bc95dae689aed3a1d1fe89f",
+    "scripts/prepare-ios-tests.mjs": "807837607d331227ba7a69cda2d1aaf7bbc5e77e3c71fe4f798cb09927168bcf",
+    "scripts/prepare-native-pixels.mjs": "8ad7a265544ee385942c9b72ff5f33adda1868710bfa9506c4934234651b0596",
+    "scripts/setup-cloud.sh": "f928e961231e3129434b07b034b913b4bc69538a3d579a91840069b2c886b027",
+    "scripts/smoke.mjs": "b84b0e1d881c3df4d469ceff64acf22b2d6afbe64498ff1eaa3e5e34119679f6",
+    "scripts/visual-evidence.cjs": "8594faf8e187cf5d6925a51fd9d777d7e1496c6d72590a92569f6851fbb2437e",
+    "services/api/package.json": "ba85df5197217c1e7efb56046f8e1c152ffe5b5ee8cfa086fe30f9db80b162aa",
+    "services/api/src/index.ts": "82a548e2f5e640ce6f57f360b7636959e8c6877c3ec3b6c58570a80fb103bd63",
+    "services/api/test/api.test.ts": "b55c4ca8ebc6997da9103d0f587767a1592754c189e1469c9f17aada458b6e80",
+    "services/api/test/pairing.test.ts": "a361a7a3c69beb10bd891e66daa24d9ccbccc0e88267ec82b6f82776016df33d",
+    "services/api/test/rate-limit.test.ts": "ff24715e6d0a8a87fffc8c0636ecdd9e9c040c1efee48f5a6236f81359ef632b",
+    "services/api/test/template-gallery.test.ts": "091405ea66916db96deed9319a28344fa527840bac957fd56f8ded5de693cc21",
+    "services/api/test/textbelt.test.ts": "c9a458c7ffc6f081828f7b41cb1664e0267cfb2b1ddb90d92f7f1b43a0ec30dd",
+    "services/api/tsconfig.json": "4766d4d61c0503a0d598f9fa3283fd8c6b4d0c12cbb647409893912a3da2f034"
+  },
+  "sourceHashesBoundary": "Frozen executable/config/test snapshot at b4e01d3, verified against Git objects before separate physical-runner tooling publication. New helper/CI changes are recorded separately; shipping app runtime/native modules/core/API/lock/plugin remain unchanged.",
+  "changes": {
+    "cache": {
+      "cause": "Real Mac Foundation probe supplied by coordinator: empty appendingPathComponent generated effects//, adding a trailing slash path component; only exact parent equality failed.",
+      "repair": "Create cache leaf, standardize file URL, resolve symlinks and standardize again without appending an empty component.",
+      "releaseGuardsChanged": false,
+      "guards": "File URLs, exact canonical immediate parent, supplied and resolved UUID JPEG names; outside/sibling/nested/nonfile/symlink escapes remain rejected.",
+      "regressions": "Existing cases retain all prior assertions and add absent roots with one/two/three trailing slashes plus actual rendered URI roundtrip and idempotent own release.",
+      "macProbeExecutedByThisLinuxExecutor": false
+    },
+    "orientation": {
+      "productionOrientationChanged": false,
+      "cause": "Earlier clean EXIF test wrote tag6 over unchanged upright raster; correct decoding rotated the right-hand people clockwise.",
+      "repair": "All four upright portrait fixtures; odd rasters counterrotated before writing EXIF6, independently decoded by ImageIO and compared to original content.",
+      "checks": "Retains original EXIF6 assertions; adds all-eight asymmetric edge mapping, unmodified originals and full/preview content sample comparisons.",
+      "meanSampleTolerance": 0.065,
+      "nativeOutputPersonallyViewedHere": false
+    },
+    "camera": {
+      "buildFromSource": [
+        "expo-camera"
+      ],
+      "actualAppleResolverModules": 18,
+      "precompiledReactDefaultsRetained": true,
+      "compiledMarker": "preserveFullPhotoAvailable",
+      "compiledMarkerGate": "Bounded app-owned Mach-O executable or designated ExpoCamera framework; JS/source-only marker cannot satisfy it.",
+      "runtimeProof": false
+    },
+    "unchanged": [
+      "App.tsx and timer UI",
+      "capture persistence and Photos implementation",
+      "dependency lock",
+      "six bundled synthetic JPEGs",
+      "API/Worker bundle",
+      "original19 method identities and prior assertions"
+    ]
+  },
+  "local": {
+    "frozenInstall": {
+      "passed": true,
+      "installedPackages": 590,
+      "logSHA256": "fcfe8081193599231d3c186ae33b370916b6d8ce3c93da283a6874f0cc279a85"
+    },
+    "typechecks": {
+      "passed": true
+    },
+    "integratedTests": {
+      "executed": 311,
+      "passed": 311,
+      "failed": 0,
+      "skipped": 0
+    },
+    "ciContracts": {
+      "executed": 89,
+      "passed": 89,
+      "failed": 0,
+      "skipped": 0,
+      "logSHA256": "326a5c62c363b996f794d0465e1f2127bfa5791d9193f5333b14736a66468b90"
+    },
+    "iosJsExport": {
+      "passed": true,
+      "modules": 1048,
+      "assets": 2,
+      "nativeExecution": false
+    },
+    "prebuild": {
+      "passed": true,
+      "appVersion": "0.3.4",
+      "iosBuild": "7",
+      "cameraSourceMarker": true,
+      "CocoaPodsExecutedHere": false
+    },
+    "recoveryFaults": "Four historical separately executed production-boundary faults retained; current hosted Linux workflow reruns them. Do not add overlapping subsets to311.",
+    "fixtures": [
+      {
+        "path": "apps/ipad/native-tests/fixtures/studio/studio-landscape-1.jpg",
+        "bytes": 122736,
+        "sha256": "fa7aab6c4948c559a6c2acfbe426ff79293b75edfd15229dbeacf2f8cbd0d365"
+      },
+      {
+        "path": "apps/ipad/native-tests/fixtures/studio/studio-landscape-2.jpg",
+        "bytes": 132773,
+        "sha256": "e664fecbb6bdc171e092cb9c11d9ee215cbcf0722ef3f4f29090fecb73295161"
+      },
+      {
+        "path": "apps/ipad/native-tests/fixtures/studio/studio-portrait-1.jpg",
+        "bytes": 156431,
+        "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1"
+      },
+      {
+        "path": "apps/ipad/native-tests/fixtures/studio/studio-portrait-2.jpg",
+        "bytes": 148459,
+        "sha256": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed"
+      },
+      {
+        "path": "apps/ipad/native-tests/fixtures/studio/studio-portrait-3.jpg",
+        "bytes": 118281,
+        "sha256": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5"
+      },
+      {
+        "path": "apps/ipad/native-tests/fixtures/studio/studio-portrait-4.jpg",
+        "bytes": 145429,
+        "sha256": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
+      }
+    ],
+    "requiredNativeMethodInventory": {
+      "effects": 8,
+      "templates": 11,
+      "total": 19,
+      "executionClaim": false
+    },
+    "serviceStartup": {
+      "apiHealth": "statusok/storage local-r2/SMSmock/unavailable",
+      "smoke": "passed: legacy5 immutable upload/replay/readiness/private gallery+download/consent/mock/revocation",
+      "metro": "localhost8081/status packager-status:running",
+      "productionContacted": false,
+      "processesStoppedAfterCheck": true,
+      "shutdown": "Terminal wrapper exit left descendants running; TERM sent only to the two verified groups created at startup; both listening ports subsequently closed. Unrelated old groups untouched."
+    }
+  },
+  "hosted": {
+    "linux": {
+      "run": 40418443610,
+      "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40418443610",
+      "state": "passed",
+      "duration": "1m23s"
+    },
+    "nativePixels": {
+      "run": 40418443673,
+      "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40418443673",
+      "state": "passed",
+      "executed": 19,
+      "passed": 19,
+      "failed": 0,
+      "skipped": 0,
+      "retainedJpegs": 16,
+      "requiredJpegs": 16,
+      "host": "standard macos-15 ARM",
+      "toolchain": "Xcode26.3, Release iOS Simulator",
+      "duration": "9m9s",
+      "job": 121906520182,
+      "expectedNativeJpegs": 16,
+      "fullExpoSmokeVerified": false,
+      "evidenceSource": "Root inspected exact-commit public job annotation; native JPEG visual review handled separately by coordinator.",
+      "cleanupVerified": true,
+      "coordinatorArtifactVerification": {
+        "all19IdentitiesPassed": true,
+        "notRun": 0,
+        "all16JpegHashesDimensionsBytesVerified": true,
+        "ownedSimulatorShutdownAndDeletionVerified": true,
+        "personallyViewedByCoordinator": [
+          "botanical grid",
+          "corrected EXIF Sage output"
+        ],
+        "observedSubjectsUpright": true,
+        "rootExecutorDownloadedActualJpegs": false
+      }
+    },
+    "unsignedDeviceRelease": {
+      "run": 40418443634,
+      "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40418443634",
+      "state": "passed",
+      "compiledMarkerVerified": true,
+      "signing": false,
+      "installation": false,
+      "xctest": false,
+      "duration": "21m29s",
+      "job": 121906519153,
+      "artifact": 12697392924,
+      "fixture": "disabled",
+      "ownedGroupsCleanupQuiescent": true,
+      "evidenceSource": "Root inspected exact-commit public success annotation; coordinator authenticated artifact/native-camera-marker evidence. No hosted signing/install/XCTest/device proof."
+    },
+    "fullAppReleaseRuntime": {
+      "state": "not_run_for_this_commit",
+      "requiredOriginalCaseStillOpen": true,
+      "reason": "Separate full Expo UI runtime lane retained; prior Intel40-minute cold build interrupted before tests. Native19 engine success is not all20."
+    }
+  },
+  "precedingEvidence": [
+    {
+      "commit": "5f9f0e8ef434d98c5adda2630f720aab71c3c5cb",
+      "run": 40408422571,
+      "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40408422571",
+      "result": "failed_assertions",
+      "executed": 19,
+      "passed": 15,
+      "failed": 4,
+      "skipped": 0,
+      "failures": [
+        "PhotoEffectsEngineTests.testBadInputsCancellationAndReleaseScope",
+        "PhotoTemplateEngineTests.testCancellationReleaseAndRestartStayInsideTemplateCache",
+        "PhotoTemplateEngineTests.testV2AllSixCleanNativeJpegFullAndPreviewAttachments",
+        "PhotoTemplateEngineTests.testV2DecorationNeverTouchesPhotoWindowsAndFitPreservesEdgeMarkers"
+      ],
+      "actualJpegs": 6,
+      "retainedJpegs": 0,
+      "reason": "Release rejected own output; strict attachment suffix parser also rejected actual Xcode names."
+    },
+    {
+      "commit": "aae8ce359284464a16dbcce105634525177e2482",
+      "run": 40413800572,
+      "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40413800572",
+      "result": "host_preflight_failed",
+      "executed": 0,
+      "reason": "simctl available devices JSON empty, timed out180s; no simulator created or XCTest."
+    },
+    {
+      "commit": "7b8a2f79c2dad6b10d5ffe6d7270858c185df694",
+      "run": 40415524140,
+      "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40415524140",
+      "result": "failed_assertions",
+      "executed": 19,
+      "passed": 15,
+      "failed": 4,
+      "skipped": 0,
+      "failures": [
+        "PhotoEffectsEngineTests.testBadInputsCancellationAndReleaseScope",
+        "PhotoTemplateEngineTests.testCancellationReleaseAndRestartStayInsideTemplateCache",
+        "PhotoTemplateEngineTests.testV2AllSixCleanNativeJpegFullAndPreviewAttachments",
+        "PhotoTemplateEngineTests.testV2DecorationNeverTouchesPhotoWindowsAndFitPreservesEdgeMarkers"
+      ],
+      "actualJpegs": 6,
+      "retainedJpegs": 6,
+      "missingJpegs": 10,
+      "testSeconds": 85.35,
+      "cleanupVerified": true,
+      "artifact": 12695168599,
+      "evidenceSource": "Coordinator authenticated test/artifact review; root public status verified; actual JPEGs not downloaded here."
+    }
+  ],
+  "visualEvidence": {
+    "browserIndex": "artifacts/visual/timer-index.html",
+    "boundary": "Captured0.3.2 browser fixture; unchanged App.tsx/TimingSheet source, not native0.3.4 camera/glass/Photos. Native output evidence is a distinct gate.",
+    "deviceRehearsalCard": "artifacts/device/README.md",
+    "noRealGuestPhotos": true
+  },
+  "worker": {
+    "bundleSHA256": "43dabd6c9dcda6aa44f23ca11ac544f2588f9efd5428f0837dc839f4f98c9ded",
+    "changed": false,
+    "deploymentOwner": "Coordinator",
+    "liveSharingVerifiedHere": false
+  },
+  "security": {
+    "auditHighAffectedEntries": 8,
+    "auditModerateAffectedEntries": 0,
+    "auditClean": false,
+    "nativeBinaryAudit": false,
+    "report": "artifacts/security/studio-advisory-assessment.json"
+  },
+  "owner": {
+    "device": "iPad Air11-inchM2 identified by connected device discovery",
+    "Mac": "M1 MacBook Air,macOS27.0.1,Xcode27.1; separate from CI26.3",
+    "earlierSignedBuild": "0.3.2/build5 compiled/signature/embeddedJS verified by Mac executor; never installed; used stock precompiled camera.",
+    "privateInstalledIdentity": "Preserve existing owner bundle/team/profile and container; private values intentionally omitted.",
+    "repairedCandidateInstalled": false,
+    "personalTeam": true,
+    "physicalAcceptance": "Unverified capture/saving/Photos/offline/reboot/filters/templates/timers/QR/VoiceOver; owner rehearsal required.",
+    "repairedSignedCandidate": {
+      "verifiedBy": "Authorized Mac executor via coordinator report",
+      "sourceCommit": "b4e01d3aeb47c3f164f912b829b4807cc3551f8d",
+      "appVersion": "0.3.4",
+      "iosBuild": "7",
+      "signedBuildPassed": true,
+      "signaturePassed": true,
+      "sameExistingIdentityAndProfilePreserved": true,
+      "patchedCameraSwiftFilesCompiled": 3,
+      "compiledNativeMarkerVerified": true,
+      "stalePrecompiledExpoCameraFrameworkExcluded": true,
+      "cameraContractsPassed": 12,
+      "totalMinutes": 8,
+      "compileSeconds": 221,
+      "finalBundleRebuildSeconds": 24,
+      "installedAtReportTime": false,
+      "toolchain": "Xcode27.1/macOS27.0.1 Apple silicon",
+      "privateEvidence": "Retained on owner Mac; private path/identity deliberately omitted."
+    },
+    "installationClearance": "Technical code/build readiness cleared for exact signed b4e01d3; execution remains pending exact owner approval after Mac automatic review denial. No retry or installation.",
+    "executionApproval": {
+      "inPlaceUpdate": "automatic_approval_review_rejected_before_execution",
+      "reason": "Exact trusted-user approval for same-app update/launch required",
+      "ownerRequest": "Pending through coordinator for0.3.4/build7 update/launch and separate physical UI-runner AppID/profile/register/install/test",
+      "retried": false,
+      "installed": false,
+      "technicalReadinessClearanceIsSeparate": true
+    }
+  },
+  "environment": {
+    "draftId": "0cebfe70-de1b-4f37-bc6b-8e688559c14e~cecfgdraft_6ade733892ac819daa2844b78940472e",
+    "lastVerifiedRevision": 19,
+    "lastVerifiedRef": "b4e01d3aeb47c3f164f912b829b4807cc3551f8d",
+    "snapshotPublished": null,
+    "freshTaskRestoreVerified": false,
+    "exactReadback": true,
+    "installScriptChars": 105,
+    "startSkillChars": 25268,
+    "startSkillSHA256": "81166cb14c98ec303415792d36364df1181ffd7fad5f0b82ee86706a2dd19c4c",
+    "networkPreserved": true,
+    "secretsPreserved": true,
+    "secretCount": 0,
+    "requiresPublish": true,
+    "checkpointReport": "environment-native.json",
+    "checkpointBoundary": "This commit records exact saved/read-back draft19 before final documentation publication. The post-publication exact-ref save/readback is recorded in environment settings and final task report, outside this Git snapshot.",
+    "finalPinSavePendingAtSnapshot": true
+  },
+  "remainingGates": [
+    "Exact owner approval for in-place update/launch and separate physical UI-runner registration/provisioning; coordinator requested, no retry",
+    "Controlled same-identity iPad installation and physical acceptance; coordinator actual-native visual review passed",
+    "Separate full-app launch/bridge integration",
+    "Physical iPad local originals+Photos saving/interruption/offline/reboot rehearsal",
+    "Coordinator matchingV2/private pairing/live synthetic R2+download/privacy verification",
+    "SMS eligibility and coordinator-owned approved recipient tests",
+    "Final environment draft ref/readback and product snapshot publication/fresh restore"
+  ],
+  "projectFinished": false,
+  "realSmsFromExecutor": 0,
+  "cloudflareWritesFromExecutor": 0,
+  "newCredentialsOrGrants": 0,
+  "installationHold": false,
+  "independentSourceReview": {
+    "blocked": false,
+    "productionContainmentUnchanged": true,
+    "nineteenIdsAndPriorAssertionsRetained": true,
+    "sixFixtureHashesUnchanged": true,
+    "allEightExpectedExifEdgeMappings": "mathematically checked",
+    "incorrectFlipTransposeAtExactSamples": {
+      "normalizedMeanErrorRange": [
+        0.24665,
+        0.48227
+      ],
+      "acceptanceThreshold": 0.065
+    },
+    "boundary": "Read-only source/Pillow analysis, not Swift compilation or native pixels; actual CGContext and full/preview acceptance await AppleCI."
+  },
+  "launchReady": false,
+  "lastReviewedAt": "2026-10-27T00:01:16.111868+00:00",
+  "sourceHashesSnapshotCommit": "b4e01d3aeb47c3f164f912b829b4807cc3551f8d",
+  "physicalPreparation": {
+    "sourceCommit": "e8f18833444ed3867805a9ffa51754fbd962f13a",
+    "separateScope": "Standalone UI runner/preparation/CI guards only; no shipping app source change",
+    "nodeContracts": 8,
+    "combinedCiGuardContracts": 97,
+    "passed": 97,
+    "nativeXcodeValidation": {
+      "sourceCommit": "e8f18833444ed3867805a9ffa51754fbd962f13a",
+      "evidenceSource": "Authorized Mac executor via coordinator",
+      "nodeChecksPassed": 8,
+      "unsignedPhysicalSdkBuildForTestingPassed": true,
+      "toolchain": "Xcode27.1/iOS27.1",
+      "actualXctestrunTestEnvironment": "NOT_ARMED",
+      "applicationTarget": false,
+      "targetAppDependency": false,
+      "uiTargetAppPath": false,
+      "signedShippingAppHashUnchanged": true,
+      "signing": false,
+      "provisioning": false,
+      "installation": false,
+      "launch": false,
+      "capture": false,
+      "physicalExecution": false,
+      "ownerExecutionApproval": "pending"
+    },
+    "ownerReady": false,
+    "signingOrProvisioningPerformed": false,
+    "deviceExecutionApproval": "Pending exact owner approval after rejected-before-execution update",
+    "report": "physical-rehearsal-source.json",
+    "hostedLinux": {
+      "run": 40423117679,
+      "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40423117679",
+      "result": "passed",
+      "duration": "1m25s",
+      "nativeJobs": "skipped; app/native execution proof remains exactB4E"
+    },
+    "sourcePreparationPassed": true
+  }
+}

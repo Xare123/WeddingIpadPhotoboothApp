@@ -325,5 +325,8 @@
   ],
   "projectFinished": false,
   "realSmsFromExecutor": 0,
-  "cloudflareWritesFromExecutor": 0
+  "cloudflareWritesFromExecutor": 0,
+  "historicalSnapshot": true,
+  "supersededBy": "native-fix-local.json",
+  "boundary": "Frozen0.3.2 timer evidence; no repaired native engine or later runtime success implied. Current status lives in summary.json."
 }

@@ -1,6 +1,6 @@
 {
   "generatedAtUTC": "2026-10-26T20:11:11.597826+00:00",
-  "scope": "One minimal CI budget-only correction following newly diagnosed single-architecture cold compilation timeout. Local uncommitted; no application/native engine/process cleanup/artifact policy changes.",
+  "scope": "Historical isolated40-minute cold-build budget experiment at bebee183. Original pre-publication fields below are retained; terminal authenticated outcome is appended separately.",
   "inputEvidence": {
     "provenance": "Exact coordinator-provided independent hosted log review; this agent did not download authenticated artifacts or infer execution from enumeration.",
     "sourceCommit": "d592cfc36773a136f24d38e5bc71c1928fb57de7",
@@ -117,5 +117,34 @@
     "deployed": false,
     "newCredentialsOrPaidResources": false,
     "realSmsSent": 0
-  }
+  },
+  "lastReviewedAtUTC": "2026-10-26T21:19:31.162213+00:00",
+  "originalReportBoundary": "Validation/actions fields describe the original20:11UTC local pre-push snapshot, not current hosted status.",
+  "terminalHostedOutcome": {
+    "commit": "bebee183e1f81f808a143e0e6304de0195735625",
+    "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40393553131",
+    "job": "121820525958",
+    "status": "failed",
+    "duration": "53m30s",
+    "authenticatedEvidence": {
+      "provenance": "Coordinator authenticated terminal log/artifact inspection supplied in this task; root independently verified public failure annotation/completion.",
+      "artifact": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40393553131/artifacts/12687954017",
+      "failedAtUTC": "2026-10-26T21:05:49Z",
+      "bootSeconds": 297,
+      "preparationSeconds": 602,
+      "xcodeElapsedSeconds": 2411,
+      "architecture": "x86_64 only",
+      "lastProgress": "Main application resources/storyboard building before SIGTERM/BUILD INTERRUPTED",
+      "compilerErrorEstablished": false,
+      "executedXCTestMethods": 0,
+      "cleanup": {
+        "simulatorShutdown": "timed out",
+        "groupObservation": "unavailable",
+        "allOwnedGroupsQuiescent": false,
+        "outputsWithheld": true
+      },
+      "decision": "No further full Expo timeout extension; separate real production CoreImage/template engine19-method target while retaining full app launch smoke as unresolved required gate."
+    }
+  },
+  "nextPhaseBoundary": "No further full-Expo timeout extension. A separate lightweight real native engine target is being prepared for existing19assertions; the full-app launch method remains a distinct unresolved requirement. No current19/20native pass is claimed."
 }
