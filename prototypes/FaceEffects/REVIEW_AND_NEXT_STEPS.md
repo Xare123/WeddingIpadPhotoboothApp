@@ -1,10 +1,10 @@
 # Still-effects acceptance and next steps
 
-This document belongs only to `codex/face-effects-prototype`. The installed wedding app stays at tested `9ed36b4` / 0.3.7 build10. The main branch handoff `642a367` changes documentation and test preparation, not the installed application. Do not merge, install or wire this prototype into the booth yet.
+This document belongs only to `codex/face-effects-prototype`. The installed wedding app stays at tested `9ed36b4` / 0.3.7 build10. The MVP review-branch handoff `642a367` changes documentation and test preparation, not the installed application. Do not merge, install or wire this prototype into the booth yet.
 
 ## Synthetic visual handoff
 
-The native producer at exact `537c352f4a0ca56cb4d82582911549d10c16b8cd` passed 29 native XCTest methods and produced these three distinct 960×1200 JPEGs in [run40477995823](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40477995823), artifact `isolated-face-effects-537c352f4a0ca56cb4d82582911549d10c16b8cd`:
+The latest native producer at exact `4c127fee22b0bbb90ba9639af07d78b684d38fea` passed **31 native XCTest methods, zero failures/skips**, and produced these three distinct 960×1200 JPEGs in [run40487787704](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40487787704), artifact `isolated-face-effects-4c127fee22b0bbb90ba9639af07d78b684d38fea`. The renderer is byte-identical to the prior 29-case checkpoint `537c352`; the two added tests exercise actual asymmetric native pixels:
 
 | Actual output | Inspect at full size and normal viewing size |
 | --- | --- |
@@ -20,7 +20,7 @@ A single portrait is not an occlusion or group acceptance suite. The still rende
 
 ## Focused regression addition
 
-The next test candidate retains every original native method and adds two deterministic cases: asymmetric upright pixels with known rolled eye anchors, and all eight EXIF orientations normalized explicitly by a caller before rendering. The latter tests the **caller contract**, not a shipping orientation adapter: the worker intentionally accepts already-upright, unmirrored pixels. Verify actual corner/edge colors and rendered content, not only width and height. The native gate must execute all 31 exact methods, zero failures/skips, before calling this added coverage passed. These tests add no new public image filenames and do not alter the renderer.
+The tested `4c127fe` candidate retains every original native method and adds two deterministic cases: asymmetric upright pixels with known rolled eye anchors, and all eight EXIF orientations normalized explicitly by a caller before rendering. The latter tests the **caller contract**, not a shipping orientation adapter: the worker intentionally accepts already-upright, unmirrored pixels. Actual corner/edge colors and rendered content are checked, not only width and height. The native gate executed all 31 exact methods with zero failures/skips on macOS Release, and source also passed iOS SDK typechecking. These tests add no new public image filenames and do not alter the renderer. Neither macOS XCTest nor SDK typechecking proves iOS runtime behavior or live tracking.
 
 ## Bounded implementation order
 

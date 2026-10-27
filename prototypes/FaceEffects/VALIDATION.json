@@ -1,60 +1,71 @@
 {
   "branch": "codex/face-effects-prototype",
-  "nativeTestedCommit": "537c352f4a0ca56cb4d82582911549d10c16b8cd",
+  "nativeTestedCommit": "4c127fee22b0bbb90ba9639af07d78b684d38fea",
   "baselineShippingCommit": "c6920138de3fe239571b1c65cf6750dfd96664ff",
   "shippingSourceUnchanged": true,
   "localNodeProofTests": 11,
-  "pendingRegressionCandidate": {
-    "scope": "Tests, proof inventory and handoff documentation only; renderer and shipping app unchanged",
-    "expectedNativeMethods": 31,
-    "existingMethodsRetained": 29,
-    "addedMethods": [
-      "AppleFaceEffectsTests.testAsymmetricUprightImagePreservesMarkersAndAlignsRolledGlassesWithBothEyes",
-      "AppleFaceEffectsTests.testCallerNormalizesAllEightExifOrientationsOnceBeforeRendering"
-    ],
-    "appleTestSourceSHA256": "36092db9b8ae17d84b8831a37e5adcc883514ab4f50284863f85fa56c9ed6d9c",
-    "nativeResult": "not run yet; prior29-case success below does not cover these additional methods",
-    "visualReview": "blocked: actual native JPEGs have not been transferred to this executor through a supported route",
-    "handoff": "REVIEW_AND_NEXT_STEPS.md"
+  "independentSourceReview": {
+    "result": "no blocker found",
+    "scope": "All eight EXIF edge/corner permutations; asymmetric raw fixture and sampling; nonsquare roll and both known eye rims; all original29 identities retained; no app/renderer mutation",
+    "nativeExecutionByReviewer": false,
+    "actualJPEGVisualReviewByReviewer": false
   },
   "nativeRun": {
-    "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40477995823",
-    "job": "122100889924",
+    "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40487787704",
+    "job": "122133828705",
     "result": "passed",
-    "duration": "1m28s",
-    "executed": 29,
+    "duration": "1m39s",
+    "executed": 31,
     "failed": 0,
     "skipped": 0,
     "coverage": [
       "actual iOS SDK source typecheck",
-      "macOS Release XCTest:10geometry,13framefreshness,6AppleVision/rendering",
-      "three actual still-image JPEGs,960x1200,distincthashes,sourcepreserved"
+      "macOS Release XCTest:10 geometry,13 frame freshness/ownership,8 Apple Vision/rendering",
+      "all original29 methods retained; two actual asymmetric pixel regressions added",
+      "all-eight caller EXIF normalization preserves expected colored edges/corners; renderer does not normalize input",
+      "three actual distinct still-image JPEGs,960x1200,source preserved"
     ],
-    "proof": "Public exact-commit CI gate; this executor has not independently downloaded/visually inspected the JPEG artifact"
+    "proof": "Public exact-commit CI finish gate verified after terminal success; executor has not downloaded or visually inspected the JPEG artifact",
+    "artifactName": "isolated-face-effects-4c127fee22b0bbb90ba9639af07d78b684d38fea"
   },
   "linuxRun": {
-    "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40477995974",
+    "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40487787627",
     "result": "passed",
-    "duration": "1m24s"
+    "duration": "1m23s"
   },
   "sourceSHA256": {
     "prototypes/FaceEffects/Package.swift": "d182d430a227dd5669d5720e889ae721d2c8d134879c5f02d2bbc45d0d684226",
+    "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/Fixtures/provenance.json": "b8403432b106ab7aa8adc642ccf00f44b17d7381ea9ab9311d2e27e237b1fa84",
+    ".github/workflows/face-effects-prototype.yml": "cfa62e2b26558faabedf8418f9b235f605bb26ab616a9a0a953c9bd12878b92b",
+    "scripts/face-effects-proof.mjs": "26a171ab568b0d6f91249569ddd611fff4ce0fea23fa2b04399340554528da9b",
+    "scripts/face-effects-proof.test.mjs": "bccb480413d37b7ad84734bf8d17852e8be8533fae052aeaac7d1c975a3a3fa3",
+    "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/GeometryTests.swift": "b179f19604328a30c41750244b57e7a70deafb17c65590fffc98139a1946e244",
+    "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/FrameFreshnessGateTests.swift": "03cc3280f46b51e34a3f462595974836840afe2082edef9ed05cce2a9abbec26",
+    "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/AppleFaceEffectsTests.swift": "36092db9b8ae17d84b8831a37e5adcc883514ab4f50284863f85fa56c9ed6d9c",
     "prototypes/FaceEffects/Sources/FaceEffectsPrototype/AppleFaceEffects.swift": "32058860f72434c7823ed2837d296700e1be0235e712584c0b040eca8daff1fe",
     "prototypes/FaceEffects/Sources/FaceEffectsPrototype/FaceGeometry.swift": "bba85bd69a07ff69ed711685af9b6953005a6438a8bb72c3172127179a18206e",
-    "prototypes/FaceEffects/Sources/FaceEffectsPrototype/FrameFreshnessGate.swift": "2d1d6615c49a501302cf44861825c7cda3ad26fe161cd0db53f84cb396ee55f3",
-    "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/AppleFaceEffectsTests.swift": "b906e7c2c27c632859b722f4d892e095cda8a00e95fabddea096d1d4aa7db5e7",
-    "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/FrameFreshnessGateTests.swift": "03cc3280f46b51e34a3f462595974836840afe2082edef9ed05cce2a9abbec26",
-    "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/GeometryTests.swift": "b179f19604328a30c41750244b57e7a70deafb17c65590fffc98139a1946e244",
-    "scripts/face-effects-proof.mjs": "e357aadab0c340351f384e395f4dfec75bf8cf914bbb42db5c4826babf61a1a2",
-    "scripts/face-effects-proof.test.mjs": "decfa9ed728f2ad48ae76f779b58030572316c636fe4b5713b1d4170e48a9700",
-    ".github/workflows/face-effects-prototype.yml": "cfa62e2b26558faabedf8418f9b235f605bb26ab616a9a0a953c9bd12878b92b"
+    "prototypes/FaceEffects/Sources/FaceEffectsPrototype/FrameFreshnessGate.swift": "2d1d6615c49a501302cf44861825c7cda3ad26fe161cd0db53f84cb396ee55f3"
+  },
+  "priorNativeCheckpoint": {
+    "source": "537c352f4a0ca56cb4d82582911549d10c16b8cd",
+    "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40477995823",
+    "executed": 29,
+    "result": "passed"
   },
   "unverified": [
     "live camera/session attachment",
     "live tracking or smoothing",
     "physical M2 iPad Vision/runtime/performance",
     "app integration/UI/durable face derivatives",
-    "visual signoff of native prototype JPEGs"
+    "visual signoff of native prototype JPEGs",
+    "Supported artifact transfer and individual inspection of all three actual native JPEGs",
+    "Group/occlusion fixture suite and post-capture preview/export integration"
   ],
+  "visualReview": {
+    "status": "blocked on supported artifact transfer; no artifact/Library download capability exposed here",
+    "action": "Transfer only report.json,portrait-glasses.jpg,portrait-crown.jpg,portrait-hearts.jpg from the exact native artifact using a supported attachment or approved public synthetic-evidence route",
+    "deniedOperation": false,
+    "rendererChangedWithoutVisualEvidence": false
+  },
   "noProductionActions": true
 }
