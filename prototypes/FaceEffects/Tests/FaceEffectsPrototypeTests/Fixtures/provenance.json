@@ -7,5 +7,10 @@
   ],
   "origin": "Previously image_gen-generated fictional adult wedding portraits; no guest/vendor/reference photos",
   "transform": "Exact byte copy; no new image editing",
-  "testScope": "Apple Vision still detection and original vector derivatives; not live tracking"
+  "testScope": "Apple Vision still detection and original vector derivatives; not live tracking",
+  "controlledEvidence": {
+    "files": ["close-faces.jpg", "rolled-faces.jpg", "edge-faces.jpg"],
+    "origin": "In-memory CoreGraphics colored/marked geometric fixtures in the native XCTest producer; no external imagery",
+    "purpose": "Deterministic anchor, neighbor-protection and edge-fallback diagnostics; not detector, realistic people or app screenshots"
+  }
 }

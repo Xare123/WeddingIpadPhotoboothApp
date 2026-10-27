@@ -7,7 +7,10 @@ import { jpegDimensions } from './native-pixel-results.mjs';
 
 export const FACE_BASELINE = 'c6920138de3fe239571b1c65cf6750dfd96664ff';
 export const FACE_FIXTURE_SHA = '98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1';
-export const FACE_JPEGS = Object.freeze(['portrait-glasses.jpg', 'portrait-crown.jpg', 'portrait-hearts.jpg']);
+export const FACE_JPEGS = Object.freeze(['portrait-glasses.jpg', 'portrait-crown.jpg', 'portrait-hearts.jpg',
+  'close-faces.jpg', 'rolled-faces.jpg', 'edge-faces.jpg']);
+const PORTRAIT_PRODUCER = 'AppleFaceEffectsTests.testActualVisionPortraitDetectsUsableFacesAndRendersAllThreeOriginalVectors';
+const CONTROLLED_PRODUCER = 'AppleFaceEffectsTests.testControlledCloseRollAndEdgeEvidenceUsesSafeFallback';
 const methods = {
   GeometryTests: [
     'testVisionLocalBottomLeftConvertsOnceToUprightTopLeft', 'testVisionRejectsInvalidBoundsNonfiniteConfidenceAndPoints',
@@ -15,6 +18,9 @@ const methods = {
     'testCrownAndHeartsOffsetAlongRolledFaceAxisInPixelSpace', 'testAnatomicalEyeOrderingDoesNotIntroducePiRotationOrMirroring',
     'testNoneNoEyesProfileSmallAndLowConfidenceFallBackWithoutOverlay', 'testSixFaceCapStableAreaPriorityAndExplicitOverloadFallback',
     'testInvalidImageMetricsAndNonfinitePlacementNeverEscape', 'testAspectFillPortraitAndLandscapePositionsAndMirrorsExactlyOnce',
+    'testOtherFacesAndExplicitObstructionsSuppressAccessoriesWithoutUsableEyes',
+    'testRotatedNeighborAndAccessoryCollisionsUsePixelSpaceAndStablePriority',
+    'testImageEdgesSuppressClippedOrnamentsBeforeCapacityLimit', 'testV2CrownGeometryIsCompactAndAboveEyes',
   ],
   FrameFreshnessGateTests: [
     'testDefaultNoneNeverAdmitsAndHasNoOverlay', 'testOnlyOnePhysicalRequestAndThrottleAfterCompletion',
@@ -33,6 +39,8 @@ const methods = {
     'testNormalizedExifInputDoesNotPropagateGpsOrOriginalOrientation', 'testSingleFlightRejectsBacklogAndCancellationDoesNotBlockNone',
     'testAsymmetricUprightImagePreservesMarkersAndAlignsRolledGlassesWithBothEyes',
     'testCallerNormalizesAllEightExifOrientationsOnceBeforeRendering',
+    'testCloseFaceAndRollFallbackPreservesProtectedNeighborPixels',
+    'testControlledCloseRollAndEdgeEvidenceUsesSafeFallback',
   ],
 };
 export const FACE_CASES = Object.freeze(Object.entries(methods).flatMap(([name, entries]) => entries.map(entry => name + '.' + entry)));
@@ -86,16 +94,19 @@ export function inspectFaceJpegs(directory) {
   const state = lstatSync(directory);
   if (!state.isDirectory() || state.isSymbolicLink()) throw new Error('Prototype evidence directory must not be a symlink');
   if (!Array.isArray(FACE_JPEGS) || FACE_JPEGS.some(name => !existsSync(join(directory, name))))
-    throw new Error('Three actual native derivative JPEGs are required');
+    throw new Error('All six actual native still/diagnostic JPEGs are required');
   const names = readdirSync(directory).filter(name => /\.(?:jpg|jpeg|png)$/i.test(name)).sort();
   if (JSON.stringify(names) !== JSON.stringify([...FACE_JPEGS].sort())) throw new Error('Unexpected prototype image evidence');
   const rows = FACE_JPEGS.map(name => {
     const bytes = boundedFile(join(directory, name), 4 * 1024 * 1024), dimensions = jpegDimensions(bytes), sha256 = digest(bytes);
     if (dimensions.width !== 960 || dimensions.height !== 1200 || sha256 === FACE_FIXTURE_SHA)
       throw new Error('Native derivative dimensions or source separation failed');
-    return { file: name, bytes: bytes.length, sha256, ...dimensions };
+    const portrait = name.startsWith('portrait-');
+    return { file: name, bytes: bytes.length, sha256, ...dimensions,
+      producer: portrait ? PORTRAIT_PRODUCER : CONTROLLED_PRODUCER,
+      kind: portrait ? 'actual-Vision-still' : 'controlled-anchor-diagnostic' };
   });
-  if (new Set(rows.map(row => row.sha256)).size !== 3) throw new Error('Accessory outputs must have distinct bytes');
+  if (new Set(rows.map(row => row.sha256)).size !== FACE_JPEGS.length) throw new Error('Still/diagnostic outputs must have distinct bytes');
   return rows;
 }
 export function faceInputs(root) {
@@ -152,7 +163,7 @@ function cli() {
   const report = { ...inputs, result: 'passed', tests, images, iosSDKTypecheck: 'passed', macOSVisionAndRenderer: 'passed',
     unverified: ['iOS runtime', 'camera/session attachment', 'live tracking/smoothing', 'M2 iPad performance/thermal', 'app integration and durability/export', 'real guests/device'] };
   writeFileSync(join(directory, 'report.json'), JSON.stringify(report, null, 2) + '\n');
-  console.log(`::notice title=Face prototype evidence::${FACE_CASES.length} exact native methods passed; three native still JPEGs; iOS SDK typecheck. Shipping app unchanged. No live camera, tracking or physical-iPad proof.`);
+  console.log(`::notice title=Face prototype evidence::${FACE_CASES.length} exact native methods passed; ${FACE_JPEGS.length} native JPEGs (three actual-Vision stills, three controlled diagnostics); iOS SDK typecheck. Shipping app unchanged. No live camera, tracking or physical-iPad proof.`);
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try { cli(); } catch (error) { console.error('::error title=Face prototype gate::' + error.message.replace(/[\r\n%]/g, ' ').slice(0, 300)); process.exitCode = 1; }

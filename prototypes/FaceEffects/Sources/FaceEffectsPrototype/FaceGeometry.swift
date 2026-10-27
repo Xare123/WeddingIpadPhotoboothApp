@@ -51,7 +51,7 @@ public struct PixelPoint: Equatable, Sendable {
 }
 
 public enum FaceGeometry {
-  public static let recipeVersion = "wedding-face-prototype-v1"
+  public static let recipeVersion = "wedding-face-prototype-v2"
   public static let maximumFaces = 6
 
   /// Vision supplies bottom-left face bounds and face-local landmark points.
@@ -71,29 +71,36 @@ public enum FaceGeometry {
   }
 
   public static func placements(faces: [FaceAnchors], image: ImageSize, accessory: FaceAccessory,
-                                maximum: Int = maximumFaces) -> [AccessoryPlacement] {
-    guard accessory != .none, image.valid, faces.count <= 64, (1...maximumFaces).contains(maximum) else { return [] }
-    return faces.enumerated().filter { _, face in
+                                maximum: Int = maximumFaces, obstructingBounds: [UnitRect] = []) -> [AccessoryPlacement] {
+    guard accessory != .none, image.valid, faces.count <= 64, obstructingBounds.count <= 64,
+      obstructingBounds.allSatisfy(\.valid), (1...maximumFaces).contains(maximum) else { return [] }
+    let eligible = faces.enumerated().filter { _, face in
       face.bounds.valid && face.confidence.isFinite && (0.5...1).contains(face.confidence)
-    }.sorted {
+    }
+    // A detector confidence/landmark rejection must not erase another face's
+    // protective rectangle. Only decoration admission uses the confidence gate.
+    let protective = faces.enumerated().filter { $0.element.bounds.valid }
+    var accepted: [AccessoryPlacement] = [], envelopes: [[PixelPoint]] = []
+    let ranked = eligible.sorted {
       let a = $0.element.bounds.width * $0.element.bounds.height, b = $1.element.bounds.width * $1.element.bounds.height
       return a == b ? $0.offset < $1.offset : a > b
-    }.compactMap { _, face -> AccessoryPlacement? in
+    }
+    for (index, face) in ranked {
       guard face.bounds.valid, face.confidence.isFinite, (0.5...1).contains(face.confidence),
-        face.bounds.width >= 0.035, face.bounds.contains(face.leftEye), face.bounds.contains(face.rightEye) else { return nil }
+        face.bounds.width >= 0.035, face.bounds.contains(face.leftEye), face.bounds.contains(face.rightEye) else { continue }
       let first = face.leftEye.x <= face.rightEye.x ? face.leftEye : face.rightEye
       let second = face.leftEye.x <= face.rightEye.x ? face.rightEye : face.leftEye
       let dx = (second.x - first.x) * image.width, dy = (second.y - first.y) * image.height
       let distance = hypot(dx, dy), angle = atan2(dy, dx)
       guard distance >= max(4, image.width * 0.008), distance <= face.bounds.width * image.width * 0.9,
-        angle.isFinite, abs(angle) <= .pi / 3 else { return nil }
+        angle.isFinite, abs(angle) <= .pi / 3 else { continue }
       let x = (first.x + second.x) / 2, y = (first.y + second.y) / 2
       let geometry: (Double, Double, Double)
       switch accessory {
-      case .none: return nil
-      case .glasses: geometry = (2.4, 0.72, 0)
-      case .crown: geometry = (2.65, 1.05, -1.05)
-      case .hearts: geometry = (2.8, 1.1, -1.15)
+      case .none: continue
+      case .glasses: geometry = (2.0, 0.60, 0)
+      case .crown: geometry = (1.72, 0.50, -1.40)
+      case .hearts: geometry = (1.70, 0.48, -1.35)
       }
       // Offset along the local face's vertical axis, not the screen's vertical.
       let offset = geometry.2 * distance
@@ -101,8 +108,47 @@ public enum FaceGeometry {
         center: UnitPoint(x: x - sin(angle) * offset / image.width,
                           y: y + cos(angle) * offset / image.height),
         width: geometry.0 * distance / image.width, height: geometry.1 * distance / image.height, rotation: angle)
-      return placement.finite ? placement : nil
-    }.prefix(maximum).map { $0 }
+      guard placement.finite else { continue }
+      let box = envelope(placement, image: image)
+      guard box.allSatisfy({ $0.x >= 0 && $0.y >= 0 && $0.x <= image.width && $0.y <= image.height }) else { continue }
+      // All other valid face rectangles protect even low-confidence/invalid eyes.
+      // Own bounds are excluded by input index, not rectangle equality.
+      let obstacles = protective.filter { $0.offset != index }.map { $0.element.bounds } + obstructingBounds
+      let padding = 0.035 * distance
+      guard !obstacles.contains(where: { overlaps(box, rectangle($0, image: image, padding: padding)) }),
+        !envelopes.contains(where: { overlaps(box, $0) }) else { continue }
+      accepted.append(placement); envelopes.append(box)
+      if accepted.count == maximum { break }
+    }
+    return accepted
+  }
+
+  /// Conservative artwork/stroke envelope, not face segmentation or depth occlusion.
+  private static func envelope(_ placement: AccessoryPlacement, image: ImageSize) -> [PixelPoint] {
+    let c = cos(placement.rotation), s = sin(placement.rotation)
+    return [(-0.515, -0.515), (0.515, -0.515), (0.515, 0.515), (-0.515, 0.515)].map { corner in
+      let x = corner.0 * placement.width * image.width, y = corner.1 * placement.height * image.height
+      return PixelPoint(x: placement.center.x * image.width + c * x - s * y,
+        y: placement.center.y * image.height + s * x + c * y)
+    }
+  }
+  private static func rectangle(_ bounds: UnitRect, image: ImageSize, padding: Double) -> [PixelPoint] {
+    let x = bounds.x * image.width - padding, y = bounds.y * image.height - padding
+    let right = (bounds.x + bounds.width) * image.width + padding
+    let bottom = (bounds.y + bounds.height) * image.height + padding
+    return [PixelPoint(x: x, y: y), PixelPoint(x: right, y: y), PixelPoint(x: right, y: bottom), PixelPoint(x: x, y: bottom)]
+  }
+  /// Separating-axis test in physical pixel coordinates; touching is suppressed.
+  private static func overlaps(_ first: [PixelPoint], _ second: [PixelPoint]) -> Bool {
+    for polygon in [first, second] {
+      for index in 0..<4 {
+        let a = polygon[index], b = polygon[(index + 1) % 4]
+        let nx = -(b.y - a.y), ny = b.x - a.x
+        let one = first.map { $0.x * nx + $0.y * ny }, two = second.map { $0.x * nx + $0.y * ny }
+        if one.max()! < two.min()! || two.max()! < one.min()! { return false }
+      }
+    }
+    return true
   }
 
   /// Aspect-fill preview positioning only. It does not widen FOV or crop originals.

@@ -8,7 +8,7 @@ The coordinator reports that signed 0.3.7/build10 is installed in place, with ph
 
 | Component | Scope |
 | --- | --- |
-| `FaceGeometry` | Converts Vision face-local/bottom-left eyes into upright, unmirrored, top-left anchors; pixel-correct roll and original vector placements; maximum six usable faces; explicit invalid/small/profile fallback. Preview mapping demonstrates aspect-fill and one mirror transform only. |
+| `FaceGeometry` | Converts Vision face-local/bottom-left eyes into upright, unmirrored, top-left anchors; pixel-correct roll and original vector placements; maximum six usable faces. The v2 candidate adds smaller ornaments and conservative neighbor/effect/edge suppression. Preview mapping demonstrates aspect-fill and one mirror transform only. |
 | `FrameFreshnessGate` | Actor admission, one outstanding physical request, throttling, stale results/overlays, generation changes, None/background invalidation and pending-work acknowledgement. No camera ownership or face identity. The 150ms/10Hz defaults are proposed budgets, not measured performance. |
 | `AppleFaceEffectsWorker` | CPU-only Apple Vision revision3 on an **already-upright CGImage**, followed by original glasses/crown/hearts vectors and a fresh sRGB JPEG. None/no usable face returns the exact input and no lossy re-encoding. Bounded one-job worker; cancellation is cooperative. |
 | Shipping app | **Unchanged.** Existing Warm/B&W/Film remain post-capture looks. No face-effect picker, live tracking, live camera output, durable effect recipe or cloud publication is added. |
@@ -21,10 +21,10 @@ Linux has no Swift/Apple runtime in this environment. The local Node proof guard
 
 1. Prove every changed path is confined to this prototype and its independent runner. Compare against exact `c6920138de3fe239571b1c65cf6750dfd96664ff`; never relax the shipping app's20 native acceptance methods.
 2. Typecheck all prototype source against the actual iOS16.4-targeted SDK using the selected Xcode26.3 toolchain. This is compilation, not an iOS simulator/device execution.
-3. Execute **31 exact XCTest methods** in Release on macOS:10 geometry,13 freshness/ownership and8 Apple Vision/rendering cases. Require zero failures/skips, including actual face detection on the generated portrait, blank/None fallbacks, controlled native pixels, asymmetric rolled-eye placement, all-eight EXIF caller normalization/GPS scrubbing and deterministic busy/cancel behavior. All31 pass at the latest exact checkpoint below; the initial verified checkpoint remains29.
-4. Verify three distinct actual JPEGs,960×1200, from the Apple test producer; inspect hashes and independent JPEG headers. Apple tests also decode the outputs with ImageIO and verify changed pixels/source preservation. Node validator fixtures are not native rendering evidence.
+3. The **v2 candidate requires37 exact XCTest methods** in Release on macOS:14 geometry,13 freshness/ownership and10 Apple Vision/rendering cases, with zero failures/skips. It retains all31 previous identities and adds neighbor/collision/edge regressions. The verified v1 checkpoints below cover29 and31 methods; they do not validate the changed v2 renderer.
+4. Verify six distinct actual JPEGs,960×1200, from the Apple test producers: three actual-Vision portrait stills and three deterministic controlled-anchor diagnostics. Inspect hashes, producer labels and independent JPEG headers. Apple tests also decode the outputs with ImageIO and verify changed/protected pixels and source preservation. Node validator fixtures are not native rendering evidence.
 
-The workflow uploads only bounded logs, a source/case manifest, SwiftPM manifest, XCTest XML, result JSON and the three named **synthetic** JPEGs. No signing, simulator boot, Expo/Pods build, device grant, owner photo or production service is involved. Test evidence cannot replace a real iPad trial. Read the actual terminal run before reporting any native pass.
+The workflow uploads only bounded logs, a source/case manifest, SwiftPM manifest, XCTest XML, result JSON and the six named **synthetic** JPEGs. No signing, simulator boot, Expo/Pods build, device grant, owner photo or production service is involved. Test evidence cannot replace a real iPad trial. Read the actual terminal run before reporting any native pass.
 
 For an optional separate trusted Mac source checkout, without changing the active booth build:
 
@@ -33,7 +33,7 @@ swift test --configuration release --parallel --num-workers 2 --enable-xctest --
   --package-path prototypes/FaceEffects --scratch-path /tmp/wedding-face-prototype-build
 ```
 
-Tests read the bundled synthetic fixture. They write no image files unless `FACE_EFFECTS_EVIDENCE_DIR` is explicitly set; then only three fixed names are accepted without overwriting existing files. Never point that setting at an app container or owner Photos directory. Keep real-device diagnostics private.
+Tests read the bundled synthetic fixture. They write no image files unless `FACE_EFFECTS_EVIDENCE_DIR` is explicitly set; then only six fixed names are accepted without overwriting existing files. Never point that setting at an app container or owner Photos directory. Keep real-device diagnostics private.
 
 ## Before any live feature or app integration
 
@@ -59,3 +59,9 @@ The public artifact contains actual still-renderer evidence, not app screenshots
 The [review handoff and staged plan](REVIEW_AND_NEXT_STEPS.md) records the three actual output names, the outstanding pixel review, the focused asymmetric regression candidate and the gates before post-capture or live integration. Still-image XCTest success is not live tracking or physical-device acceptance.
 
 Latest exact **4c127fee22b0bbb90ba9639af07d78b684d38fea** passes [native40487787704](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40487787704), job122133828705, in1m39s: **31 exact native tests, zero failures/skips**, iOS SDK typecheck and all three native still JPEGs. [Linux40487787627](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40487787627) passes in1m23s. All11 local Node proof checks pass; independent source review found no blocker in the added asymmetric fixtures or hardcoded EXIF permutations. The original29 test identities remain, all three renderer sources are unchanged, and no shipping app path changed. The latest artifact is `isolated-face-effects-4c127fee22b0bbb90ba9639af07d78b684d38fea`; actual output visual inspection remains blocked on supported transfer to this executor. No live feature has been integrated or installed.
+
+## V2 visual refinement candidate
+
+The coordinator independently downloaded authorized artifact12725782780 from the31-case run, verified its hashes/960×1200 dimensions and personally viewed all three native JPEGs. **Visual quality was not approved:** crowns were too large and low, glasses temples crossed the neighboring face, and hearts interleaved when heads touched. The cloud executor has seen the original generated portrait but not these rendered artifact files; this refinement uses the coordinator's concrete pixel findings.
+
+V2 reduces and raises crowns, narrows glasses and shortens their arms, and reduces the heart cluster. Automatic geometry conservatively rejects a rotated effect envelope that crosses an image edge, another detected face's padded bounds, or a previously accepted ornament. Valid bounds from faces with unusable eye landmarks still obstruct decoration. This is bounding-box protection and may omit an effect on close or partly hidden faces; it is **not** semantic hair/hand segmentation or depth-aware occlusion. Fresh native tests, six exports and a new visual acceptance pass remain required. V1 native success is not v2 acceptance. The installed app is unchanged.

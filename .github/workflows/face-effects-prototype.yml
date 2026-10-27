@@ -94,3 +94,6 @@ jobs:
             ${{ runner.temp }}/face-effects-evidence/portrait-glasses.jpg
             ${{ runner.temp }}/face-effects-evidence/portrait-crown.jpg
             ${{ runner.temp }}/face-effects-evidence/portrait-hearts.jpg
+            ${{ runner.temp }}/face-effects-evidence/close-faces.jpg
+            ${{ runner.temp }}/face-effects-evidence/rolled-faces.jpg
+            ${{ runner.temp }}/face-effects-evidence/edge-faces.jpg

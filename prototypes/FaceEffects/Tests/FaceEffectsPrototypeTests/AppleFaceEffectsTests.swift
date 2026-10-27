@@ -107,7 +107,7 @@ final class AppleFaceEffectsTests: XCTestCase {
     wait(for: [done], timeout: 10)
     let output = try XCTUnwrap(rendered).get()
     // CGImage crop coordinates are top-left; avoid assuming bitmap-buffer row order.
-    let sample = try XCTUnwrap(output.image.cropping(to: CGRect(x: 100, y: 58, width: 1, height: 1)))
+    let sample = try XCTUnwrap(output.image.cropping(to: CGRect(x: 100, y: 44, width: 1, height: 1)))
     let center = try pixels(sample)
     XCTAssertGreaterThan(Int(center[0]), 180); XCTAssertLessThan(Int(center[2]), 100)
     let corner = try XCTUnwrap(output.image.cropping(to: CGRect(x: 0, y: 0, width: 1, height: 1)))
@@ -243,13 +243,13 @@ final class AppleFaceEffectsTests: XCTestCase {
     XCTAssertEqual(jpeg.width, 320); XCTAssertEqual(jpeg.height, 200)
     try assertMarkers(output.image, edges: [0,1,2,3], corners: [0,1,2,3], tolerance: 1)
     try assertMarkers(jpeg, edges: [0,1,2,3], corners: [0,1,2,3], tolerance: 22)
-    // Independent expected outer lens rims: eye +/- 0.36*interocular vector.
+    // Independent expected outer lens rims: eye +/- 0.34*interocular vector.
     // Centers must remain on BOTH known eyes; a centered sticker alone cannot satisfy this.
     let dx = (eyes[1].x - eyes[0].x) * 320, dy = (eyes[1].y - eyes[0].y) * 200
     for index in 0..<2 {
       let sign = index == 0 ? -1.0 : 1.0
-      let x = Int((eyes[index].x * 320 + sign * 0.36 * dx).rounded())
-      let y = Int((eyes[index].y * 200 + sign * 0.36 * dy).rounded())
+      let x = Int((eyes[index].x * 320 + sign * 0.34 * dx).rounded())
+      let y = Int((eyes[index].y * 200 + sign * 0.34 * dy).rounded())
       for rendered in [output.image, jpeg] {
         var dark = 0
         for oy in -2...2 { for ox in -2...2 {
@@ -295,6 +295,126 @@ final class AppleFaceEffectsTests: XCTestCase {
       let props = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(metadata, 0, nil) as? [String: Any])
       XCTAssertEqual((props[kCGImagePropertyOrientation as String] as? NSNumber)?.intValue ?? 1, 1)
       XCTAssertEqual(bytes as Data, source, "normalization/rendering never rewrites the EXIF-tagged source")
+    }
+  }
+
+  private func controlledSafetyScenario(_ kind: String) throws -> (CGImage, [FaceAnchors], [UnitRect], UnitRect) {
+    let far = FaceAnchors(bounds: UnitRect(x: 0.66, y: 0.60, width: 0.22, height: 0.28),
+      leftEye: UnitPoint(x: 0.72, y: 0.72), rightEye: UnitPoint(x: 0.82, y: 0.72), confidence: 1)
+    let primary: FaceAnchors, protected: UnitRect
+    switch kind {
+    case "rolled":
+      primary = FaceAnchors(bounds: UnitRect(x: 0.08, y: 0.32, width: 0.30, height: 0.32),
+        leftEye: UnitPoint(x: 0.16, y: 0.50), rightEye: UnitPoint(x: 0.30, y: 0.58), confidence: 1)
+      protected = UnitRect(x: 0.34, y: 0.28, width: 0.22, height: 0.25)
+    case "edge":
+      primary = FaceAnchors(bounds: UnitRect(x: 0.01, y: 0.12, width: 0.18, height: 0.30),
+        leftEye: UnitPoint(x: 0.025, y: 0.24), rightEye: UnitPoint(x: 0.105, y: 0.24), confidence: 1)
+      protected = primary.bounds
+    default:
+      primary = FaceAnchors(bounds: UnitRect(x: 0.10, y: 0.30, width: 0.22, height: 0.28),
+        leftEye: UnitPoint(x: 0.16, y: 0.42), rightEye: UnitPoint(x: 0.26, y: 0.42), confidence: 1)
+      protected = UnitRect(x: 0.31, y: 0.24, width: 0.22, height: 0.30)
+    }
+    let width = 960, height = 1200
+    var bytes = [UInt8](repeating: 255, count: width * height * 4)
+    let rectangles = [primary.bounds, far.bounds] + (kind == "edge" ? [] : [protected])
+    let colors: [[UInt8]] = [[224,193,164], [184,204,224], [207,188,220]]
+    for (index, rect) in rectangles.enumerated() {
+      let left = Int(rect.x * 960), top = Int(rect.y * 1200)
+      let right = Int((rect.x + rect.width) * 960), bottom = Int((rect.y + rect.height) * 1200)
+      for y in top..<bottom { for x in left..<right {
+        let nx = (Double(x) - (rect.x + rect.width / 2) * 960) / (rect.width * 480)
+        let ny = (Double(y) - (rect.y + rect.height / 2) * 1200) / (rect.height * 600)
+        if nx * nx + ny * ny <= 1 || x - left < 2 || right - x <= 2 || y - top < 2 || bottom - y <= 2 {
+          let offset = (y * width + x) * 4
+          for channel in 0..<3 { bytes[offset + channel] = colors[index][channel] }
+        }
+      } }
+    }
+    // Eye crosses are controlled markers, not Vision observations or actual photographed people.
+    for face in [primary, far] { for eye in [face.leftEye, face.rightEye] {
+      let x = Int(eye.x * 960), y = Int(eye.y * 1200)
+      for delta in -4...4 { for point in [(x + delta,y), (x,y + delta)] {
+        let offset = (point.1 * width + point.0) * 4
+        for channel in 0..<3 { bytes[offset + channel] = 25 }
+      } }
+    } }
+    let provider = try XCTUnwrap(CGDataProvider(data: Data(bytes) as CFData))
+    let image = try XCTUnwrap(CGImage(width: width, height: height, bitsPerComponent: 8, bitsPerPixel: 32,
+      bytesPerRow: width * 4, space: CGColorSpace(name: CGColorSpace.sRGB)!,
+      bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipLast.rawValue), provider: provider,
+      decode: nil, shouldInterpolate: false, intent: .defaultIntent))
+    return (image, [primary, far], kind == "edge" ? [] : [protected], protected)
+  }
+  private func assertProtectedPixels(_ source: CGImage, _ result: CGImage, region: UnitRect,
+                                      file: StaticString = #filePath, line: UInt = #line) throws {
+    let rectangle = CGRect(x: CGFloat(floor(region.x * Double(source.width))), y: CGFloat(floor(region.y * Double(source.height))),
+      width: CGFloat(floor(region.width * Double(source.width))), height: CGFloat(floor(region.height * Double(source.height))))
+    let before = try XCTUnwrap(source.cropping(to: rectangle)), after = try XCTUnwrap(result.cropping(to: rectangle))
+    XCTAssertEqual(try pixels(after), try pixels(before), "protected neighbor pixels must remain untouched in the native image", file: file, line: line)
+  }
+  private func assertProtectedJpegSamples(_ source: CGImage, _ decoded: CGImage, region: UnitRect,
+                                          file: StaticString = #filePath, line: UInt = #line) throws {
+    XCTAssertEqual(decoded.width, source.width, file: file, line: line)
+    XCTAssertEqual(decoded.height, source.height, file: file, line: line)
+    // Nine fixed face-interior samples avoid ellipse/box borders and controlled eye crosses.
+    // JPEG0.95 quantizes chroma: <=18/255 per channel is allowed; CG pixels above remain EXACT.
+    for fy in [0.25, 0.5, 0.75] { for fx in [0.25, 0.5, 0.75] {
+      let x = Int(((region.x + region.width * fx) * Double(source.width)).rounded())
+      let y = Int(((region.y + region.height * fy) * Double(source.height)).rounded())
+      let expected = try color(source, x: x, y: y), actual = try color(decoded, x: x, y: y)
+      for channel in 0..<3 {
+        XCTAssertLessThanOrEqual(abs(Int(actual[channel]) - Int(expected[channel])), 18,
+          "encoded JPEG must preserve protected face interiors within documented quantization tolerance", file: file, line: line)
+      }
+    } }
+  }
+  private func controlledEvidence(_ output: AppleFaceEffectsOutput, name: String) throws {
+    guard let directory = ProcessInfo.processInfo.environment["FACE_EFFECTS_EVIDENCE_DIR"] else { return }
+    guard ["close-faces.jpg", "rolled-faces.jpg", "edge-faces.jpg"].contains(name) else { throw AppleFaceEffectsError.invalidImage }
+    let jpeg = try XCTUnwrap(output.jpegData), root = URL(fileURLWithPath: directory, isDirectory: true)
+    try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+    try jpeg.write(to: root.appendingPathComponent(name), options: .withoutOverwriting)
+  }
+  func testCloseFaceAndRollFallbackPreservesProtectedNeighborPixels() throws {
+    for kind in ["close", "rolled"] {
+      let (image, faces, blockers, protected) = try controlledSafetyScenario(kind)
+      let before = try pixels(image), size = ImageSize(width: 960, height: 1200)
+      for accessory in [FaceAccessory.glasses, .crown, .hearts] {
+        let placements = FaceGeometry.placements(faces: faces, image: size, accessory: accessory, obstructingBounds: blockers)
+        XCTAssertGreaterThanOrEqual(placements.count, 1, "far safe face must still receive an accessory")
+        if accessory == .glasses || kind == "rolled" {
+          XCTAssertTrue(FaceGeometry.placements(faces: [faces[0]], image: size, accessory: accessory,
+            obstructingBounds: blockers).isEmpty, "unsafe close/rolled accessory must be rejected, not drawn onto a neighbor")
+          XCTAssertEqual(placements.count, 1)
+        }
+        let output = try renderForOrientationTest(image, placements: placements)
+        XCTAssertNotEqual(try pixels(output.image), before, "safe accessory must actually render elsewhere")
+        try assertProtectedPixels(image, output.image, region: protected)
+        let decoded = try decode(XCTUnwrap(output.jpegData))
+        try assertProtectedJpegSamples(image, decoded, region: protected)
+      }
+      XCTAssertEqual(try pixels(image), before)
+    }
+  }
+  func testControlledCloseRollAndEdgeEvidenceUsesSafeFallback() throws {
+    let cases: [(String, FaceAccessory, String)] = [("close", .glasses, "close-faces.jpg"),
+      ("rolled", .crown, "rolled-faces.jpg"), ("edge", .hearts, "edge-faces.jpg")]
+    for (kind, accessory, name) in cases {
+      let (image, faces, blockers, protected) = try controlledSafetyScenario(kind)
+      let before = try pixels(image), size = ImageSize(width: 960, height: 1200)
+      XCTAssertTrue(FaceGeometry.placements(faces: [faces[0]], image: size, accessory: accessory,
+        obstructingBounds: blockers).isEmpty, "unsafe target must use no-effect fallback")
+      let placements = FaceGeometry.placements(faces: faces, image: size, accessory: accessory, obstructingBounds: blockers)
+      XCTAssertEqual(placements.count, 1, "only the separate safe face receives art")
+      let output = try renderForOrientationTest(image, placements: placements)
+      try assertProtectedPixels(image, output.image, region: protected)
+      let jpeg = try XCTUnwrap(output.jpegData), decoded = try decode(jpeg)
+      XCTAssertEqual(decoded.width, 960); XCTAssertEqual(decoded.height, 1200)
+      try assertProtectedJpegSamples(image, decoded, region: protected)
+      XCTAssertEqual(try pixels(image), before)
+      try controlledEvidence(output, name: name)
     }
   }
 

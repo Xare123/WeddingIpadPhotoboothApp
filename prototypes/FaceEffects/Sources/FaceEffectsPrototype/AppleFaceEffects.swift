@@ -65,18 +65,31 @@ public final class AppleFaceEffectsWorker: @unchecked Sendable {
           catch { try check(requestID); throw AppleFaceEffectsError.detectionFailed }
           try check(requestID)
           let observations = detection.results ?? []
-          let anchors = observations.prefix(64).compactMap { observation -> FaceAnchors? in
-            guard let left = observation.landmarks?.leftEye, let right = observation.landmarks?.rightEye,
-              left.pointCount <= 128, right.pointCount <= 128 else { return nil }
-            func points(_ region: VNFaceLandmarkRegion2D) -> [UnitPoint] {
-              (0..<region.pointCount).map { let p = region.normalizedPoints[$0]; return UnitPoint(x: Double(p.x), y: Double(p.y)) }
-            }
+          // Too many observations is a safe no-effect outcome, never silently ignore neighbors.
+          guard observations.count <= 64 else {
+            return .success(AppleFaceEffectsOutput(image: uprightImage, jpegData: nil, placements: [], visionRevision: Self.pinnedVisionRevision))
+          }
+          var anchors = [FaceAnchors](), obstructingBounds = [UnitRect]()
+          for observation in observations {
             let box = observation.boundingBox
-            return FaceGeometry.fromVision(bounds: UnitRect(x: Double(box.minX), y: Double(box.minY), width: Double(box.width), height: Double(box.height)),
-              leftEye: points(left), rightEye: points(right), confidence: Double(observation.confidence))
+            let raw = UnitRect(x: Double(box.minX), y: Double(box.minY), width: Double(box.width), height: Double(box.height))
+            let uprightBounds = UnitRect(x: raw.x, y: 1 - raw.y - raw.height, width: raw.width, height: raw.height)
+            func points(_ region: VNFaceLandmarkRegion2D) -> [UnitPoint] {
+              guard region.pointCount <= 128 else { return [] }
+              return (0..<region.pointCount).map { let p = region.normalizedPoints[$0]; return UnitPoint(x: Double(p.x), y: Double(p.y)) }
+            }
+            if let left = observation.landmarks?.leftEye, let right = observation.landmarks?.rightEye,
+              let face = FaceGeometry.fromVision(bounds: raw, leftEye: points(left), rightEye: points(right),
+                confidence: Double(observation.confidence)) {
+              anchors.append(face)
+            } else if uprightBounds.valid {
+              // A detected face without usable eyes is still protected from someone else's art.
+              obstructingBounds.append(uprightBounds)
+            }
           }
           let placements = FaceGeometry.placements(faces: anchors,
-            image: ImageSize(width: Double(uprightImage.width), height: Double(uprightImage.height)), accessory: accessory)
+            image: ImageSize(width: Double(uprightImage.width), height: Double(uprightImage.height)),
+            accessory: accessory, obstructingBounds: obstructingBounds)
           try check(requestID)
           if placements.isEmpty {
             return .success(AppleFaceEffectsOutput(image: uprightImage, jpegData: nil, placements: [], visionRevision: Self.pinnedVisionRevision))
@@ -124,31 +137,38 @@ public final class AppleFaceEffectsWorker: @unchecked Sendable {
       canvas.translateBy(x: CGFloat(placement.center.x * Double(width)), y: CGFloat(placement.center.y * Double(height)))
       canvas.rotate(by: CGFloat(placement.rotation))
       canvas.scaleBy(x: CGFloat(placement.width * Double(width)), y: CGFloat(placement.height * Double(height)))
-      canvas.setLineWidth(0.045); canvas.setLineJoin(.round); canvas.setLineCap(.round)
+      canvas.setLineWidth(0.0275); canvas.setLineJoin(.round); canvas.setLineCap(.round)
       switch placement.accessory {
       case .none: break
       case .glasses:
-        canvas.setStrokeColor(CGColor(red: 0.12, green: 0.09, blue: 0.18, alpha: 1))
-        canvas.strokeEllipse(in: CGRect(x: -0.358333333333, y: -0.45, width: 0.30, height: 0.90))
-        canvas.strokeEllipse(in: CGRect(x: 0.058333333333, y: -0.45, width: 0.30, height: 0.90))
-        canvas.move(to: CGPoint(x: -0.058333333333, y: -0.05)); canvas.addQuadCurve(to: CGPoint(x: 0.058333333333, y: -0.05), control: CGPoint(x: 0, y: -0.18))
-        canvas.move(to: CGPoint(x: -0.5, y: -0.15)); canvas.addLine(to: CGPoint(x: -0.358333333333, y: -0.08))
-        canvas.move(to: CGPoint(x: 0.358333333333, y: -0.08)); canvas.addLine(to: CGPoint(x: 0.5, y: -0.15)); canvas.strokePath()
+        // Whole width is 2*d: local lens centers +/-0.25 land on the actual eyes +/-0.5*d.
+        canvas.setStrokeColor(CGColor(red: 0.19, green: 0.13, blue: 0.11, alpha: 1))
+        canvas.strokeEllipse(in: CGRect(x: -0.42, y: -0.45, width: 0.34, height: 0.90))
+        canvas.strokeEllipse(in: CGRect(x: 0.08, y: -0.45, width: 0.34, height: 0.90))
+        canvas.move(to: CGPoint(x: -0.08, y: -0.05)); canvas.addQuadCurve(to: CGPoint(x: 0.08, y: -0.05), control: CGPoint(x: 0, y: -0.18))
+        canvas.move(to: CGPoint(x: -0.49, y: -0.13)); canvas.addLine(to: CGPoint(x: -0.42, y: -0.08))
+        canvas.move(to: CGPoint(x: 0.42, y: -0.08)); canvas.addLine(to: CGPoint(x: 0.49, y: -0.13)); canvas.strokePath()
       case .crown:
-        canvas.setFillColor(CGColor(red: 0.94, green: 0.7, blue: 0.18, alpha: 1))
-        canvas.setStrokeColor(CGColor(red: 0.45, green: 0.28, blue: 0.06, alpha: 1))
-        canvas.move(to: CGPoint(x: -0.45, y: 0.35)); canvas.addLine(to: CGPoint(x: -0.5, y: -0.35))
-        canvas.addLine(to: CGPoint(x: -0.23, y: -0.05)); canvas.addLine(to: CGPoint(x: 0, y: -0.48))
-        canvas.addLine(to: CGPoint(x: 0.23, y: -0.05)); canvas.addLine(to: CGPoint(x: 0.5, y: -0.35))
-        canvas.addLine(to: CGPoint(x: 0.45, y: 0.35)); canvas.closePath(); canvas.drawPath(using: .fillStroke)
+        // Small open tiara: restrained gold lines and one slender central point, no block/jewels.
+        let gold = CGColor(red: 0.79, green: 0.60, blue: 0.25, alpha: 1)
+        canvas.setStrokeColor(gold); canvas.setFillColor(gold); canvas.setLineWidth(0.04)
+        canvas.move(to: CGPoint(x: -0.46, y: 0.30))
+        canvas.addQuadCurve(to: CGPoint(x: 0, y: 0), control: CGPoint(x: -0.28, y: 0.03))
+        canvas.addQuadCurve(to: CGPoint(x: 0.46, y: 0.30), control: CGPoint(x: 0.28, y: 0.03)); canvas.strokePath()
+        canvas.move(to: CGPoint(x: -0.44, y: 0.26)); canvas.addLine(to: CGPoint(x: -0.34, y: -0.24))
+        canvas.addLine(to: CGPoint(x: -0.13, y: 0.05))
+        canvas.move(to: CGPoint(x: 0.13, y: 0.05)); canvas.addLine(to: CGPoint(x: 0.34, y: -0.24))
+        canvas.addLine(to: CGPoint(x: 0.44, y: 0.26)); canvas.strokePath()
+        canvas.move(to: CGPoint(x: -0.05, y: 0.12)); canvas.addLine(to: CGPoint(x: 0, y: -0.42))
+        canvas.addLine(to: CGPoint(x: 0.05, y: 0.12)); canvas.closePath(); canvas.fillPath()
       case .hearts:
-        canvas.setFillColor(CGColor(red: 0.86, green: 0.13, blue: 0.34, alpha: 1))
-        for x in [CGFloat(-0.32), CGFloat(0), CGFloat(0.32)] {
-          canvas.move(to: CGPoint(x: x, y: 0.3))
-          canvas.addCurve(to: CGPoint(x: x - 0.13, y: -0.08), control1: CGPoint(x: x - 0.02, y: 0.15), control2: CGPoint(x: x - 0.2, y: 0.02))
-          canvas.addCurve(to: CGPoint(x: x, y: -0.14), control1: CGPoint(x: x - 0.14, y: -0.31), control2: CGPoint(x: x - 0.03, y: -0.28))
-          canvas.addCurve(to: CGPoint(x: x + 0.13, y: -0.08), control1: CGPoint(x: x + 0.03, y: -0.28), control2: CGPoint(x: x + 0.14, y: -0.31))
-          canvas.addCurve(to: CGPoint(x: x, y: 0.3), control1: CGPoint(x: x + 0.2, y: 0.02), control2: CGPoint(x: x + 0.02, y: 0.15)); canvas.closePath(); canvas.fillPath()
+        canvas.setFillColor(CGColor(red: 0.78, green: 0.27, blue: 0.36, alpha: 1))
+        for x in [CGFloat(-0.30), CGFloat(0), CGFloat(0.30)] {
+          canvas.move(to: CGPoint(x: x, y: 0.28))
+          canvas.addCurve(to: CGPoint(x: x - 0.11, y: -0.06), control1: CGPoint(x: x - 0.02, y: 0.14), control2: CGPoint(x: x - 0.16, y: 0.02))
+          canvas.addCurve(to: CGPoint(x: x, y: -0.12), control1: CGPoint(x: x - 0.12, y: -0.27), control2: CGPoint(x: x - 0.03, y: -0.25))
+          canvas.addCurve(to: CGPoint(x: x + 0.11, y: -0.06), control1: CGPoint(x: x + 0.03, y: -0.25), control2: CGPoint(x: x + 0.12, y: -0.27))
+          canvas.addCurve(to: CGPoint(x: x, y: 0.28), control1: CGPoint(x: x + 0.16, y: 0.02), control2: CGPoint(x: x + 0.02, y: 0.14)); canvas.closePath(); canvas.fillPath()
         }
       }
       canvas.restoreGState()
