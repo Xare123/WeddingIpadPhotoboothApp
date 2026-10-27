@@ -12,12 +12,12 @@ The changed orientation loader reads only React Native's Dimensions export. It a
 | [Hosted Linux 40463998107](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40463998107) | Passed in 1m11s. |
 | [Release simulator runtime 40463998097](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40463998097) | Passed in 25m38s: **20 executed, zero failures/skips**, including the app launch/relaunch/rotation smoke. |
 | [Unsigned physical-SDK Release 40463998043](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40463998043) | Passed in 21m08s. Embedded JS/iPad metadata verified; compilation is separate from signing or execution. |
-| Matching signed Mac artifact | No matching signed build reported here yet. Preserve existing identity, profile, app container and originals. |
-| Physical iPad acceptance | Pending for this candidate. The owner's earlier Photos success and current Host-open confirmation are separate evidence. |
+| Matching signed Mac artifact | Coordinator verified signed9ed36b4 0.3.7/build10 installed in place at08:13UTC, preserving identity/data. |
+| Physical iPad acceptance | Startup/relaunch/portrait-landscape welcome check passes1/1. Four real ceiling photos, observed5s/3s timing, matching file/journal sizes and4 recovered review selections pass;110 prior entries unchanged. Individual/whole-shoot retakes and independent current-run Photos inspection remain open. |
 
-**Both hosted native gates now pass. Prepare/verify a matching signed Mac artifact before the already approved in-place update.** The coordinator can proceed under the existing update approval once those Mac checks pass; physical rehearsal is still required. Do not install the diagnostic d553 build or relabel/reuse the held d44 artifact.
+**Both hosted native gates pass and the matching signed9ed36b4 app is now installed.** Do not rebuild/reinstall merely for the test-harness correction. Continue the remaining non-destructive acceptance checks when the coordinator establishes readiness; configs currently remain NOT_ARMED. [Current physical evidence](../artifacts/test-results/physical-four-photo-acceptance.json) is separate from hosted tests. Do not install the diagnostic d553 build or relabel/reuse the held d44 artifact.
 
-## Mac build preparation
+## Mac build reproduction (the matching app is already installed)
 
 Use the already authorized Mac checkout and warm DerivedData. Inspect an uncertain earlier build's outcome before starting another. Preserve local configuration and changes before fetching/checking out source; do not reset or overwrite the private bundle-ID edit.
 
@@ -44,7 +44,7 @@ Use the already authorized Mac checkout and warm DerivedData. Inspect an uncerta
 | `apps/ipad/index.ts` | `af10e01cf5fa6d399a83829926cc80d935c1dca8fb01313ab7cb54aab84c028b` |
 | `apps/ipad/src/orientation-native.ts` | `030f647fb04da3538cb96dc9cf9235e5fcbcfee72fbf02c2ed7da11e3acd3e31` |
 
-The owner already approved the in-place update and dedicated test runner; do not ask again for that same scope. The runner still needs the existing Xcode account/profile issue resolved and an explicitly ready harmless test scene. Keep it **NOT_ARMED** until readiness is established. The retargeted source generator's eight Linux checks passed; its new version guard still needs matching Mac unsigned preparation. Runner signing/install and physical execution are separate from building the app.
+The owner already approved the in-place update and dedicated runner; do not ask again for that same scope. The coordinator has run bounded physical checks; all current runner configs are **NOT_ARMED**. A later retake attempt timed out while enabling automation before its test body, so no retake pass/failure is established. Resolve the actual current device/authentication state with the coordinator when appropriate, without bypassing a denied screenshot or prompting the sleeping owner. The repository runner now requires absent thumbnails on an empty camera, matching the UI; its eight source-preparation guards pass. That source correction was not physically rerun by this cloud executor.
 
 ## Ordered non-destructive device acceptance
 

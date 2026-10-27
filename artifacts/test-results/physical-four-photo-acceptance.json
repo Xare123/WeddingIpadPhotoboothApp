@@ -1,0 +1,54 @@
+{
+  "appCommit": "9ed36b4eac6ce558b82b22db4e08037308b87a2c",
+  "version": "0.3.7",
+  "build": "10",
+  "source": "Coordinator reports from the authorized Mac and real iPad; not this cloud executor",
+  "installedUpdateVerifiedAt": "2026-10-27 08:13 UTC",
+  "startup": {
+    "passed": 1,
+    "failed": 0,
+    "coverage": [
+      "cold launch",
+      "relaunch",
+      "portrait and landscape welcome layout"
+    ]
+  },
+  "fourPhotoSession": {
+    "result": "passed",
+    "subject": "harmless ceiling",
+    "captures": 4,
+    "observedTiming": {
+      "firstSeconds": 5,
+      "followingSeconds": 3
+    },
+    "jpegSizesMatchJournals": true,
+    "reviewSelectionsRecoveredAfterRelaunch": 4,
+    "priorFileEntriesUnchanged": 110
+  },
+  "photosThisRun": "Journal records saved; not independently inspected in Apple Photos",
+  "retakeIndividual": "not executed; XCTest enabling-automation timeout before test body",
+  "retakeAll": "not executed; same automation startup blocker; no further captures",
+  "currentRunnerConfigurations": "NOT_ARMED",
+  "separateDenial": "Unknown-screen screenshot denied before execution; no workaround or awake-owner prompt requested",
+  "harnessCorrection": {
+    "reason": "Full-bleed empty capture hides thumbnails; old placeholder-label requirement was wrong",
+    "newPredicate": "Require no photo-thumbnail-1 through photo-thumbnail-4 in empty new capture",
+    "existingSessionAndStart4Guards": "unchanged",
+    "sourceSHA256": "5e50113a023d9661fa7b3e8c029fe2873a8b27d7efc64d95644976f7270d5f9c",
+    "cloudSourcePreparationTests": 8,
+    "coordinatorReportedFocusedMacTests": 43,
+    "thisExactCorrectedSourcePhysicalExecution": "not performed here"
+  },
+  "preservation": [
+    "No uninstall/reset/queue deletion",
+    "Existing originals and intentionally deleted Photos choices respected",
+    "No auth bypass/pairing/origin request or capture initiated by this cloud work"
+  ],
+  "remaining": [
+    "actual individual and whole-shoot retake acceptance",
+    "independent current-run Apple Photos inspection",
+    "interrupted saving/reboot/offline/group-framing/soak checks",
+    "owner-operated private pairing and complete gallery/download/phone QR",
+    "provider eligibility and consent before coordinator-capped live SMS"
+  ]
+}

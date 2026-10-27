@@ -116,6 +116,9 @@ test('rehearsal source protects existing sessions and stops on save/permission i
     assert.equal(source.includes(forbidden), false);
   }
   const app = readFileSync(join(root, 'apps/ipad/App.tsx'), 'utf8');
+  // Cross-component precondition: an empty camera hides the whole filmstrip.
+  assert.ok(source.includes('!element("photo-thumbnail-\\(slot)").exists'));
+  assert.ok(app.includes('session.shots.length > 0 && <View style={styles.captureFilmstrip}>'));
   for (const id of ['start-session', 'allow-camera', 'take-photo', 'capture-framing-hint', 'timing-chip', 'review-gallery', 'retry-save', 'photo-preview']) {
     assert.ok(app.includes('"' + id + '"') || app.includes("'" + id + "'"), 'Current application is missing ' + id);
   }

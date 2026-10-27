@@ -100,7 +100,8 @@ final class WeddingPhotoboothPhysicalSmokeTests: XCTestCase {
     try require(element("take-photo").label == "Start 4 photos", "Refuse to continue or retake an existing session.")
     try require(element("capture-framing-hint").label == "Full original kept · screen preview crops the edges", "Patched camera capability is not active.")
     for slot in 1...4 {
-      try require(element("photo-thumbnail-\(slot)").label == "Photo \(slot), not taken", "Existing captures found; owner attention required.")
+      // Empty full-bleed capture has no filmstrip until the first saved photo.
+      try require(!element("photo-thumbnail-\(slot)").exists, "Existing captures found; owner attention required.")
     }
     try tap("timing-chip")
     try setGuestTiming("timing-first", seconds: 5)
