@@ -380,7 +380,7 @@
     "Mac": "M1 MacBook Air,macOS27.0.1,Xcode27.1; separate from CI26.3",
     "earlierSignedBuild": "0.3.2/build5 compiled/signature/embeddedJS verified by Mac executor; never installed; used stock precompiled camera.",
     "privateInstalledIdentity": "Preserve existing owner bundle/team/profile and container; private values intentionally omitted.",
-    "repairedCandidateInstalled": false,
+    "repairedCandidateInstalled": true,
     "personalTeam": true,
     "physicalAcceptance": "Unverified capture/saving/Photos/offline/reboot/filters/templates/timers/QR/VoiceOver; owner rehearsal required.",
     "repairedSignedCandidate": {
@@ -398,18 +398,31 @@
       "totalMinutes": 8,
       "compileSeconds": 221,
       "finalBundleRebuildSeconds": 24,
-      "installedAtReportTime": false,
+      "installedAtReportTime": true,
       "toolchain": "Xcode27.1/macOS27.0.1 Apple silicon",
       "privateEvidence": "Retained on owner Mac; private path/identity deliberately omitted."
     },
-    "installationClearance": "Technical code/build readiness cleared for exact signed b4e01d3; execution remains pending exact owner approval after Mac automatic review denial. No retry or installation.",
+    "installationClearance": "Exact signed b4e01d3 installed in place after owner approval, preserving identity/data. Physical behavior is still unverified.",
     "executionApproval": {
-      "inPlaceUpdate": "automatic_approval_review_rejected_before_execution",
-      "reason": "Exact trusted-user approval for same-app update/launch required",
-      "ownerRequest": "Pending through coordinator for0.3.4/build7 update/launch and separate physical UI-runner AppID/profile/register/install/test",
-      "retried": false,
-      "installed": false,
-      "technicalReadinessClearanceIsSeparate": true
+      "approvedByOwnerAt": "2026-10-27T00:18:00Z",
+      "scope": [
+        "same-app update/launch",
+        "dedicated runner registration/profile/install/test"
+      ],
+      "previousReview": "automatic review rejected update before execution; exact owner approval then supplied",
+      "inPlaceUpdate": "succeeded",
+      "version": "0.3.4",
+      "build": "7",
+      "existingIdentityPreserved": true,
+      "uninstallOrReset": false,
+      "launched": false,
+      "captured": false,
+      "optionalRunner": "signing_failed_no_Xcode_accounts_and_missing_profile",
+      "existingCertificateValid": true,
+      "ownerAction": "Reconnect existing Apple ID/Personal Team in Xcode Settings Accounts",
+      "runnerInstalled": false,
+      "runnerReadiness": "NOT_ARMED",
+      "testSubjectReady": false
     }
   },
   "environment": {
@@ -431,8 +444,8 @@
     "finalPinSavePendingAtSnapshot": true
   },
   "remainingGates": [
-    "Exact owner approval for in-place update/launch and separate physical UI-runner registration/provisioning; coordinator requested, no retry",
-    "Controlled same-identity iPad installation and physical acceptance; coordinator actual-native visual review passed",
+    "Owner clear test scene and device rehearsal; app installed but not launched/captured",
+    "Optional runner: reconnect existing Apple ID/Personal Team in Xcode Accounts, create approved runner profile, explicit readiness before signing/install/test",
     "Separate full-app launch/bridge integration",
     "Physical iPad local originals+Photos saving/interruption/offline/reboot rehearsal",
     "Coordinator matchingV2/private pairing/live synthetic R2+download/privacy verification",
@@ -460,7 +473,7 @@
     "boundary": "Read-only source/Pillow analysis, not Swift compilation or native pixels; actual CGContext and full/preview acceptance await AppleCI."
   },
   "launchReady": false,
-  "lastReviewedAt": "2026-10-27T00:01:16.111868+00:00",
+  "lastReviewedAt": "2026-10-27T00:27:05.218224+00:00",
   "sourceHashesSnapshotCommit": "b4e01d3aeb47c3f164f912b829b4807cc3551f8d",
   "physicalPreparation": {
     "sourceCommit": "e8f18833444ed3867805a9ffa51754fbd962f13a",
@@ -485,11 +498,11 @@
       "launch": false,
       "capture": false,
       "physicalExecution": false,
-      "ownerExecutionApproval": "pending"
+      "ownerExecutionApproval": "Pending during unsigned preparation; owner later approved at00:18UTC. Current signing/test-scene blockers are recorded in owner.executionApproval."
     },
     "ownerReady": false,
     "signingOrProvisioningPerformed": false,
-    "deviceExecutionApproval": "Pending exact owner approval after rejected-before-execution update",
+    "deviceExecutionApproval": "Approved by owner; runner signing blocked on Xcode account/profile, test scene not ready",
     "report": "physical-rehearsal-source.json",
     "hostedLinux": {
       "run": 40423117679,

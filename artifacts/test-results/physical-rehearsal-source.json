@@ -57,7 +57,6 @@
     "physicalCaseExecuted": false,
     "signedRunnerCreated": false,
     "appIdOrProfileCreated": false,
-    "installed": false,
     "macSourcePreparation": {
       "sourceCommit": "e8f18833444ed3867805a9ffa51754fbd962f13a",
       "evidenceSource": "Authorized Mac executor via coordinator",
@@ -75,8 +74,9 @@
       "launch": false,
       "capture": false,
       "physicalExecution": false,
-      "ownerExecutionApproval": "pending"
-    }
+      "ownerExecutionApproval": "Pending at unsigned prep; later approved at00:18UTC, see latestDeviceExecutionState"
+    },
+    "runnerInstalled": false
   },
   "safeguards": [
     "existing active/recovered session stops",
@@ -92,7 +92,7 @@
   "limits": [
     "UI labels and restored review do not prove file hashes or actual Photos copies",
     "coordinator must verify unpaired app before running; no network suppression",
-    "separate owner approval for app update and runner registration/profile/install/execution remains pending",
+    "owner approved; optional runner execution awaits Xcode account/profile and clear test scene",
     "no real photos or device diagnostics published"
   ],
   "privateValuesIncluded": false,
@@ -102,5 +102,17 @@
     "duration": "1m25s",
     "checks": "97source/nativeCIguard contracts,311integrated,typechecks,iOSJSexport,recovery faults andlocalHTTP; no physical execution"
   },
-  "sourceHashesBoundary": "Exact E8 source/tooling and original document snapshot. Later clarification-only documentation changes do not change the source preparation or shipping app."
+  "sourceHashesBoundary": "Exact E8 source/tooling and original document snapshot. Later clarification-only documentation changes do not change the source preparation or shipping app.",
+  "latestDeviceExecutionState": {
+    "approvedByOwnerAt": "2026-10-27T00:18:00Z",
+    "appInstalledInPlace": "0.3.4/build7,preservedidentity,nouninstall/reset",
+    "appLaunched": false,
+    "captured": false,
+    "runnerSigning": "failed:XcodeNoAccounts/missingprofile",
+    "existingCertificateValid": true,
+    "ownerAccountReconnectionAsked": true,
+    "runnerInstalled": false,
+    "runnerReadiness": "NOT_ARMED",
+    "testSceneReady": false
+  }
 }
