@@ -585,9 +585,16 @@ final class AppleFaceEffectsTests: XCTestCase {
       width: 0.6, height: 0.5, rotation: 0)
     let output = try renderForOrientationTest(image, placements: [placement])
     let seed = try color(output.image, x: 200, y: 67)
+    // Independent opaque swatch uses the same public source color and destination format,
+    // accounting for native color conversion instead of assuming literal 8-bit RGB values.
+    let swatch = try XCTUnwrap(CGContext(data: nil, width: 8, height: 8, bitsPerComponent: 8, bytesPerRow: 8 * 4,
+      space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+    swatch.setFillColor(CGColor(red: 0.97, green: 0.94, blue: 0.85, alpha: 1))
+    swatch.fill(CGRect(x: 0, y: 0, width: 8, height: 8))
+    let reference = try color(XCTUnwrap(swatch.makeImage()), x: 4, y: 4)
     for channel in 0..<3 {
-      XCTAssertLessThanOrEqual(abs(Int(seed[channel]) - [247,240,217][channel]), 2,
-        "central opaque seed must be actual cream fill, observed seed=\(seed)")
+      XCTAssertLessThanOrEqual(abs(Int(seed[channel]) - Int(reference[channel])), 2,
+        "central opaque seed must match independent cream swatch, seed=\(seed), reference=\(reference)")
     }
     // Gold/white antialias can satisfy a broad cream range; isolate the connected true-fill component.
     var matching = Set<Int>()
@@ -604,10 +611,12 @@ final class AppleFaceEffectsTests: XCTestCase {
     let left = try XCTUnwrap(component.map { $0 % 400 }.min()), right = try XCTUnwrap(component.map { $0 % 400 }.max())
     let top = try XCTUnwrap(component.map { $0 / 400 }.min()), bottom = try XCTUnwrap(component.map { $0 / 400 }.max())
     let physicalWidth = right - left + 1, physicalHeight = bottom - top + 1
-    let diagnostic = "observed W=\(physicalWidth), H=\(physicalHeight), seed=\(seed)"
+    // Tight matching measures the OPAQUE FILL CORE:7.6px outer diameter minus1.6px stroke,
+    // then roughly1px antialias margin on each side yields about4px, not the full7.6px outline.
+    let diagnostic = "opaque-core W=\(physicalWidth), H=\(physicalHeight), seed=\(seed), reference=\(reference)"
     XCTAssertLessThanOrEqual(abs(physicalWidth - physicalHeight), 1, "equal physical pearl diameters: " + diagnostic)
-    XCTAssertTrue((6...9).contains(physicalWidth), "expected about7.6px horizontal diameter; " + diagnostic)
-    XCTAssertTrue((6...9).contains(physicalHeight), "expected about7.6px vertical diameter; " + diagnostic)
+    XCTAssertTrue((4...6).contains(physicalWidth), "expected4...6px horizontal opaque core, not outer outline; " + diagnostic)
+    XCTAssertTrue((4...6).contains(physicalHeight), "expected4...6px vertical opaque core, not outer outline; " + diagnostic)
     XCTAssertEqual(Double(left + right) / 2 + 0.5, 200, accuracy: 1, diagnostic)
     XCTAssertEqual(Double(top + bottom) / 2 + 0.5, 67, accuracy: 1, diagnostic)
     for point in [(198,67), (202,67), (200,65), (200,69)] {

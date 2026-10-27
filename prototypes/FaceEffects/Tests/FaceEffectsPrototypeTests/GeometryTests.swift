@@ -161,7 +161,9 @@ final class GeometryTests: XCTestCase {
       FaceAnchors(bounds: UnitRect(x: x - width / 2, y: 0.64, width: width, height: 0.16),
         leftEye: UnitPoint(x: x - 0.03, y: 0.64), rightEye: UnitPoint(x: x + 0.03, y: 0.68), confidence: 1)
     }
-    let left = rolled(0.45), right = rolled(0.55)
+    //90px separation keeps even the90%-scale baseline envelopes intersecting
+    // on both SAT axes;100px would legitimately admit that compact alternative.
+    let left = rolled(0.45), right = rolled(0.54)
     let one = FaceGeometry.placements(faces: [left], image: image, accessory: .crown)
     let two = FaceGeometry.placements(faces: [right], image: image, accessory: .crown)
     XCTAssertEqual(one.count, 1); XCTAssertEqual(two.count, 1)
@@ -171,7 +173,7 @@ final class GeometryTests: XCTestCase {
     XCTAssertEqual(FaceGeometry.placements(faces: [left,right], image: image, accessory: .crown, obstructingBounds: [ceiling]), one)
     XCTAssertEqual(FaceGeometry.placements(faces: [right,left], image: image, accessory: .crown, obstructingBounds: [ceiling]), two,
       "equal-area collision priority is stable input order")
-    XCTAssertEqual(FaceGeometry.placements(faces: [left,rolled(0.55, width: 0.09)], image: image, accessory: .crown, obstructingBounds: [ceiling]), two,
+    XCTAssertEqual(FaceGeometry.placements(faces: [left,rolled(0.54, width: 0.09)], image: image, accessory: .crown, obstructingBounds: [ceiling]), two,
       "larger face wins even when it appears later")
     // In the rotated envelope's lower-right AABB corner, this tiny box is
     // physically separated from the actual rotated rectangle. SAT must keep it.
