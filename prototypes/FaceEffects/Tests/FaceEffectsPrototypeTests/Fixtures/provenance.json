@@ -1,0 +1,11 @@
+{
+  "source": "apps/ipad/native-tests/fixtures/studio/studio-portrait-1.jpg",
+  "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+  "dimensions": [
+    960,
+    1200
+  ],
+  "origin": "Previously image_gen-generated fictional adult wedding portraits; no guest/vendor/reference photos",
+  "transform": "Exact byte copy; no new image editing",
+  "testScope": "Apple Vision still detection and original vector derivatives; not live tracking"
+}

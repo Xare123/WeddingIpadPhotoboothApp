@@ -1,0 +1,95 @@
+name: Isolated face-effects prototype
+on:
+  push:
+    branches: [codex/face-effects-prototype]
+permissions:
+  contents: read
+concurrency:
+  group: wedding-face-prototype-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  apple-frameworks:
+    if: github.repository == 'Xare123/WeddingIpadPhotoboothApp' && github.event.repository.private == false
+    runs-on: macos-15
+    timeout-minutes: 20
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+      EXPO_NO_TELEMETRY: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+      - name: Prepare exact isolated source and case manifest
+        run: |
+          set -euo pipefail
+          xcodebuild -version
+          xcrun swift --version
+          node --test scripts/face-effects-proof.test.mjs
+          node scripts/face-effects-proof.mjs prepare "$RUNNER_TEMP/face-effects-evidence"
+          swift package --package-path prototypes/FaceEffects dump-package > "$RUNNER_TEMP/face-effects-evidence/package-manifest.json"
+      - name: Typecheck prototype against actual iOS SDK
+        timeout-minutes: 3
+        run: |
+          set -euo pipefail
+          FACE_ARCH="$(uname -m)"
+          case "$FACE_ARCH" in arm64|x86_64) ;; *) exit 1 ;; esac
+          FACE_SDK="$(xcrun --sdk iphonesimulator --show-sdk-path)"
+          xcrun --sdk iphonesimulator swiftc -swift-version 5 \
+            -target "$FACE_ARCH-apple-ios16.4-simulator" -sdk "$FACE_SDK" \
+            -module-cache-path "$RUNNER_TEMP/face-module-cache" -parse-as-library \
+            -module-name FaceEffectsPrototype -typecheck \
+            prototypes/FaceEffects/Sources/FaceEffectsPrototype/*.swift \
+            2>&1 | tee "$RUNNER_TEMP/face-effects-evidence/ios-typecheck.log"
+          printf 'passed\n' > "$RUNNER_TEMP/face-effects-evidence/ios-typecheck.ok"
+      - name: Run actual Apple Vision and rendering tests without Expo or simulator
+        timeout-minutes: 10
+        env:
+          FACE_EFFECTS_EVIDENCE_DIR: ${{ runner.temp }}/face-effects-evidence
+        run: |
+          set -euo pipefail
+          swift test --configuration release --enable-xctest --disable-swift-testing --package-path prototypes/FaceEffects \
+            --scratch-path "$RUNNER_TEMP/face-swift-build" \
+            --xunit-output "$RUNNER_TEMP/face-effects-evidence/tests.xml" \
+            2>&1 | tee "$RUNNER_TEMP/face-effects-evidence/swift-test.log"
+          printf 'passed\n' > "$RUNNER_TEMP/face-effects-evidence/swift-test.ok"
+      - name: Verify executed identities and actual derivative evidence
+        run: node scripts/face-effects-proof.mjs finish "$RUNNER_TEMP/face-effects-evidence"
+      - name: Bound diagnostic logs before public evidence upload
+        if: always()
+        run: |
+          node --input-type=module - <<'JS'
+          import {existsSync,readFileSync,writeFileSync} from 'node:fs';
+          import {join} from 'node:path';
+          const root=join(process.env.RUNNER_TEMP,'face-effects-evidence');
+          for(const name of ['ios-typecheck.log','swift-test.log']) {
+            const path=join(root,name); if(!existsSync(path))continue;
+            const lines=readFileSync(path,'utf8').split('\n');
+            const bounded=lines.length>500?[...lines.slice(0,250),'[bounded log]',...lines.slice(-250)]:lines;
+            writeFileSync(path,bounded.join('\n').slice(0,96000));
+            for (const line of lines.filter(x=>/error:|failed:|XCTAssert/.test(x)).slice(0,5)) {
+              const safe=line.replaceAll('%',' ').replace(/[\r\n]/g,' ').slice(0,600);
+              console.log('::notice title=Prototype diagnostic::'+safe);
+            }
+          }
+          JS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: isolated-face-effects-${{ github.sha }}
+          retention-days: 7
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/face-effects-evidence/source-manifest.json
+            ${{ runner.temp }}/face-effects-evidence/package-manifest.json
+            ${{ runner.temp }}/face-effects-evidence/report.json
+            ${{ runner.temp }}/face-effects-evidence/tests.xml
+            ${{ runner.temp }}/face-effects-evidence/ios-typecheck.log
+            ${{ runner.temp }}/face-effects-evidence/swift-test.log
+            ${{ runner.temp }}/face-effects-evidence/portrait-glasses.jpg
+            ${{ runner.temp }}/face-effects-evidence/portrait-crown.jpg
+            ${{ runner.temp }}/face-effects-evidence/portrait-hearts.jpg
