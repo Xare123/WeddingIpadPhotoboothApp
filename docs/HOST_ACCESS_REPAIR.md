@@ -1,6 +1,6 @@
 # Host access and sharing diagnostics repair
 
-The repair target is **0.3.5 / build 8**, locally implemented; its publication commit and fresh native Release outcome will be pinned after verification. The frozen App source SHA-256 is `9425fa216f680b9f6add46d16eca4d3a0cca4bfb52aaac6eb010b814b269068e`. The installed app remains **0.3.4 / build 7**, source `b4e01d3aeb47c3f164f912b829b4807cc3551f8d`. Its 19-method native image pass, 16 exported JPEGs and signed/unsigned Release evidence remain valid for that source; they do not test this repair. See [validation](VALIDATION.md).
+The repair target is **0.3.5 / build 8**, published at **`3cc16e6e6780e97fdb3fad7568ac99fab6f43e76`**. [Hosted Linux40433500707](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40433500707) passed in1m8s; [unsigned native Release40433500769](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40433500769), job121956572667, passed in21m8s with compilation, embedded JavaScript and iPad metadata verified. No XCTest, signing, install or device authentication is established by that Release run. The frozen App source SHA-256 is `9425fa216f680b9f6add46d16eca4d3a0cca4bfb52aaac6eb010b814b269068e`. The installed app remains **0.3.4 / build 7**, source `b4e01d3aeb47c3f164f912b829b4807cc3551f8d`. Its 19-method native image pass, 16 exported JPEGs and signed/unsigned Release evidence remain valid for that source; they do not test this repair. See [validation](VALIDATION.md).
 
 ## Latest actual iPad evidence
 
@@ -29,3 +29,9 @@ On the iPad, test guarded entry and cancellation from each screen, system-auth s
 The owner approved the app update and dedicated runner at **00:18 UTC on October 27**. Runner execution is already authorized, but signing remains blocked by the account/profile prerequisites; it is **NOT_ARMED** and uninstalled. Record that blocker rather than requesting the same permission again or creating a new account/profile. No physical runner pass is established.
 
 After P0, the requested backlog is **Auto (default) / Portrait / Landscape** host orientation control, improved portrait strip fit, nondestructive **Retake all**, and native Vision face effects. These are not implemented or validated by this repair checkpoint. Existing originals and template choices must remain intact.
+
+## Exact Mac acceptance target
+
+Use commit `3cc16e6e6780e97fdb3fad7568ac99fab6f43e76` for the next warm same-identity build. Preserve private bundle/team/profile settings, the existing container, all originals and warm DerivedData. Verify 0.3.5/build8, signature, embedded JS and compiled camera marker before a coordinated update. Test Host entry on welcome/camera/review/sharing using passcode fallback and biometrics separately; test cancel, rapid repeat and a real background/foreground. Then test a harmless settings save through its second OS prompt. If blocked, start private Mac Console Info streaming filtered to `[host-access-state]` before one attempt and read the visible `booth-status-message`; never record PIN entry or share raw/private diagnostics publicly.
+
+The next orientation and Retake All features are separate local work, not part of this tested revision. Pairing/upload scope and SMS gates remain separate.

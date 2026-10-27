@@ -1,10 +1,11 @@
-The **0.3.5/build 8 Host-access repair** is a separate locally tested candidate: 380 integrated tests, 97 guard/preparation checks, 30 browser-fixture groups and 48 synthetic screenshots pass. Its frozen App SHA-256 is `9425fa216f680b9f6add46d16eca4d3a0cca4bfb52aaac6eb010b814b269068e`. Obtain the exact publication/native-check revision from [the repair record](HOST_ACCESS_REPAIR.md) before rebuilding; the B4E commands below reproduce the installed baseline and do not include this fix. The new same-identity build still needs actual iPad PIN/biometric verification; never uninstall/reset to test it.
-
 # Mac-to-iPad handoff
+
+The **0.3.5/build 8 Host-access repair** is published at **`3cc16e6e6780e97fdb3fad7568ac99fab6f43e76`**. Hosted [Linux40433500707](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40433500707) passed in 1m 8s and [unsigned Release40433500769](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40433500769) passed in 21m 8s. Local 380 integrated tests, 97 guards and 30 browser groups/48 screenshots pass. Use that exact revision for the next same-identity Mac build. Actual iPad PIN/biometric verification remains open; never uninstall/reset to test it. Later orientation/Retake All work is separate from this frozen revision.
+
 
 The installed app is **version 0.3.4 / build 7**, source **`b4e01d3aeb47c3f164f912b829b4807cc3551f8d`**. **Installed in place for controlled iPad rehearsal:** [native run 40418443673](https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40418443673) passed all 19 cases with zero failures/skips and all 16 required JPEGs. The authorized Mac executor separately verified the signed candidate, unchanged existing identity/profile, patched-camera Swift compilation, compiled native marker and exclusion of the stock camera framework. The matching hosted unsigned Release also passed in21m29s, including native camera-marker verification. The latest Mac check verified four originals with matching journals, one keepsake and SQLite integrity. The owner confirmed all test photos in Apple Photos, then intentionally deleted some; do not restore/re-export those copies or inspect unrelated library content. Recovery, sustained use and the remaining device checklist still need acceptance; see [exact validation](VALIDATION.md).
 
-The **0.3.5 / build 8 host-access repair is in progress locally**, with no final commit or completed validation yet; the installed B4E app is unchanged. Host PIN/passcode fallback was inaccessible across screens. Touch ID failure/root cause is unproven. The repair targets guarded entry, secondary OS authentication and truthful setup/queue/failure diagnostics; see [the repair contract](HOST_ACCESS_REPAIR.md). At **00:18 UTC on October 27**, the owner approved the app update and dedicated runner. That permission already exists. Runner signing remains blocked by Xcode No Accounts and a missing runner profile; it is **NOT_ARMED** and uninstalled. Resolve the existing account/profile blocker through the coordinator rather than requesting the same permission again or creating replacement access.
+The installed B4E app had inaccessible Host PIN/passcode fallback across screens. Touch ID failure and the underlying device cause remain unproven. The published 0.3.5 repair passes the controlled lifecycle and build checks above; actual iPad authentication is still required. See [the repair contract](HOST_ACCESS_REPAIR.md). At **00:18 UTC on October 27**, the owner approved the app update and dedicated runner. That permission already exists. Runner signing remains blocked by Xcode No Accounts and a missing runner profile; it is **NOT_ARMED** and uninstalled. Resolve the existing account/profile blocker through the coordinator rather than requesting the same permission again or creating replacement access.
 
 The actual device is an **iPad Air 11-inch M2**, not the earlier provisional M1 model. The owner's M1 MacBook Air has macOS 27.0.1 and Xcode 27.1; CI uses Xcode 26.3. An earlier signed 0.3.2/build 5 Release compiled on that Mac using the existing identity, but **was never installed** and selected the stock precompiled camera framework. Keep its warm build outputs, the existing installed app, bundle identifier, team, profile and photo container. Do not uninstall, reset storage or create a replacement identity.
 
@@ -24,7 +25,7 @@ Earlier runtime run `40372103636` booted its simulator, but cold preparation plu
 
 ## Install a standalone release
 
-1. Use reviewed source `b4e01d3aeb47c3f164f912b829b4807cc3551f8d`, after checking its final results in validation. For an existing Mac checkout, preserve its private bundle-ID configuration before updating and retain warm DerivedData. The following clone commands are for a new checkout; they do not preserve an existing local configuration automatically:
+1. Use reviewed Host-repair source `3cc16e6e6780e97fdb3fad7568ac99fab6f43e76`, after checking its final results in validation. For an existing Mac checkout, preserve its private bundle-ID configuration before updating and retain warm DerivedData. The following clone commands are for a new checkout; they do not preserve an existing local configuration automatically:
 
    ```sh
    xcodebuild -version
@@ -33,7 +34,7 @@ Earlier runtime run `40372103636` booted its simulator, but cold preparation plu
    pod _1.16.2_ --version
    git clone --branch codex/wedding-photobooth-mvp https://github.com/Xare123/WeddingIpadPhotoboothApp.git
    cd WeddingIpadPhotoboothApp
-   PHOTOBOOTH_REVIEWED_COMMIT=b4e01d3aeb47c3f164f912b829b4807cc3551f8d
+   PHOTOBOOTH_REVIEWED_COMMIT=3cc16e6e6780e97fdb3fad7568ac99fab6f43e76
    git checkout --detach "$PHOTOBOOTH_REVIEWED_COMMIT"
    npm ci
    cd apps/ipad
