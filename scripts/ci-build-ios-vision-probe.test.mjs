@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { dirname, join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -24,7 +25,7 @@ function plan(t) {
 }
 function settings(p) { return [{ target: p.target, buildSettings: { PRODUCT_TYPE: 'com.apple.product-type.bundle.ui-testing',
   PRODUCT_BUNDLE_IDENTIFIER: p.testBundleID, CONFIGURATION: 'Release', SDK_NAME: 'iphoneos26.2',
-  CODE_SIGNING_ALLOWED: 'NO', CODE_SIGNING_REQUIRED: 'NO', COMPRESS_PNG_FILES: 'NO' } }]; }
+  CODE_SIGNING_ALLOWED: 'NO', CODE_SIGNING_REQUIRED: 'NO', COMPRESS_PNG_FILES: 'NO', STRIP_PNG_TEXT: 'NO' } }]; }
 function artifact(p) {
   return { __xctestrun_metadata__: { FormatVersion: 2 }, TestConfigurations: [{ IsEnabled: true, TestTargets: [{
     BlueprintName: p.target, IsUITestBundle: true, TestHostBundleIdentifier: p.runnerBundleID, TestBundleIdentifier: p.testBundleID,
@@ -61,7 +62,7 @@ test('actual constructed action is unsigned generic iphoneos build-for-testing w
 test('settings proof rejects hosted app dependencies, signing, simulator SDK and changed PNG copying', t => {
   const p = plan(t); assert.equal(requireVisionProbeSettings(settings(p), p).signingAllowed, false);
   for (const [key, value] of [['PRODUCT_TYPE', 'com.apple.product-type.application'], ['SDK_NAME', 'iphonesimulator26.2'],
-    ['CODE_SIGNING_ALLOWED', 'YES'], ['CODE_SIGNING_REQUIRED', 'YES'], ['COMPRESS_PNG_FILES', 'YES'],
+    ['CODE_SIGNING_ALLOWED', 'YES'], ['CODE_SIGNING_REQUIRED', 'YES'], ['COMPRESS_PNG_FILES', 'YES'], ['STRIP_PNG_TEXT', 'YES'], ['STRIP_PNG_TEXT', undefined],
     ['TEST_TARGET_NAME', 'WeddingPhotobooth'], ['TEST_HOST', '/an/app'], ['UITEST_TARGET_APP_PATH', '/an/app']]) {
     const changed = settings(p); changed[0].buildSettings[key] = value; assert.throws(() => requireVisionProbeSettings(changed, p));
   }
@@ -110,6 +111,26 @@ test('built runner and test bundle identities retain exact uncompressed PNG with
   const { options } = products(t), proof = verifyVisionProbeProducts(options);
   assert.equal(proof.fixtureVerified, true); assert.equal(proof.fixtureBytes, 2_150_366); assert.equal(proof.testsExecuted, 0);
   assert.equal(proof.compileOnly, true); assert.equal(proof.ownerReady, false); assert.equal(proof.testHostPath, undefined);
+  assert.deepEqual(proof.builtFixture, { bytes: 2_150_366, sha256: CI_VISION_PROBE.fixtureSHA256, pngSignatureHex: '89504e470d0a1a0a' });
+});
+
+test('mismatched fixture retains bounded actual size/hash/signature before exact-byte rejection', t => {
+  const value = products(t), path = join(value.testBundle, 'separated-portrait.png'), changed = readFileSync(path);
+  changed[1024] ^= 1; writeFileSync(path, changed);
+  const records = [];
+  assert.throws(() => verifyVisionProbeProducts({ ...value.options, recordBuiltFixture: facts => records.push(facts) }), /PNG differs/);
+  assert.equal(records.length, 1);
+  assert.deepEqual(records[0], { bytes: changed.length, sha256: createHash('sha256').update(changed).digest('hex'), pngSignatureHex: '89504e470d0a1a0a' });
+  assert.notEqual(records[0].sha256, CI_VISION_PROBE.fixtureSHA256);
+  assert.equal(Object.keys(records[0]).sort().join(','), 'bytes,pngSignatureHex,sha256');
+  assert.ok(JSON.stringify(records[0]).length < 160);
+  for (const bytes of [Buffer.from('not a PNG'), Buffer.alloc(8 * 1024 * 1024 + 1)]) {
+    writeFileSync(path, bytes); const seen = [];
+    assert.throws(() => verifyVisionProbeProducts({ ...value.options, recordBuiltFixture: facts => seen.push(facts) }), /PNG differs/);
+    assert.equal(seen[0].bytes, bytes.length);
+    if (bytes.length > 8 * 1024 * 1024) assert.deepEqual(seen[0], { bytes: bytes.length, sha256: null, pngSignatureHex: null });
+    else assert.equal(seen[0].pngSignatureHex, bytes.subarray(0, 8).toString('hex'));
+  }
 });
 
 test('built fixture mutation, identity changes, path escape and symlink cannot satisfy artifact proof', t => {

@@ -75,12 +75,13 @@ export function prepareVisionProbe({ repository, output, runnerBundleID, develop
     GENERATE_INFOPLIST_FILE: 'YES', SWIFT_VERSION: '5.0', SDKROOT: 'iphoneos', SUPPORTED_PLATFORMS: 'iphoneos',
     TARGETED_DEVICE_FAMILY: '2', IPHONEOS_DEPLOYMENT_TARGET: '16.4', DEVELOPMENT_TEAM: developmentTeam,
     CODE_SIGN_IDENTITY: 'Apple Development', CODE_SIGNING_ALLOWED: 'NO', CODE_SIGNING_REQUIRED: 'NO', CODE_SIGN_STYLE: 'Automatic',
-    COMPRESS_PNG_FILES: 'NO', CLANG_ENABLE_MODULES: 'YES', ENABLE_TESTING_SEARCH_PATHS: 'YES', ENABLE_USER_SCRIPT_SANDBOXING: 'YES',
+    COMPRESS_PNG_FILES: 'NO', STRIP_PNG_TEXT: 'NO', CLANG_ENABLE_MODULES: 'YES', ENABLE_TESTING_SEARCH_PATHS: 'YES', ENABLE_USER_SCRIPT_SANDBOXING: 'YES',
     LD_RUNPATH_SEARCH_PATHS: '$(inherited) @executable_path/Frameworks @loader_path/Frameworks',
     FRAMEWORK_SEARCH_PATHS: '$(inherited) $(PLATFORM_DIR)/Developer/Library/Frameworks',
   };
   const objects = [
-    object('sources', 'isa = PBXFileSystemSynchronizedRootGroup; exceptions = (); explicitFileTypes = {}; explicitFolders = (); path = Sources; sourceTree = "<group>";'),
+    // Treat the pinned PNG as opaque test data, matching the pixel-test project's explicit file reference.
+    object('sources', 'isa = PBXFileSystemSynchronizedRootGroup; exceptions = (); explicitFileTypes = { "separated-portrait.png" = file; }; explicitFolders = (); path = Sources; sourceTree = "<group>";'),
     object('product', `isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ${VISION_PROBE_TARGET}.xctest; sourceTree = BUILT_PRODUCTS_DIR;`),
     object('products', `isa = PBXGroup; children = (${id('product')},); name = Products; sourceTree = "<group>";`),
     object('main', `isa = PBXGroup; children = (${id('sources')},${id('products')},); sourceTree = "<group>";`),
@@ -140,7 +141,9 @@ export function verifyVisionProbe(plan, repository) {
   if (hash(graph) !== plan.projectSHA256 || hash(scheme) !== plan.schemeSHA256) throw new Error('Generated probe project or scheme changed');
   if ((graph.match(/isa = PBXNativeTarget;/g) ?? []).length !== 1 || !graph.includes('com.apple.product-type.bundle.ui-testing') ||
     /com\.apple\.product-type\.application|PBXTargetDependency|PBXShellScriptBuildPhase|UITargetAppPath|TEST_HOST|BUNDLE_LOADER|TEST_TARGET_NAME/.test(graph) ||
-    !graph.includes('CODE_SIGNING_ALLOWED = "NO";') || !graph.includes('CODE_SIGNING_REQUIRED = "NO";') || !graph.includes('COMPRESS_PNG_FILES = "NO";')) throw new Error('Probe target or unsigned boundary changed');
+    !graph.includes('CODE_SIGNING_ALLOWED = "NO";') || !graph.includes('CODE_SIGNING_REQUIRED = "NO";') ||
+    !graph.includes('COMPRESS_PNG_FILES = "NO";') || !graph.includes('STRIP_PNG_TEXT = "NO";') ||
+    !graph.includes('explicitFileTypes = { "separated-portrait.png" = file; };')) throw new Error('Probe target or unsigned boundary changed');
   if (scheme.includes('<LaunchAction') || !scheme.includes('shouldUseLaunchSchemeArgsEnv="NO"') ||
     !scheme.includes(`<SelectedTests><Test Identifier="${VISION_PROBE_TARGET}/${VISION_PROBE_METHOD}"/></SelectedTests>`) ||
     (scheme.match(/<EnvironmentVariable /g) ?? []).length !== 2 ||

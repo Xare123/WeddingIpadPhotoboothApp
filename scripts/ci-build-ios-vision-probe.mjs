@@ -53,11 +53,11 @@ export function requireVisionProbeSettings(value, plan) {
   if (!settings || settings.PRODUCT_TYPE !== 'com.apple.product-type.bundle.ui-testing' ||
     settings.PRODUCT_BUNDLE_IDENTIFIER !== plan.testBundleID || settings.CONFIGURATION !== 'Release' ||
     !/^iphoneos[0-9.]+$/.test(settings.SDK_NAME ?? '') || settings.CODE_SIGNING_ALLOWED !== 'NO' ||
-    settings.CODE_SIGNING_REQUIRED !== 'NO' || settings.COMPRESS_PNG_FILES !== 'NO' ||
+    settings.CODE_SIGNING_REQUIRED !== 'NO' || settings.COMPRESS_PNG_FILES !== 'NO' || settings.STRIP_PNG_TEXT !== 'NO' ||
     ['TEST_TARGET_NAME', 'TEST_HOST', 'BUNDLE_LOADER', 'UITargetAppPath', 'UITEST_TARGET_APP_PATH']
       .some(key => String(settings[key] ?? '').trim())) throw new Error('Xcode settings did not confirm the independent unsigned physical-SDK UI-test target');
   return { sdk: settings.SDK_NAME, configuration: 'Release', productType: settings.PRODUCT_TYPE,
-    applicationDependency: false, signingAllowed: false, pngCompression: false };
+    applicationDependency: false, signingAllowed: false, pngCompression: false, pngTextStripping: false };
 }
 
 function canonicalProbeCase(value, plan) {
@@ -133,7 +133,7 @@ export function ownedVisionProbePath(products, input, testHost) {
   return canonical;
 }
 
-export function verifyVisionProbeProducts({ products, xctestrun, plan, runnerInfo, testInfo }) {
+export function verifyVisionProbeProducts({ products, xctestrun, plan, runnerInfo, testInfo, recordBuiltFixture = () => {} }) {
   const proof = inspectVisionProbeXctestrun(xctestrun, plan);
   const runner = ownedVisionProbePath(products, proof.testHostPath);
   const testBundle = ownedVisionProbePath(products, proof.testBundlePath, runner);
@@ -144,10 +144,17 @@ export function verifyVisionProbeProducts({ products, xctestrun, plan, runnerInf
   }
   const fixture = ownedVisionProbePath(products, join(testBundle, 'separated-portrait.png'));
   const state = lstatSync(fixture);
-  if (!state.isFile() || state.size !== 2_150_366 || digest(readFileSync(fixture)) !== plan.fixtureSHA256) throw new Error('Built probe PNG differs from the exact uncompressed generated fixture');
+  const bytes = state.isFile() && state.size > 0 && state.size <= 8 * 1024 * 1024 ? readFileSync(fixture) : undefined;
+  const builtFixture = { bytes: Number.isSafeInteger(state.size) && state.size >= 0 ? state.size : null,
+    sha256: bytes ? digest(bytes) : null, pngSignatureHex: bytes ? bytes.subarray(0, 8).toString('hex') : null };
+  // Record only bounded numeric/hash/signature facts before exact-byte acceptance;
+  // a changed fixture must leave useful failure evidence without publishing it.
+  recordBuiltFixture(builtFixture);
+  if (!state.isFile() || builtFixture.bytes !== 2_150_366 || builtFixture.sha256 !== plan.fixtureSHA256 ||
+    builtFixture.pngSignatureHex !== '89504e470d0a1a0a') throw new Error('Built probe PNG differs from the exact uncompressed generated fixture');
   return { ...proof, testHostPath: undefined, testBundlePath: undefined, runnerBundleID: plan.runnerBundleID,
     testBundleID: plan.testBundleID, fixtureSHA256: plan.fixtureSHA256, fixtureBytes: state.size,
-    fixtureVerified: true, signingAllowed: false, compileOnly: true, testsExecuted: 0 };
+    fixtureVerified: true, builtFixture, signingAllowed: false, compileOnly: true, testsExecuted: 0 };
 }
 
 export function visionProbeCleanupDecision({ result, quiescent, completedBuild, forced }) {
@@ -223,6 +230,11 @@ export async function buildIosVisionProbe({ repository = resolve(dirname(fileURL
   const records = new Set(), environment = visionProbeBuildEnvironment(process.env);
   let cancelled = false, workspace, plan, phaseDeadline = Date.now() + VISION_PROBE_BUILD_LIMITS.preparationMs;
   const save = () => writeFileSync(join(diagnostics, 'status.json'), JSON.stringify(status, null, 2) + '\n');
+  const writeProvenance = () => writeFileSync(join(diagnostics, 'provenance.json'), JSON.stringify({ compileOnly: true, testsExecuted: 0, ownerReady: false,
+    unsignedFixture: true, runnerBundleID: plan.runnerBundleID, testBundleID: plan.testBundleID, developmentTeam: CI_VISION_PROBE.developmentTeam,
+    testIdentifier: plan.testIdentifier, sourceSHA256: plan.sourceSHA256, fixtureSHA256: plan.fixtureSHA256,
+    projectSHA256: plan.projectSHA256, schemeSHA256: plan.schemeSHA256, builtFixture: status.builtFixture ?? null,
+    builtArtifact: status.builtArtifact ?? null }, null, 2) + '\n');
   const signal = () => { cancelled = true; status.result = 'cancelled'; for (const record of records) if (record.evidence?.quiescent !== true) record.interrupt?.(); save(); };
   process.once('SIGINT', signal); process.once('SIGTERM', signal);
   const validation = (name, action) => { status.activeStage = name; const entry = { name, result: 'running' }; status.stages.push(entry); save();
@@ -267,11 +279,9 @@ export async function buildIosVisionProbe({ repository = resolve(dirname(fileURL
     const runner = ownedVisionProbePath(products, proof.testHostPath), testBundle = ownedVisionProbePath(products, proof.testBundlePath, runner);
     const runnerInfo = await convert('read-runner-identity', ownedVisionProbePath(products, join(runner, 'Info.plist')));
     const testInfo = await convert('read-test-identity', ownedVisionProbePath(products, join(testBundle, 'Info.plist')));
-    status.builtArtifact = validation('verify-bundled-png-and-identities', () => verifyVisionProbeProducts({ products, xctestrun, plan, runnerInfo, testInfo }));
-    writeFileSync(join(diagnostics, 'provenance.json'), JSON.stringify({ compileOnly: true, testsExecuted: 0, ownerReady: false,
-      unsignedFixture: true, runnerBundleID: plan.runnerBundleID, testBundleID: plan.testBundleID, developmentTeam: CI_VISION_PROBE.developmentTeam,
-      testIdentifier: plan.testIdentifier, sourceSHA256: plan.sourceSHA256, fixtureSHA256: plan.fixtureSHA256,
-      projectSHA256: plan.projectSHA256, schemeSHA256: plan.schemeSHA256, builtArtifact: status.builtArtifact }, null, 2) + '\n');
+    status.builtArtifact = validation('verify-bundled-png-and-identities', () => verifyVisionProbeProducts({ products, xctestrun, plan, runnerInfo, testInfo,
+      recordBuiltFixture: facts => { status.builtFixture = facts; save(); writeProvenance(); } }));
+    writeProvenance();
     status.result = 'passed';
   } catch (error) {
     status.result = cancelled ? 'cancelled' : 'failed'; status.error = annotationText(error?.message ?? 'Unsigned probe build failed', 400);
@@ -290,7 +300,8 @@ export async function buildIosVisionProbe({ repository = resolve(dirname(fileURL
     const commit = /^[a-f0-9]{40}$/i.test(process.env.GITHUB_SHA ?? '') ? process.env.GITHUB_SHA : 'local';
     emit('::' + (status.result === 'passed' ? 'notice' : 'error') + ' title=Unsigned synthetic Vision probe compile::' + workflowData(JSON.stringify({ commit,
       result: status.result, stage: status.activeStage, error: status.error ?? null, compileOnly: true, testsExecuted: 0, ownerReady: false,
-      fixtureVerified: status.builtArtifact?.fixtureVerified ?? false, cleanupVerified: status.processCleanup.allOwnedGroupsQuiescent })));
+      fixtureVerified: status.builtArtifact?.fixtureVerified ?? false, builtFixture: status.builtFixture ?? null,
+      cleanupVerified: status.processCleanup.allOwnedGroupsQuiescent })));
     if (status.result !== 'passed') {
       const logs = Object.fromEntries(readdirSync(diagnostics).filter(name => name.endsWith('.log')).map(name => [name, readFileSync(join(diagnostics, name), 'utf8')]));
       for (const line of diagnosticLines(logs, status.stages, 3)) emit('::notice title=Probe compile diagnostic::' + workflowData(line));

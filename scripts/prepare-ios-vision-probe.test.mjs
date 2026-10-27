@@ -39,6 +39,8 @@ test('the independently reviewed source graph is pinned and contains no applicat
   for (const forbidden of ['com.apple.product-type.application', 'PBXTargetDependency', 'PBXShellScriptBuildPhase', 'UITargetAppPath', 'TEST_HOST', 'BUNDLE_LOADER', 'TEST_TARGET_NAME']) assert.equal(graph.includes(forbidden), false);
   assert.match(graph, /CODE_SIGNING_ALLOWED = "NO"/); assert.match(graph, /CODE_SIGNING_REQUIRED = "NO"/);
   assert.match(graph, /COMPRESS_PNG_FILES = "NO"/);
+  assert.match(graph, /STRIP_PNG_TEXT = "NO"/);
+  assert.match(graph, /explicitFileTypes = \{ "separated-portrait\.png" = file; \}/);
   assert.equal(scheme.includes('<LaunchAction'), false);
   assert.equal(plan.sourcePreparationOnly, true); assert.equal(plan.signingAllowed, false);
   assert.equal(plan.applicationTarget, false); assert.equal(plan.physicalExecution, false);
@@ -119,7 +121,7 @@ test('source and fixture drift fail before any output is created', t => {
 });
 
 test('verification rejects changed copies, extra sources and even rehashed application dependencies or arming changes', t => {
-  for (const kind of ['source', 'resource', 'extra', 'symlink', 'app-target', 'signing', 'scheme']) {
+  for (const kind of ['source', 'resource', 'extra', 'symlink', 'app-target', 'signing', 'png-metadata', 'png-filetype', 'scheme']) {
     const plan = prepareVisionProbe(configuration(t));
     if (kind === 'source') writeFileSync(join(plan.output, plan.sources[0].generated), 'changed source');
     if (kind === 'resource') writeFileSync(join(plan.output, plan.resources[0].generated), 'changed fixture');
@@ -127,9 +129,12 @@ test('verification rejects changed copies, extra sources and even rehashed appli
     if (kind === 'symlink') {
       const path = join(plan.output, plan.resources[0].generated); rmSync(path); symlinkSync(join(repository, plan.resources[0].source), path);
     }
-    if (kind === 'app-target' || kind === 'signing') {
+    if (['app-target', 'signing', 'png-metadata', 'png-filetype'].includes(kind)) {
       const path = join(plan.project, 'project.pbxproj'); let graph = readFileSync(path, 'utf8');
-      graph = kind === 'app-target' ? graph.replace('dependencies = ();', 'dependencies = (SOME_APP); /* PBXTargetDependency */') : graph.replace('CODE_SIGNING_ALLOWED = "NO"', 'CODE_SIGNING_ALLOWED = "YES"');
+      if (kind === 'app-target') graph = graph.replace('dependencies = ();', 'dependencies = (SOME_APP); /* PBXTargetDependency */');
+      if (kind === 'signing') graph = graph.replace('CODE_SIGNING_ALLOWED = "NO"', 'CODE_SIGNING_ALLOWED = "YES"');
+      if (kind === 'png-metadata') graph = graph.replace('STRIP_PNG_TEXT = "NO"', 'STRIP_PNG_TEXT = "YES"');
+      if (kind === 'png-filetype') graph = graph.replace('"separated-portrait.png" = file;', '"separated-portrait.png" = image.png;');
       writeFileSync(path, graph); plan.projectSHA256 = digest(graph);
     }
     if (kind === 'scheme') {
