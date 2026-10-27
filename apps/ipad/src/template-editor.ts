@@ -58,7 +58,7 @@ export const canonicalTemplateRecipe = (recipe: CompositeRecipe): string => JSON
 function cropValid(c: PhotoCrop) { return c && ['fit', 'fill'].includes(c.mode) && Number.isFinite(c.x) && Math.abs(c.x) <= 1 && Number.isFinite(c.y) && Math.abs(c.y) <= 1 && Number.isFinite(c.zoom) && c.zoom >= 1 && c.zoom <= 1.5 && (c.mode !== 'fit' || (c.x === 0 && c.y === 0 && c.zoom === 1)); }
 function selection(s: ActiveSession) {
     const photos = [...s.shots].sort((a, b) => (a.shotIndex ?? s.shots.indexOf(a)) - (b.shotIndex ?? s.shots.indexOf(b)));
-    if (s.confirmed || s.targetCount !== 4 || photos.length !== 4 || new Set(photos.map(x => x.id)).size !== 4 || photos.some((x, i) => x.confirmed || !x.id || !x.fileUri || (x.sessionId !== undefined && x.sessionId !== s.id) || (x.shotIndex !== undefined && x.shotIndex !== i)))
+    if (s.retakeState === 'abandoned' || s.confirmed || s.targetCount !== 4 || photos.length !== 4 || new Set(photos.map(x => x.id)).size !== 4 || photos.some((x, i) => x.confirmed || !x.id || !x.fileUri || (x.sessionId !== undefined && x.sessionId !== s.id) || (x.shotIndex !== undefined && x.shotIndex !== i)))
         throw new Error('invalid-template-selection');
     return photos;
 }
@@ -79,6 +79,7 @@ export function createTemplateEditor(p: TemplateEditorPorts) {
         height: number;
     }> | null>>();
     const requests = new Set<string>(), owned = new Set<string>(), copying = new Set<string>();
+    let initialDefaults: ActiveSession['templateDefaults'];
     let receipts: Partial<Record<Theme, TemplateRenderResult>> = {};
     let inspectedHashes: Record<string, string> | null = null;
     let cancelInspection: (() => void) | null = null;
@@ -169,7 +170,7 @@ export function createTemplateEditor(p: TemplateEditorPorts) {
         for (const theme of themes)
             void previewTheme(theme, g);
     }
-    function close() { generation++; cancel(); state = null; receipts = {}; inspectedHashes = null; dispose(); emit(); }
+    function close() { initialDefaults = undefined; generation++; cancel(); state = null; receipts = {}; inspectedHashes = null; dispose(); emit(); }
     async function inspect(g: number) {
         const sessionId = state!.sessionId, input = sources.map(x => ({ ...x })), ids = [...expected];
         let timer: ReturnType<typeof setTimeout> | undefined;
@@ -193,7 +194,7 @@ export function createTemplateEditor(p: TemplateEditorPorts) {
             if (!current(g))
                 return;
             inspectedHashes = Object.fromEntries(result.sources.map(x => [x.photoId, x.sha256]));
-            state = { ...state!, recipe: { version: 'wedding-template-v2', gridAspect: result.gridAspect, layout: 'strip', theme: 'classic', photoIds: ids, cropsByPhotoId: Object.fromEntries(ids.map(id => [id, { mode: 'fit', x: 0, y: 0, zoom: 1 }])) } };
+            state = { ...state!, recipe: { version: 'wedding-template-v2', gridAspect: initialDefaults?.gridAspect ?? result.gridAspect, layout: initialDefaults?.layout ?? 'strip', theme: initialDefaults?.theme ?? 'classic', photoIds: ids, cropsByPhotoId: Object.fromEntries(ids.map(id => [id, { mode: 'fit', x: 0, y: 0, zoom: 1 }])) } };
             cancelInspection = null;
             refresh();
         }
@@ -209,6 +210,9 @@ export function createTemplateEditor(p: TemplateEditorPorts) {
         close();
         try {
             const photos = selection(session);
+            const defaults = session.templateDefaults;
+            if (defaults && ['strip', 'grid'].includes(defaults.layout) && themes.includes(defaults.theme) &&
+                (defaults.gridAspect === undefined || ['portrait', 'square'].includes(defaults.gridAspect))) initialDefaults = clone(defaults);
             expected = photos.map(x => x.id);
             sources = photos.map(x => ({ photoId: x.id, uri: x.fileUri }));
             const recipe = validRecipe(session.composite?.recipe!, expected) ? clone(session.composite!.recipe) : null;

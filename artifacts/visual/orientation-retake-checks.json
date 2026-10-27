@@ -1,0 +1,845 @@
+{
+  "generatedAt": "2026-10-27T02:29:53.276Z",
+  "status": "passed",
+  "scope": "Actual current Root JSX, orientation controller, capture runner, template editor and sharing classifier in Chromium. Explicit synthetic native orientation, OS auth/lifecycle, camera promise, storage, Photos and network ports. sessionStorage simulates preferences across reload; it is not Keychain. Not native rotation, iPad capture/Photos/durability, VoiceOver, live upload/SMS or phone scanning verification.",
+  "sourceSHA256": "d49e6318af58b395d1b90a97359beb4ae542acc7a6f90a7c29b25414b943cd63",
+  "sourceHashes": {
+    "apps/ipad/app.json": "20343ad557647de2c97b324eee74cc09587c430b8d1c6df418736f1798611698",
+    "apps/ipad/src/config.ts": "707cfb41dfb6ed03e4493784940510c7e64ba018e058b5f426967ad3d432e460",
+    "apps/ipad/src/TimingSheet.tsx": "c6564a204c7a3a3ebd3fe993c04facc755ba08e18bc1e0cee62c572a0e466210",
+    "apps/ipad/src/capture-timing.ts": "83eec4ead6d14e43e6061b63201d6b432c1e0f17a24a4d35035944c8638c5683",
+    "apps/ipad/src/timing-controls.ts": "b73ced2d2ba25beaffbf4f0ec3fcda648de0bafebcae44534052d7649facc5b1",
+    "apps/ipad/src/provisioning.ts": "2aedb7ccf9192d7668d616ded440ee46da75287e67aa3fadb6e821aa4862f621",
+    "apps/ipad/App.tsx": "d49e6318af58b395d1b90a97359beb4ae542acc7a6f90a7c29b25414b943cd63",
+    "apps/ipad/src/GlassSurface.tsx": "ace64a22e740d69040689495c0aa7147f7456038bbd0ee9aba6f2d52b58af972",
+    "apps/ipad/src/glass-policy.ts": "d3e33995484239887dde90f2743919c17bb2e8ff23093ceb45a804e530499e9e",
+    "apps/ipad/src/host-visibility.ts": "94f81920ae080b7182483e376bd782f062fb43e6b603ec53a8af0296733acc49",
+    "apps/ipad/src/photo-look-editor.ts": "38d6dc47fb34d9d9da58cf96a7daa6102d9616c7f54720c0406c1962548f817b",
+    "apps/ipad/src/native-photo-effects.ts": "372b1250d399429dc7396d09be1affa44b063216ba471d5cc4ed2d953394f0c9",
+    "apps/ipad/src/local-types.ts": "63442e138d5401fac5674b16b56a332766833722cf936d98ff17883fb1de627e",
+    "apps/ipad/src/template-editor.ts": "55b367816053a894fb2cc019a514ee9401d27816006f3c8ca2fa64f7b96adceb",
+    "apps/ipad/src/TemplateStudio.tsx": "361817e99605bd003a73205d37bfbeb5fb52403211a563ec2789a50ac81f28c1",
+    "apps/ipad/src/publication.ts": "33d26658c1c2de8781bc62ded35c80cbd00394c7413c70fdedf1fbc834875357",
+    "apps/ipad/src/session-capture.ts": "544104e153dab9b9d8f7996f15e4b79180d9dede1819620de7fec07c076f4763",
+    "apps/ipad/src/review-selection.ts": "6ff3da932fe4bbf16a4fe1cc56d308b4859209eef9bf30270338222a4f094e2a",
+    "apps/ipad/src/sharing.ts": "6bce9b315a8dc7064f858d7ff9d10c5d5587b1b2bf66a56923f738823c1df271",
+    "apps/ipad/src/SmsShare.tsx": "79464043a0e40a6cc7850c0e46cacfab33b3b19e477fee87192c0b38195d7541",
+    "apps/ipad/src/sms-state.ts": "4c7125d4f710c97848b6690196fa328edc83e85488ce3626dd7e843e2e99497a",
+    "apps/ipad/src/booth-presentation.ts": "2304a00680203a83d2a4f5f499f41c207a152b603a908cb3449b5ac2161699d8",
+    "apps/ipad/src/host-originals.ts": "82f920cbdaf79672a872130d016cabb4d7c2bcae951aea1b0c1c950ff80f2001",
+    "apps/ipad/src/photo-export.ts": "8360fc824ece4d972c317f3cb743f71ba95fa3718e02a6e81796ce89c4f5ac36",
+    "apps/ipad/src/photo-library.ts": "800b9dd768d660c16720fda134fe33a1a14db1061f7f31531063b136b670b6a8",
+    "packages/core/src/index.ts": "bb8196ebd2672c74f74ceab333e70e8a3abef481d6e341b8763c4e396431e2de",
+    "apps/ipad/assets/attract-scene.png": "6ca6274beba9483104f19fb35d1ef9b8bfaae458208025e8fb4e8d4890f45cdf",
+    "apps/ipad/src/host-auth.ts": "1f71cedabd1a67bd56cb4b66d5c6e9861eccc798cf72321b24cb975e48cd0fbf",
+    "apps/ipad/src/host-auth-policy.ts": "9b52b7473a2f874dd93367607d48b0b2046cd9d6e67ef0e6ec575863bb0a6111",
+    "apps/ipad/src/host-action-auth.ts": "9619fc4e5f3b935ead8c5828d1e4bb99804c4440cb864362c2feb421cd493bdb",
+    "apps/ipad/src/share-readiness.ts": "8c518ae80702a09e81e17f3ae67d8a477783bebba57284ffdc8af76f95617178",
+    "apps/ipad/src/sharing-request.ts": "446dfb0e0ccf09675d56c7cf50cf3b5b1442050373d13a8dfe73a68c213576d9",
+    "apps/ipad/src/sync-preflight.ts": "8b703821a286d20a482192eff763e5cee0c67418c238457c11aa76d5955597c2",
+    "apps/ipad/src/sync.ts": "14e13d7c73810c2a6405de63ed452d3133411184afee7363cb6a1c856881280b",
+    "apps/ipad/src/session-sync.ts": "c3ae9b040ba69daac29024a014745682d656aa7ae26f5df76006bfc15c20e658",
+    "apps/ipad/src/queue-index.ts": "75de31a5a38a4142f18c6683ac8cc212f941bad1a902606bafd9906739482e84",
+    "apps/ipad/src/orientation-controller.ts": "3252c288387c0d453328aab2fc15e70f5863b42636be5c5ae7b9eb196ea424a4",
+    "apps/ipad/src/orientation-native.ts": "4eff067d71ef22391160fa52122b55beff23ce1c0d5c55eba24e482a4dd9e005",
+    "apps/ipad/src/local-persistence.ts": "7a95b33dd8b72152ce62a0faa2f78c81bb5216737f0593dfaab9ccf72fb3000e",
+    "apps/ipad/src/storage.ts": "b06b949959b8c0400835a8c0dc83ea320d2b042cd9ce258ec55b4d226704611a",
+    "apps/ipad/package.json": "b05451330af50e84043b69f39197cba32e1d824bc085a647ba1968efbd22c1f1",
+    "package-lock.json": "80bcfad7bce5db6f55f87189c688c49cb13dfc61a4f1e023bc75a08a2d8cb7d7"
+  },
+  "fixtureSourceHashes": {
+    "tools/native-visual/new-session/serve.mjs": "8f5d29ecb441a4391c076c7814aacc4357b40fe9a7ac81ed107f37135b289a9f",
+    "tools/native-visual/new-session/entry.tsx": "c9ba630f53c61f7e25b5c2381d31a7070dccae2c4a3fb058c2d50220fa48498a",
+    "tools/native-visual/new-session/fixture-controls.ts": "2cd5abfd63601534131dc99c41eea03f25becaf7fe4b8e7da8a33795f9052a3c",
+    "tools/native-visual/new-session/stubs.tsx": "849417da8fe5b45b838d95cc92cd2076c19bdbb830f53ce8c98c628b04002594",
+    "tools/native-visual/new-session/native-runtime.ts": "4977e8404fdc5d83980286ee3f00c2b4b35716643edd73afba5504924664896d",
+    "tools/native-visual/new-session/safe-area-stub.tsx": "4b9fc1218f6a64c71ff6bbb51a57c50826ccca1a957c5d021bd5dc9643e505f7",
+    "tools/native-visual/new-session/glass-stub.tsx": "3712d3272cb137bfba9c4d19cf4913a0cbafd53a6b43225c6876cf19f97b8e7f",
+    "tools/native-visual/new-session/effects-stub.ts": "2aabd78a80740fcf405d630a18af6c83fb350e5853db2c5bdbe697181a377724",
+    "tools/native-visual/new-session/template-stub.ts": "0bc1ecdf6cd578fa5fb5ac8203438389806e3b76b161b3d389e096174ea49d6d",
+    "tools/native-visual/new-session/template-v2-stub.ts": "db4497c78eb087ae6459da7b0425b7fda221b4abcd941fa3ad4521f382bbaa6d",
+    "tools/native-visual/new-session/native-fixture-disabled.ts": "628425cf7b23d8b839e04bed27881ad6308301904bd1ad8a8b6acc275b856986"
+  },
+  "toolHashes": {
+    "tools/native-visual/new-session/orientation-retake-checks.mjs": "c1185a0609e98225c8a1b67220214f356094cec51595b126ed51d87bbb83256f",
+    "tools/native-visual/new-session/orientation-retake-build-evidence.mjs": "b1406b516b8995bd57cfc62d24a28260b0df0fffc1d62e620b8f1bf1b8cf52d3",
+    "tools/native-visual/new-session/browser.mjs": "388467a8410346640f9de5af5656a9985cdbd09b0b2c230419a1e1fc19b17900",
+    "tools/native-visual/new-session/qr-decode.mjs": "bc5a243244b63f109bd07fa3132d59a3e62889b7cf3beae9dd5b9982fe80570a"
+  },
+  "sourceSet": {
+    "query": "clean-mixed",
+    "description": "Existing drink-free generated fictional scenes.",
+    "photos": [
+      {
+        "index": 0,
+        "sha256": "fa7aab6c4948c559a6c2acfbe426ff79293b75edfd15229dbeacf2f8cbd0d365"
+      },
+      {
+        "index": 1,
+        "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1"
+      },
+      {
+        "index": 2,
+        "sha256": "e664fecbb6bdc171e092cb9c11d9ee215cbcf0722ef3f4f29090fecb73295161"
+      },
+      {
+        "index": 3,
+        "sha256": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed"
+      }
+    ]
+  },
+  "checks": [
+    {
+      "name": "orientation-draft-auth-persist-observe",
+      "orientation": "portrait",
+      "passed": true,
+      "draftWrites": 0,
+      "draftNativeRequests": 0,
+      "cancelWrites": 0,
+      "requestedChoice": "landscape",
+      "observedOnlyAfterIndependentNativeAndWindowEvents": true,
+      "fixturePreferenceReload": true,
+      "nativePersistenceVerified": false
+    },
+    {
+      "name": "orientation-native-failure-truthful",
+      "orientation": "portrait",
+      "passed": true,
+      "mode": "unavailable",
+      "description": "The iPad could not apply the saved preference. Check full-screen and rotation settings, then retry.",
+      "noObservedSuccess": true
+    },
+    {
+      "name": "orientation-native-failure-truthful",
+      "orientation": "portrait",
+      "passed": true,
+      "mode": "unsupported",
+      "description": "Orientation control is unavailable in this native build or iPad configuration. The interface still adapts to the available window.",
+      "noObservedSuccess": true
+    },
+    {
+      "name": "orientation-native-failure-truthful",
+      "orientation": "portrait",
+      "passed": true,
+      "mode": "rejected",
+      "description": "The iPad could not apply the saved preference. Check full-screen and rotation settings, then retry.",
+      "noObservedSuccess": true
+    },
+    {
+      "name": "orientation-timeout-unblocks-start-without-false-success",
+      "orientation": "portrait",
+      "passed": true,
+      "cases": [
+        {
+          "mode": "support-timeout",
+          "virtualDeadlineAdvancedMs": 5200,
+          "StartUnblocked": true,
+          "requestsBeforeRelease": 0,
+          "noLateObservedSuccess": true
+        },
+        {
+          "mode": "request-timeout",
+          "virtualDeadlineAdvancedMs": 5200,
+          "StartUnblocked": true,
+          "requestsBeforeRelease": 1,
+          "noLateObservedSuccess": true
+        }
+      ],
+      "nativeCancellationClaim": false
+    },
+    {
+      "name": "orientation-late-module-respects-auth-and-editor",
+      "orientation": "portrait",
+      "passed": true,
+      "requestsDuringOSInactiveAuth": 0,
+      "requestsDuringPhotoEditor": 0,
+      "freshSafeContextEventuallyRequestsOnce": true
+    },
+    {
+      "name": "orientation-late-load-deferred-through-sequence",
+      "orientation": "portrait",
+      "passed": true,
+      "requests": [
+        {
+          "lock": "landscape",
+          "at": 1793102414909,
+          "appState": "active",
+          "pendingCaptures": 0,
+          "pendingSaves": 0,
+          "countdown": null
+        }
+      ],
+      "fourOriginals": 4
+    },
+    {
+      "name": "retake-dialog-cancel-unique-child-revert",
+      "orientation": "portrait",
+      "passed": true,
+      "parentId": "0f1e2d3c-4b5a-4678-9abc-000000000001",
+      "childIds": [
+        "43be1318-98af-452e-b04a-4eb5ccc21cd9",
+        "0cab3d2b-c0bd-4161-9caf-05ec5c5dd9ff"
+      ],
+      "priorSetUnchanged": true,
+      "cancelledCountdownExposures": 0,
+      "automaticSubsequentIntervalsMs": [
+        3000,
+        3000,
+        3000
+      ],
+      "replacementOriginals": 4,
+      "noAutomaticQueue": true
+    },
+    {
+      "name": "partial-retake-background-ready-resume",
+      "orientation": "portrait",
+      "passed": true,
+      "savedBeforeBackground": 1,
+      "sameChildResumed": true,
+      "explicitFreshReadyRequired": true,
+      "resumePreparationSeconds": 5,
+      "laterCountdownSeconds": 3
+    },
+    {
+      "name": "retake-exposure-and-save-are-nonabandonable",
+      "orientation": "portrait",
+      "passed": true,
+      "nativePromiseHeld": true,
+      "saveHeldSeparately": true,
+      "noCameraRemountBeforePreservation": true,
+      "oneOriginalRetainedInAbandonedChild": true,
+      "originalParentRestored": true,
+      "abandonedUploads": 0
+    },
+    {
+      "name": "retake-abandoned-assets-excluded-from-ready-qr",
+      "orientation": "portrait",
+      "passed": true,
+      "publishedAssets": 5,
+      "requiredCompleteSessionAcknowledgement": true,
+      "abandonedOriginalUploads": 0,
+      "independentFullFrameDecoders": 2
+    },
+    {
+      "name": "legacy-five-photo-whole-retake",
+      "orientation": "portrait",
+      "passed": true,
+      "targetCount": 5,
+      "preservedParentPhotoIds": [
+        "10000000-0000-4000-8000-000000000001",
+        "10000000-0000-4000-8000-000000000002",
+        "10000000-0000-4000-8000-000000000003",
+        "10000000-0000-4000-8000-000000000004",
+        "10000000-0000-4000-8000-000000000005"
+      ],
+      "fiveNewOriginalsPreserved": true
+    },
+    {
+      "name": "orientation-draft-auth-persist-observe",
+      "orientation": "landscape",
+      "passed": true,
+      "draftWrites": 0,
+      "draftNativeRequests": 0,
+      "cancelWrites": 0,
+      "requestedChoice": "portrait",
+      "observedOnlyAfterIndependentNativeAndWindowEvents": true,
+      "fixturePreferenceReload": true,
+      "nativePersistenceVerified": false
+    },
+    {
+      "name": "orientation-native-failure-truthful",
+      "orientation": "landscape",
+      "passed": true,
+      "mode": "unavailable",
+      "description": "The iPad could not apply the saved preference. Check full-screen and rotation settings, then retry.",
+      "noObservedSuccess": true
+    },
+    {
+      "name": "orientation-native-failure-truthful",
+      "orientation": "landscape",
+      "passed": true,
+      "mode": "unsupported",
+      "description": "Orientation control is unavailable in this native build or iPad configuration. The interface still adapts to the available window.",
+      "noObservedSuccess": true
+    },
+    {
+      "name": "orientation-native-failure-truthful",
+      "orientation": "landscape",
+      "passed": true,
+      "mode": "rejected",
+      "description": "The iPad could not apply the saved preference. Check full-screen and rotation settings, then retry.",
+      "noObservedSuccess": true
+    },
+    {
+      "name": "orientation-timeout-unblocks-start-without-false-success",
+      "orientation": "landscape",
+      "passed": true,
+      "cases": [
+        {
+          "mode": "support-timeout",
+          "virtualDeadlineAdvancedMs": 5200,
+          "StartUnblocked": true,
+          "requestsBeforeRelease": 0,
+          "noLateObservedSuccess": true
+        },
+        {
+          "mode": "request-timeout",
+          "virtualDeadlineAdvancedMs": 5200,
+          "StartUnblocked": true,
+          "requestsBeforeRelease": 1,
+          "noLateObservedSuccess": true
+        }
+      ],
+      "nativeCancellationClaim": false
+    },
+    {
+      "name": "orientation-late-module-respects-auth-and-editor",
+      "orientation": "landscape",
+      "passed": true,
+      "requestsDuringOSInactiveAuth": 0,
+      "requestsDuringPhotoEditor": 0,
+      "freshSafeContextEventuallyRequestsOnce": true
+    },
+    {
+      "name": "orientation-late-load-deferred-through-sequence",
+      "orientation": "landscape",
+      "passed": true,
+      "requests": [
+        {
+          "lock": "landscape",
+          "at": 1793102414869,
+          "appState": "active",
+          "pendingCaptures": 0,
+          "pendingSaves": 0,
+          "countdown": null
+        }
+      ],
+      "fourOriginals": 4
+    },
+    {
+      "name": "retake-dialog-cancel-unique-child-revert",
+      "orientation": "landscape",
+      "passed": true,
+      "parentId": "0f1e2d3c-4b5a-4678-9abc-000000000001",
+      "childIds": [
+        "739fc177-857d-4db0-b8a0-c78ba42a8e82",
+        "c8609bce-6ec7-4f5b-970e-e8441eed370b"
+      ],
+      "priorSetUnchanged": true,
+      "cancelledCountdownExposures": 0,
+      "automaticSubsequentIntervalsMs": [
+        3000,
+        3000,
+        3000
+      ],
+      "replacementOriginals": 4,
+      "noAutomaticQueue": true
+    },
+    {
+      "name": "partial-retake-background-ready-resume",
+      "orientation": "landscape",
+      "passed": true,
+      "savedBeforeBackground": 1,
+      "sameChildResumed": true,
+      "explicitFreshReadyRequired": true,
+      "resumePreparationSeconds": 5,
+      "laterCountdownSeconds": 3
+    },
+    {
+      "name": "retake-exposure-and-save-are-nonabandonable",
+      "orientation": "landscape",
+      "passed": true,
+      "nativePromiseHeld": true,
+      "saveHeldSeparately": true,
+      "noCameraRemountBeforePreservation": true,
+      "oneOriginalRetainedInAbandonedChild": true,
+      "originalParentRestored": true,
+      "abandonedUploads": 0
+    },
+    {
+      "name": "retake-abandoned-assets-excluded-from-ready-qr",
+      "orientation": "landscape",
+      "passed": true,
+      "publishedAssets": 5,
+      "requiredCompleteSessionAcknowledgement": true,
+      "abandonedOriginalUploads": 0,
+      "independentFullFrameDecoders": 2
+    },
+    {
+      "name": "legacy-five-photo-whole-retake",
+      "orientation": "landscape",
+      "passed": true,
+      "targetCount": 5,
+      "preservedParentPhotoIds": [
+        "10000000-0000-4000-8000-000000000001",
+        "10000000-0000-4000-8000-000000000002",
+        "10000000-0000-4000-8000-000000000003",
+        "10000000-0000-4000-8000-000000000004",
+        "10000000-0000-4000-8000-000000000005"
+      ],
+      "fiveNewOriginalsPreserved": true
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "artifacts/visual/orientation-retake-auto-default-portrait.png",
+      "label": "auto-default",
+      "orientation": "portrait",
+      "sha256": "bc1652f18247c26683add5fc43db8cae1b2cc4100d6946c67d690963792fdcbb",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "orientationStatus": "Auto policy observed. The booth follows device rotation where iPad settings allow it.",
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-orientation-draft-portrait.png",
+      "label": "orientation-draft",
+      "orientation": "portrait",
+      "sha256": "9e48c958df4edfc2f0ece6d6107fda883e380062a593ed02a611be6ef5d2b96d",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "orientationStatus": "Unsaved change. Save booth settings to apply this display preference.",
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-request-not-geometry-portrait.png",
+      "label": "request-not-geometry",
+      "orientation": "portrait",
+      "sha256": "2bfa80192e2893f1361d96d7637bfe6e97de0b5aa9b3889da71105affe9170b3",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "orientationStatus": "Preference requested, but the current iPad window has not matched. Open the booth full screen and check the iPad rotation lock.",
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-observed-after-window-event-portrait.png",
+      "label": "observed-after-window-event",
+      "orientation": "portrait",
+      "sha256": "46bff396357c33178c633b4ef30340a345de373bb6498f3a6c43d51b23957416",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "orientationStatus": "Landscape observed in the current interface and window. iPad window settings can override it.",
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-preference-reloaded-portrait.png",
+      "label": "preference-reloaded",
+      "orientation": "portrait",
+      "sha256": "46bff396357c33178c633b4ef30340a345de373bb6498f3a6c43d51b23957416",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "orientationStatus": "Landscape observed in the current interface and window. iPad window settings can override it.",
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-native-unavailable-portrait.png",
+      "label": "native-unavailable",
+      "orientation": "portrait",
+      "sha256": "702f1f54f9885777bbccbc3ee60e56c0bd252365a42cdc98858bc4b46e07fd7d",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "orientationStatus": "The iPad could not apply the saved preference. Check full-screen and rotation settings, then retry.",
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-native-unsupported-portrait.png",
+      "label": "native-unsupported",
+      "orientation": "portrait",
+      "sha256": "4bc4cb734204998642d5a5c23509dfccdfc0b1cac11bdb045ab0fb23077b21e3",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "orientationStatus": "Orientation control is unavailable in this native build or iPad configuration. The interface still adapts to the available window.",
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-native-rejected-portrait.png",
+      "label": "native-rejected",
+      "orientation": "portrait",
+      "sha256": "702f1f54f9885777bbccbc3ee60e56c0bd252365a42cdc98858bc4b46e07fd7d",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "orientationStatus": "The iPad could not apply the saved preference. Check full-screen and rotation settings, then retry.",
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-native-support-timeout-portrait.png",
+      "label": "native-support-timeout",
+      "orientation": "portrait",
+      "sha256": "26793a7e1489db45760bb0b9c48cd24ccc05f69befb12338fa98844cd22bf96d",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "orientationStatus": "The iPad display request did not finish. Capture can continue in the current window. Check again when the iPad responds.",
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-native-request-timeout-portrait.png",
+      "label": "native-request-timeout",
+      "orientation": "portrait",
+      "sha256": "26793a7e1489db45760bb0b9c48cd24ccc05f69befb12338fa98844cd22bf96d",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "orientationStatus": "The iPad display request did not finish. Capture can continue in the current window. Check again when the iPad responds.",
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-orientation-deferred-in-editor-portrait.png",
+      "label": "orientation-deferred-in-editor",
+      "orientation": "portrait",
+      "sha256": "292c5c2313bd45d86b654f78b1bf47cefac9ef8c116de4f4fb5de193fef1691d",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "orientationStatus": null,
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-retake-all-confirm-portrait.png",
+      "label": "retake-all-confirm",
+      "orientation": "portrait",
+      "sha256": "6994583804140a147a63d776bfb5b1c1e84ad08bef2e162c9ee3f2f38e519fe3",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "orientationStatus": null,
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-fresh-retake-set-portrait.png",
+      "label": "fresh-retake-set",
+      "orientation": "portrait",
+      "sha256": "0c980223b97e3ff645c82b201b6711ee60a9d24ca290ed9a881b0099f60dbf64",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "orientationStatus": null,
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-new-set-review-portrait.png",
+      "label": "new-set-review",
+      "orientation": "portrait",
+      "sha256": "757265dc0097e6ec3da515bf2f5825c569b9f5cc5eeb77e9c68775aed6cedc18",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "orientationStatus": null,
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-partial-retake-resume-first-timer-portrait.png",
+      "label": "partial-retake-resume-first-timer",
+      "orientation": "portrait",
+      "sha256": "b5be2b4e2ee078f56c3988c34ca745f61828e88558b0684c76c624f91bb0ac5f",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "orientationStatus": null,
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-native-capture-promise-held-portrait.png",
+      "label": "native-capture-promise-held",
+      "orientation": "portrait",
+      "sha256": "891cc4ea19cb09c0322345691df3e6864ed7fa04146689bcee2d5352d5dd3dd9",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "orientationStatus": null,
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-durable-save-held-portrait.png",
+      "label": "durable-save-held",
+      "orientation": "portrait",
+      "sha256": "891cc4ea19cb09c0322345691df3e6864ed7fa04146689bcee2d5352d5dd3dd9",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "orientationStatus": null,
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-previous-set-restored-portrait.png",
+      "label": "previous-set-restored",
+      "orientation": "portrait",
+      "sha256": "8db63aee93b87238ac1fa8fc43a39a3341a720e4770d3eae43c1eca0cc5c010a",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "orientationStatus": null,
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-ready-with-abandoned-original-private-portrait.png",
+      "label": "ready-with-abandoned-original-private",
+      "orientation": "portrait",
+      "sha256": "0584db9ec563b92497b0e12c8f6546e9946a3faaeaf98bb272c3eeaf6b84e213",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "orientationStatus": null,
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-auto-default-landscape.png",
+      "label": "auto-default",
+      "orientation": "landscape",
+      "sha256": "67678bdfeb555c4cfbf35988546c5c54877a71144d2b585c69344ec84e50bbb3",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "orientationStatus": "Auto policy observed. The booth follows device rotation where iPad settings allow it.",
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-orientation-draft-landscape.png",
+      "label": "orientation-draft",
+      "orientation": "landscape",
+      "sha256": "bd2e081d338f197b38c7c00d2f80435bdd86c6b8f748c0243e8224f3f7b26217",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "orientationStatus": "Unsaved change. Save booth settings to apply this display preference.",
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-request-not-geometry-landscape.png",
+      "label": "request-not-geometry",
+      "orientation": "landscape",
+      "sha256": "895ca1c16a1bbe76f72f968d4d3ef1e47f720fd781336725255cda159837fcf6",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "orientationStatus": "Preference requested, but the current iPad window has not matched. Open the booth full screen and check the iPad rotation lock.",
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-observed-after-window-event-landscape.png",
+      "label": "observed-after-window-event",
+      "orientation": "landscape",
+      "sha256": "fcfd1761fe0037b331da4b0706a67f3d41d622d37b3b2ed9f368d2de4c1788fd",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "orientationStatus": "Portrait observed in the current interface and window. iPad window settings can override it.",
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-preference-reloaded-landscape.png",
+      "label": "preference-reloaded",
+      "orientation": "landscape",
+      "sha256": "fcfd1761fe0037b331da4b0706a67f3d41d622d37b3b2ed9f368d2de4c1788fd",
+      "width": 820,
+      "height": 1180,
+      "horizontalOverflow": false,
+      "orientationStatus": "Portrait observed in the current interface and window. iPad window settings can override it.",
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-native-unavailable-landscape.png",
+      "label": "native-unavailable",
+      "orientation": "landscape",
+      "sha256": "00d05d7788f35a536516c2fdc39053fa0cf5ff18c7798508a3f7e6a2583e4dd6",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "orientationStatus": "The iPad could not apply the saved preference. Check full-screen and rotation settings, then retry.",
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-native-unsupported-landscape.png",
+      "label": "native-unsupported",
+      "orientation": "landscape",
+      "sha256": "61a27fcb57934b4e9015caba5f36477dec5f5ee336995ba7b12d7032f5adaac5",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "orientationStatus": "Orientation control is unavailable in this native build or iPad configuration. The interface still adapts to the available window.",
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-native-rejected-landscape.png",
+      "label": "native-rejected",
+      "orientation": "landscape",
+      "sha256": "00d05d7788f35a536516c2fdc39053fa0cf5ff18c7798508a3f7e6a2583e4dd6",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "orientationStatus": "The iPad could not apply the saved preference. Check full-screen and rotation settings, then retry.",
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-native-support-timeout-landscape.png",
+      "label": "native-support-timeout",
+      "orientation": "landscape",
+      "sha256": "f539fa6fc717b9e2f30f5c597b19cc9128eb2d76fdf470a04ef50d4e6333efee",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "orientationStatus": "The iPad display request did not finish. Capture can continue in the current window. Check again when the iPad responds.",
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-native-request-timeout-landscape.png",
+      "label": "native-request-timeout",
+      "orientation": "landscape",
+      "sha256": "f539fa6fc717b9e2f30f5c597b19cc9128eb2d76fdf470a04ef50d4e6333efee",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "orientationStatus": "The iPad display request did not finish. Capture can continue in the current window. Check again when the iPad responds.",
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-orientation-deferred-in-editor-landscape.png",
+      "label": "orientation-deferred-in-editor",
+      "orientation": "landscape",
+      "sha256": "1a8fc0681e87c3492a882a79367c92a95844f53ef730a6ea7d7a3660fedd0478",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "orientationStatus": null,
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-retake-all-confirm-landscape.png",
+      "label": "retake-all-confirm",
+      "orientation": "landscape",
+      "sha256": "57927e52f57b264839b808084afbf7e2082b62bac94089241866f29c51e23c0d",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "orientationStatus": null,
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-fresh-retake-set-landscape.png",
+      "label": "fresh-retake-set",
+      "orientation": "landscape",
+      "sha256": "32549766dbebee905811dfebae287bdbe7f6cc91053fae0fb0ba86cbdb449edd",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "orientationStatus": null,
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-new-set-review-landscape.png",
+      "label": "new-set-review",
+      "orientation": "landscape",
+      "sha256": "310b84ff2e065da87415d774189ba98bcfa95d1f6b697e62f11d79b8c1f30a4d",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "orientationStatus": null,
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-partial-retake-resume-first-timer-landscape.png",
+      "label": "partial-retake-resume-first-timer",
+      "orientation": "landscape",
+      "sha256": "c6371d04eaf21a3fa5799de78059a9b74bc286ff4431aef512d596b934f2c181",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "orientationStatus": null,
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-native-capture-promise-held-landscape.png",
+      "label": "native-capture-promise-held",
+      "orientation": "landscape",
+      "sha256": "4250f89bec7b4e43faaf4e481ecedbebf392d9bdaf5191597331cbf19e2b16f3",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "orientationStatus": null,
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-durable-save-held-landscape.png",
+      "label": "durable-save-held",
+      "orientation": "landscape",
+      "sha256": "4250f89bec7b4e43faaf4e481ecedbebf392d9bdaf5191597331cbf19e2b16f3",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "orientationStatus": null,
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-previous-set-restored-landscape.png",
+      "label": "previous-set-restored",
+      "orientation": "landscape",
+      "sha256": "7148c669f46d8d9d42ab70d4d70986d4a0114fb3df4f9685ec212f382006daf5",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "orientationStatus": null,
+      "globalMessage": null
+    },
+    {
+      "file": "artifacts/visual/orientation-retake-ready-with-abandoned-original-private-landscape.png",
+      "label": "ready-with-abandoned-original-private",
+      "orientation": "landscape",
+      "sha256": "f61f9aaffbaa10e45d5230b6e54e8f3830146ed08d795aa423cb441348902da3",
+      "width": 1180,
+      "height": 820,
+      "horizontalOverflow": false,
+      "orientationStatus": null,
+      "globalMessage": null
+    }
+  ],
+  "qrChecks": [
+    {
+      "orientation": "portrait",
+      "width": 820,
+      "height": 1180,
+      "expectedURL": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "jsQR": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+          "error": ""
+        }
+      ],
+      "matrixModules": 41
+    },
+    {
+      "orientation": "landscape",
+      "width": 1180,
+      "height": 820,
+      "expectedURL": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "jsQR": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+      "zxingCpp": [
+        {
+          "text": "https://photobooth.example/g/a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+          "error": ""
+        }
+      ],
+      "matrixModules": 41
+    }
+  ],
+  "decoderVersions": {
+    "jsQR": "1.4.0",
+    "zxingCppWasm": "3.1.6",
+    "pngjs": "7.0.0",
+    "encoder": "1.5.4"
+  },
+  "errors": [],
+  "mockedHealthRequests": [
+    "https://photobooth.example/health",
+    "https://photobooth.example/health"
+  ],
+  "unexpectedExternalRequests": []
+}

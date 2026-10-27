@@ -637,6 +637,25 @@ test('Release simulator builds exactly the verified host architecture without al
   assert.ok(!/ONLY_ACTIVE_ARCH|ARCHS=|simulatorArchitectureSettings/.test(device));
 });
 
+test('standard ARM runtime preserves opt-in toolchain and verified architecture while device Release stays Intel', () => {
+  const workflow = readFileSync(new URL('../.github/workflows/ios-release-runtime.yml', import.meta.url), 'utf8');
+  const deviceWorkflow = readFileSync(new URL('../.github/workflows/ios-simulator.yml', import.meta.url), 'utf8');
+  const runner = readFileSync(new URL('./ci-native.mjs', import.meta.url), 'utf8');
+  assert.match(workflow, /^    runs-on: macos-15$/m);
+  assert.match(deviceWorkflow, /^    runs-on: macos-15-intel$/m);
+  assert.ok(workflow.includes("contains(github.event.head_commit.message, '[native-runtime-ci]')"));
+  assert.ok(workflow.includes('github.event.repository.private == false'));
+  assert.match(workflow, /DEVELOPER_DIR: \/Applications\/Xcode_26\.3\.app\/Contents\/Developer/);
+  assert.match(workflow, /WEDDING_NATIVE_MODE: release-runtime/);
+  assert.match(workflow, /ref: \$\{\{ github\.sha \}\}/);
+  assert.match(workflow, /persist-credentials: false/);
+  assert.match(workflow, /cache: npm/);
+  assert.match(runner, /simulatorBuildArchitecture\(process\.arch, host\.stdout\)/);
+  assert.match(runner, /\.\.\.simulatorArchitectureSettings\(mode, status\.simulatorArchitecture\)/);
+  assert.deepEqual(simulatorArchitectureSettings('release-runtime', simulatorBuildArchitecture('arm64', 'arm64\n')),
+    ['ONLY_ACTIVE_ARCH=YES', 'ARCHS=arm64']);
+});
+
 test('runtime preparation, Xcode, stop and cleanup budgets fit the workflow backstop without another boot extension', () => {
   const workflow = readFileSync(new URL('../.github/workflows/ios-release-runtime.yml', import.meta.url), 'utf8');
   const runner = readFileSync(new URL('./ci-native.mjs', import.meta.url), 'utf8');

@@ -112,7 +112,7 @@ async function demonstration(orientation, viewport) {
     await page.getByTestId('take-photo').waitFor();
     await page.waitForTimeout(300);
     await save(page, 'camera', orientation);
-    assert.match(await page.getByTestId('capture-save-status').innerText(), /No photos saved on this iPad yet/);
+    assert.match(await page.getByTestId('capture-save-status').innerText(), /No photos saved for this set yet/);
     const cameraBox = await page.getByTestId('synthetic-browser-camera').boundingBox();
     outcome.cameraStage = { ...cameraBox, widthFraction: cameraBox.width / viewport.width, heightFraction: cameraBox.height / viewport.height };
     const appBox = await page.locator('#root').boundingBox();
@@ -269,7 +269,7 @@ try {
   await page.getByTestId('retry-save').waitFor({ timeout: 7000 });
   assert.equal((await snapshot(page)).active.shots.length, 0);
   const zeroSavedFailureStatus = await page.getByTestId('capture-save-status').innerText();
-  assert.equal(zeroSavedFailureStatus, 'Photo 1 still needs saving · No photos saved on this iPad yet');
+  assert.equal(zeroSavedFailureStatus, 'Photo 1 still needs saving · No photos saved for this set yet');
   assert.ok(!zeroSavedFailureStatus.includes('originals saved on this iPad'));
   await save(page, 'save-retry', 'portrait');
   await page.getByTestId('retry-save').tap();

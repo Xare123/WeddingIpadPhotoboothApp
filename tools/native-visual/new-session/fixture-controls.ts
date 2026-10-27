@@ -1,6 +1,7 @@
 /** Explicit in-memory test controls. No OS events, Photos calls, or live network. */
 type AppStatus = 'active' | 'background' | 'inactive';
 type SyntheticHostAuthOutcome = 'success' | 'throw' | 'passcode_not_set' | 'user_cancel' | 'system_cancel' | 'app_cancel' | 'user_fallback' | 'lockout' | 'not_enrolled' | 'not_available' | 'authentication_failed' | 'unknown';
+import type { ObservedOrientation, ObservedOrientationLock, RequestedOrientationLock } from '../../../apps/ipad/src/orientation-controller';
 const listeners = new Set<(status: AppStatus) => void>();
 const parameters = new URLSearchParams(location.search);
 export const accessibilityListeners = new Map<string, Set<(value: boolean) => void>>();
@@ -52,6 +53,33 @@ export const fixtureControls = {
   pendingSaves: 0,
   saveWaiters: new Set<() => void>(),
   releaseSaves() { this.saveBlocked = false; for (const resolve of this.saveWaiters) resolve(); this.saveWaiters.clear(); },
+  captureBlocked: false,
+  pendingCaptures: 0,
+  captureWaiters: new Set<() => void>(),
+  releaseCaptures() { this.captureBlocked = false; for (const resolve of this.captureWaiters) resolve(); this.captureWaiters.clear(); },
+  orientationAvailable: parameters.get('orientationNative') !== 'unavailable',
+  orientationSupported: parameters.get('orientationNative') !== 'unsupported',
+  orientationRejectRequests: parameters.get('orientationNative') === 'rejected',
+  orientationSupportBlocked: parameters.get('orientationNative') === 'support-timeout',
+  orientationSupportWaiters: new Set<() => void>(),
+  releaseOrientationSupport() { this.orientationSupportBlocked = false; for (const resolve of this.orientationSupportWaiters) resolve(); this.orientationSupportWaiters.clear(); },
+  orientationRequestBlocked: parameters.get('orientationNative') === 'request-timeout',
+  orientationRequestWaiters: new Set<() => void>(),
+  releaseOrientationRequest() { this.orientationRequestBlocked = false; for (const resolve of this.orientationRequestWaiters) resolve(); this.orientationRequestWaiters.clear(); },
+  orientationReadFailure: false,
+  orientationLoadBlocked: parameters.get('orientationLoad') === 'blocked',
+  orientationLoadWaiters: new Set<() => void>(),
+  releaseOrientationLoad() { this.orientationLoadBlocked = false; for (const resolve of this.orientationLoadWaiters) resolve(); this.orientationLoadWaiters.clear(); },
+  orientationLoads: 0,
+  orientationReads: 0,
+  orientationSupports: [] as RequestedOrientationLock[],
+  orientationRequests: [] as { lock: RequestedOrientationLock; at: number; appState: AppStatus; pendingCaptures: number; pendingSaves: number; countdown: string | null }[],
+  orientationObservedLock: 'default' as ObservedOrientationLock,
+  orientationObserved: null as ObservedOrientation | null,
+  orientationSubscriptions: 0,
+  orientationUnsubscriptions: 0,
+  orientationListeners: new Set<() => void>(),
+  emitOrientation() { for (const listener of this.orientationListeners) listener(); },
   cameraReadyBlocked: false,
   cameraMounts: 0,
   cameraReadyCallbacks: new Set<() => void>(),

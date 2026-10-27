@@ -1,5 +1,7 @@
 # Wedding launch gates
 
+Current code checkpoint: 0.3.6/build9 orientation and Retake All pass local461 tests/98 guards/24 browser groups; fresh native runs and actual device acceptance remain separate. Exact3cc16e6 0.3.5/build8 Host repair is installed with app data/identity preserved, but has not been launched/authenticated. Earlier manual local originals and Apple Photos copies were confirmed; intentionally deleted Photos copies must remain deleted. Pairing automatically uploads existing confirmed real photos and needs coordinator-approved data scope. Production sharing/SMS are not verified. See [current validation](VALIDATION.md).
+
 Target event: **November 1, 2026**. This is a release checklist, not a statement that launch has completed. Deliver four reliably saved photos per new session, large review/individual retakes, optional postcapture looks, a strip/grid keepsake in three themes, a private guest page and one QR. Preserve existing five-photo sessions. SMS remains optional while eligibility is unresolved.
 
 ## Immediate owner decisions

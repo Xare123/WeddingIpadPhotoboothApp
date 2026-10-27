@@ -1,10 +1,12 @@
+import { isCountdownSeconds, type CaptureTiming } from './capture-timing';
 import { uploadJob, type QueueJob } from '@wedding-booth/core';
-import type { ActiveCapture, ActiveSession, PhotoExportStatus, PhotoLook, CompositeRecipe, SessionComposite, SessionPublicationAssets } from './local-types';
+import type { ActiveCapture, ActiveSession, PhotoExportStatus, PhotoLook, CompositeRecipe, SessionComposite, SessionPublicationAssets, RetakeSessionFields } from './local-types';
 import { publicationComposite, validCompositeRecipe } from './publication';
-export type { ActiveCapture, ActiveSession, PhotoExportStatus, PhotoLook, CompositeRecipe, SessionComposite, SessionPublicationAssets } from './local-types';
+export type { ActiveCapture, ActiveSession, PhotoExportStatus, PhotoLook, CompositeRecipe, SessionComposite, SessionPublicationAssets, RetakeSessionFields } from './local-types';
 
 export type RenderedPhotoInput = { id: string; newRenderedURI: string; sourcePhotoId: string; look: PhotoLook; expectedSelectedPhotoId: string; slot: number };
 
+export type RetakeAllInput = { id: string; expectedSelectedPhotoIds: string[]; timing: CaptureTiming };
 export type CompositeInput = { id: string; newRenderedURI: string; recipe: CompositeRecipe; expectedSelectedPhotoIds: string[] };
 
 export interface LocalFiles {
@@ -27,7 +29,7 @@ type CaptureRecord = Omit<ActiveCapture, 'fileUri'> & {
   selectionSequence: number; legacy?: boolean;
 };
 type CompositeRecord = Omit<SessionComposite, 'fileUri'> & { sessionId: string; relativePath: string; bytes: number; createdAt: number; sequence: number };
-type SessionRecord = { id: string; createdAt: number; targetCount: number; confirmed: boolean; selected: string[]; compositeId?: string };
+type SessionRecord = RetakeSessionFields & { id: string; createdAt: number; targetCount: number; confirmed: boolean; selected: string[]; compositeId?: string };
 type RecordData = { kind: 'composite'; composite: CompositeRecord } | { kind: 'capture'; capture: CaptureRecord } | { kind: 'session'; session: SessionRecord } |
   { kind: 'active'; sessionId: string | null; captureId: string | null };
 type Journal = RecordData & { version: 1; sequence: number };
@@ -160,7 +162,7 @@ export class LocalRepository {
       model.captures.set(id, found);
       const session = model.sessions.get(found.sessionId);
       if (session && found.legacy && found.confirmed && !session.confirmed) { session.confirmed = true; repairedSessions.add(session.id); }
-      if (session && !session.confirmed && found.relativePath.endsWith('.jpg') && found.selectionSequence > (model.sessionSequences.get(session.id) ?? 0)) {
+      if (session && !session.confirmed && session.retakeState !== 'abandoned' && found.relativePath.endsWith('.jpg') && found.selectionSequence > (model.sessionSequences.get(session.id) ?? 0)) {
         session.selected[found.shotIndex] = found.id;
         repairedSessions.add(session.id);
       }
@@ -175,6 +177,20 @@ export class LocalRepository {
         if (old?.id && model.captures.has(old.id)) model.active = { sessionId: model.captures.get(old.id)!.sessionId, captureId: old.id };
       } catch { /* A database outage must not block file-backed local access. */ }
     }
+    // A durable cancellation wins even if the process stopped before its active-pointer append.
+    let active = model.active?.sessionId ? model.sessions.get(model.active.sessionId) : undefined;
+    const visited = new Set<string>();
+    while (active?.retakeState === 'abandoned') {
+      if (!active.retakeOfSessionId || visited.has(active.id)) throw new LocalSaveError('retake-fallback');
+      visited.add(active.id);
+      active = model.sessions.get(active.retakeOfSessionId);
+      if (!active) throw new LocalSaveError('retake-fallback');
+      await this.verifyCompleteSession(model, active);
+    }
+    if (active && active.id !== model.active?.sessionId) {
+      const pointer = { sessionId: active.id, captureId: active.selected.at(-1) ?? null };
+      await this.append({ kind: 'active', ...pointer }, model); model.active = pointer;
+    }
     this.cached = model;
     return model;
   }
@@ -186,6 +202,9 @@ export class LocalRepository {
     const selected = data.selected.map(photoId => model.captures.get(photoId)).filter((photo): photo is CaptureRecord => !!photo && photo.relativePath.endsWith('.jpg'));
     const staged = [...model.captures.values()].filter(photo => photo.sessionId === id && photo.relativePath.endsWith('.partial'));
     return { id: data.id, createdAt: data.createdAt, targetCount: data.targetCount, confirmed: data.confirmed,
+      ...(data.retakeOfSessionId ? { retakeOfSessionId: data.retakeOfSessionId, retakeState: data.retakeState } : {}),
+      ...(data.captureTiming ? { captureTiming: { ...data.captureTiming } } : {}),
+      ...(data.templateDefaults ? { templateDefaults: { ...data.templateDefaults } } : {}),
       shots: selected.map(photo => this.hydrate(photo)),
       ...(this.currentComposite(model, data) ? { composite: this.hydrateComposite(this.currentComposite(model, data)!) } : {}),
       ...([...model.composites.values()].some(item => item.sessionId === id && item.relativePath.endsWith('.partial')) ? {
@@ -240,6 +259,7 @@ export class LocalRepository {
     const recipe = JSON.parse(JSON.stringify(input.recipe)) as CompositeRecipe, expected = [...input.expectedSelectedPhotoIds];
     return this.serial(async () => {
       const model = await this.readModel(), session = model.sessions.get(sessionId);
+      if (session) this.assertRetakeMutable(model, session);
       if (!session || session.confirmed || session.targetCount !== 4 || !validId(input.id)) throw new LocalSaveError('composite-session');
       if (!this.samePhotoSet(session.selected, expected) || !session.selected.every((id, index) => id === expected[index]) ||
         !this.validRecipe(recipe) || !this.samePhotoSet(recipe.photoIds, session.selected)) throw new LocalSaveError('composite-selection');
@@ -301,6 +321,69 @@ export class LocalRepository {
       return result;
     });
   }
+  private assertRetakeMutable(model: Model, session: SessionRecord): void {
+    if (session.retakeState === 'abandoned') throw new LocalSaveError('abandoned-retake');
+    if (session.retakeOfSessionId && !session.confirmed && model.active?.sessionId !== session.id) throw new LocalSaveError('inactive-retake');
+    // A stale callback from the preserved parent cannot replace its selection while a descendant is active.
+    let current = model.active?.sessionId ? model.sessions.get(model.active.sessionId) : undefined;
+    const seen = new Set<string>();
+    while (!session.confirmed && current?.retakeOfSessionId && !seen.has(current.id)) {
+      if (current.retakeOfSessionId === session.id) throw new LocalSaveError('inactive-retake-parent');
+      seen.add(current.id); current = model.sessions.get(current.retakeOfSessionId);
+    }
+  }
+  private async verifyCompleteSession(model: Model, session: SessionRecord): Promise<void> {
+    if (session.selected.length !== session.targetCount || new Set(session.selected).size !== session.targetCount) throw new LocalSaveError('incomplete-session');
+    for (let slot = 0; slot < session.targetCount; slot++) {
+      const photo = model.captures.get(session.selected[slot]!);
+      const original = photo ? model.captures.get(photo.sourcePhotoId ?? photo.id) : undefined;
+      if (!photo || photo.sessionId !== session.id || photo.shotIndex !== slot || !photo.relativePath.endsWith('.jpg') ||
+        !original || original.sessionId !== session.id || original.shotIndex !== slot || original.sourcePhotoId || original.look ||
+        !await this.verified(photo.relativePath, photo.bytes) || !await this.verified(original.relativePath, original.bytes)) throw new LocalSaveError('retake-original');
+    }
+  }
+  beginRetakeAll(parentSessionId: string, input: RetakeAllInput): Promise<ActiveSession> {
+    const expected = [...input.expectedSelectedPhotoIds], timing = { ...input.timing }, id = input.id;
+    return this.serial(async () => {
+      const model = await this.readModel(), parent = model.sessions.get(parentSessionId);
+      if (!parent || ![4, 5].includes(parent.targetCount) || parent.retakeState === 'abandoned' || model.active?.sessionId !== parentSessionId ||
+        parent.selected.length !== expected.length || !parent.selected.every((photoId, slot) => photoId === expected[slot])) throw new LocalSaveError('stale-retake-parent');
+      if (!validId(id) || model.sessions.has(id) || model.captures.has(id) || model.composites.has(id)) throw new LocalSaveError('session-id-reused');
+      if (!isCountdownSeconds(timing.firstSeconds) || !isCountdownSeconds(timing.nextSeconds)) throw new LocalSaveError('retake-timing');
+      await this.verifyCompleteSession(model, parent);
+      const recipe = this.currentComposite(model, parent)?.recipe;
+      const templateDefaults = recipe ? { layout: recipe.layout, theme: recipe.theme,
+        ...(recipe.version === 'wedding-template-v2' ? { gridAspect: recipe.gridAspect } : {}) } : parent.templateDefaults ? { ...parent.templateDefaults } : undefined;
+      const child: SessionRecord = { id, createdAt: this.now(), targetCount: parent.targetCount, confirmed: false, selected: [],
+        retakeOfSessionId: parentSessionId, retakeState: 'open', captureTiming: timing,
+        ...(templateDefaults ? { templateDefaults } : {}) };
+      // Parent link and defaults become durable before the child can become active.
+      await this.append({ kind: 'session', session: child }, model); model.sessions.set(id, child);
+      const pointer = { sessionId: id, captureId: null };
+      await this.append({ kind: 'active', ...pointer }, model); model.active = pointer;
+      const result = this.session(model, id)!;
+      if (!await this.indexSession(model, id)) result.storageWarning = 'index-repair-pending';
+      return result;
+    });
+  }
+  cancelRetakeAll(childSessionId: string): Promise<ActiveSession> {
+    return this.serial(async () => {
+      const model = await this.readModel(), child = model.sessions.get(childSessionId);
+      const parent = child?.retakeOfSessionId ? model.sessions.get(child.retakeOfSessionId) : undefined;
+      if (!child || !parent || child.confirmed || (model.active?.sessionId !== childSessionId &&
+        !(child.retakeState === 'abandoned' && model.active?.sessionId === parent.id))) throw new LocalSaveError('stale-retake');
+      await this.verifyCompleteSession(model, parent);
+      if (child.retakeState !== 'abandoned') {
+        const abandoned = { ...child, retakeState: 'abandoned' as const };
+        await this.append({ kind: 'session', session: abandoned }, model); model.sessions.set(childSessionId, abandoned);
+      }
+      const pointer = { sessionId: parent.id, captureId: parent.selected.at(-1) ?? null };
+      await this.append({ kind: 'active', ...pointer }, model); model.active = pointer;
+      const result = this.session(model, parent.id)!;
+      if (!await this.indexSession(model, parent.id)) result.storageWarning = 'index-repair-pending';
+      return result;
+    });
+  }
   getActiveSession(): Promise<ActiveSession | null> { return this.serial(async () => { const model = await this.readModel(); return model.active?.sessionId ? this.session(model, model.active.sessionId) : null; }); }
   getSession(id: string): Promise<ActiveSession | null> { return this.serial(async () => this.session(await this.readModel(), id)); }
   listLocalSessions(): Promise<ActiveSession[]> { return this.serial(async () => { const model = await this.readModel(); return [...model.sessions.keys()].map(id => this.session(model, id)!).filter(session => session.shots.length > 0 || !!session.stagedOriginals?.length).sort((a, b) => b.createdAt - a.createdAt); }); }
@@ -314,6 +397,7 @@ export class LocalRepository {
     return this.serial(async () => {
       const sessionId = typeof sessionOrId === 'string' ? sessionOrId : sessionOrId.id;
       const model = await this.readModel(), session = model.sessions.get(sessionId);
+      if (session) this.assertRetakeMutable(model, session);
       if (!session || session.confirmed || !validId(id)) throw new LocalSaveError('capture-session');
       const index = shotIndex ?? session.selected.filter(Boolean).length;
       if (!Number.isInteger(index) || index < 0 || index >= session.targetCount) throw new LocalSaveError('capture-slot');
@@ -372,6 +456,7 @@ export class LocalRepository {
     });
   }
   private assertSelection(model: Model, session: SessionRecord, slot: number, expected: string): void {
+    this.assertRetakeMutable(model, session);
     if (session.confirmed || !Number.isInteger(slot) || slot < 0 || slot >= session.targetCount ||
       !expected || session.selected[slot] !== expected || !model.captures.has(expected)) throw new LocalSaveError('stale-selection');
   }
@@ -402,6 +487,7 @@ export class LocalRepository {
     return this.serial(async () => {
       const id = typeof sessionOrId === 'string' ? sessionOrId : sessionOrId.id;
       const model = await this.readModel(), session = model.sessions.get(id);
+      if (session) this.assertRetakeMutable(model, session);
       if (!session || session.selected.filter(Boolean).length !== session.targetCount ||
         Array.from({ length: session.targetCount }, (_, index) => !model.captures.has(session.selected[index] ?? '')).some(Boolean)) throw new LocalSaveError('incomplete-session');
       if (session.targetCount === 4) {
@@ -464,6 +550,15 @@ export class LocalRepository {
     const model = await this.readModel();
     const stored = capture ? model.captures.get(capture.id) : undefined;
     if (capture && !stored) throw new LocalSaveError('active-file');
+    if (stored) {
+      const target = model.sessions.get(stored.sessionId);
+      if (target?.retakeState === 'abandoned') throw new LocalSaveError('abandoned-retake');
+      // Retake-family switches require begin/cancel's validated journal ordering.
+      // The legacy capture setter may update the current capture, but cannot
+      // resurrect an inactive child or displace its active descendant/next guest.
+      if (target && model.active?.sessionId !== target.id && (target.retakeOfSessionId ||
+        [...model.sessions.values()].some(session => session.retakeOfSessionId === target.id))) throw new LocalSaveError('inactive-retake');
+    }
     await this.append({ kind: 'active', sessionId: stored?.sessionId ?? null, captureId: stored?.id ?? null }, model);
     model.active = { sessionId: stored?.sessionId ?? null, captureId: stored?.id ?? null };
     try { await this.index.write('active', stored ?? null); } catch {}
@@ -491,6 +586,7 @@ export class LocalRepository {
   retryStagedComposites(sessionId: string): Promise<ActiveSession | null> { return this.serial(async () => {
     const model = await this.readModel(), session = model.sessions.get(sessionId);
     if (!session) return null;
+    this.assertRetakeMutable(model, session);
     // Normalize retained bytes only: confirmed composite identity lives in the session journal.
     for (const item of model.composites.values()) if (item.sessionId === sessionId && item.relativePath.endsWith('.partial')) {
       await this.normalizeComposite(item, model);
@@ -503,12 +599,13 @@ export class LocalRepository {
   retryStagedPhotos(sessionId: string): Promise<ActiveSession | null> { return this.serial(async () => {
     const model = await this.readModel();
     const session = model.sessions.get(sessionId);
+    if (session) this.assertRetakeMutable(model, session);
     const previousSequence = model.sessionSequences.get(sessionId) ?? 0;
     let selectionChanged = false;
     for (const capture of model.captures.values()) if (capture.sessionId === sessionId && capture.relativePath.endsWith('.partial')) {
       const normalized = await this.normalize(capture, model);
       const selected = session ? model.captures.get(session.selected[normalized.shotIndex] ?? '') : undefined;
-      if (session && !session.confirmed && normalized.selectionSequence > previousSequence &&
+      if (session && !session.confirmed && session.retakeState !== 'abandoned' && normalized.selectionSequence > previousSequence &&
         (!selected || normalized.selectionSequence > selected.selectionSequence)) {
         session.selected[normalized.shotIndex] = normalized.id; selectionChanged = true;
       }

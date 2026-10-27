@@ -42,7 +42,7 @@ try {
       assert.match(await page.getByTestId('take-photo').innerText(), /Retake photo 3/); await settled(page, 'camera-stage', `retake-${orientation}`);
       await load('camera'); await page.getByTestId('take-photo').waitFor(); await page.evaluate(() => { window.__NEW_SESSION_FIXTURE__.failNextSave = true; });
       await page.getByTestId('take-photo').tap(); await page.getByTestId('retry-save').waitFor({ timeout: 7000 });
-      const message = await page.getByTestId('capture-save-status').innerText(); assert.equal(message, 'Photo 1 still needs saving · No photos saved on this iPad yet');
+      const message = await page.getByTestId('capture-save-status').innerText(); assert.equal(message, 'Photo 1 still needs saving · No photos saved for this set yet');
       assert.equal((await snapshot(page)).active.shots.length, 0); await settled(page, 'camera-stage', `save-error-${orientation}`);
       await page.getByTestId('retry-save').tap(); await page.getByTestId('take-photo').waitFor(); assert.equal((await snapshot(page)).active.shots.length, 1); assert.equal(await page.evaluate(() => window.__NEW_SESSION_FIXTURE__.cameraCalls), 1);
       await load('ready'); await page.getByRole('button', { name: 'Open host controls', exact: true }).tap(); await page.getByText('Booth controls', { exact: true }).waitFor();

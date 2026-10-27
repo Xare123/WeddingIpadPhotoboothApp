@@ -5,6 +5,8 @@ import { uploadJob, type QueueJob } from '@wedding-booth/core';
 import type { ActiveCapture, ActiveSession, PhotoExportStatus } from '../../../apps/ipad/src/local-types';
 import { fixtureControls, fixtureState } from './fixture-controls';
 import { createHostAuthenticator } from '../../../apps/ipad/src/host-auth-policy';
+import type { OrientationPort } from '../../../apps/ipad/src/orientation-controller';
+import type { RetakeAllInput } from '../../../apps/ipad/src/local-persistence';
 export { hostAuthenticationCode } from '../../../apps/ipad/src/host-auth-policy';
 
 import { originalImageVariants } from './effects-stub';
@@ -28,7 +30,12 @@ const jobs: QueueJob[] = [];
 let active: ActiveSession | null = null;
 const preferenceValues = (parameters.get('timingDefaults') ?? '5,3').split(',').map(Number);
 const validSeconds = (value: number) => [2, 3, 5, 8, 10].includes(value) ? value : 3;
-let preferences = { firstSeconds: validSeconds(preferenceValues[0] ?? 5), nextSeconds: validSeconds(preferenceValues[1] ?? 3), photosExportEnabled: true };
+const persistenceID = parameters.get('fixturePersistence');
+if (persistenceID && !/^[a-zA-Z0-9_-]{1,80}$/.test(persistenceID)) throw new Error('Invalid synthetic preferences scope');
+const preferencesKey = persistenceID ? `photobooth.synthetic.preferences.${persistenceID}` : null;
+const initialOrientation = parameters.get('orientationPreference');
+let preferences = { firstSeconds: validSeconds(preferenceValues[0] ?? 5), nextSeconds: validSeconds(preferenceValues[1] ?? 3), photosExportEnabled: true, orientation: (initialOrientation === 'portrait' || initialOrientation === 'landscape' ? initialOrientation : 'auto') as 'auto' | 'portrait' | 'landscape' };
+if (preferencesKey) { const raw = sessionStorage.getItem(preferencesKey); if (raw) preferences = { ...preferences, ...JSON.parse(raw) }; }
 let photosPermission = fixtureState === 'photos-denied' || parameters.get('photos') === 'denied' ? 'denied' : 'granted';
 if (parameters.get('network') === 'offline') fixtureControls.online = false;
 if (['camera', 'partial', 'review', 'review4', 'photos-denied', 'photos-uncertain', 'pending', 'ready', 'partial-ready', 'host-uncertain', 'staged', 'staged-empty', 'index-repair'].includes(fixtureState)) {
@@ -77,7 +84,29 @@ export const createSession = async (): Promise<ActiveSession> => {
   event('session-created', active.id);
   return commit(active);
 };
+function assertMutableRetake(session: ActiveSession) {
+  const saved = histories.get(session.id);
+  if (saved?.retakeState === 'abandoned' || (saved?.retakeOfSessionId && active?.id !== saved.id)) throw new Error('Synthetic abandoned or inactive retake cannot change');
+}
+export const beginRetakeAll = async (parentID: string, input: RetakeAllInput): Promise<ActiveSession> => {
+  const parent = histories.get(parentID);
+  if (!parent || parent.retakeState === 'abandoned' || active?.id !== parentID || parent.shots.length !== parent.targetCount || !parent.shots.every((photo, i) => photo.id === input.expectedSelectedPhotoIds[i]) || input.expectedSelectedPhotoIds.length !== parent.targetCount) throw new Error('Synthetic stale retake parent');
+  if (histories.has(input.id)) throw new Error('Synthetic session identity reused');
+  const recipe = parent.composite?.recipe;
+  const templateDefaults = recipe ? { layout: recipe.layout, theme: recipe.theme, ...(recipe.version === 'wedding-template-v2' ? { gridAspect: recipe.gridAspect } : {}) } : parent.templateDefaults;
+  active = { id: input.id, createdAt: Date.now(), targetCount: parent.targetCount, shots: [], confirmed: false, retakeOfSessionId: parentID, retakeState: 'open', captureTiming: clone(input.timing), ...(templateDefaults ? { templateDefaults: clone(templateDefaults) } : {}) };
+  event('synthetic-retake-all-began', active.id);
+  return commit(active);
+};
+export const cancelRetakeAll = async (childID: string): Promise<ActiveSession> => {
+  const child = histories.get(childID), parent = child?.retakeOfSessionId ? histories.get(child.retakeOfSessionId) : null;
+  if (!child || !parent || child.confirmed || active?.id !== childID || parent.shots.length !== parent.targetCount) throw new Error('Synthetic stale retake cancellation');
+  histories.set(childID, clone({ ...child, retakeState: 'abandoned' }));
+  active = clone(parent); event('synthetic-retake-all-abandoned', childID);
+  return commit(active);
+};
 export const saveShot = async (session: ActiveSession, id: string, _temporaryURI: string, slot: number): Promise<ActiveSession> => {
+  assertMutableRetake(session);
   if (session.confirmed || slot < 0 || slot >= session.targetCount) throw new Error('Invalid synthetic shot slot');
   event('private-save-started', id, slot);
   if (fixtureControls.failNextSave) { fixtureControls.failNextSave = false; throw new Error('Synthetic private-save failure'); }
@@ -97,6 +126,7 @@ export const saveShot = async (session: ActiveSession, id: string, _temporaryURI
   return result;
 };
 export const confirmSession = async (session: ActiveSession): Promise<ActiveSession> => {
+  assertMutableRetake(session);
   if (session.shots.length !== session.targetCount || new Set(session.shots.map(photo => photo.shotIndex)).size !== session.targetCount) throw new Error('All synthetic shots required');
   if (session.targetCount === 4 && !session.composite) throw new Error('Synthetic composite required');
   const confirmed = { ...session, confirmed: true, shots: session.shots.map(photo => ({ ...photo, confirmed: true })) };
@@ -119,7 +149,7 @@ export const retryStagedPhotos = async (sessionId: string): Promise<ActiveSessio
 };
 export const reconcileConfirmedPhotos = async () => {
   if (!fixtureControls.indexWritable) return;
-  for (const session of [...histories.values()]) if (session.confirmed) {
+  for (const session of [...histories.values()]) if (session.confirmed && session.retakeState !== 'abandoned') {
     for (const photo of session.shots) if (!jobs.some(job => job.id === photo.id)) await store.save(uploadJob(photo.id, shotURI(photo.id), photo.createdAt, session.id));
     if (session.storageWarning === 'index-repair-pending') { commit({ ...session, storageWarning: undefined }); event('synthetic-index-repair-completed', session.id); }
   }
@@ -146,7 +176,7 @@ export const syncPending = async () => {
   for (const job of jobs) if (job.kind === 'upload' && job.state === 'pending') job.state = 'complete';
   if (fixtureControls.readyAcknowledged) {
     for (const session of histories.values()) {
-      if (!session.confirmed || session.shots.length !== session.targetCount) continue;
+      if (!session.confirmed || session.retakeState === 'abandoned' || session.shots.length !== session.targetCount) continue;
       const required = [...session.shots.map(p => p.id), ...(session.composite?.originalPhotoIds ?? []), ...(session.composite ? [session.composite.id] : [])];
       const selected = [...new Set(required)].map(id => jobs.find(job => job.kind === 'upload' && job.photoId === id && job.sessionId === session.id));
       if (selected.some(job => job?.state !== 'complete')) continue;
@@ -192,7 +222,9 @@ export const loadHostPreferences = async () => clone(preferences);
 export const saveHostPreferences = async (update: Partial<typeof preferences>, authorization?: { assertCurrent(): void }) => {
   await Promise.resolve(); // Mirror the protected native preference-read boundary.
   authorization?.assertCurrent();
-  preferences = { ...preferences, ...update }; event('synthetic-preferences-saved'); return clone(preferences);
+  preferences = { ...preferences, ...update };
+  if (preferencesKey) sessionStorage.setItem(preferencesKey, JSON.stringify(preferences));
+  event('synthetic-preferences-saved'); return clone(preferences);
 };
 export const provisionBooth = async (_code: string, authorization?: { authenticate(): Promise<void>; assertCurrent(): void }) => {
   if (!authorization) throw new Error('Synthetic pairing refuses missing protected authorization');
@@ -201,6 +233,42 @@ export const provisionBooth = async (_code: string, authorization?: { authentica
   // Never consume or persist a real code; even an authorized fixture refuses it.
   throw new Error('Real device pairing is disabled in this browser fixture');
 };
+export async function loadNativeOrientationPort(): Promise<OrientationPort> {
+  fixtureControls.orientationLoads++;
+  if (fixtureControls.orientationLoadBlocked) await new Promise<void>(resolve => fixtureControls.orientationLoadWaiters.add(resolve));
+  const unavailable = () => { throw Object.assign(new Error('Synthetic native orientation unavailable'), { code: 'native-unavailable' }); };
+  const observe = () => ({
+    orientation: fixtureControls.orientationObserved ?? (innerWidth > innerHeight ? 'landscape-left' as const : 'portrait-up' as const),
+    lock: fixtureControls.orientationObservedLock, width: innerWidth, height: innerHeight,
+  });
+  return {
+    available: fixtureControls.orientationAvailable,
+    async supports(lock) {
+      if (!fixtureControls.orientationAvailable) return unavailable(); fixtureControls.orientationSupports.push(lock);
+      if (fixtureControls.orientationSupportBlocked) await new Promise<void>(resolve => fixtureControls.orientationSupportWaiters.add(resolve));
+      return fixtureControls.orientationSupported;
+    },
+    async request(lock) {
+      if (!fixtureControls.orientationAvailable) return unavailable();
+      fixtureControls.orientationRequests.push({ lock, at: Date.now(), appState: fixtureControls.appState, pendingCaptures: fixtureControls.pendingCaptures, pendingSaves: fixtureControls.pendingSaves, countdown: document.querySelector('[data-testid="capture-countdown-value"]')?.textContent ?? null });
+      event('synthetic-native-orientation-request');
+      if (fixtureControls.orientationRequestBlocked) await new Promise<void>(resolve => fixtureControls.orientationRequestWaiters.add(resolve));
+      if (fixtureControls.orientationRejectRequests) throw new Error('Synthetic native orientation request rejected');
+      // A fulfilled lock changes only the observed lock. Tests separately deliver
+      // sensor/window events; this never pretends the interface actually rotated.
+      fixtureControls.orientationObservedLock = lock;
+    },
+    async readObservation() { fixtureControls.orientationReads++; if (!fixtureControls.orientationAvailable) return unavailable(); if (fixtureControls.orientationReadFailure) throw new Error('Synthetic orientation read failure'); return observe(); },
+    subscribe(listener) {
+      if (!fixtureControls.orientationAvailable) return unavailable();
+      fixtureControls.orientationSubscriptions++;
+      const notify = () => listener(observe());
+      fixtureControls.orientationListeners.add(notify); window.addEventListener('resize', notify);
+      return () => { fixtureControls.orientationUnsubscriptions++; fixtureControls.orientationListeners.delete(notify); window.removeEventListener('resize', notify); };
+    },
+    schedule(delay, callback) { const timer = setTimeout(callback, delay); return () => clearTimeout(timer); },
+  };
+}
 export const useCameraPermissions = () => {
   const mode = parameters.get('permission');
   const [granted, setGranted] = useState(mode !== 'denied' && mode !== 'blocked');
@@ -215,6 +283,9 @@ export const CameraView = forwardRef(function SyntheticCamera({ onCameraReady, o
     if (fixtureControls.cameraReadyBlocked) throw new Error('Synthetic camera was used before readiness');
     fixtureControls.cameraCalls++;
     event('synthetic-camera-exposure', undefined, fixtureControls.cameraCalls - 1);
+    fixtureControls.pendingCaptures++;
+    try { if (fixtureControls.captureBlocked) await new Promise<void>(resolve => fixtureControls.captureWaiters.add(resolve)); }
+    finally { fixtureControls.pendingCaptures--; }
     return { uri: '/attract-scene.png' };
   } }), []);
   useEffect(() => {
@@ -235,6 +306,7 @@ import { syntheticPhotoEffects, copyRenderedImage } from './effects-stub';
 import type { RenderedPhotoInput } from '../../../apps/ipad/src/local-persistence';
 export async function saveRenderedPhoto(sessionId: string, input: RenderedPhotoInput): Promise<ActiveSession> {
   const session = histories.get(sessionId);
+  if (session) assertMutableRetake(session);
   if (!session || session.confirmed || session.shots[input.slot]?.id !== input.expectedSelectedPhotoId) throw new Error('stale-selection');
   const original = [...session.shots, ...(session.retakes ?? [])].find(photo => photo.id === input.sourcePhotoId);
   if (!original || original.sourcePhotoId || original.look) throw new Error('render-source');
@@ -247,6 +319,7 @@ export async function saveRenderedPhoto(sessionId: string, input: RenderedPhotoI
 }
 export async function selectSavedPhoto(sessionId: string, photoId: string, slot: number, expectedSelectedPhotoId: string): Promise<ActiveSession> {
   const session = histories.get(sessionId);
+  if (session) assertMutableRetake(session);
   if (!session || session.confirmed || session.shots[slot]?.id !== expectedSelectedPhotoId) throw new Error('stale-selection');
   const chosen = [...session.shots, ...(session.retakes ?? [])].find(photo => photo.id === photoId);
   if (!chosen || chosen.shotIndex !== slot) throw new Error('render-source');
@@ -257,6 +330,7 @@ export async function selectSavedPhoto(sessionId: string, photoId: string, slot:
 import type { CompositeInput } from '../../../apps/ipad/src/local-persistence';
 export async function saveComposite(sessionId: string, input: CompositeInput): Promise<ActiveSession> {
   const session = histories.get(sessionId);
+  if (session) assertMutableRetake(session);
   if (!session || session.confirmed || session.targetCount !== 4 || session.shots.length !== 4 || session.shots.some((p, i) => p.id !== input.expectedSelectedPhotoIds[i])) throw new Error('composite-selection');
   const originals = input.recipe.photoIds.map(id => {
     const selected = session.shots.find(p => p.id === id);

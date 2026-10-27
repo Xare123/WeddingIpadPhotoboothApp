@@ -5,9 +5,9 @@ import { fileURLToPath } from 'node:url';
 
 export const PHYSICAL_SCHEME = 'WeddingPhotoboothPhysical';
 export const PHYSICAL_TARGET = 'WeddingPhotoboothPhysicalSmokeTests';
-export const PREVIOUS_NATIVE_APPLICATION_COMMIT = 'b4e01d3aeb47c3f164f912b829b4807cc3551f8d';
+export const PREVIOUS_NATIVE_APPLICATION_COMMIT = '3cc16e6e6780e97fdb3fad7568ac99fab6f43e76';
 const reviewedUI = {
-  'apps/ipad/App.tsx': '9425fa216f680b9f6add46d16eca4d3a0cca4bfb52aaac6eb010b814b269068e',
+  'apps/ipad/App.tsx': 'd49e6318af58b395d1b90a97359beb4ae542acc7a6f90a7c29b25414b943cd63',
   'apps/ipad/src/TimingSheet.tsx': 'c6564a204c7a3a3ebd3fe993c04facc755ba08e18bc1e0cee62c572a0e466210',
 };
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -47,7 +47,7 @@ export function preparePhysicalTests({ repository, output, appBundleID, developm
   }
   if (existsSync(output)) throw new Error('Output already exists; preserve existing work');
   const app = JSON.parse(readFileSync(join(repository, 'apps/ipad/app.json'), 'utf8'));
-  if (app.expo?.version !== '0.3.5' || app.expo?.ios?.buildNumber !== '8') throw new Error('Review this rehearsal against the new app version before preparing it');
+  if (app.expo?.version !== '0.3.6' || app.expo?.ios?.buildNumber !== '9') throw new Error('Review this rehearsal against the new app version before preparing it');
   for (const [path, digest] of Object.entries(reviewedUI)) {
     if (hash(readFileSync(join(repository, path))) !== digest) throw new Error('Reviewed app accessibility source changed; revalidate this runner');
   }

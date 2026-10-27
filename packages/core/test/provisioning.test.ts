@@ -63,8 +63,8 @@ test('host timer preferences use bounded choices and survive malformed legacy pr
     assert.equal(hostPreferences(value).firstSeconds, 5);
     assert.equal(hostPreferences(value).nextSeconds, 3);
   }
-  assert.deepEqual(hostPreferences({ firstSeconds: 2, nextSeconds: 10, countdownSeconds: 8 }), { firstSeconds: 2, nextSeconds: 10, photosExportEnabled: true });
-  assert.deepEqual(hostPreferences({ firstSeconds: 8, nextSeconds: '5' }), { firstSeconds: 8, nextSeconds: 3, photosExportEnabled: true });
+  assert.deepEqual(hostPreferences({ firstSeconds: 2, nextSeconds: 10, countdownSeconds: 8 }), { firstSeconds: 2, nextSeconds: 10, photosExportEnabled: true, orientation: 'auto' });
+  assert.deepEqual(hostPreferences({ firstSeconds: 8, nextSeconds: '5' }), { firstSeconds: 8, nextSeconds: 3, photosExportEnabled: true, orientation: 'auto' });
   assert.equal(hostPreferences({ photosExportEnabled: false }).photosExportEnabled, false);
   assert.equal(hostPreferences({ photosExportEnabled: 'false' }).photosExportEnabled, true);
 });
@@ -110,4 +110,18 @@ test('guarded preference save authenticates freshly, waits through OS inactive, 
   const saved = await saveGuardedHostPreferences({ firstSeconds: 5 }, { assertCurrent: lease.assertCurrent,
     load: async () => previous, persist: async value => { writes++; assert.equal(value.photosExportEnabled, false); } });
   assert.equal(writes, 1); assert.deepEqual(saved, { ...previous, firstSeconds: 5 });
+});
+
+
+test('display preference defaults to Auto and preserves explicit valid choices independently of timers', () => {
+  for (const value of [undefined, null, {}, { orientation: 'PORTRAIT' }, { orientation: true }]) {
+    assert.equal(hostPreferences(value).orientation, 'auto');
+  }
+  for (const orientation of ['auto', 'portrait', 'landscape'] as const) {
+    const result = hostPreferences({ orientation, firstSeconds: 8, nextSeconds: 2, photosExportEnabled: false });
+    assert.equal(result.orientation, orientation);
+    assert.equal(result.firstSeconds, 8);
+    assert.equal(result.nextSeconds, 2);
+    assert.equal(result.photosExportEnabled, false);
+  }
 });

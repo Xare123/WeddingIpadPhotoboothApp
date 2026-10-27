@@ -4,6 +4,10 @@ The existing, validated Expo/React Native foundation was retained rather than re
 
 Installed license metadata reviewed: Expo, React Native, react-native-svg, react-native-qrcode-svg and Miniflare are MIT; Wrangler is MIT OR Apache-2.0. The original project MIT license is unchanged. Browser-only visual tooling is isolated from the native product: react-native-web and React DOM render the actual native JSX with explicit device stubs solely for visual review.
 
+## Orientation addition — October 27, 2026
+
+The 0.3.6 candidate adds only official MIT `expo-screen-orientation@58.0.3`, pinned exactly with registry integrity. It uses existing Apple orientation APIs locally and introduces no camera replacement, photo processing service or credential. The final lock installs 591 packages. A fresh audit still reports the same eight high entries, zero moderate/critical; the orientation package has no advisory entry. That is not a clean audit or native-binary audit. The existing tooling constraints/remedy assessment below remains applicable.
+
 ## Current assessment — October 26, 2026
 
 The current V2 candidate applies **Wrangler 4.153.0** as a separate tooling update after its feature checkpoint. The maintainer-selected Miniflare 5 beta dependencies include patched sharp and Undici versions. Isolated frozen installation, 54 API tests and actual local updated-Wrangler HTTP checks passed; root frozen installation, typechecks, all 293 tests, 50 CI contracts, four historical recovery faults and iOS export passed again. [Applied-tooling evidence](../artifacts/security/keepsake-tooling-applied.json) records exact hashes and boundaries.

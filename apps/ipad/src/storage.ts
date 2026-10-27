@@ -5,9 +5,9 @@ import { type QueueJob, type QueueStore } from '@wedding-booth/core';
 import { ensureUploadJob, usableQueueRows } from './queue-index';
 import { relativeDocumentPhotoPath, uploadDocumentPhotoPath } from './local-paths';
 import { createNativeFilePorts } from './native-file-ports';
-import { LocalRepository, type LocalIndex, type RenderedPhotoInput, type CompositeInput } from './local-persistence';
-import type { ActiveCapture, ActiveSession, PhotoExportStatus, PhotoLook, PhotoCrop, CompositeRecipe, SessionComposite, SessionPublicationAssets } from './local-types';
-export type { ActiveCapture, ActiveSession, PhotoExportStatus, PhotoLook, PhotoCrop, CompositeRecipe, SessionComposite, SessionPublicationAssets } from './local-types';
+import { LocalRepository, type LocalIndex, type RenderedPhotoInput, type CompositeInput, type RetakeAllInput } from './local-persistence';
+import type { ActiveCapture, ActiveSession, PhotoExportStatus, PhotoLook, PhotoCrop, CompositeRecipe, SessionComposite, SessionPublicationAssets, TemplateDefaults, RetakeSessionFields } from './local-types';
+export type { ActiveCapture, ActiveSession, PhotoExportStatus, PhotoLook, PhotoCrop, CompositeRecipe, SessionComposite, SessionPublicationAssets, TemplateDefaults, RetakeSessionFields } from './local-types';
 
 const photos = new Directory(Paths.document, 'photobooth');
 let opening: Promise<SQLite.SQLiteDatabase> | undefined;
@@ -71,6 +71,8 @@ const index: LocalIndex = {
 };
 const repository = new LocalRepository(files, index, randomUUID);
 export const createSession = (id?: string, targetCount = 4) => repository.createSession(id, targetCount);
+export const beginRetakeAll = (parentSessionId: string, input: RetakeAllInput) => repository.beginRetakeAll(parentSessionId, input);
+export const cancelRetakeAll = (childSessionId: string) => repository.cancelRetakeAll(childSessionId);
 export const getActiveSession = () => repository.getActiveSession();
 export const getLocalSession = (id: string) => repository.getSession(id);
 export const saveShot = (session: ActiveSession | string, photoId: string, temporaryUri: string, index?: number) => repository.saveShot(session, photoId, temporaryUri, index);

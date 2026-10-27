@@ -79,7 +79,7 @@ export async function hostReliabilityChecks({ browser, report, load, save, snaps
       assert.equal(state.active.shots.length, expectedSaved);
       assert.equal(state.active.stagedOriginals.length, 1);
       const status = await page.getByTestId('capture-save-status').innerText();
-      assert.ok(expectedSaved === 0 ? status.includes('No photos saved on this iPad yet') : status.includes('4 of 5 originals saved on this iPad'));
+      assert.ok(expectedSaved === 0 ? status.includes('No photos saved for this set yet') : status.includes('4 of 5 originals saved on this iPad'));
       await save(page, `staged-${expectedSaved}-saved`, 'portrait');
       await openHost(); await page.getByRole('button', { name: 'Saved sessions', exact: true }).tap(); await page.getByText('Open saved session →', { exact: true }).tap();
       const staged = state.active.stagedOriginals[0];

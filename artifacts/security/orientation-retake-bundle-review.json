@@ -1,0 +1,30 @@
+{
+  "scope": "iOS Hermes JS source graph only; not native-binary audit",
+  "appSHA256": "d49e6318af58b395d1b90a97359beb4ae542acc7a6f90a7c29b25414b943cd63",
+  "sourceCount": 1045,
+  "excludedNodeAndBrowserLibraries": [
+    "node-forge",
+    "zod",
+    "@expo/code-signing-certificates",
+    "miniflare",
+    "sharp",
+    "undici",
+    "react-dom",
+    "react-native-web"
+  ],
+  "findings": {
+    "node-forge": [],
+    "zod": [],
+    "@expo/code-signing-certificates": [],
+    "miniflare": [],
+    "sharp": [],
+    "undici": [],
+    "react-dom": [],
+    "react-native-web": []
+  },
+  "cliBootstrapSources": [
+    "/node_modules/@expo/cli/build/metro-require/require.js"
+  ],
+  "auditHighEntries": 8,
+  "orientationAdvisory": false
+}

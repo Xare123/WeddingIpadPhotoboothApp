@@ -1,0 +1,92 @@
+{
+  "applicationVersion": "0.3.6",
+  "iosBuild": "9",
+  "appSHA256": "d49e6318af58b395d1b90a97359beb4ae542acc7a6f90a7c29b25414b943cd63",
+  "scope": "Locally executed Linux tests/native generation and actual-Root browser fixtures; no physical iPad or Apple runtime claims",
+  "checks": {
+    "lockedInstall": {
+      "packages": 591,
+      "command": "bash scripts/setup-cloud.sh"
+    },
+    "workspaceTypecheck": "passed",
+    "integratedTests": {
+      "passed": 461,
+      "failed": 0,
+      "skipped": 0
+    },
+    "ciAndPhysicalPreparationGuards": {
+      "passed": 98,
+      "failed": 0,
+      "skipped": 0
+    },
+    "iosHermesExport": {
+      "modules": 1060,
+      "assets": 2
+    },
+    "orientationFocusedTests": {
+      "executed": 58,
+      "includedInIntegratedTotal": true
+    },
+    "retakeAllProductionFaultTests": {
+      "executed": 20,
+      "includedInIntegratedTotal": true
+    },
+    "independentRetakeReview": {
+      "scenarios": 3,
+      "focusedRegressions": 127,
+      "overlapsOtherTotals": true,
+      "note": "real temporary files and SQLite behind native boundaries; not iPad evidence"
+    },
+    "browser": {
+      "groups": 24,
+      "screenshots": 38,
+      "orientations": 2,
+      "independentQrDecoders": 2,
+      "externalRequests": 0,
+      "productHashes": 42,
+      "fixtureHashes": 11,
+      "toolHashes": 4,
+      "unchangedHistoricalArtifacts": 491
+    },
+    "nativeGeneration": {
+      "version": "0.3.6",
+      "build": "9",
+      "defaultMask": "UIInterfaceOrientationMaskAllButUpsideDown",
+      "fullScreen": true,
+      "nativeModules": 19,
+      "orientationModule": "58.0.3",
+      "note": "generation/resolution only, not compilation"
+    },
+    "audit": {
+      "high": 8,
+      "critical": 0,
+      "moderate": 0,
+      "newOrientationAdvisory": false,
+      "nativeBinaryAudited": false
+    },
+    "sourceMap": {
+      "sources": 1045,
+      "appSourceExact": true,
+      "knownNodeAndBrowserLibraryMatches": 0,
+      "nativeBinaryAudit": false
+    }
+  },
+  "evidence": {
+    "browserReport": "artifacts/visual/orientation-retake-checks.json",
+    "browserManifestSHA256": "003e63a732a04dc8307b7d241b5faa83ba6df8ca1a8679bd94b8d8a04ea93fec",
+    "browserInventorySHA256": "a8ce90474062d4d1ff80316a8b84e4ad77acb00d8a3fd3101ba7564032d8ccb0",
+    "bundleReview": "artifacts/security/orientation-retake-bundle-review.json"
+  },
+  "unchangedWorkerSHA256": "43dabd6c9dcda6aa44f23ca11ac544f2588f9efd5428f0837dc839f4f98c9ded",
+  "hostedStatusAtCommitPreparation": "not started; fresh unsigned Release and one ARM full20 runtime attempt will be triggered on publication",
+  "installedOwnerVersion": "0.3.5/build8 at3cc16e6, preserved identity/data, not launched/authenticated",
+  "openGates": [
+    "fresh exact-source native checks",
+    "actual iPad Host passcode/biometric verification",
+    "actual orientation and retake interruption/recovery checks",
+    "matching V2 Worker and approved existing-photo upload scope before private pairing",
+    "actual R2/guest download/phone QR proof",
+    "provider eligibility and coordinator-owned SMS scope"
+  ],
+  "faceTracking": "feasibility only, not implemented"
+}

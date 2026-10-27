@@ -1,3 +1,9 @@
+# Current 0.3.6 orientation / Retake All candidate
+
+Frozen App SHA-256 `d49e6318af58b395d1b90a97359beb4ae542acc7a6f90a7c29b25414b943cd63`. Final clean setup: 591 packages, all typechecks, **461/461 integrated tests**, 1,060-module iOS Hermes export/two assets. **98/98 guards** pass. New actual-Root browser evidence: **24/24 groups**, 38 screenshots, two QR decoders/orientation, exact 42 product/11 fixture/four tool hashes and all491 historical files preserved. [Details and acceptance limits](ORIENTATION_RETAKES.md). Native generation/autolinking verifies version9/DEFAULT policy/19 modules; fresh native compilation/runtime and actual iPad feature behavior remain pending at this publication checkpoint.
+
+The coordinator verified exact Host repair `3cc16e6` (0.3.5/build8) installed in place with identity and app data preserved. It has not been launched or authenticated; there is no physical Host pass yet. The owner previously confirmed Photos copies in the earlier manual session and intentionally deleted some; never restore them or inspect unrelated photos.
+
 ## Host access / queue repair candidate 0.3.5, build 8
 
 Exact app revision: `3cc16e6e6780e97fdb3fad7568ac99fab6f43e76`. Hosted Linux40433500707 passed in1m8s. Native Release40433500769/job121956572667 passed in21m8s: unsigned iphoneos compilation, embedded JavaScript and iPad metadata; no XCTest/sign/install/device proof.
@@ -8,9 +14,9 @@ The final clean setup passed: 590 locked packages, all workspace typechecks, 380
 
 # Validation and progress
 
-## In-progress 0.3.5 host-access repair
+## Historical start of the 0.3.5 repair
 
-The local repair target is **0.3.5 / build 8**, with no final source commit or completed test results at this checkpoint. Installed **B4E 0.3.4 / build 7** remains unchanged. Guarded Host entry, secondary OS authentication, safe diagnostics and truthful setup/queued/failure states are being implemented; missing configuration must preserve existing jobs and cannot claim or reset upload activity. [The repair contract](HOST_ACCESS_REPAIR.md) is pending exact-source checks and a coordinated update.
+At the start of that earlier phase, 0.3.5/build8 was uncommitted. Its later published/pass results are recorded above; this paragraph is historical. Installed **B4E 0.3.4 / build 7** remains unchanged. Guarded Host entry, secondary OS authentication, safe diagnostics and truthful setup/queued/failure states are being implemented; missing configuration must preserve existing jobs and cannot claim or reset upload activity. [The repair contract](HOST_ACCESS_REPAIR.md) is pending exact-source checks and a coordinated update.
 
 Latest authorized physical evidence: the Mac verified **four original files with matching journals, one keepsake and SQLite integrity**. The owner personally confirmed **all test photos in Apple Photos**, then intentionally deleted some. Do not restore/re-export those copies or inspect unrelated Photos content. This establishes positive local/Photos saving for that session; interruption, reboot, sustained-use and remaining device acceptance are still open.
 
@@ -20,7 +26,7 @@ Host PIN/passcode fallback was inaccessible across screens; a Touch ID failure o
 
 ## Installed B4E native-repair evidence
 
-The installed source is **`b4e01d3aeb47c3f164f912b829b4807cc3551f8d`, version 0.3.4 / build 7**; the results in this section apply to B4E, not the in-progress 0.3.5 repair. It removes the redundant empty directory append that caused native release to reject its own JPEG. The exact file/UUID/JPEG/canonical-parent security guards remain unchanged. Test coverage includes missing roots, symlink aliases, one/two/three trailing slashes and rendered-URI roundtrips. The independent 5s-first/3s-next timer, four-photo capture, original persistence and API are unchanged. See [current machine-readable evidence](../artifacts/test-results/native-fix-local.json).
+The installed source is **`b4e01d3aeb47c3f164f912b829b4807cc3551f8d`, version 0.3.4 / build 7**; the results in this historical section apply to B4E, not later application revisions. It removes the redundant empty directory append that caused native release to reject its own JPEG. The exact file/UUID/JPEG/canonical-parent security guards remain unchanged. Test coverage includes missing roots, symlink aliases, one/two/three trailing slashes and rendered-URI roundtrips. The independent 5s-first/3s-next timer, four-photo capture, original persistence and API are unchanged. See [current machine-readable evidence](../artifacts/test-results/native-fix-local.json).
 
 **Exact b4e01d3 is cleared for controlled same-identity iPad installation and rehearsal.** Its actual native run passed all 19 cases and retained all 16 JPEGs; the authorized Mac executor separately verified the signed 0.3.4/build 7, compiled patched camera marker and exclusion of the stock camera framework. The app was installed in place with preserved identity and subsequently used in the owner session described above. Full physical acceptance remains open. Preserve the existing app container and originals.
 

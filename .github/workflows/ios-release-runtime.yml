@@ -19,9 +19,9 @@ jobs:
       github.repository == 'Xare123/WeddingIpadPhotoboothApp' &&
       github.event.repository.private == false &&
       contains(github.event.head_commit.message, '[native-runtime-ci]')
-    # Standard Intel label avoids the ARM capacity failure observed on macos-15.
-    # GitHub runner-images lists Xcode26.3 on this image; no larger runner is used.
-    runs-on: macos-15-intel
+    # Standard ARM image; the independent native pixel lane has passed on ARM.
+    # Try the full app within the existing cold-build budget, without a paid larger runner.
+    runs-on: macos-15
     # Bounded install/bootstrap steps plus the phase-budgeted native invocation.
     timeout-minutes: 90
     defaults:

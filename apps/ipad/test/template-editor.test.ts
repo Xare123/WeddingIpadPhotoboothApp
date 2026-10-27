@@ -420,3 +420,31 @@ test('failed full inspection image cannot be reused for save', async () => {
     assert.equal((await b)?.uri, 'file:///cache-7.jpg');
     h.editor.close();
 });
+
+test('retake defaults preserve saved style/aspect with fresh IDs and fit crops after native inspection', async () => {
+    const h = harness(true);
+    h.session = { ...h.session, retakeOfSessionId: 'previous-session', retakeState: 'open',
+        templateDefaults: { layout: 'grid', theme: 'coastal', gridAspect: 'square' } };
+    h.editor.open(h.session);
+    await tick();
+    assert.equal(h.jobs.length, 0);
+    h.inspections[0]!.d.resolve(inspection('portrait'));
+    await tick();
+    assert.equal(h.state?.recipe?.version, 'wedding-template-v2');
+    assert.equal(h.state?.recipe?.layout, 'grid');
+    assert.equal(h.state?.recipe?.theme, 'coastal');
+    assert.equal(h.state?.recipe && 'gridAspect' in h.state.recipe ? h.state.recipe.gridAspect : null, 'square');
+    assert.deepEqual(h.state?.recipe?.photoIds, ['a', 'b', 'c', 'd']);
+    assert.deepEqual(h.state?.recipe?.cropsByPhotoId, Object.fromEntries(['a', 'b', 'c', 'd'].map(id => [id, { mode: 'fit', x: 0, y: 0, zoom: 1 }])));
+    assert.deepEqual(templateDimensions(h.state!.recipe!), [2400, 2400]);
+    h.editor.close();
+});
+
+test('abandoned retake cannot open a template editor even when four images and saved recipe remain', () => {
+    const h = harness();
+    h.session = { ...h.session, retakeOfSessionId: 'parent', retakeState: 'abandoned' };
+    h.editor.open(h.session);
+    assert.equal(h.state, null);
+    assert.equal(h.jobs.length, 0);
+    assert.equal(h.inspections.length, 0);
+});

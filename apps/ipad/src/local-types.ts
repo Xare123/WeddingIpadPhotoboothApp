@@ -1,3 +1,4 @@
+import type { CaptureTiming } from './capture-timing';
 export type PhotoExportStatus = 'pending' | 'saved' | 'denied' | 'failed' | 'unavailable' | 'uncertain';
 export type PhotoLook = { preset: 'warm' | 'bw' | 'film'; intensity: number; version: 'wedding-ci-srgb-v1' };
 export type ActiveCapture = {
@@ -16,7 +17,9 @@ export type PublicationComposite = { photoId: string; layout: CompositeRecipe['l
 );
 export type SessionComposite = { id: string; fileUri: string; exportStatus?: PhotoExportStatus; recipe: CompositeRecipe; originalPhotoIds: string[] };
 export type SessionPublicationAssets = { photoIds: string[]; originalPhotoIds?: string[]; composite?: PublicationComposite };
-export type ActiveSession = {
+export type TemplateDefaults = { layout: CompositeRecipe['layout']; theme: CompositeRecipe['theme']; gridAspect?: GridAspect };
+export type RetakeSessionFields = { retakeOfSessionId?: string; retakeState?: 'open' | 'abandoned'; captureTiming?: CaptureTiming; templateDefaults?: TemplateDefaults };
+export type ActiveSession = RetakeSessionFields & {
   id: string; createdAt: number; targetCount: number; shots: ActiveCapture[]; confirmed: boolean;
   composite?: SessionComposite; stagedComposites?: SessionComposite[];
   retakes?: ActiveCapture[]; stagedOriginals?: ActiveCapture[]; storageWarning?: 'index-repair-pending' | 'original-commit-pending' | 'composite-commit-pending';
