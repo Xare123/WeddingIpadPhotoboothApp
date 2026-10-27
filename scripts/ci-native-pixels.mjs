@@ -7,6 +7,7 @@ import { commandStreams, parseNamedJSON, requireSwiftTools62, selectIpadSimulato
 import { createPixelProject, ownedSimulatorRemoval, pixelBuildSettingsArguments, pixelCleanupDecision, PIXEL_LIMITS, PIXEL_REQUIRED_CASES, requireUnhostedPixelSettings, verifyPixelProject } from './native-pixel-project.mjs';
 import { EXPECTED_PIXEL_ATTACHMENTS, expectedPixelAttachments, exportNamedPixelJpegs, inspectPixelTests, requirePassingPixelTests, safeSchemaShape } from './native-pixel-results.mjs';
 import { CORE_PIXEL_PROFILE, TREATMENT_PIXEL_PROFILE, nativePixelProfile } from './native-treatment-profile.mjs';
+import { readSyntheticFaceSummaries, readSyntheticOrderSummary } from './synthetic-face-summary.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const temporary = process.env.RUNNER_TEMP ?? join(root, '.cache');
@@ -245,6 +246,29 @@ finally {
     fullExpoSmokeVerified: false, error: status.error, schema: status.schemaDiagnostic };
   jsonFile('public-evidence.json', message);
   const logs = Object.fromEntries(readdirSync(diagnostics).filter(name => name.endsWith('.log')).map(name => [name, readFileSync(join(diagnostics, name), 'utf8')]));
+  // Publish only the reviewed numeric fixture schema, through normal CI output.
+  // Never forward raw logs, image data, paths, unrecognized fields or errors.
+  if (profile.id === TREATMENT_PIXEL_PROFILE && status.tests) {
+    try {
+      const placement = readSyntheticFaceSummaries(logs['xcode-test.log'] ?? '');
+      if (placement) {
+        jsonFile('synthetic-placement-public.json', placement);
+        for (const variant of placement.variants) console.log('::notice title=Generated fixture face placement::' +
+          workflowData(JSON.stringify({ fixtureSHA: placement.fixtureSHA, variant })));
+      } else console.log('::warning title=Synthetic placement schema::Required fixture summary absent; no raw content published.');
+    } catch {
+      console.log('::warning title=Synthetic placement schema::Fixture summary rejected; no raw content published.');
+    }
+    try {
+      const order = readSyntheticOrderSummary(logs['xcode-test.log'] ?? '');
+      if (order) {
+        jsonFile('synthetic-order-public.json', order);
+        console.log('::notice title=Generated fixture look ordering::' + workflowData(JSON.stringify(order)));
+      } else console.log('::warning title=Synthetic ordering schema::Required fixture summary absent; no raw content published.');
+    } catch {
+      console.log('::warning title=Synthetic ordering schema::Fixture summary rejected; no raw content published.');
+    }
+  }
   const detail = diagnosticLines(logs, status.stages, 2).join('; ');
   const body = JSON.stringify(message).slice(0, 2500) + (detail ? '; ' + detail : '');
   console.log('::' + (status.result === 'passed' ? 'notice' : 'error') + ' title=Native pixel XCTest evidence::' + workflowData(body));

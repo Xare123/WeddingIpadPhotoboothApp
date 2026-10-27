@@ -54,7 +54,9 @@ final class NativePhotoTreatmentEngineTests: XCTestCase {
   func separated() throws -> URL {
     let resource = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "separated-portrait", withExtension: "png"))
     let data = try Data(contentsOf: resource)
-    XCTAssertEqual(sha(data), "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165")
+    let digest = sha(data)
+    XCTAssertEqual(digest, "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165")
+    guard digest == "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165" else { throw PhotoTreatmentEngine.Failure.invalidInput }
     return try jpeg(image(data))
   }
   func sha(_ data: Data) -> String { SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined() }
@@ -124,22 +126,42 @@ final class NativePhotoTreatmentEngineTests: XCTestCase {
     let old = PhotoEffectsEngine(cacheDirectory: root.appendingPathComponent("old"))
     let legacy = try old.render(source: source, preset: "bw", intensity: 1, preview: false, id: UUID())
     let onlyLook = try render(source, recipe("bw", 1))
-    XCTAssertEqual(try data(onlyLook), try Data(contentsOf: URL(string: legacy.uri)!))
+    let treatmentLookBytes = try data(onlyLook), legacyLookBytes = try Data(contentsOf: URL(string: legacy.uri)!)
+    let legacyLookByteEqual = treatmentLookBytes == legacyLookBytes
+    XCTAssertEqual(treatmentLookBytes, legacyLookBytes)
     let treatment = try render(source, recipe("bw", 1, "crown")), output = try pixels(image(data(treatment)))
     let original = CIImage(cgImage: input)
     let looked = PhotoEffectsEngine.lookPixels(original, preset: "bw", intensity: 1)
     let lookedCG = try XCTUnwrap(PhotoEffectsEngine.context.createCGImage(looked, from: looked.extent, format: .RGBA8, colorSpace: PhotoEffectsEngine.sRGB))
     let worker = AppleFaceEffectsWorker(), done = expectation(description: "independent look-then-face reference")
-    var reference: AppleFaceEffectsOutput?
-    worker.process(uprightImage: lookedCG, accessory: .crown) { if case .success(let value) = $0 { reference = value }; done.fulfill() }
+    var referenceResult: Result<AppleFaceEffectsOutput, AppleFaceEffectsError>?
+    worker.process(uprightImage: lookedCG, accessory: .crown) { referenceResult = $0; done.fulfill() }
     wait(for: [done], timeout: 90)
-    XCTAssertEqual(try data(treatment), try XCTUnwrap(reference?.jpegData), "exact final JPEG comes from the face renderer, no intermediate JPEG")
+    var reference: AppleFaceEffectsOutput?, referenceStatus = "absent", referenceFailure = "none"
+    switch referenceResult {
+    case .success(let value): reference = value; referenceStatus = "success"
+    case .failure(let error):
+      referenceStatus = "failure"; referenceFailure = String(describing: error)
+      XCTFail("Independent reference worker failed: " + referenceFailure)
+    case nil: break
+    }
     var goldPixels = 0
     for offset in stride(from: 0, to: output.count, by: 4) {
       if Int(output[offset]) > Int(output[offset + 2]) + 50 && output[offset] > 130 { goldPixels += 1 }
     }
+    let orderSummary: [String: Any] = ["scope": "TEST_ONLY_SHA_PINNED_GENERATED_FIXTURE_NOT_GUEST_DATA", "fixtureSHA": "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165",
+      "legacyLookByteEqual": legacyLookByteEqual,
+      "treatment": ["detected": treatment.detectedFaceCount ?? -1, "landmarked": treatment.landmarkedFaceCount ?? -1, "decorated": treatment.decoratedFaceCount],
+      "reference": reference.map { ["detected": $0.detectedFaceCount ?? -1, "landmarked": $0.landmarkedFaceCount ?? -1, "decorated": $0.placements.count] as Any } ?? NSNull(),
+      "referenceStatus": referenceStatus, "referenceFailure": referenceFailure,
+      "referenceJpegPresent": reference?.jpegData != nil, "goldPixelCount": goldPixels]
+    let orderBytes = try JSONSerialization.data(withJSONObject: orderSummary, options: [.sortedKeys])
+    guard orderBytes.count <= 1500 else { throw PhotoTreatmentEngine.Failure.resourceLimit }
+    print("SYNTHETIC_FACE_ORDER_SUMMARY " + String(decoding: orderBytes, as: UTF8.self))
+    XCTAssertEqual(try data(treatment), try XCTUnwrap(reference?.jpegData), "exact final JPEG comes from the face renderer, no intermediate JPEG")
     XCTAssertGreaterThan(goldPixels, 12, "ornament gold stays colored because B&W is applied before face art")
   }
+
   func testAllEightExifOrientationsNormalizeOnceAndScrubMetadata() throws {
     let fixture = try blank(), context = CIContext(options: [.workingColorSpace: PhotoEffectsEngine.sRGB, .outputColorSpace: PhotoEffectsEngine.sRGB])
     for orientation in 1...8 {
@@ -277,15 +299,48 @@ final class NativePhotoTreatmentEngineTests: XCTestCase {
           let original = try XCTUnwrap(PhotoEffectsEngine.context.createCGImage(upright, from: upright.extent, format: .RGBA8, colorSpace: PhotoEffectsEngine.sRGB))
           let looked = PhotoEffectsEngine.lookPixels(upright, preset: "warm", intensity: 0.4)
           let warm = try XCTUnwrap(PhotoEffectsEngine.context.createCGImage(looked, from: upright.extent, format: .RGBA8, colorSpace: PhotoEffectsEngine.sRGB))
-          return [("raw-png", try self.image(png)), ("root-jpeg-original-pixels", original), ("root-jpeg-warm-0.4-pixels", warm)]
+          let bw = PhotoEffectsEngine.lookPixels(upright, preset: "bw", intensity: 1)
+          let monochrome = try XCTUnwrap(PhotoEffectsEngine.context.createCGImage(bw, from: upright.extent, format: .RGBA8, colorSpace: PhotoEffectsEngine.sRGB))
+          return [("raw-png", try self.image(png)), ("root-jpeg-original-pixels", original),
+            ("root-jpeg-warm-0.4-pixels", warm), ("root-jpeg-bw-1-pixels", monochrome)]
         }
         var reports = [[String: Any]]()
         for (name, cg) in variants {
           let request = VNDetectFaceLandmarksRequest(); request.revision = 3; request.usesCPUOnly = true
-          try VNImageRequestHandler(cgImage: cg, orientation: .up, options: [:]).perform([request])
+          var handler: VNImageRequestHandler? = VNImageRequestHandler(cgImage: cg, orientation: .up, options: [:])
+          weak var weakHandler = handler
+          try XCTUnwrap(handler).perform([request])
           let observations = request.results ?? []
           guard observations.count <= 8 else { throw PhotoTreatmentEngine.Failure.resourceLimit }
+          func workerReads(_ region: VNFaceLandmarkRegion2D) -> [CGPoint] {
+            guard region.pointCount > 0, region.pointCount <= 128 else { return [] }
+            return (0..<region.pointCount).map { let point = region.normalizedPoints[$0]; return CGPoint(x: point.x, y: point.y) }
+          }
+          func delta(_ baseline: [CGPoint], _ current: [CGPoint]) -> Double? {
+            guard !baseline.isEmpty, baseline.count == current.count else { return nil }
+            let values = zip(baseline,current).map { max(abs(Double($0.0.x - $0.1.x)),abs(Double($0.0.y - $0.1.y))) }
+            guard values.allSatisfy(\.isFinite) else { return nil }; return values.max()
+          }
+          func maximumAvailable(_ values: [Double?]) -> Double? {
+            guard !values.isEmpty, values.allSatisfy({ $0 != nil }) else { return nil }
+            return values.compactMap { $0 }.max()
+          }
+          // All owners and independent value copies are captured while the SAME handler is alive.
+          let retained = withExtendedLifetime(handler) { observations.map { observation -> (landmarks: VNFaceLandmarks2D?, left: VNFaceLandmarkRegion2D?, right: VNFaceLandmarkRegion2D?, leftSnapshot: [CGPoint], rightSnapshot: [CGPoint], before: Double?) in
+            let landmarks = observation.landmarks, left = landmarks?.leftEye, right = landmarks?.rightEye
+            func snapshot(_ region: VNFaceLandmarkRegion2D?) -> [CGPoint] {
+              guard let region, region.pointCount > 0, region.pointCount <= 128 else { return [] }
+              let whole = region.normalizedPoints
+              return whole.map { CGPoint(x: $0.x, y: $0.y) }
+            }
+            let ls = snapshot(left), rs = snapshot(right)
+            let before = maximumAvailable([left.flatMap { delta(ls, workerReads($0)) }, right.flatMap { delta(rs, workerReads($0)) }])
+            return (landmarks,left,right,ls,rs,before)
+          } }
+          handler = nil
+          let handlerReleased = weakHandler == nil
           var anchors = [FaceAnchors](), obstructions = [UnitRect](), rows = [[String: Any]]()
+          var canonicalAnchors = [FaceAnchors](), canonicalObstructions = [UnitRect]()
           func rectangle(_ value: UnitRect) -> [Double] { [value.x,value.y,value.width,value.height] }
           func encode(_ value: AccessoryPlacement) -> [String: Any] {
             ["centerTopLeft": [value.center.x,value.center.y], "width": value.width, "height": value.height,
@@ -302,31 +357,81 @@ final class NativePhotoTreatmentEngineTests: XCTestCase {
             let b = observation.boundingBox
             let bounds = UnitRect(x: Double(b.minX), y: Double(b.minY), width: Double(b.width), height: Double(b.height))
             let top = UnitRect(x: bounds.x, y: 1 - bounds.y - bounds.height, width: bounds.width, height: bounds.height)
+            let owner = retained[index]
+            let landmarkConfidence: Any
+            if let confidence = owner.landmarks.map({ Double($0.confidence) }), confidence.isFinite, (0...1).contains(confidence) {
+              landmarkConfidence = confidence
+            } else { landmarkConfidence = NSNull() }
             var row: [String: Any] = ["anonymousObservationIndex": index, "visionBoundsBottomLeft": rectangle(bounds),
-              "confidence": Double(observation.confidence)]
+              "confidence": Double(observation.confidence),
+              "landmarkConfidence": landmarkConfidence,
+              "normalizedRepeatDelta": NSNull()]
+
             func points(_ region: VNFaceLandmarkRegion2D) -> [UnitPoint] {
               guard region.pointCount <= 128 else { return [] }
               return (0..<region.pointCount).map { UnitPoint(x: Double(region.normalizedPoints[$0].x), y: Double(region.normalizedPoints[$0].y)) }
             }
-            if let left = observation.landmarks?.leftEye, let right = observation.landmarks?.rightEye,
-              let face = FaceGeometry.fromVision(bounds: bounds, leftEye: points(left), rightEye: points(right), confidence: Double(observation.confidence)) {
-              row["boundsTopLeft"] = rectangle(face.bounds)
-              row["leftEyeTopLeft"] = [face.leftEye.x,face.leftEye.y]; row["rightEyeTopLeft"] = [face.rightEye.x,face.rightEye.y]
-              let first = face.leftEye.x <= face.rightEye.x ? face.leftEye : face.rightEye
-              let second = face.leftEye.x <= face.rightEye.x ? face.rightEye : face.leftEye
-              let dx = (second.x - first.x) * size.width, dy = (second.y - first.y) * size.height
-              let distance = hypot(dx,dy), roll = atan2(dy,dx)
-              row["interocularPixels"] = distance; row["sortedEyeRollRadians"] = roll
-              row["confidenceAtLeast0.8"] = face.confidence >= 0.8
-              row["commonAdmissionConditions"] = ["confidenceAtLeast0.5": face.confidence >= 0.5,
-                "faceWidthAtLeast0.035": face.bounds.width >= 0.035,
-                "bothEyesInsideFace": face.bounds.contains(first) && face.bounds.contains(second),
-                "eyeDistanceAtLeastMinimum": distance >= max(4, size.width * 0.008),
-                "eyeDistanceWithinFaceWidth": distance <= face.bounds.width * size.width * 0.9,
-                "rollWithinPiOver3": abs(roll) <= .pi / 3]
-              row["individualNoNeighborPlacements"] = styles([face], [])
-              anchors.append(face)
-            } else if top.valid { obstructions.append(top) }
+            row["boundsTopLeft"] = rectangle(top)
+            if let left = owner.left, let right = owner.right,
+              left.pointCount > 0, right.pointCount > 0, left.pointCount <= 128, right.pointCount <= 128 {
+              let leftLocal = points(left), rightLocal = points(right)
+              let after = maximumAvailable([delta(owner.leftSnapshot, workerReads(left)), delta(owner.rightSnapshot, workerReads(right)),
+                delta(owner.leftSnapshot, leftLocal.map { CGPoint(x: CGFloat($0.x), y: CGFloat($0.y)) }),
+                delta(owner.rightSnapshot, rightLocal.map { CGPoint(x: CGFloat($0.x), y: CGFloat($0.y)) }),
+                delta(owner.leftSnapshot, left.normalizedPoints), delta(owner.rightSnapshot, right.normalizedPoints)])
+              let repeatDelta = maximumAvailable([owner.before,after])
+              row["normalizedRepeatDelta"] = repeatDelta.map { $0 as Any } ?? NSNull()
+              row["normalizedRepeatBeforeReleaseDelta"] = owner.before.map { $0 as Any } ?? NSNull()
+              row["normalizedRepeatAfterReleaseDelta"] = after.map { $0 as Any } ?? NSNull()
+              // Public Apple conversion: ObjC header verified, current Swift overlay verified by review;
+              // the actual selected iOS SDK compile remains the runtime-candidate verification gate.
+              func appleMean(_ region: VNFaceLandmarkRegion2D) throws -> [Double] {
+                let converted = region.pointsInImage(imageSize: CGSize(width: CGFloat(cg.width), height: CGFloat(cg.height)))
+                guard converted.count == region.pointCount else { throw PhotoTreatmentEngine.Failure.invalidInput }
+                var x = 0.0, y = 0.0
+                for i in 0..<region.pointCount { x += Double(converted[i].x); y += Double(converted[i].y) }
+                return [x / Double(region.pointCount), y / Double(region.pointCount)]
+              }
+              func directMean(_ points: [UnitPoint]) -> [Double] {
+                [points.reduce(0) { $0 + $1.x } / Double(points.count) * size.width,
+                 points.reduce(0) { $0 + $1.y } / Double(points.count) * size.height]
+              }
+              let apple = [try appleMean(left), try appleMean(right)]
+              let direct = [directMean(leftLocal), directMean(rightLocal)]
+              let appleTop = apple.map { [$0[0] / size.width, 1 - $0[1] / size.height] }
+              row["appleEyeMeansImagePixels"] = apple; row["appleEyeMeansTopLeft"] = appleTop
+              row["directNormalizedEyeMeansImagePixels"] = direct
+              row["directAppleMaximumDelta"] = zip(direct, apple).map {
+                max(abs($0.0[0] - $0.1[0]) / size.width, abs($0.0[1] - $0.1[1]) / size.height)
+              }.max() ?? 0
+              let canonical = FaceAnchors(bounds: top, leftEye: UnitPoint(x: appleTop[0][0], y: appleTop[0][1]),
+                rightEye: UnitPoint(x: appleTop[1][0], y: appleTop[1][1]), confidence: Double(observation.confidence))
+              if top.valid && canonical.leftEye.valid && canonical.rightEye.valid { canonicalAnchors.append(canonical) }
+              else if top.valid { canonicalObstructions.append(top) }
+              if let face = FaceGeometry.fromVision(bounds: bounds, leftEye: leftLocal, rightEye: rightLocal, confidence: Double(observation.confidence)) {
+                row["leftEyeTopLeft"] = [face.leftEye.x,face.leftEye.y]; row["rightEyeTopLeft"] = [face.rightEye.x,face.rightEye.y]
+                let manual = [[face.leftEye.x * size.width, (1 - face.leftEye.y) * size.height],
+                  [face.rightEye.x * size.width, (1 - face.rightEye.y) * size.height]]
+                row["manualBBoxEyeMeansImagePixels"] = manual
+                row["appleManualMaximumDelta"] = zip(manual, apple).map {
+                  max(abs($0.0[0] - $0.1[0]) / size.width, abs($0.0[1] - $0.1[1]) / size.height)
+                }.max() ?? 0
+                let first = face.leftEye.x <= face.rightEye.x ? face.leftEye : face.rightEye
+                let second = face.leftEye.x <= face.rightEye.x ? face.rightEye : face.leftEye
+                let dx = (second.x - first.x) * size.width, dy = (second.y - first.y) * size.height
+                let distance = hypot(dx,dy), roll = atan2(dy,dx)
+                row["interocularPixels"] = distance; row["sortedEyeRollRadians"] = roll
+                row["confidenceAtLeast0.8"] = face.confidence >= 0.8
+                row["commonAdmissionConditions"] = ["confidenceAtLeast0.5": face.confidence >= 0.5,
+                  "faceWidthAtLeast0.035": face.bounds.width >= 0.035,
+                  "bothEyesInsideFace": face.bounds.contains(first) && face.bounds.contains(second),
+                  "eyeDistanceAtLeastMinimum": distance >= max(4, size.width * 0.008),
+                  "eyeDistanceWithinFaceWidth": distance <= face.bounds.width * size.width * 0.9,
+                  "rollWithinPiOver3": abs(roll) <= .pi / 3]
+                row["individualNoNeighborPlacements"] = styles([face], [])
+                anchors.append(face)
+              } else if top.valid { obstructions.append(top) }
+            } else if top.valid { obstructions.append(top); canonicalObstructions.append(top) }
             rows.append(row)
           }
           var pairs = [[String: Any]]()
@@ -336,11 +441,13 @@ final class NativePhotoTreatmentEngineTests: XCTestCase {
             } }
           }
           let confidenceOne = anchors.map { FaceAnchors(bounds: $0.bounds, leftEye: $0.leftEye, rightEye: $0.rightEye, confidence: 1) }
-          reports.append(["variant": name, "width": cg.width, "height": cg.height,
+          reports.append(["variant": name, "width": cg.width, "height": cg.height, "handlerReleased": handlerReleased,
             "pixelSha256": self.sha(Data(try self.pixels(cg))), "detected": observations.count, "landmarked": anchors.count,
             "observations": rows, "rawObstructionsTopLeft": obstructions.map(rectangle), "pairDiagnostics": pairs,
             "allPlacements": styles(anchors, obstructions),
+            "TEST_ONLY_canonicalApplePlacements": styles(canonicalAnchors, canonicalObstructions),
             "TEST_ONLY_confidenceOnePlacements": styles(confidenceOne, obstructions)])
+          withExtendedLifetime((request,retained)) {} // Request/observations/regions outlive every after-release getter.
         }
         let report: [String: Any] = ["scope": "TEST_ONLY_SHA_PINNED_GENERATED_FIXTURE_NOT_GUEST_DATA",
           "fixturePngSha256": self.sha(png), "rootJpegSha256": self.sha(try Data(contentsOf: source)), "visionRevision": 3,
@@ -354,6 +461,7 @@ final class NativePhotoTreatmentEngineTests: XCTestCase {
     }
     wait(for: [done], timeout: 120)
     let bytes = try XCTUnwrap(result).get()
+    try printSyntheticPlacementSummary(bytes)
     // The CI logger bounds each line to 16k characters. Only fixed ASCII keys,
     // synthetic-fixture labels and JSON numbers are admitted; preserve every byte.
     guard bytes.allSatisfy({ $0 < 128 }) else { throw PhotoTreatmentEngine.Failure.invalidInput }
@@ -364,6 +472,55 @@ final class NativePhotoTreatmentEngineTests: XCTestCase {
     }
     let attachment = XCTAttachment(data: bytes, uniformTypeIdentifier: UTType.json.identifier)
     attachment.name = "synthetic-face-placement-diagnostic"; attachment.lifetime = .keepAlways; add(attachment)
+  }
+
+  /// Fixed compact summary for ordinary CI logs; full synthetic report stays attached/chunked separately.
+  private func printSyntheticPlacementSummary(_ bytes: Data) throws {
+    let report = try XCTUnwrap(JSONSerialization.jsonObject(with: bytes) as? [String: Any])
+    guard report["fixturePngSha256"] as? String == "c6b6c5015df9b172731f021dde939300ebec6bf624818d63c4bda4a1854a3165",
+      let variants = report["variants"] as? [[String: Any]], variants.count == 4 else { throw PhotoTreatmentEngine.Failure.invalidInput }
+    func rounded(_ value: Any, digits: Double = 100000) -> Any {
+      if let array = value as? [Any] { return array.map { rounded($0, digits: digits) } }
+      if let number = value as? Double { return (number * digits).rounded() / digits }
+      return NSNull()
+    }
+    func counts(_ value: Any?) -> [String: Int] {
+      let styles = value as? [String: Any] ?? [:]
+      return ["g": (styles["glasses"] as? [Any])?.count ?? 0,
+        "c": (styles["crown"] as? [Any])?.count ?? 0, "h": (styles["hearts"] as? [Any])?.count ?? 0]
+    }
+    let bitNames = ["confidenceAtLeast0.5", "faceWidthAtLeast0.035", "bothEyesInsideFace", "eyeDistanceAtLeastMinimum", "eyeDistanceWithinFaceWidth", "rollWithinPiOver3"]
+    var summaries = [[String: Any]]()
+    for variant in variants {
+      let rows = variant["observations"] as? [[String: Any]] ?? []
+      guard rows.count <= 8 else { throw PhotoTreatmentEngine.Failure.resourceLimit }
+      var faces = [[String: Any]]()
+      for row in rows {
+        let conditions = row["commonAdmissionConditions"] as? [String: Bool] ?? [:]
+        let bits = bitNames.enumerated().reduce(0) { $0 | (conditions[$1.element] == true ? 1 << $1.offset : 0) }
+        let face: [String: Any] = ["i": row["anonymousObservationIndex"] ?? -1,
+          "b": rounded(row["boundsTopLeft"] ?? NSNull()),
+          "e": [rounded(row["leftEyeTopLeft"] ?? NSNull()), rounded(row["rightEyeTopLeft"] ?? NSNull())],
+          "c": rounded(row["confidence"] ?? 0, digits: 1000), "admissionBits": bits,
+          "landmarkConfidence": rounded(row["landmarkConfidence"] ?? NSNull(), digits: 100000),
+          "normalizedRepeatDelta": rounded(row["normalizedRepeatDelta"] ?? NSNull(), digits: 10000000),
+          "appleE": rounded(row["appleEyeMeansTopLeft"] ?? NSNull()),
+          "appleDeltaMax": rounded(row["appleManualMaximumDelta"] ?? NSNull(), digits: 10000000),
+          "directDeltaMax": rounded(row["directAppleMaximumDelta"] ?? NSNull(), digits: 10000000)]
+        faces.append(face)
+      }
+      summaries.append(["name": variant["variant"] ?? "unknown", "w": variant["width"] ?? 0, "h": variant["height"] ?? 0,
+        "handlerReleased": variant["handlerReleased"] ?? false,
+        "detected": variant["detected"] ?? -1, "landmarked": variant["landmarked"] ?? -1, "faces": faces,
+        "individual": rows.map { counts($0["individualNoNeighborPlacements"]) },
+        "full": counts(variant["allPlacements"]), "confidence1": counts(variant["TEST_ONLY_confidenceOnePlacements"]),
+        "canonicalFull": counts(variant["TEST_ONLY_canonicalApplePlacements"])])
+    }
+    let summary: [String: Any] = ["scope": "TEST_ONLY_SHA_PINNED_GENERATED_FIXTURE_NOT_GUEST_DATA", "fixtureSHA": report["fixturePngSha256"]!, "variants": summaries]
+    let compact = try JSONSerialization.data(withJSONObject: summary, options: [.sortedKeys])
+    guard compact.count <= 6000 else { throw PhotoTreatmentEngine.Failure.resourceLimit }
+    // admissionBits bit0..5 follow bitNames above; no missing bit means the common guard passed.
+    print("SYNTHETIC_FACE_PLACEMENT_SUMMARY " + String(decoding: compact, as: UTF8.self))
   }
 
 }

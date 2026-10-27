@@ -80,3 +80,24 @@ The executor could read public run status/annotations and initially read authent
 An authorized coordinator must inspect the full assertion messages for the second method, the synthetic JSON chunks in `xcode-test.log` (or the JSON attachment), and the three actual treatment JPEGs. The retained artifact names are `native-pixels-evidence-316ce2daf31e2149168c954ba1cb3bd1e0e881df` and `native-pixels-jpegs-316ce2daf31e2149168c954ba1cb3bd1e0e881df`. Use an already authorized supported connector or an approved managed-access remedy. Do not repeat the unchanged run, relax protection/assertions, or infer a geometry/encoding fix from the two known method names alone.
 
 The isolated candidate remains held. The installed wedding app remains 0.3.7/build10. Environment draft revision 30 still pins stable source `642a3676a4993ec9880f44e45ee2b6b48aaf7a8d`; it was not repinned to this experimental branch. Snapshot publication/fresh restoration is not established by these checks.
+
+## Same-observation follow-up
+
+The coordinator relayed synthetic measurements from its artifact copy acquired legitimately before the executor denial; no new transfer was performed. All three independent variants had confidence 1, all common admission flags true, no obstruction rectangles and two placements per style, while the production Warm/glasses receipt had one. Face boxes were stable but measured eye distances/roll changed sharply. The coordinator also observed small displaced glasses/crown and absent hearts in actual native output. These observations establish a real discrepancy; they do not establish its cause.
+
+The observed CLI failure form was a Go URL transport error (`Get "https://…": Forbidden`), not an authenticated GitHub resource-permission response. The startup proxy policy is restricted and its 144 exact host rules contain none of the three denied hosts, with no wildcard rule. This is consistent with a proxy destination-policy rejection; runtime policy enforcement is reported as unknown, so the precise enforcement decision and the separate connector's authorization are not proven. No further artifact/log reads or network-grant changes are part of this follow-up.
+
+The next test-only run publishes a **minimal generated-fixture numeric summary through normal existing CI output**, as authorized by the coordinator. It adds no HTTP request or new CI permission. A strict parser admits only the pinned fixture SHA, four fixed variant names, bounded numbers/booleans/null and known failure enums. Other fields/payloads are rejected without echo. All 155 local contract checks pass; the app, production Swift and acceptance assertions remain unchanged.
+
+For each of PNG, decoded JPEG, Warm and B&W, this compares the manual eye projection with Apple's `pointsInImage(imageSize:)` on the same observations. The handler stays explicitly alive while whole-eye values are copied; the request/landmarks/regions stay alive after handler release. Whole-array and per-point rereads are compared with those snapshots. There are no extra repeat inference requests or enlarged timeouts. The ordering case retains the reference worker's full `Result` and reports it before any JPEG unwrap.
+
+Public summary fields are deliberately small:
+
+- `b`, `e`, `appleE`: face box, manual eyes and Apple-converted eyes in **normalized top-left image coordinates**.
+- `appleDeltaMax`: manual face-box projection versus Apple conversion; `directDeltaMax`: unprojected normalized points versus Apple conversion, normalized by image size.
+- `normalizedRepeatDelta`: maximum same-region coordinate change across before/after handler release and getter patterns; null means a required comparison was unavailable. `handlerReleased` reports actual weak-reference disappearance.
+- `landmarkConfidence` is separate from detection confidence `c`. `admissionBits` uses six bits for confidence ≥0.5, minimum face width, eyes inside box, minimum eye distance, distance within face width and supported roll.
+- `g`, `c`, `h` counts mean glasses, crown and hearts placements. `canonicalFull` uses Apple-converted anchors with the same unchanged safety geometry; no resulting image is substituted for the production render.
+- The ordering summary distinguishes `success`, `failure` and `absent`; `referenceJpegPresent` and `goldPixelCount` are observed independently.
+
+Native SDK compilation and these measurements are pending. A coordinate/lifetime change requires evidence from this comparison; normal summaries do not change the required 29 passing cases or 19 JPEGs.

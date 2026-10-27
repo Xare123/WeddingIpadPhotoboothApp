@@ -40,7 +40,7 @@ jobs:
           node-version-file: .nvmrc
       - name: Verify independent project and result guards
         timeout-minutes: 3
-        run: node --test scripts/ci-native-pixels.test.mjs scripts/ci-native-pixels-results.test.mjs scripts/native-treatment-profile.test.mjs
+        run: node --test scripts/ci-native-pixels.test.mjs scripts/ci-native-pixels-results.test.mjs scripts/native-treatment-profile.test.mjs scripts/synthetic-face-summary.test.mjs
       - name: Execute nineteen baseline cases and selected production extras
         timeout-minutes: 46
         run: |

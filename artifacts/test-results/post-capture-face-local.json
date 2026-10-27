@@ -104,7 +104,7 @@
     "artifacts/visual/face-effects-evidence.json": "afe58a7707a2e5d3c5f3d31236d7adf8690efe48f69da44e494abdc152ca6af9",
     "artifacts/visual/face-effects-sha256.txt": "48496cf92be55f0ffdf7f007a6b9c638dedcd4f4e06956e502c4e46a9d3de5d1"
   },
-  "lastUpdatedAt": "2026-10-27T14:15:26.996771+00:00",
+  "lastUpdatedAt": "2026-10-27T14:54:47.470375+00:00",
   "diagnosticFollowup": {
     "scope": "Test-only; no production behavior or acceptance change",
     "nativeTestSha256": "c0c167816477d9ffee1e5bd93e8692403a65c323040e164482cd566c176b71e2",
@@ -139,6 +139,28 @@
       "Synthetic JSON chunks from xcode-test.log, or synthetic-face-placement-diagnostic attachment",
       "Three actual treatment JPEGs for visual inspection"
     ],
-    "installationGate": "NOT APPROVED; isolated candidate only; stable installed0.3.7unchanged"
+    "installationGate": "NOT APPROVED; isolated candidate only; stable installed0.3.7unchanged",
+    "classification": "Observed Go URL transport Forbidden, consistent with inherited proxy destination policy; not an established GitHub service-permission rejection. Startup policy has no matching denied host or wildcard; runtime enforcement unknown."
+  },
+  "sameObservationFollowup": {
+    "scope": "TEST ONLY; production app/Swift/acceptance unchanged",
+    "localContracts": 155,
+    "nativeTestSha256": "e7e6bf9531482508b9256c58166d51167940a2b5494e54ecdc9ef40735282ac3",
+    "summaryParserSha256": "bad15689f1e3758a0de1f929e2ca037a1b2eb76406b1027263d702407a830dcc",
+    "normalCIOutputAuthorized": true,
+    "noArtifactRequests": true,
+    "fourVariants": [
+      "raw-png",
+      "root-jpeg-original-pixels",
+      "root-jpeg-warm-0.4-pixels",
+      "root-jpeg-bw-1-pixels"
+    ],
+    "measurements": [
+      "Same-observation manual vs Apple canonical image points",
+      "Whole-array and per-point snapshot stability across handler release",
+      "Landmark confidence independent from face detection confidence",
+      "Full reference worker result before JPEG unwrap"
+    ],
+    "runtime": "pending; no fix claimed"
   }
 }
