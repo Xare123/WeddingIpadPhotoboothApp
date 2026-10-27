@@ -28,15 +28,17 @@ The script extracts and executes the actual `App.tsx` handlers against synthetic
 
 These checks pass against both the parent source and this candidate. They verify handler contracts; they do not exercise native rendering, accessibility, touches or a camera. Do not interpret them as a reproduction of a native failure.
 
+The normal `npm test` aggregate enforces the diagnostic through `scripts/check-retake-presentation.test.mjs`. Its negative control removes the actual Retake readiness reset in a temporary source fixture and requires the guard to reject it. The positive individual-Retake fixture starts with camera readiness true, so clearing readiness is observable.
+
 ## Local verification
 
 - All workspace typechecks passed.
-- 420 app/core/plugin checks and 54 API checks passed in separate runs. The API checks used only the local emulator and synthetic data; a restricted-process emulator startup was stopped before rerunning that group with the required local process access.
+- The initial 420 app/core/plugin checks and 54 API checks passed in separate runs. After aggregate enforcement was added, all 476 aggregate tests passed, including both new guard tests. API checks use only a local emulator and synthetic data.
 - The three actual-handler checks passed for both source revisions using synthetic, memory-only dependencies.
 - A single-worker, offline iOS JavaScript/Hermes export passed.
 - The source fingerprint was refreshed only after reviewing the unchanged selector inventory and handler behavior. The physical preparation checks passed. The broader tooling group passed 137/138 on macOS: the unchanged owner-setup marker fixture assumes `/tmp` is a directory, while macOS exposes it through a symlink. Its production path guard and failing assertion were not weakened.
 
-No native app build, installation or physical Retake acceptance was performed for this candidate. Keep the candidate unreleased until the required native gates pass. Publishing this source candidate does not authorize an app replacement.
+Native builds had not been performed when this source candidate was first proposed. Subsequent native compile/runtime results, their exact source identity and limitations are tracked in the draft PR. Physical Retake acceptance remains required. Keep the candidate unreleased until the required native and physical gates pass. Publishing this source candidate does not authorize an app replacement.
 
 ## Next device check
 
