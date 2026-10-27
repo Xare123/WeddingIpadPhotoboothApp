@@ -132,6 +132,7 @@
     "sourcePreparationContractsPassed": 100,
     "swiftCompilation": "pending three-minute standalone Xcode simulator-SDK preflight before dependency installation",
     "change": "fixed-key state/application-window geometry in existing smoke failure message; same predicate, waits and20 required tests",
-    "rerun": "one opt-in hosted diagnostic run follows this preflight change; inspect actual result before claiming runtime success"
+    "rerun": "7d0c86e/run40446729780 failed at standalone Swift preflight in52s; zero native tests executed; Linux40446729708 passed in1m22s",
+    "preflightRepair": "add the selected simulator platform Developer/usr/lib Swift test-library include path alongside XCTest frameworks; Apple compiler validation pending; no app or assertion change"
   }
 }

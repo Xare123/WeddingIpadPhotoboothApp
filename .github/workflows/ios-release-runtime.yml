@@ -80,11 +80,15 @@ jobs:
             *) printf '%s\n' 'Unsupported simulator compiler architecture' >&2; exit 1 ;;
           esac
           WEDDING_SIM_SDK="$(xcrun --sdk iphonesimulator --show-sdk-path)"
+          WEDDING_SIM_PLATFORM="$(xcrun --sdk iphonesimulator --show-sdk-platform-path)"
+          WEDDING_XCTEST_SUPPORT="$WEDDING_SIM_PLATFORM/Developer/usr/lib"
+          test -d "$WEDDING_XCTEST_SUPPORT"
           xcrun --sdk iphonesimulator swiftc \
             -swift-version 5 \
             -target "$WEDDING_SMOKE_ARCH-apple-ios16.4-simulator" \
             -sdk "$WEDDING_SIM_SDK" \
-            -F "$DEVELOPER_DIR/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks" \
+            -I "$WEDDING_XCTEST_SUPPORT" \
+            -F "$WEDDING_SIM_PLATFORM/Developer/Library/Frameworks" \
             -module-cache-path "$RUNNER_TEMP/wedding-smoke-module-cache" \
             -typecheck apps/ipad/native-tests/WeddingPhotoboothReleaseSmokeTests.swift \
             2>&1 | tee "$RUNNER_TEMP/wedding-native-diagnostics/swift-smoke-typecheck.log"
