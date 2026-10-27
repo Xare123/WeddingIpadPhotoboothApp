@@ -1,75 +1,67 @@
 {
   "branch": "codex/face-effects-prototype",
-  "nativeTestedCommit": "4c127fee22b0bbb90ba9639af07d78b684d38fea",
+  "nativeTestedCommit": "e886ec596ab3b946f578289f29e0fafd90cd074a",
   "baselineShippingCommit": "c6920138de3fe239571b1c65cf6750dfd96664ff",
   "shippingSourceUnchanged": true,
-  "localNodeProofTests": 11,
-  "independentSourceReview": {
-    "result": "no blocker found",
-    "scope": "All eight EXIF edge/corner permutations; asymmetric raw fixture and sampling; nonsquare roll and both known eye rims; all original29 identities retained; no app/renderer mutation",
-    "nativeExecutionByReviewer": false,
-    "actualJPEGVisualReviewByReviewer": false
+  "installedAppPreserved": "9ed36b4eac6ce558b82b22db4e08037308b87a2c /0.3.7 build10",
+  "mvpReviewBranchPreserved": "642a3676a4993ec9880f44e45ee2b6b48aaf7a8d",
+  "localNodeProofTests": {
+    "executed": 11,
+    "passed": 11
   },
   "nativeRun": {
-    "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40487787704",
-    "job": "122133828705",
+    "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40495695167",
+    "job": "122160447855",
     "result": "passed",
-    "duration": "1m39s",
-    "executed": 31,
+    "duration": "1m18s",
+    "executed": 39,
     "failed": 0,
     "skipped": 0,
     "coverage": [
-      "actual iOS SDK source typecheck",
-      "macOS Release XCTest:10 geometry,13 frame freshness/ownership,8 Apple Vision/rendering",
-      "all original29 methods retained; two actual asymmetric pixel regressions added",
-      "all-eight caller EXIF normalization preserves expected colored edges/corners; renderer does not normalize input",
-      "three actual distinct still-image JPEGs,960x1200,source preserved"
+      "Actual iOS SDK source typecheck, not iOS runtime",
+      "macOS Release XCTest:15geometry,13freshness/ownership,11AppleVision/rendering",
+      "All31 initial test identities retained; close-face/rolled/edge/lowconfidence/exclusion-mask regressions added",
+      "Exact protected CG pixels and JPEG-tolerant protected interiors; actual lens center/rim assertions; overlapping-mask negative control",
+      "Six distinct actual960x1200JPEGs:three actual-Vision portrait stills,three controlled-anchor diagnostics"
     ],
-    "proof": "Public exact-commit CI finish gate verified after terminal success; executor has not downloaded or visually inspected the JPEG artifact",
-    "artifactName": "isolated-face-effects-4c127fee22b0bbb90ba9639af07d78b684d38fea"
+    "artifactName": "isolated-face-effects-e886ec596ab3b946f578289f29e0fafd90cd074a",
+    "proof": "Public exact-commit terminal CI and strict finish-gate annotation verified; this executor has not downloaded the artifact or viewed the six JPEGs"
   },
   "linuxRun": {
-    "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40487787627",
+    "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40495694869",
     "result": "passed",
-    "duration": "1m23s"
+    "duration": "1m21s"
   },
   "sourceSHA256": {
     "prototypes/FaceEffects/Package.swift": "d182d430a227dd5669d5720e889ae721d2c8d134879c5f02d2bbc45d0d684226",
-    "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/Fixtures/provenance.json": "b8403432b106ab7aa8adc642ccf00f44b17d7381ea9ab9311d2e27e237b1fa84",
-    ".github/workflows/face-effects-prototype.yml": "cfa62e2b26558faabedf8418f9b235f605bb26ab616a9a0a953c9bd12878b92b",
-    "scripts/face-effects-proof.mjs": "26a171ab568b0d6f91249569ddd611fff4ce0fea23fa2b04399340554528da9b",
-    "scripts/face-effects-proof.test.mjs": "bccb480413d37b7ad84734bf8d17852e8be8533fae052aeaac7d1c975a3a3fa3",
-    "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/GeometryTests.swift": "b179f19604328a30c41750244b57e7a70deafb17c65590fffc98139a1946e244",
+    "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/Fixtures/provenance.json": "937bbf6d2d52a3b18569b38371e9fdae622ebf9ea7ca86c20ee0e322f5bd3e9c",
+    ".github/workflows/face-effects-prototype.yml": "995110e019a1de4d43a130c4b04481f11edb353fcf1f3fdb73d0da3e8bae0a00",
+    "scripts/face-effects-proof.mjs": "d87aaa39370fded9d1aba9a51160f3dd8dd018c244af5d9d58a19143b8848e9a",
+    "scripts/face-effects-proof.test.mjs": "0a662ed00ca5382816ac2a561251a7710e1cd9a5bc610e47be3ed606789345c3",
+    "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/GeometryTests.swift": "a1a384b9672242925470211105601464159e1077dff7b71b01b843982ad0c1a7",
     "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/FrameFreshnessGateTests.swift": "03cc3280f46b51e34a3f462595974836840afe2082edef9ed05cce2a9abbec26",
-    "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/AppleFaceEffectsTests.swift": "36092db9b8ae17d84b8831a37e5adcc883514ab4f50284863f85fa56c9ed6d9c",
-    "prototypes/FaceEffects/Sources/FaceEffectsPrototype/AppleFaceEffects.swift": "32058860f72434c7823ed2837d296700e1be0235e712584c0b040eca8daff1fe",
-    "prototypes/FaceEffects/Sources/FaceEffectsPrototype/FaceGeometry.swift": "bba85bd69a07ff69ed711685af9b6953005a6438a8bb72c3172127179a18206e",
+    "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/AppleFaceEffectsTests.swift": "d73a4738a7cee221ffc6df97a4d420e1a8fa83fefc7468468cd4f3a8db6c35b5",
+    "prototypes/FaceEffects/Sources/FaceEffectsPrototype/AppleFaceEffects.swift": "664f76451dd5fb9d89758bc1dcfda3240e578ba85c085aace95771cd84d0aa37",
+    "prototypes/FaceEffects/Sources/FaceEffectsPrototype/FaceGeometry.swift": "84605627ec754edb1c0f625fc1fd241ae840de8e9701715d82d0638ac740654e",
     "prototypes/FaceEffects/Sources/FaceEffectsPrototype/FrameFreshnessGate.swift": "2d1d6615c49a501302cf44861825c7cda3ad26fe161cd0db53f84cb396ee55f3"
   },
-  "priorNativeCheckpoint": {
-    "source": "537c352f4a0ca56cb4d82582911549d10c16b8cd",
-    "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40477995823",
-    "executed": 29,
-    "result": "passed"
+  "imageProducers": {
+    "portrait": [
+      "portrait-glasses.jpg",
+      "portrait-crown.jpg",
+      "portrait-hearts.jpg"
+    ],
+    "portraitProducer": "AppleFaceEffectsTests.testActualVisionPortraitDetectsUsableFacesAndRendersAllThreeOriginalVectors",
+    "controlled": [
+      "close-faces.jpg",
+      "rolled-faces.jpg",
+      "edge-faces.jpg"
+    ],
+    "controlledProducer": "AppleFaceEffectsTests.testControlledCloseRollAndEdgeEvidenceUsesSafeFallback",
+    "actualImageHashes": "Available in exact artifact report.json; not fabricated or independently downloaded here"
   },
-  "unverified": [
-    "live camera/session attachment",
-    "live tracking or smoothing",
-    "physical M2 iPad Vision/runtime/performance",
-    "app integration/UI/durable face derivatives",
-    "visual signoff of native prototype JPEGs",
-    "Supported artifact transfer and individual inspection of all three actual native JPEGs",
-    "Group/occlusion fixture suite and post-capture preview/export integration"
-  ],
   "visualReview": {
-    "status": "blocked on supported artifact transfer; no artifact/Library download capability exposed here",
-    "action": "Transfer only report.json,portrait-glasses.jpg,portrait-crown.jpg,portrait-hearts.jpg from the exact native artifact using a supported attachment or approved public synthetic-evidence route",
-    "deniedOperation": false,
-    "rendererChangedWithoutVisualEvidence": false
-  },
-  "noProductionActions": true,
-  "pendingV2Refinement": {
-    "basis": {
+    "baseline": {
       "reviewer": "Coordinator actual JPEG inspection",
       "artifactId": "12725782780",
       "run": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40487787704",
@@ -82,76 +74,51 @@
       ],
       "executorViewedRenderedArtifact": false
     },
-    "scope": "Isolated geometry/vector refinement and deterministic native regressions; no app integration",
-    "expectedNativeMethods": 39,
-    "existingMethodsRetained": 31,
-    "expectedImages": {
-      "actualVisionPortraits": 3,
-      "controlledAnchorDiagnostics": 3,
-      "dimensions": [
-        960,
-        1200
-      ]
-    },
-    "nativeResult": "repair candidate unrun; do not infer success from failed37-case attempt",
-    "visualResult": "new exports and coordinator review required",
-    "limitations": [
-      "conservative bounding-box suppression, not depth-aware occlusion",
-      "no live camera/tracking/smoothing",
-      "no shipping app/device modification"
-    ],
-    "sourceSHA256": {
-      "prototypes/FaceEffects/Package.swift": "d182d430a227dd5669d5720e889ae721d2c8d134879c5f02d2bbc45d0d684226",
-      "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/Fixtures/provenance.json": "937bbf6d2d52a3b18569b38371e9fdae622ebf9ea7ca86c20ee0e322f5bd3e9c",
-      ".github/workflows/face-effects-prototype.yml": "995110e019a1de4d43a130c4b04481f11edb353fcf1f3fdb73d0da3e8bae0a00",
-      "scripts/face-effects-proof.mjs": "d87aaa39370fded9d1aba9a51160f3dd8dd018c244af5d9d58a19143b8848e9a",
-      "scripts/face-effects-proof.test.mjs": "0a662ed00ca5382816ac2a561251a7710e1cd9a5bc610e47be3ed606789345c3",
-      "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/GeometryTests.swift": "a1a384b9672242925470211105601464159e1077dff7b71b01b843982ad0c1a7",
-      "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/FrameFreshnessGateTests.swift": "03cc3280f46b51e34a3f462595974836840afe2082edef9ed05cce2a9abbec26",
-      "prototypes/FaceEffects/Tests/FaceEffectsPrototypeTests/AppleFaceEffectsTests.swift": "d73a4738a7cee221ffc6df97a4d420e1a8fa83fefc7468468cd4f3a8db6c35b5",
-      "prototypes/FaceEffects/Sources/FaceEffectsPrototype/AppleFaceEffects.swift": "664f76451dd5fb9d89758bc1dcfda3240e578ba85c085aace95771cd84d0aa37",
-      "prototypes/FaceEffects/Sources/FaceEffectsPrototype/FaceGeometry.swift": "84605627ec754edb1c0f625fc1fd241ae840de8e9701715d82d0638ac740654e",
-      "prototypes/FaceEffects/Sources/FaceEffectsPrototype/FrameFreshnessGate.swift": "2d1d6615c49a501302cf44861825c7cda3ad26fe161cd0db53f84cb396ee55f3"
-    },
-    "localProofTests": {
-      "executed": 11,
-      "passed": 11
-    },
-    "reviewFix": "All valid detected face bounds protect regardless of landmark usability or confidence; decorative confidence threshold remains0.5",
-    "independentSourceReview": {
-      "result": "No remaining blocker after low-confidence neighbor protection fix",
-      "coverage": [
-        "SAT uses both polygon axes in pixel space; contact suppresses",
-        "artwork/stroke envelope contains all new paths",
-        "all31 prior identities retained within37; six filenames/two producers",
-        "valid neighbor boxes protect independently of confidence and eye eligibility",
-        "single-flight/cancel gate and shipping app remain unchanged"
-      ],
-      "nativeExecutionByReviewer": false,
-      "actualJPEGVisualApprovalByReviewer": false
-    },
-    "failedNativeAttempt": {
-      "source": "d1dcfe952cd3ece0decce35d4d6b9faf6f01082d",
-      "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40493829745",
-      "job": "122154125913",
-      "result": "failed: actual XCTest assertions, not infrastructure",
-      "verifiedFindings": [
-        "first portrait/glasses output had zero placements and no JPEG: coarse neighbor envelopes over-suppressed",
-        "controlled rolled-face expected omission but actual count2: fixture obstacle did not intersect glasses as intended"
-      ],
-      "exactExecutedCount": "not independently read from structured XML in this executor"
-    },
-    "repair": "Guarded temple clipping for reliably detected neighbors with clear own eye cores; independent clipped/overlapping-mask regressions; corrected rolled obstruction geometry. Unknown/weak/occluded neighbors still suppress effect.",
-    "independentRepairReview": {
-      "result": "No source blocker",
-      "coverage": [
-        "Sequential global top-left outside-of-one-hole clips exclude union; no overlap reinclusion",
-        "Own and neighbor reliability required; own .20d eye cores protected",
-        "Unknown/weak/invalid-eye neighbors still suppress; crown/hearts unchanged",
-        "All37 prior method identities retained within39; all mandatory output assertions remain"
-      ],
-      "nativeExecutionByReviewer": false,
-      "actualNewJPEGVisualReview": false
+    "candidate": {
+      "source": "e886ec596ab3b946f578289f29e0fafd90cd074a",
+      "result": "not yet visually approved",
+      "executorViewedNewJPEGs": false,
+      "requiredAction": "Coordinator inspect all six new native outputs from exact artifact; approve scale/anchoring/temple clipping and close-face/edge fallback separately from CI",
+      "transferCapability": "No artifact/Library materialization tool exposed in this executor; parent workspace paths are not local"
     }
-  }
+  },
+  "repairedNativeFailure": {
+    "source": "d1dcfe952cd3ece0decce35d4d6b9faf6f01082d",
+    "url": "https://github.com/Xare123/WeddingIpadPhotoboothApp/actions/runs/40493829745",
+    "job": "122154125913",
+    "result": "failed: actual XCTest assertions, not infrastructure",
+    "verifiedFindings": [
+      "first portrait/glasses output had zero placements and no JPEG: coarse neighbor envelopes over-suppressed",
+      "controlled rolled-face expected omission but actual count2: fixture obstacle did not intersect glasses as intended"
+    ],
+    "exactExecutedCount": "not independently read from structured XML in this executor"
+  },
+  "independentSourceReview": {
+    "result": "No source blocker",
+    "coverage": [
+      "Sequential global top-left outside-of-one-hole clips exclude union; no overlap reinclusion",
+      "Own and neighbor reliability required; own .20d eye cores protected",
+      "Unknown/weak/invalid-eye neighbors still suppress; crown/hearts unchanged",
+      "All37 prior method identities retained within39; all mandatory output assertions remain"
+    ],
+    "nativeExecutionByReviewer": false,
+    "actualNewJPEGVisualReview": false
+  },
+  "changes": [
+    "Smaller higher open gold tiara, slimmer espresso glasses/shorter arms, compact rose hearts",
+    "Conservative rotated pixel SAT rejects image-edge clipping and colliding ornaments",
+    "All valid face bounds remain protective regardless of confidence or eye eligibility",
+    "Glasses clip only for reliable own+neighbor eyes with both own.20d cores clear; unknown/weak neighbors fully suppress",
+    "Separate sequential outside-of-hole masks prevent overlapping exclusions from re-including ink",
+    "Untouched originals remain byte-identical; derivatives preserve canonical upright orientation and full image framing; fresh sRGB JPEG carries orientation1 and no sourceGPS"
+  ],
+  "unverified": [
+    "Actual new JPEG visual approval",
+    "iOS runtime and M2 iPad performance/thermal",
+    "Broad group/occlusion quality; no semantic depth/hair/hand segmentation",
+    "Live camera/session attachment, tracking/smoothing",
+    "Shipping app integration, derivative durability and preview/export consistency",
+    "Real guests/device acceptance"
+  ],
+  "noProductionActions": true
 }
