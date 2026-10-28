@@ -1,6 +1,7 @@
+import { Modal, WindowOverlayProvider, useWindowOverlayActivity } from './src/window-overlay';
 import { useEffect, useRef, useState } from 'react';
 import {
-  AccessibilityInfo, Animated, AppState, Easing, Image, ImageBackground, Linking, Modal,
+  AccessibilityInfo, Animated, AppState, Easing, Image, ImageBackground, Linking,
   Platform, Pressable, ScrollView, StatusBar, StyleSheet, Switch, Text, TextInput,
   useWindowDimensions, View,
 } from 'react-native';
@@ -111,9 +112,10 @@ function Thumbnails({ session, active, onSelect, dark = true, reduceMotion = tru
     onSelect={onSelect} dark={dark} reduceMotion={reduceMotion} compact={compact} />)}</View>;
 }
 
-export default function App() { return <SafeAreaProvider><Photobooth /></SafeAreaProvider>; }
+export default function App() { return <SafeAreaProvider><WindowOverlayProvider><Photobooth /></WindowOverlayProvider></SafeAreaProvider>; }
 
 function Photobooth() {
+  const { active: overlayActive, hasActive: hasActiveOverlay } = useWindowOverlayActivity();
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const landscape = width > height;
@@ -566,10 +568,10 @@ function Photobooth() {
     let alive = true;
     void loadNativeOrientationPort().then(port => {
       if (!alive || !mounted.current) return;
-      const controller = createOrientationController({ ...port, async request(lock) {
+      const controller = createOrientationController({ ...port, isRequestSafe: () => !hasActiveOverlay(), async request(lock) {
         // Native work rechecks synchronous lifecycle/capture refs as well as
         // React's observed safe context. A delayed effect cannot rotate a save.
-        if (AppState.currentState !== 'active' || capturePersisting.current || runner.current?.isBusy() || actionLock.current || hostMutationLock.current || lookActive.current || templateActive.current || lookSaving.current || templateSaving.current) {
+        if (hasActiveOverlay() || AppState.currentState !== 'active' || capturePersisting.current || runner.current?.isBusy() || actionLock.current || hostMutationLock.current || lookActive.current || templateActive.current || lookSaving.current || templateSaving.current) {
           throw new Error('orientation-not-safe');
         }
         await port.request(lock);
@@ -577,6 +579,7 @@ function Photobooth() {
         onState: value => { if (alive && mounted.current) setOrientationState(value); } });
       orientationController.current = controller;
       controller.setContext({ active: AppState.currentState === 'active', blockers: [
+        ...(hasActiveOverlay() ? ['editor' as const] : []),
         ...(runner.current?.isBusy() || capturePersisting.current ? ['capture' as const] : []),
         ...(actionLock.current || exportLock.current || hostMutationLock.current ? ['save' as const] : []),
         ...(lookActive.current || lookSaving.current || templateActive.current || templateSaving.current ? ['editor' as const] : []),
@@ -586,11 +589,12 @@ function Photobooth() {
   }, [initialized]);
   useEffect(() => {
     orientationController.current?.setContext({ active: foreground, blockers: [
+      ...(overlayActive ? ['editor' as const] : []),
       ...(busy || preparing || countdown !== undefined ? ['countdown' as const] : []),
       ...(saving || capturePersisting.current || exporting || hostBusy ? ['save' as const] : []),
       ...(lookState || templateState || lookApplying || templateApplying ? ['editor' as const] : []),
     ] });
-  }, [foreground, busy, preparing, countdown, saving, exporting, hostBusy, lookState, templateState, lookApplying, templateApplying]);
+  }, [foreground, overlayActive, busy, preparing, countdown, saving, exporting, hostBusy, lookState, templateState, lookApplying, templateApplying]);
 
   useEffect(() => { reduceMotionRef.current = reduceMotion; if (reduceMotion) { exposureFlash.stopAnimation(); exposureFlash.setValue(0); } }, [reduceMotion, exposureFlash]);
 

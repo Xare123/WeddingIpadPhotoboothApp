@@ -6,11 +6,11 @@ import { fileURLToPath } from 'node:url';
 export const PHYSICAL_SCHEME = 'WeddingPhotoboothPhysical';
 export const PHYSICAL_TARGET = 'WeddingPhotoboothPhysicalSmokeTests';
 export const PREVIOUS_NATIVE_APPLICATION_COMMIT = '3cc16e6e6780e97fdb3fad7568ac99fab6f43e76';
-// Source review: SMS preference/presentation and modal orientation changes preserve all capture rehearsal selectors.
+// Source review: Shared in-window overlay and orientation-deferral changes preserve all capture rehearsal selectors.
 // This pin authorizes source preparation, not a physical execution or installation.
 const reviewedUI = {
-  'apps/ipad/App.tsx': 'c4725fc595e80e05c81cebfa8ecdf87776a8a871092a40bb4a6d71c47d2b5787',
-  'apps/ipad/src/TimingSheet.tsx': '06d33ec19ab3e39e6860be159713236b18d06775111076e73b6502c7b3cf7f03',
+  'apps/ipad/App.tsx': '9b8ce2f785d278d80e1cb4deba214d2bed4105325c1430e0fae0fd814f9332b7',
+  'apps/ipad/src/TimingSheet.tsx': '1c49531fea26cbb206747856070f0cba2bf4cf39b78b7262c11e4400940b5f22',
 };
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const quote = value => JSON.stringify(value);

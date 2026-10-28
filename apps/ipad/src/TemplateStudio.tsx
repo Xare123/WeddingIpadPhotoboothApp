@@ -1,5 +1,6 @@
+import { Modal } from './window-overlay';
 import { useEffect, useRef, useState } from 'react';
-import { Image, Modal, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { ActiveSession, CompositeRecipe, PhotoCrop } from './local-types';
 import type { TemplateEditorState } from './template-editor';

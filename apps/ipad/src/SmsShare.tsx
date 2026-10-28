@@ -1,5 +1,6 @@
+import { Modal } from './window-overlay';
 import { useEffect, useRef, useState } from 'react';
-import { AppState, Keyboard, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { AppState, Keyboard, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import type { QueueJob } from '@wedding-booth/core';
 import { editPhone } from './phone-pad';
 import { loadConnection } from './config';

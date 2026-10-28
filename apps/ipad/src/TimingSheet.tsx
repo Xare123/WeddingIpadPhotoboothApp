@@ -1,7 +1,8 @@
+import { Modal } from './window-overlay';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ComponentRef } from 'react';
 import {
-  AccessibilityInfo, Modal, PanResponder, Platform, Pressable, ScrollView,
+  AccessibilityInfo, PanResponder, Platform, Pressable, ScrollView,
   StyleSheet, Text, View, useWindowDimensions,
 } from 'react-native';
 import type { ViewStyle } from 'react-native';
