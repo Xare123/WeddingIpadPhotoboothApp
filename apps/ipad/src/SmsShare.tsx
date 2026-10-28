@@ -66,16 +66,16 @@ export function SmsShare({ session, jobs, onChanged }: {
   if (outcome) return <Text accessibilityLiveRegion="polite" style={styles.outcome}>{outcome}</Text>;
   if (!available || !ready) return null;
   return <>
-    <Pressable accessibilityRole="button" accessibilityLabel={`Text a link to these ${session.shots.length} photos`} style={styles.button} onPress={() => setVisible(true)}>
-      <Text style={styles.buttonText}>Text me the link</Text>
+    <Pressable testID="sms-entry" accessibilityRole="button" accessibilityLabel={`Text a link to these ${session.shots.length} photos`} style={styles.entry} onPress={() => setVisible(true)}>
+      <Text style={styles.entryText}>Text me the link</Text>
     </Pressable>
-    <Modal visible={visible} transparent animationType="none" onRequestClose={dismiss}>
+    <Modal testID="sms-modal" visible={visible} transparent animationType="none" presentationStyle="overFullScreen" supportedOrientations={['portrait', 'portrait-upside-down', 'landscape']} onRequestClose={dismiss}>
       <View style={styles.backdrop}><ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.modalScroll}>
         <View accessibilityViewIsModal style={styles.card}>
           <Text style={styles.eyebrow}>A link to keep</Text>
           <Text style={styles.title}>Your photos, by text.</Text>
           <Text style={styles.copy}>One text with this private photo page. The QR code works without sharing a phone number.</Text>
-          <TextInput value={phone} onChangeText={setPhone} accessibilityLabel="Phone number including country code" placeholder="+1 202 555 0123" keyboardType="phone-pad" autoComplete="tel" textContentType="telephoneNumber" autoCorrect={false} style={styles.input} editable={!busy}/>
+          <TextInput value={phone} onChangeText={setPhone} accessibilityLabel="U.S. phone number" placeholder="(202) 555-0123" keyboardType="phone-pad" autoComplete="tel-national" textContentType="telephoneNumber" autoCorrect={false} style={styles.input} editable={!busy}/>
           <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: consent, disabled: busy }} disabled={busy} onPress={() => setConsent(value => !value)} style={styles.consent}>
             <View style={[styles.check, consent && styles.checked]}><Text style={styles.checkText}>{consent ? '✓' : ''}</Text></View>
             <Text style={styles.consentText}>I agree to receive one text with my photo link. Message and data rates may apply.</Text>
@@ -91,6 +91,8 @@ export function SmsShare({ session, jobs, onChanged }: {
 }
 
 const styles = StyleSheet.create({
+  entry: { width: '100%', minHeight: 64, borderRadius: 18, paddingHorizontal: 20, paddingVertical: 18, justifyContent: 'center', alignItems: 'center', backgroundColor: '#272723' },
+  entryText: { color: '#fffaf3', fontSize: 20, lineHeight: 26, fontWeight: '700', textAlign: 'center' },
   button: { minHeight: 48, paddingHorizontal: 20, paddingVertical: 14, justifyContent: 'center', alignItems: 'center' },
   buttonText: { color: '#453b31', fontSize: 16, fontWeight: '600' },
   outcome: { color: '#51483d', fontSize: 15, lineHeight: 22, maxWidth: 420, textAlign: 'center', padding: 12 },

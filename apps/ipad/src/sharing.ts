@@ -74,11 +74,18 @@ export function qrForJob(job: {
 }
 
 export function normalizePhone(input: string): string {
-  const phone = input.trim().replace(/[\s().-]/g, '');
-  if (!/^\+[1-9]\d{7,14}$/.test(phone)) {
-    throw new Error('Use an international phone number, including + and country code.');
-  }
-  return phone;
+  const value = input.trim();
+  const invalid = () => new Error('Enter a 10-digit U.S. phone number. Spaces, parentheses and dashes are okay.');
+  // Remove only ordinary presentation characters. Never discard letters,
+  // extension markers or an unexpected country code and silently change a recipient.
+  if (!/^\+?[\d\s().-]+$/.test(value)) throw invalid();
+  let digits = value.replace(/[\s().-]/g, '');
+  if (digits.startsWith('+')) {
+    if (!digits.startsWith('+1')) throw invalid();
+    digits = digits.slice(2);
+  } else if (digits.length === 11 && digits.startsWith('1')) digits = digits.slice(1);
+  if (!/^[2-9]\d{2}[2-9]\d{6}$/.test(digits)) throw invalid();
+  return `+1${digits}`;
 }
 
 export function sessionGuestPage(

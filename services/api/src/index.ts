@@ -33,14 +33,21 @@ type GalleryRecipe = { photoIds: string[]; originalPhotoIds?: string[]; composit
 type Gallery = GalleryRecipe & { version: 1; sessionId: string; expiresAt: number };
 type SmsStatus = 'mocked' | 'mock_failed' | 'accepted' | 'test_accepted' | 'rejected' | 'uncertain';
 type SmsResult = { status: SmsStatus; message: string; retryable: boolean; safeToRetry?: boolean; deliveryStatus?: 'unconfirmed' };
+type ProviderDiagnostic = {
+  stage: 'response' | 'http' | 'transport' | 'invalid-response';
+  httpStatus?: number; messageId?: string; quotaRemaining?: number;
+  rejection?: 'out-of-quota' | 'incomplete-request' | 'invalid-key' | 'invalid-number' | 'rate-limited' | 'blocked-recipient' | 'message-rejected' | 'provider-rejected';
+};
 type ShareRecord = { sessionId: string; recipientFingerprint: string; status: 'pending' | 'sending' | SmsStatus };
-type DeliveryRecord = ShareRecord & { shareId: string; mode: string; attemptId?: string };
+type DeliveryRecord = ShareRecord & { shareId: string; mode: string; attemptId?: string; providerDiagnostic?: ProviderDiagnostic };
 type PairingRecord = { issuanceId: string; expiresAt: number; state: 'issued' | 'consumed'; deviceVersion: string; signingVersion: string };
 export interface SmsProvider {
   // Textbelt has no provider-side idempotency guarantee. The caller must claim
   // a durable delivery fence before calling send, and never retry uncertainty.
   send(input: { idempotencyKey: string; to: string; galleryUrl: string }): Promise<{
     status: SmsStatus; message: string; retryable: boolean; safeToRetry?: boolean; deliveryStatus?: 'unconfirmed';
+    // Private adapter result only: never returned in the guest/device response.
+    providerDiagnostic?: ProviderDiagnostic;
   }>;
 }
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -251,6 +258,25 @@ function smsResult(status: SmsStatus): SmsResult {
 }
 /** Injectable boundary. Tests MUST pass a fake fetch; never call a real provider. */
 export function createTextbeltProvider(apiKey: string, testMode: boolean, fetcher: typeof fetch): SmsProvider {
+  function diagnostic(value: Record<string, unknown>, phone: string): ProviderDiagnostic {
+    const result: ProviderDiagnostic = { stage: 'response' };
+    const id = typeof value.textId === 'number' && Number.isSafeInteger(value.textId) ? String(value.textId) : value.textId;
+    if (value.success === true && typeof id === 'string' && /^\d{1,32}$/.test(id) && id !== apiKey && id !== phone.replace(/\D/g, '')) result.messageId = id;
+    if (typeof value.quotaRemaining === 'number' && Number.isSafeInteger(value.quotaRemaining) && value.quotaRemaining >= 0 && value.quotaRemaining <= 1_000_000_000) result.quotaRemaining = value.quotaRemaining;
+    if (value.success === false) {
+      // Classify into fixed strings. Never retain an untrusted error body,
+      // recipient, message/link or key, even if the provider echoes them.
+      const error = typeof value.error === 'string' ? value.error : '';
+      result.rejection = /out of quota|insufficient quota|quota.*(?:exhausted|exceeded|empty)/i.test(error) ? 'out-of-quota'
+        : /incomplete request|missing required/i.test(error) ? 'incomplete-request'
+          : /invalid.*key|key.*invalid/i.test(error) ? 'invalid-key'
+            : /invalid.*(?:phone|number)|(?:phone|number).*invalid/i.test(error) ? 'invalid-number'
+              : /too many|rate.?limit/i.test(error) ? 'rate-limited'
+                : /blocked|opt.?out|unsubscrib/i.test(error) ? 'blocked-recipient'
+                  : /url|domain|link|message.*reject/i.test(error) ? 'message-rejected' : 'provider-rejected';
+    }
+    return result;
+  }
   return { async send({ to, galleryUrl }) {
     try {
       const response = await fetcher('https://textbelt.com/text', {
@@ -260,17 +286,18 @@ export function createTextbeltProvider(apiKey: string, testMode: boolean, fetche
       });
       // A transport/HTTP/parser failure can happen after a provider accepted the
       // request. Textbelt offers no deduplication contract, so never resend it.
-      if (!response.ok) return smsResult('uncertain');
+      if (!response.ok) return { ...smsResult('uncertain'), providerDiagnostic: { stage: 'http', httpStatus: response.status } };
       const bytes = await readLimited(response, 4096);
-      if (!bytes) return smsResult('uncertain');
-      const result: unknown = JSON.parse(new TextDecoder().decode(bytes));
-      if (!result || typeof result !== 'object' || !('success' in result)) return smsResult('uncertain');
-      if (result.success === false) return smsResult('rejected');
-      if (result.success !== true) return smsResult('uncertain');
-      // Never persist or echo provider error bodies, quota metadata, phone, key,
-      // message text, or other untrusted provider response fields.
-      return smsResult(testMode ? 'test_accepted' : 'accepted');
-    } catch { return smsResult('uncertain'); }
+      if (!bytes) return { ...smsResult('uncertain'), providerDiagnostic: { stage: 'invalid-response' } };
+      let result: unknown;
+      try { result = JSON.parse(new TextDecoder().decode(bytes)); }
+      catch { return { ...smsResult('uncertain'), providerDiagnostic: { stage: 'invalid-response' } }; }
+      if (!result || typeof result !== 'object' || !('success' in result) || typeof result.success !== 'boolean')
+        return { ...smsResult('uncertain'), providerDiagnostic: { stage: 'invalid-response' } };
+      const providerDiagnostic = diagnostic(result as Record<string, unknown>, to);
+      if (result.success === false) return { ...smsResult('rejected'), providerDiagnostic };
+      return { ...smsResult(testMode ? 'test_accepted' : 'accepted'), providerDiagnostic };
+    } catch { return { ...smsResult('uncertain'), providerDiagnostic: { stage: 'transport' } }; }
   } };
 }
 function smsProvider(env: Env): SmsProvider | undefined {
@@ -303,14 +330,16 @@ async function textbeltShare(env: Env, provider: SmsProvider, shareId: string, f
   if (record.shareId !== shareId) return json({ error: 'Use the original share id for an explicit retry', retryable: false }, 409);
   // Each claim changes its content-derived R2 ETag, including explicit retries.
   // An old attempt can never satisfy the current attempt's conditional write.
-  const attempt = { ...record, status: 'sending', attemptId: crypto.randomUUID() };
+  const { providerDiagnostic: _previousDiagnostic, ...reserved } = record;
+  const attempt = { ...reserved, status: 'sending', attemptId: crypto.randomUUID() };
   const claimed = await env.PHOTOS.put(key, JSON.stringify(attempt), { onlyIf: { etagMatches: saved.etag } });
   if (!claimed) return respond('uncertain');
   // Persisted 'sending' is intentionally never reset by timeout or a new ID.
   // A process crash, lost response, or failed final write cannot cause a resend.
   const outcome = await provider.send({ idempotencyKey: shareId, to: phone, galleryUrl });
   try {
-    const updated = await env.PHOTOS.put(key, JSON.stringify({ ...attempt, status: outcome.status }), { onlyIf: { etagMatches: claimed.etag } });
+    const updated = await env.PHOTOS.put(key, JSON.stringify({ ...attempt, status: outcome.status,
+      ...(outcome.providerDiagnostic ? { providerDiagnostic: outcome.providerDiagnostic } : {}) }), { onlyIf: { etagMatches: claimed.etag } });
     if (!updated) return respond('uncertain');
   } catch { return respond('uncertain'); }
   return respond(outcome.status);

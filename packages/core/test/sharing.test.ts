@@ -43,11 +43,11 @@ test('QR helper never exposes an upload URL before completion, after expiry or f
 });
 
 
-test('phone opt-in normalizes formatting while requiring explicit international E.164 boundaries', () => {
+test('phone opt-in defaults ordinary U.S. formats to an explicit +1 E.164 boundary', () => {
   assert.equal(normalizePhone('  +1 (202) 555-0123  '), '+12025550123');
-  assert.equal(normalizePhone('+12.345.678'), '+12345678');
-  assert.equal(normalizePhone('+123456789012345'), '+123456789012345');
-  for (const phone of ['', '2025550123', '+02025550123', '+1234567', '+1234567890123456',
+  assert.equal(normalizePhone('202.555.0123'), '+12025550123');
+  assert.equal(normalizePhone('1 (202)555-0123'), '+12025550123');
+  for (const phone of ['', '+02025550123', '+1234567', '+1234567890123456',
     '+1 202 555 0123 ext 2', '++12025550123', '+١٢٠٢٥٥٥٠١٢٣', 'mailto:guest@example.com']) {
     assert.throws(() => normalizePhone(phone));
   }
