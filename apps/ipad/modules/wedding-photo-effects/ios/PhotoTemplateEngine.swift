@@ -5,11 +5,12 @@ import ImageIO
 import UniformTypeIdentifiers
 import CryptoKit
 
-/// Original text-spec geometry and vector ornament only; no vendor/reference artwork.
+/// Versioned keepsakes: legacy vector designs and original generated frame artwork.
 public final class PhotoTemplateEngine: @unchecked Sendable {
   public static let version = "wedding-template-v1"
-  public static let currentVersion = "wedding-template-v2"
-  public static let supportedVersions = [version, currentVersion]
+  public static let previousVersion = "wedding-template-v2"
+  public static let currentVersion = "wedding-template-v3"
+  public static let supportedVersions = [version, previousVersion, currentVersion]
   public struct Source { public let photoId: String; public let url: URL
     public init(photoId: String, url: URL) { self.photoId = photoId; self.url = url } }
   public struct Crop: Codable { public let mode: String; public let x, y, zoom: Double }
@@ -24,12 +25,13 @@ public final class PhotoTemplateEngine: @unchecked Sendable {
         let requestedVersion = raw["version"] as? String,
         PhotoTemplateEngine.supportedVersions.contains(requestedVersion),
         Set(raw.keys) == Set(["version", "layout", "theme", "photoIds", "cropsByPhotoId"] +
-          (requestedVersion == PhotoTemplateEngine.currentVersion ? ["gridAspect"] : [])),
+          (requestedVersion != PhotoTemplateEngine.version ? ["gridAspect"] : [])),
         let crops = raw["cropsByPhotoId"] as? [String: [String: Any]],
         crops.values.allSatisfy({ Set($0.keys) == Set(["mode", "x", "y", "zoom"]) }) else { throw Failure.invalidInput }
       let recipe = try JSONDecoder().decode(Recipe.self, from: data)
       guard (recipe.version == PhotoTemplateEngine.version ? recipe.gridAspect == nil :
-        ["portrait", "square"].contains(recipe.gridAspect ?? "")), ["strip", "grid"].contains(recipe.layout),
+        ["portrait", "square"].contains(recipe.gridAspect ?? "")),
+        (recipe.version != PhotoTemplateEngine.currentVersion || recipe.gridAspect == "square"), ["strip", "grid"].contains(recipe.layout),
         ["classic", "botanical", "coastal"].contains(recipe.theme), recipe.photoIds.count == 4,
         Set(recipe.photoIds).count == 4, Set(crops.keys) == Set(recipe.photoIds),
         recipe.photoIds.allSatisfy({ $0.range(of: "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$", options: .regularExpression) != nil })
@@ -104,7 +106,8 @@ public final class PhotoTemplateEngine: @unchecked Sendable {
         space: PhotoEffectsEngine.sRGB, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { throw Failure.resourceLimit }
       let colors = recipe.version == Self.version ? palette(recipe.theme) : paletteV2(recipe.theme)
       canvas.setFillColor(colors.background); canvas.fill(CGRect(x: 0, y: 0, width: CGFloat(width), height: CGFloat(height)))
-      if recipe.version == Self.currentVersion { decorationV2(canvas, width: width, height: height, recipe: recipe, colors: colors) }
+      if recipe.version == Self.previousVersion { decorationV2(canvas, width: width, height: height, recipe: recipe, colors: colors) }
+      if recipe.version == Self.currentVersion { try artworkV3(canvas, width: width, height: height, recipe: recipe, colors: colors) }
       var hashes = [String: String]()
       for (index, source) in sources.enumerated() { try autoreleasepool {
         try check(id)
@@ -175,10 +178,15 @@ public final class PhotoTemplateEngine: @unchecked Sendable {
   /// Geometry for v1 remains routed to the unchanged original window function.
   public static func dimensions(recipe: Recipe) -> (width: Int, height: Int) {
     if recipe.layout == "strip" { return (1200, 3600) }
+    if recipe.version == currentVersion { return (2400, 2400) }
     if recipe.version == version { return (2400, 2100) }
     return (2400, recipe.gridAspect == "portrait" ? 3000 : 2400)
   }
   public static func window(recipe: Recipe, index: Int) -> CGRect {
+    if recipe.version == currentVersion {
+      if recipe.layout == "strip" { return CGRect(x: 100, y: CGFloat(220 + index * 770), width: 1000, height: 750) }
+      return CGRect(x: CGFloat(160 + (index % 2) * 1056), y: CGFloat(180 + (index / 2) * 1036), width: 1024, height: 1024)
+    }
     if recipe.version == version || recipe.layout == "strip" { return window(layout: recipe.layout, index: index) }
     if recipe.gridAspect == "portrait" {
       return CGRect(x: CGFloat(72 + (index % 2) * 1140), y: CGFloat(72 + (index / 2) * 1356), width: 1116, height: 1332)
@@ -351,11 +359,56 @@ public final class PhotoTemplateEngine: @unchecked Sendable {
       }
     }
   }
+  /// Resource identity is part of the v3 recipe contract. Missing/tampered art fails visibly;
+  /// it must never silently produce a legacy frame under a v3 acknowledgement.
+  private func artworkV3(_ context: CGContext, width: Int, height: Int, recipe: Recipe, colors: Palette) throws {
+    let art: (String, String)
+    switch recipe.theme {
+    case "botanical": art = ("Sage-Botanical-Text-Free-Artwork", "4121598a7aa1d445fed5c223d4b475d706cb93567d90c51a42d1dad86cb36e21")
+    case "coastal": art = ("Coastal-Sea-Glass-Text-Free-Artwork", "8f3bbfb131c9454f6ea633a79445e6cd9b32176e9aa80c09080925b0d83884a0")
+    default: art = ("Classic-Ivory-Text-Free-Artwork", "3ccb9f0acf030b5bc31b2bbf6d81f3e694e2dd2e045dc77fd930c6d4df59164e")
+    }
+    let host = Bundle(for: PhotoTemplateEngine.self)
+    let nested = host.url(forResource: "WeddingFrameArt", withExtension: "bundle").flatMap(Bundle.init(url:))
+      ?? Bundle.main.url(forResource: "WeddingFrameArt", withExtension: "bundle").flatMap(Bundle.init(url:))
+    guard let url = (nested ?? host).url(forResource: art.0, withExtension: "frameart"),
+      let data = try? Data(contentsOf: url), data.count < 8 * 1024 * 1024,
+      SHA256.hash(data: data).map({ String(format: "%02x", $0) }).joined() == art.1,
+      let source = CGImageSourceCreateWithData(data as CFData, nil),
+      CGImageSourceGetCount(source) == 1,
+      let image = CGImageSourceCreateImageAtIndex(source, 0, nil), image.width == 1254, image.height == 1254
+      else { throw Failure.invalidInput }
+    // Nine-slice preserves corner sprigs/washes at uniform scale. Only the quiet
+    // paper/edge bands stretch along a strip; no whole-square stretch or center crop.
+    let edge: CGFloat = recipe.layout == "strip" ? 250 : 350
+    let input: [CGFloat] = [0, 250, 1004, 1254]
+    let outputX: [CGFloat] = [0, edge, CGFloat(width) - edge, CGFloat(width)]
+    let outputY: [CGFloat] = [0, edge, CGFloat(height) - edge, CGFloat(height)]
+    context.saveGState(); defer { context.restoreGState() }
+    context.interpolationQuality = .high
+    for row in 0..<3 { for col in 0..<3 {
+      let sourceRect = CGRect(x: input[col], y: input[row], width: input[col+1] - input[col], height: input[row+1] - input[row])
+      guard let patch = image.cropping(to: sourceRect) else { throw Failure.encodingFailed }
+      let destination = CGRect(x: outputX[col], y: CGFloat(height) - outputY[row+1],
+        width: outputX[col+1] - outputX[col], height: outputY[row+1] - outputY[row])
+      context.draw(patch, in: destination)
+    } }
+    // A crisp editorial outline is separate from the generated paper artwork.
+    context.setStrokeColor(colors.accent); context.setLineWidth(recipe.theme == "classic" ? 1.5 : 1)
+    let inset: CGFloat = recipe.layout == "strip" ? 24 : 40
+    context.stroke(CGRect(x: inset, y: inset, width: CGFloat(width) - inset * 2, height: CGFloat(height) - inset * 2))
+    // Photo mats never cover originals; FIT retains every edge, FILL stays explicit.
+    context.setFillColor(colors.sand)
+    for index in 0..<4 {
+      let window = Self.window(recipe: recipe, index: index)
+      context.fill(CGRect(x: window.minX, y: CGFloat(height) - window.maxY, width: window.width, height: window.height))
+    }
+  }
   private func footerV2(_ context: CGContext, width: Int, height: Int, recipe: Recipe, colors: Palette) {
     let footerTop = (0..<4).map { Self.window(recipe: recipe, index: $0).maxY }.max()!
     let strip = recipe.layout == "strip", compact = !strip && recipe.gridAspect == "square"
-    let nameBaseline = strip ? CGFloat(3480) : footerTop + (compact ? 86 : 116)
-    let dateBaseline = strip ? CGFloat(3535) : footerTop + (compact ? 133 : 174)
+    let nameBaseline = recipe.version == Self.currentVersion ? CGFloat(strip ? 3420 : 2310) : strip ? CGFloat(3480) : footerTop + (compact ? 86 : 116)
+    let dateBaseline = recipe.version == Self.currentVersion ? CGFloat(strip ? 3490 : 2360) : strip ? CGFloat(3535) : footerTop + (compact ? 133 : 174)
     func text(_ value: String, size: CGFloat, font: String, topBaseline: CGFloat) {
       let attributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key(kCTFontAttributeName as String): CTFontCreateWithName(font as CFString, size, nil),
         NSAttributedString.Key(kCTForegroundColorAttributeName as String): colors.ink]

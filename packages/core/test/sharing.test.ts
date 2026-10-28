@@ -128,3 +128,14 @@ test('v2 publication requires the exact aspect on every layout and cannot reinte
     assert.throws(() => validateReadyPublication(good, legacy), 'v1 must not silently accept v2 aspect/geometry');
   }
 });
+
+test('v3 artwork publication requires exact square and exact version acknowledgements', () => {
+  for (const layout of ['strip', 'grid'] as const) {
+    const expected = { photoIds: ['s1', 's2', 's3', 's4'], originalPhotoIds: ['r1', 'r2', 'r3', 'r4'],
+      composite: { photoId: 'template', layout, theme: 'coastal' as const, version: 'wedding-template-v3' as const, gridAspect: 'square' as const } };
+    const good = { ...ready, ...expected };
+    assert.doesNotThrow(() => validateReadyPublication(good, expected));
+    for (const change of [{ gridAspect: 'portrait' }, { gridAspect: undefined }, { version: 'wedding-template-v2' }, { version: 'wedding-template-v1' }, { extra: true }])
+      assert.throws(() => validateReadyPublication({ ...good, composite: { ...expected.composite, ...change } }, expected));
+  }
+});

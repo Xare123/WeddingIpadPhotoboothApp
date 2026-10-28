@@ -353,7 +353,7 @@ export class LocalRepository {
       await this.verifyCompleteSession(model, parent);
       const recipe = this.currentComposite(model, parent)?.recipe;
       const templateDefaults = recipe ? { layout: recipe.layout, theme: recipe.theme,
-        ...(recipe.version === 'wedding-template-v2' ? { gridAspect: recipe.gridAspect } : {}) } : parent.templateDefaults ? { ...parent.templateDefaults } : undefined;
+        ...(recipe.version !== 'wedding-template-v1' ? { gridAspect: recipe.gridAspect } : {}) } : parent.templateDefaults ? { ...parent.templateDefaults } : undefined;
       const child: SessionRecord = { id, createdAt: this.now(), targetCount: parent.targetCount, confirmed: false, selected: [],
         retakeOfSessionId: parentSessionId, retakeState: 'open', captureTiming: timing,
         ...(templateDefaults ? { templateDefaults } : {}) };

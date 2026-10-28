@@ -183,9 +183,9 @@ test('image failure for current theme thumbnail invalidates receipts and same th
     assert.equal(await a, false);
     assert.ok(h.released.every(uri => !h.session.shots.some(photo => photo.fileUri === uri)));
 });
-const inspection = (aspect: 'portrait' | 'square' = 'portrait'): TemplateSourceInspection => ({ version: 'wedding-template-v2', gridAspect: aspect, sources: ['a', 'b', 'c', 'd'].map(photoId => ({ photoId, width: 1200, height: aspect === 'portrait' ? 1600 : 1200, sha256: 'a'.repeat(64) })) });
+const inspection = (aspect: 'portrait' | 'square' = 'portrait'): TemplateSourceInspection => ({ version: 'wedding-template-v3', gridAspect: aspect, sources: ['a', 'b', 'c', 'd'].map(photoId => ({ photoId, width: 1200, height: aspect === 'portrait' ? 1600 : 1200, sha256: 'a'.repeat(64) })) });
 for (const aspect of ['portrait', 'square'] as const)
-    test(`new v2 ${aspect} recipe waits for inspection, preserves aspect and saves exact geometry`, async () => {
+    test(`new v3 ${aspect}-source recipe waits for inspection and saves exact square geometry`, async () => {
         const h = harness(true);
         h.editor.open(h.session);
         assert.equal(h.state?.phase, 'inspecting');
@@ -197,8 +197,8 @@ for (const aspect of ['portrait', 'square'] as const)
         h.inspections[0]!.d.resolve(inspection(aspect));
         await tick();
         assert.equal(h.jobs.length, 3);
-        assert.equal(h.state?.recipe?.version, 'wedding-template-v2');
-        assert.equal(h.state?.recipe && 'gridAspect' in h.state.recipe ? h.state.recipe.gridAspect : null, aspect);
+        assert.equal(h.state?.recipe?.version, 'wedding-template-v3');
+        assert.equal(h.state?.recipe && 'gridAspect' in h.state.recipe ? h.state.recipe.gridAspect : null, 'square');
         h.editor.chooseLayout('grid');
         h.editor.setCrops(Object.fromEntries(['a', 'b', 'c', 'd'].map(id => [id, { mode: 'fill' as const, x: 0, y: 0, zoom: 1 }])));
         h.editor.swapPhotos('a', 'd');
@@ -208,7 +208,7 @@ for (const aspect of ['portrait', 'square'] as const)
         const a = h.editor.save();
         await tick();
         const n = h.jobs.length - 1;
-        assert.deepEqual(templateDimensions(h.jobs[n]!.recipe), aspect === 'portrait' ? [2400, 3000] : [2400, 2400]);
+        assert.deepEqual(templateDimensions(h.jobs[n]!.recipe), [2400, 2400]);
         h.jobs[n]!.d.resolve(h.result(n));
         assert.equal(await a, true);
         assert.equal(h.saved.length, 1);
@@ -430,7 +430,7 @@ test('retake defaults preserve saved style/aspect with fresh IDs and fit crops a
     assert.equal(h.jobs.length, 0);
     h.inspections[0]!.d.resolve(inspection('portrait'));
     await tick();
-    assert.equal(h.state?.recipe?.version, 'wedding-template-v2');
+    assert.equal(h.state?.recipe?.version, 'wedding-template-v3');
     assert.equal(h.state?.recipe?.layout, 'grid');
     assert.equal(h.state?.recipe?.theme, 'coastal');
     assert.equal(h.state?.recipe && 'gridAspect' in h.state.recipe ? h.state.recipe.gridAspect : null, 'square');
@@ -447,4 +447,17 @@ test('abandoned retake cannot open a template editor even when four images and s
     assert.equal(h.state, null);
     assert.equal(h.jobs.length, 0);
     assert.equal(h.inspections.length, 0);
+});
+
+for (const gridAspect of ['portrait', 'square'] as const) test(`persisted v2 ${gridAspect} recipe remains unchanged when reopening`, () => {
+  const h = harness();
+  const recipe: CompositeRecipe = { ...h.session.composite!.recipe, version: 'wedding-template-v2', gridAspect, layout: 'grid' };
+  h.session = { ...h.session, composite: { ...h.session.composite!, recipe } };
+  const before = JSON.stringify(h.session);
+  h.editor.open(h.session);
+  assert.deepEqual(h.state?.recipe, recipe);
+  assert.equal(h.inspections.length, 0);
+  assert.deepEqual(templateDimensions(h.state!.recipe!), gridAspect === 'portrait' ? [2400, 3000] : [2400, 2400]);
+  assert.equal(JSON.stringify(h.session), before);
+  h.editor.close();
 });

@@ -157,16 +157,16 @@ function parseGalleryRecipe(body) {
   const candidate = body.composite;
   if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) return json({ error: "Valid composite required" }, 400);
   const composite = candidate;
-  const v2 = composite.version === "wedding-template-v2";
-  const keys = ["photoId", "layout", "theme", "version", ...v2 ? ["gridAspect"] : []];
-  if (Object.keys(composite).length !== keys.length || Object.keys(composite).some((key) => !keys.includes(key)) || typeof composite.photoId !== "string" || !uuid.test(composite.photoId) || !["strip", "grid"].includes(composite.layout) || !["classic", "botanical", "coastal"].includes(composite.theme) || !v2 && composite.version !== "wedding-template-v1" || v2 && !["portrait", "square"].includes(composite.gridAspect)) return json({ error: "Unknown or invalid composite recipe" }, 400);
+  const v2 = composite.version === "wedding-template-v2", v3 = composite.version === "wedding-template-v3";
+  const keys = ["photoId", "layout", "theme", "version", ...v2 || v3 ? ["gridAspect"] : []];
+  if (Object.keys(composite).length !== keys.length || Object.keys(composite).some((key) => !keys.includes(key)) || typeof composite.photoId !== "string" || !uuid.test(composite.photoId) || !["strip", "grid"].includes(composite.layout) || !["classic", "botanical", "coastal"].includes(composite.theme) || !v2 && !v3 && composite.version !== "wedding-template-v1" || v2 && !["portrait", "square"].includes(composite.gridAspect) || v3 && composite.gridAspect !== "square") return json({ error: "Unknown or invalid composite recipe" }, 400);
   const photoId = composite.photoId.toLowerCase();
   if (photoIds.includes(photoId) || originalPhotoIds.includes(photoId)) return json({ error: "Composite must have a distinct photo ID" }, 400);
   const common = { photoId, layout: composite.layout, theme: composite.theme };
-  return { photoIds, originalPhotoIds, composite: v2 ? { ...common, version: "wedding-template-v2", gridAspect: composite.gridAspect } : { ...common, version: "wedding-template-v1" } };
+  return { photoIds, originalPhotoIds, composite: v3 ? { ...common, version: "wedding-template-v3", gridAspect: "square" } : v2 ? { ...common, version: "wedding-template-v2", gridAspect: composite.gridAspect } : { ...common, version: "wedding-template-v1" } };
 }
 function sameRecipe(left, right) {
-  return samePhotos(left.photoIds, right.photoIds) && (left.originalPhotoIds === void 0 && right.originalPhotoIds === void 0 || !!left.originalPhotoIds && !!right.originalPhotoIds && samePhotos(left.originalPhotoIds, right.originalPhotoIds)) && (left.composite === void 0 && right.composite === void 0 || !!left.composite && !!right.composite && left.composite.photoId === right.composite.photoId && left.composite.layout === right.composite.layout && left.composite.theme === right.composite.theme && left.composite.version === right.composite.version && (left.composite.version !== "wedding-template-v2" || right.composite.version === "wedding-template-v2" && left.composite.gridAspect === right.composite.gridAspect));
+  return samePhotos(left.photoIds, right.photoIds) && (left.originalPhotoIds === void 0 && right.originalPhotoIds === void 0 || !!left.originalPhotoIds && !!right.originalPhotoIds && samePhotos(left.originalPhotoIds, right.originalPhotoIds)) && (left.composite === void 0 && right.composite === void 0 || !!left.composite && !!right.composite && left.composite.photoId === right.composite.photoId && left.composite.layout === right.composite.layout && left.composite.theme === right.composite.theme && left.composite.version === right.composite.version && (left.composite.version === "wedding-template-v1" || right.composite.version !== "wedding-template-v1" && left.composite.gridAspect === right.composite.gridAspect));
 }
 var galleryPhotoIds = (gallery) => [.../* @__PURE__ */ new Set([
   ...gallery.photoIds,
@@ -205,6 +205,17 @@ function smsResult(status) {
   }
 }
 function createTextbeltProvider(apiKey, testMode, fetcher) {
+  function diagnostic(value, phone) {
+    const result = { stage: "response" };
+    const id = typeof value.textId === "number" && Number.isSafeInteger(value.textId) ? String(value.textId) : value.textId;
+    if (value.success === true && typeof id === "string" && /^\d{1,32}$/.test(id) && id !== apiKey && id !== phone.replace(/\D/g, "")) result.messageId = id;
+    if (typeof value.quotaRemaining === "number" && Number.isSafeInteger(value.quotaRemaining) && value.quotaRemaining >= 0 && value.quotaRemaining <= 1e9) result.quotaRemaining = value.quotaRemaining;
+    if (value.success === false) {
+      const error = typeof value.error === "string" ? value.error : "";
+      result.rejection = /out of quota|insufficient quota|quota.*(?:exhausted|exceeded|empty)/i.test(error) ? "out-of-quota" : /incomplete request|missing required/i.test(error) ? "incomplete-request" : /invalid.*key|key.*invalid/i.test(error) ? "invalid-key" : /invalid.*(?:phone|number)|(?:phone|number).*invalid/i.test(error) ? "invalid-number" : /too many|rate.?limit/i.test(error) ? "rate-limited" : /blocked|opt.?out|unsubscrib/i.test(error) ? "blocked-recipient" : /url|domain|link|message.*reject/i.test(error) ? "message-rejected" : "provider-rejected";
+    }
+    return result;
+  }
   return { async send({ to, galleryUrl }) {
     try {
       const response = await fetcher("https://textbelt.com/text", {
@@ -214,16 +225,22 @@ function createTextbeltProvider(apiKey, testMode, fetcher) {
         headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
         body: new URLSearchParams({ phone: to, message: `Your wedding photos are ready: ${galleryUrl}`, key: testMode ? `${apiKey}_test` : apiKey }).toString()
       });
-      if (!response.ok) return smsResult("uncertain");
+      if (!response.ok) return { ...smsResult("uncertain"), providerDiagnostic: { stage: "http", httpStatus: response.status } };
       const bytes = await readLimited(response, 4096);
-      if (!bytes) return smsResult("uncertain");
-      const result = JSON.parse(new TextDecoder().decode(bytes));
-      if (!result || typeof result !== "object" || !("success" in result)) return smsResult("uncertain");
-      if (result.success === false) return smsResult("rejected");
-      if (result.success !== true) return smsResult("uncertain");
-      return smsResult(testMode ? "test_accepted" : "accepted");
+      if (!bytes) return { ...smsResult("uncertain"), providerDiagnostic: { stage: "invalid-response" } };
+      let result;
+      try {
+        result = JSON.parse(new TextDecoder().decode(bytes));
+      } catch {
+        return { ...smsResult("uncertain"), providerDiagnostic: { stage: "invalid-response" } };
+      }
+      if (!result || typeof result !== "object" || !("success" in result) || typeof result.success !== "boolean")
+        return { ...smsResult("uncertain"), providerDiagnostic: { stage: "invalid-response" } };
+      const providerDiagnostic = diagnostic(result, to);
+      if (result.success === false) return { ...smsResult("rejected"), providerDiagnostic };
+      return { ...smsResult(testMode ? "test_accepted" : "accepted"), providerDiagnostic };
     } catch {
-      return smsResult("uncertain");
+      return { ...smsResult("uncertain"), providerDiagnostic: { stage: "transport" } };
     }
   } };
 }
@@ -252,12 +269,17 @@ async function textbeltShare(env, provider, shareId, fresh, phone, galleryUrl, e
   if (record.status !== "pending" && record.status !== "rejected") return respond(record.status);
   if (record.status === "rejected" && !explicitRetry) return respond("rejected");
   if (record.shareId !== shareId) return json({ error: "Use the original share id for an explicit retry", retryable: false }, 409);
-  const attempt = { ...record, status: "sending", attemptId: crypto.randomUUID() };
+  const { providerDiagnostic: _previousDiagnostic, ...reserved } = record;
+  const attempt = { ...reserved, status: "sending", attemptId: crypto.randomUUID() };
   const claimed = await env.PHOTOS.put(key, JSON.stringify(attempt), { onlyIf: { etagMatches: saved.etag } });
   if (!claimed) return respond("uncertain");
   const outcome = await provider.send({ idempotencyKey: shareId, to: phone, galleryUrl });
   try {
-    const updated = await env.PHOTOS.put(key, JSON.stringify({ ...attempt, status: outcome.status }), { onlyIf: { etagMatches: claimed.etag } });
+    const updated = await env.PHOTOS.put(key, JSON.stringify({
+      ...attempt,
+      status: outcome.status,
+      ...outcome.providerDiagnostic ? { providerDiagnostic: outcome.providerDiagnostic } : {}
+    }), { onlyIf: { etagMatches: claimed.etag } });
     if (!updated) return respond("uncertain");
   } catch {
     return respond("uncertain");

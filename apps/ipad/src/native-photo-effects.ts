@@ -16,7 +16,7 @@ export type NativeTemplateEffects = Pick<TemplateEditorPorts, 'renderTemplate' |
 export function loadTemplateEffects(): NativeTemplateEffects | null {
   try {
     const module = requireOptionalNativeModule<NativeTemplateEffects & { templateVersion?: string }>('WeddingPhotoEffects');
-    if (module?.templateVersion !== 'wedding-template-v2' || typeof module.inspectTemplateSources !== 'function' || typeof module.renderTemplate !== 'function' || typeof module.cancelTemplate !== 'function' || typeof module.releaseTemplate !== 'function') return null;
+    if (module?.templateVersion !== 'wedding-template-v3' || typeof module.inspectTemplateSources !== 'function' || typeof module.renderTemplate !== 'function' || typeof module.cancelTemplate !== 'function' || typeof module.releaseTemplate !== 'function') return null;
     return { inspectTemplateSources: sources => module.inspectTemplateSources(sources), renderTemplate: (...args) => module.renderTemplate(...args), cancelTemplate: id => module.cancelTemplate(id), releaseTemplate: uri => module.releaseTemplate(uri) };
   } catch { return null; }
 }

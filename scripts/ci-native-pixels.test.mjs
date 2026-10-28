@@ -30,12 +30,18 @@ function fixture(t) {
   for (const name of ['portrait-1', 'portrait-2', 'portrait-3', 'portrait-4', 'landscape-1', 'landscape-2']) {
     writeFileSync(join(resources, 'studio-' + name + '.jpg'), Buffer.from([0xff, 0xd8, 1, 2, 0xff, 0xd9]));
   }
+  for (const name of ['Classic-Ivory', 'Sage-Botanical', 'Coastal-Sea-Glass']) {
+    const file = join(repository, 'apps/ipad/modules/wedding-photo-effects/ios/FrameArt/' + name + '-Text-Free-Artwork.frameart');
+    mkdirSync(join(file, '..'), { recursive: true });
+    const bytes = Buffer.alloc(24); Buffer.from([137,80,78,71,13,10,26,10]).copy(bytes); bytes.writeUInt32BE(1254, 16); bytes.writeUInt32BE(1254, 20);
+    writeFileSync(file, bytes);
+  }
   return { repository, directory, plan: createPixelProject(repository, directory) };
 }
 
-test('bare project requires only four Swift inputs and six images, with no application, packages or host dependency', t => {
+test('bare project requires only four Swift inputs and nine images, with no application, packages or host dependency', t => {
   const { repository, directory, plan } = fixture(t);
-  assert.equal(plan.expectedTests, 19); assert.equal(plan.sources.length, 4); assert.equal(plan.resources.length, 6);
+  assert.equal(plan.expectedTests, 19); assert.equal(plan.sources.length, 4); assert.equal(plan.resources.length, 9);
   assert.equal(plan.expectedCases.filter(name => name.startsWith('PhotoEffectsEngineTests.')).length, 8);
   assert.equal(plan.expectedCases.filter(name => name.startsWith('PhotoTemplateEngineTests.')).length, 11);
   assert.equal(existsSync(join(repository, 'package.json')), false);
@@ -62,6 +68,13 @@ test('current production engine/test and fixture bytes are copied unchanged; nat
   assert.ok(plan.expectedCases.includes('PhotoTemplateEngineTests.testV2AllSixCleanNativeJpegFullAndPreviewAttachments'));
   for (const [source, digest] of before) assert.equal(hash(readFileSync(join(root, source))), digest);
   assert.equal(verifyPixelProject(plan, root), true);
+  const projectText = readFileSync(join(plan.project, 'project.pbxproj'), 'utf8');
+  for (const resource of plan.resources.filter(resource => resource.source.endsWith('.frameart'))) {
+    const filename = resource.source.split('/').at(-1);
+    assert.deepEqual(readFileSync(join(root, resource.source)), readFileSync(join(root, 'design/frame-art-v1', filename.replace(/\.frameart$/, '.png'))));
+    assert.ok(projectText.includes('lastKnownFileType = file; path = ' + JSON.stringify(resource.generatedSource)));
+  }
+  assert.equal(projectText.includes('image.png'), false, 'Opaque artwork must bypass Xcode PNG optimization');
 });
 
 test('generator refuses a nonempty destination instead of deleting existing files', t => {

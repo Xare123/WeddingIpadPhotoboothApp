@@ -1,0 +1,687 @@
+{
+  "scope": "Six synthetic Canvas approximations using exact original generated artwork and four distinct fictional adult photographs. NOT native CoreImage/CoreText, installation or physical-device proof.",
+  "outputs": [
+    {
+      "meanPreviewFullJpegDifference": 0.9574204282407407,
+      "layout": "strip",
+      "theme": "classic",
+      "recipe": {
+        "version": "wedding-template-v3",
+        "gridAspect": "square",
+        "layout": "strip",
+        "theme": "classic",
+        "photoIds": [
+          "fictional-1",
+          "fictional-2",
+          "fictional-3",
+          "fictional-4"
+        ],
+        "cropsByPhotoId": {
+          "fictional-1": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "fictional-2": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "fictional-3": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "fictional-4": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        }
+      },
+      "geometry": {
+        "width": 1200,
+        "height": 3600,
+        "windows": [
+          {
+            "x": 100,
+            "y": 220,
+            "width": 1000,
+            "height": 750
+          },
+          {
+            "x": 100,
+            "y": 990,
+            "width": 1000,
+            "height": 750
+          },
+          {
+            "x": 100,
+            "y": 1760,
+            "width": 1000,
+            "height": 750
+          },
+          {
+            "x": 100,
+            "y": 2530,
+            "width": 1000,
+            "height": 750
+          }
+        ]
+      },
+      "full": {
+        "width": 1200,
+        "height": 3600,
+        "preview": false,
+        "version": "wedding-template-v3",
+        "recipeJSON": "{\"cropsByPhotoId\":{\"fictional-1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-2\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-3\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-4\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"gridAspect\":\"square\",\"layout\":\"strip\",\"photoIds\":[\"fictional-1\",\"fictional-2\",\"fictional-3\",\"fictional-4\"],\"theme\":\"classic\",\"version\":\"wedding-template-v3\"}",
+        "sourceHashes": {
+          "fictional-1": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+          "fictional-2": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed",
+          "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
+          "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
+        },
+        "byteLength": 716689,
+        "file": "artifacts/visual/frame-art-v3/strip-classic-full.jpg",
+        "sha256": "375e931e6d73f0bdb837ddb7ca5358969b98b4174bcacb8472c37733aeea35ea"
+      },
+      "preview": {
+        "width": 480,
+        "height": 1440,
+        "preview": true,
+        "version": "wedding-template-v3",
+        "recipeJSON": "{\"cropsByPhotoId\":{\"fictional-1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-2\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-3\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-4\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"gridAspect\":\"square\",\"layout\":\"strip\",\"photoIds\":[\"fictional-1\",\"fictional-2\",\"fictional-3\",\"fictional-4\"],\"theme\":\"classic\",\"version\":\"wedding-template-v3\"}",
+        "sourceHashes": {
+          "fictional-1": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+          "fictional-2": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed",
+          "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
+          "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
+        },
+        "byteLength": 152199,
+        "file": "artifacts/visual/frame-art-v3/strip-classic-preview.jpg",
+        "sha256": "556e95d814cdcfb523e9bb14c647a6be3acc886bf02dac9842de1eb923e523c6"
+      }
+    },
+    {
+      "meanPreviewFullJpegDifference": 0.9578443287037037,
+      "layout": "strip",
+      "theme": "botanical",
+      "recipe": {
+        "version": "wedding-template-v3",
+        "gridAspect": "square",
+        "layout": "strip",
+        "theme": "botanical",
+        "photoIds": [
+          "fictional-1",
+          "fictional-2",
+          "fictional-3",
+          "fictional-4"
+        ],
+        "cropsByPhotoId": {
+          "fictional-1": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "fictional-2": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "fictional-3": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "fictional-4": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        }
+      },
+      "geometry": {
+        "width": 1200,
+        "height": 3600,
+        "windows": [
+          {
+            "x": 100,
+            "y": 220,
+            "width": 1000,
+            "height": 750
+          },
+          {
+            "x": 100,
+            "y": 990,
+            "width": 1000,
+            "height": 750
+          },
+          {
+            "x": 100,
+            "y": 1760,
+            "width": 1000,
+            "height": 750
+          },
+          {
+            "x": 100,
+            "y": 2530,
+            "width": 1000,
+            "height": 750
+          }
+        ]
+      },
+      "full": {
+        "width": 1200,
+        "height": 3600,
+        "preview": false,
+        "version": "wedding-template-v3",
+        "recipeJSON": "{\"cropsByPhotoId\":{\"fictional-1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-2\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-3\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-4\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"gridAspect\":\"square\",\"layout\":\"strip\",\"photoIds\":[\"fictional-1\",\"fictional-2\",\"fictional-3\",\"fictional-4\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v3\"}",
+        "sourceHashes": {
+          "fictional-1": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+          "fictional-2": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed",
+          "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
+          "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
+        },
+        "byteLength": 731847,
+        "file": "artifacts/visual/frame-art-v3/strip-botanical-full.jpg",
+        "sha256": "63a266071662411ac4e42c9248c7c145330161e7b510886e00cc5a0e77c1d5bd"
+      },
+      "preview": {
+        "width": 480,
+        "height": 1440,
+        "preview": true,
+        "version": "wedding-template-v3",
+        "recipeJSON": "{\"cropsByPhotoId\":{\"fictional-1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-2\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-3\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-4\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"gridAspect\":\"square\",\"layout\":\"strip\",\"photoIds\":[\"fictional-1\",\"fictional-2\",\"fictional-3\",\"fictional-4\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v3\"}",
+        "sourceHashes": {
+          "fictional-1": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+          "fictional-2": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed",
+          "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
+          "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
+        },
+        "byteLength": 155513,
+        "file": "artifacts/visual/frame-art-v3/strip-botanical-preview.jpg",
+        "sha256": "7e365344ffd0a1344091b07a389a28dc954b69ee0477526f03aa2059dd0c8b8b"
+      }
+    },
+    {
+      "meanPreviewFullJpegDifference": 1.0717983217592593,
+      "layout": "strip",
+      "theme": "coastal",
+      "recipe": {
+        "version": "wedding-template-v3",
+        "gridAspect": "square",
+        "layout": "strip",
+        "theme": "coastal",
+        "photoIds": [
+          "fictional-1",
+          "fictional-2",
+          "fictional-3",
+          "fictional-4"
+        ],
+        "cropsByPhotoId": {
+          "fictional-1": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "fictional-2": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "fictional-3": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "fictional-4": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        }
+      },
+      "geometry": {
+        "width": 1200,
+        "height": 3600,
+        "windows": [
+          {
+            "x": 100,
+            "y": 220,
+            "width": 1000,
+            "height": 750
+          },
+          {
+            "x": 100,
+            "y": 990,
+            "width": 1000,
+            "height": 750
+          },
+          {
+            "x": 100,
+            "y": 1760,
+            "width": 1000,
+            "height": 750
+          },
+          {
+            "x": 100,
+            "y": 2530,
+            "width": 1000,
+            "height": 750
+          }
+        ]
+      },
+      "full": {
+        "width": 1200,
+        "height": 3600,
+        "preview": false,
+        "version": "wedding-template-v3",
+        "recipeJSON": "{\"cropsByPhotoId\":{\"fictional-1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-2\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-3\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-4\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"gridAspect\":\"square\",\"layout\":\"strip\",\"photoIds\":[\"fictional-1\",\"fictional-2\",\"fictional-3\",\"fictional-4\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v3\"}",
+        "sourceHashes": {
+          "fictional-1": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+          "fictional-2": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed",
+          "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
+          "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
+        },
+        "byteLength": 789692,
+        "file": "artifacts/visual/frame-art-v3/strip-coastal-full.jpg",
+        "sha256": "7b9cae843fa4e0621cec0a3fde12fa63be6ae7aff6df154ddf2999e3ce6a254d"
+      },
+      "preview": {
+        "width": 480,
+        "height": 1440,
+        "preview": true,
+        "version": "wedding-template-v3",
+        "recipeJSON": "{\"cropsByPhotoId\":{\"fictional-1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-2\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-3\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-4\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"gridAspect\":\"square\",\"layout\":\"strip\",\"photoIds\":[\"fictional-1\",\"fictional-2\",\"fictional-3\",\"fictional-4\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v3\"}",
+        "sourceHashes": {
+          "fictional-1": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+          "fictional-2": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed",
+          "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
+          "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
+        },
+        "byteLength": 167173,
+        "file": "artifacts/visual/frame-art-v3/strip-coastal-preview.jpg",
+        "sha256": "02166967e5b4632eed4fc182511e172a2fab58569d3f7dfea5e4ada934440c8a"
+      }
+    },
+    {
+      "meanPreviewFullJpegDifference": 0.8498037229938271,
+      "layout": "grid",
+      "theme": "classic",
+      "recipe": {
+        "version": "wedding-template-v3",
+        "gridAspect": "square",
+        "layout": "grid",
+        "theme": "classic",
+        "photoIds": [
+          "fictional-1",
+          "fictional-2",
+          "fictional-3",
+          "fictional-4"
+        ],
+        "cropsByPhotoId": {
+          "fictional-1": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "fictional-2": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "fictional-3": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "fictional-4": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        }
+      },
+      "geometry": {
+        "width": 2400,
+        "height": 2400,
+        "windows": [
+          {
+            "x": 160,
+            "y": 180,
+            "width": 1024,
+            "height": 1024
+          },
+          {
+            "x": 1216,
+            "y": 180,
+            "width": 1024,
+            "height": 1024
+          },
+          {
+            "x": 160,
+            "y": 1216,
+            "width": 1024,
+            "height": 1024
+          },
+          {
+            "x": 1216,
+            "y": 1216,
+            "width": 1024,
+            "height": 1024
+          }
+        ]
+      },
+      "full": {
+        "width": 2400,
+        "height": 2400,
+        "preview": false,
+        "version": "wedding-template-v3",
+        "recipeJSON": "{\"cropsByPhotoId\":{\"fictional-1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-2\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-3\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-4\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"gridAspect\":\"square\",\"layout\":\"grid\",\"photoIds\":[\"fictional-1\",\"fictional-2\",\"fictional-3\",\"fictional-4\"],\"theme\":\"classic\",\"version\":\"wedding-template-v3\"}",
+        "sourceHashes": {
+          "fictional-1": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+          "fictional-2": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed",
+          "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
+          "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
+        },
+        "byteLength": 1031248,
+        "file": "artifacts/visual/frame-art-v3/grid-classic-full.jpg",
+        "sha256": "27b7c42eb3732bce5c9debd7b3a7858c37087777fcfbce8a3183b8fb4d2f14d2"
+      },
+      "preview": {
+        "width": 1440,
+        "height": 1440,
+        "preview": true,
+        "version": "wedding-template-v3",
+        "recipeJSON": "{\"cropsByPhotoId\":{\"fictional-1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-2\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-3\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-4\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"gridAspect\":\"square\",\"layout\":\"grid\",\"photoIds\":[\"fictional-1\",\"fictional-2\",\"fictional-3\",\"fictional-4\"],\"theme\":\"classic\",\"version\":\"wedding-template-v3\"}",
+        "sourceHashes": {
+          "fictional-1": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+          "fictional-2": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed",
+          "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
+          "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
+        },
+        "byteLength": 443831,
+        "file": "artifacts/visual/frame-art-v3/grid-classic-preview.jpg",
+        "sha256": "cc2265c95cc6d906cfbf444bb4baee2d21160d996d99bb9db81de74ade7bb552"
+      }
+    },
+    {
+      "meanPreviewFullJpegDifference": 0.8335625643004115,
+      "layout": "grid",
+      "theme": "botanical",
+      "recipe": {
+        "version": "wedding-template-v3",
+        "gridAspect": "square",
+        "layout": "grid",
+        "theme": "botanical",
+        "photoIds": [
+          "fictional-1",
+          "fictional-2",
+          "fictional-3",
+          "fictional-4"
+        ],
+        "cropsByPhotoId": {
+          "fictional-1": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "fictional-2": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "fictional-3": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "fictional-4": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        }
+      },
+      "geometry": {
+        "width": 2400,
+        "height": 2400,
+        "windows": [
+          {
+            "x": 160,
+            "y": 180,
+            "width": 1024,
+            "height": 1024
+          },
+          {
+            "x": 1216,
+            "y": 180,
+            "width": 1024,
+            "height": 1024
+          },
+          {
+            "x": 160,
+            "y": 1216,
+            "width": 1024,
+            "height": 1024
+          },
+          {
+            "x": 1216,
+            "y": 1216,
+            "width": 1024,
+            "height": 1024
+          }
+        ]
+      },
+      "full": {
+        "width": 2400,
+        "height": 2400,
+        "preview": false,
+        "version": "wedding-template-v3",
+        "recipeJSON": "{\"cropsByPhotoId\":{\"fictional-1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-2\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-3\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-4\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"gridAspect\":\"square\",\"layout\":\"grid\",\"photoIds\":[\"fictional-1\",\"fictional-2\",\"fictional-3\",\"fictional-4\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v3\"}",
+        "sourceHashes": {
+          "fictional-1": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+          "fictional-2": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed",
+          "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
+          "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
+        },
+        "byteLength": 1032400,
+        "file": "artifacts/visual/frame-art-v3/grid-botanical-full.jpg",
+        "sha256": "c25c259d2ccf0c59f82faa6a2ae63d9d181a1e4ef563ea040dd5c97026e8c75a"
+      },
+      "preview": {
+        "width": 1440,
+        "height": 1440,
+        "preview": true,
+        "version": "wedding-template-v3",
+        "recipeJSON": "{\"cropsByPhotoId\":{\"fictional-1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-2\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-3\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-4\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"gridAspect\":\"square\",\"layout\":\"grid\",\"photoIds\":[\"fictional-1\",\"fictional-2\",\"fictional-3\",\"fictional-4\"],\"theme\":\"botanical\",\"version\":\"wedding-template-v3\"}",
+        "sourceHashes": {
+          "fictional-1": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+          "fictional-2": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed",
+          "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
+          "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
+        },
+        "byteLength": 449506,
+        "file": "artifacts/visual/frame-art-v3/grid-botanical-preview.jpg",
+        "sha256": "7761c1d914a269ae5c0dff529a9f853ac96e1283ecf9c43b708f64f6a82a9658"
+      }
+    },
+    {
+      "meanPreviewFullJpegDifference": 0.9116118505658436,
+      "layout": "grid",
+      "theme": "coastal",
+      "recipe": {
+        "version": "wedding-template-v3",
+        "gridAspect": "square",
+        "layout": "grid",
+        "theme": "coastal",
+        "photoIds": [
+          "fictional-1",
+          "fictional-2",
+          "fictional-3",
+          "fictional-4"
+        ],
+        "cropsByPhotoId": {
+          "fictional-1": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "fictional-2": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "fictional-3": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "fictional-4": {
+            "mode": "fit",
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          }
+        }
+      },
+      "geometry": {
+        "width": 2400,
+        "height": 2400,
+        "windows": [
+          {
+            "x": 160,
+            "y": 180,
+            "width": 1024,
+            "height": 1024
+          },
+          {
+            "x": 1216,
+            "y": 180,
+            "width": 1024,
+            "height": 1024
+          },
+          {
+            "x": 160,
+            "y": 1216,
+            "width": 1024,
+            "height": 1024
+          },
+          {
+            "x": 1216,
+            "y": 1216,
+            "width": 1024,
+            "height": 1024
+          }
+        ]
+      },
+      "full": {
+        "width": 2400,
+        "height": 2400,
+        "preview": false,
+        "version": "wedding-template-v3",
+        "recipeJSON": "{\"cropsByPhotoId\":{\"fictional-1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-2\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-3\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-4\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"gridAspect\":\"square\",\"layout\":\"grid\",\"photoIds\":[\"fictional-1\",\"fictional-2\",\"fictional-3\",\"fictional-4\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v3\"}",
+        "sourceHashes": {
+          "fictional-1": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+          "fictional-2": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed",
+          "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
+          "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
+        },
+        "byteLength": 1090821,
+        "file": "artifacts/visual/frame-art-v3/grid-coastal-full.jpg",
+        "sha256": "2c0942a382f0aceadf59159cb4eb5af157a91f178efcf1b6efc6bd565e2bd0f3"
+      },
+      "preview": {
+        "width": 1440,
+        "height": 1440,
+        "preview": true,
+        "version": "wedding-template-v3",
+        "recipeJSON": "{\"cropsByPhotoId\":{\"fictional-1\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-2\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-3\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1},\"fictional-4\":{\"mode\":\"fit\",\"x\":0,\"y\":0,\"zoom\":1}},\"gridAspect\":\"square\",\"layout\":\"grid\",\"photoIds\":[\"fictional-1\",\"fictional-2\",\"fictional-3\",\"fictional-4\"],\"theme\":\"coastal\",\"version\":\"wedding-template-v3\"}",
+        "sourceHashes": {
+          "fictional-1": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+          "fictional-2": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed",
+          "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
+          "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
+        },
+        "byteLength": 472958,
+        "file": "artifacts/visual/frame-art-v3/grid-coastal-preview.jpg",
+        "sha256": "2c9886df806a09447017b9e774e4cd440ab0a69f57e4e80bf6991727ae18cc7f"
+      }
+    }
+  ],
+  "externalRequests": [],
+  "errors": [],
+  "status": "passed",
+  "originalSources": {
+    "version": "wedding-template-v3",
+    "gridAspect": "portrait",
+    "sources": [
+      {
+        "photoId": "fictional-1",
+        "width": 960,
+        "height": 1200,
+        "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1"
+      },
+      {
+        "photoId": "fictional-2",
+        "width": 960,
+        "height": 1200,
+        "sha256": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed"
+      },
+      {
+        "photoId": "fictional-3",
+        "width": 960,
+        "height": 1200,
+        "sha256": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5"
+      },
+      {
+        "photoId": "fictional-4",
+        "width": 960,
+        "height": 1200,
+        "sha256": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
+      }
+    ]
+  },
+  "sourceHashes": {
+    "tools/native-visual/new-session/template-v2-stub.ts": "9cf93d99c445c3d557a2f26145e15c79a8bb712190c1ccba56c09044d21fc1f0",
+    "tools/native-visual/new-session/frame-art-v3-checks.mjs": "6fcdbba11f983b8b559f98f1850888177c7788b3dbb16417e784dd59a526f538",
+    "apps/ipad/modules/wedding-photo-effects/ios/PhotoTemplateEngine.swift": "c8f356f68d8ebe184356d96805d046bc5c7dc092a93a5ab04570049e15e88357"
+  },
+  "artwork": [
+    {
+      "file": "design/frame-art-v1/Classic-Ivory-Text-Free-Artwork.png",
+      "sha256": "3ccb9f0acf030b5bc31b2bbf6d81f3e694e2dd2e045dc77fd930c6d4df59164e"
+    },
+    {
+      "file": "design/frame-art-v1/Sage-Botanical-Text-Free-Artwork.png",
+      "sha256": "4121598a7aa1d445fed5c223d4b475d706cb93567d90c51a42d1dad86cb36e21"
+    },
+    {
+      "file": "design/frame-art-v1/Coastal-Sea-Glass-Text-Free-Artwork.png",
+      "sha256": "8f3bbfb131c9454f6ea633a79445e6cd9b32176e9aa80c09080925b0d83884a0"
+    }
+  ]
+}

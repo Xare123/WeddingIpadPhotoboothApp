@@ -27,7 +27,7 @@ export interface Env {
 
 type Config = { deviceToken: string; signingKey: string; origin: string; ttlMs: number };
 type GalleryComposite = { photoId: string; layout: 'strip' | 'grid'; theme: 'classic' | 'botanical' | 'coastal' } & (
-  { version: 'wedding-template-v1' } | { version: 'wedding-template-v2'; gridAspect: 'portrait' | 'square' }
+  { version: 'wedding-template-v1' } | { version: 'wedding-template-v2'; gridAspect: 'portrait' | 'square' } | { version: 'wedding-template-v3'; gridAspect: 'square' }
 );
 type GalleryRecipe = { photoIds: string[]; originalPhotoIds?: string[]; composite?: GalleryComposite };
 type Gallery = GalleryRecipe & { version: 1; sessionId: string; expiresAt: number };
@@ -208,17 +208,18 @@ function parseGalleryRecipe(body: Record<string, unknown>): GalleryRecipe | Resp
   const candidate = body.composite;
   if (!candidate || typeof candidate !== 'object' || Array.isArray(candidate)) return json({ error: 'Valid composite required' }, 400);
   const composite = candidate as Record<string, unknown>;
-  const v2 = composite.version === 'wedding-template-v2';
-  const keys = ['photoId', 'layout', 'theme', 'version', ...(v2 ? ['gridAspect'] : [])];
+  const v2 = composite.version === 'wedding-template-v2', v3 = composite.version === 'wedding-template-v3';
+  const keys = ['photoId', 'layout', 'theme', 'version', ...(v2 || v3 ? ['gridAspect'] : [])];
   if (Object.keys(composite).length !== keys.length || Object.keys(composite).some(key => !keys.includes(key)) ||
     typeof composite.photoId !== 'string' || !uuid.test(composite.photoId) ||
     !['strip', 'grid'].includes(composite.layout as string) || !['classic', 'botanical', 'coastal'].includes(composite.theme as string) ||
-    (!v2 && composite.version !== 'wedding-template-v1') ||
-    (v2 && !['portrait', 'square'].includes(composite.gridAspect as string))) return json({ error: 'Unknown or invalid composite recipe' }, 400);
+    (!v2 && !v3 && composite.version !== 'wedding-template-v1') ||
+    (v2 && !['portrait', 'square'].includes(composite.gridAspect as string)) ||
+    (v3 && composite.gridAspect !== 'square')) return json({ error: 'Unknown or invalid composite recipe' }, 400);
   const photoId = composite.photoId.toLowerCase();
   if (photoIds.includes(photoId) || originalPhotoIds.includes(photoId)) return json({ error: 'Composite must have a distinct photo ID' }, 400);
   const common = { photoId, layout: composite.layout as GalleryComposite['layout'], theme: composite.theme as GalleryComposite['theme'] };
-  return { photoIds, originalPhotoIds, composite: v2 ? { ...common, version: 'wedding-template-v2', gridAspect: composite.gridAspect as 'portrait' | 'square' } : { ...common, version: 'wedding-template-v1' } };
+  return { photoIds, originalPhotoIds, composite: v3 ? { ...common, version: 'wedding-template-v3', gridAspect: 'square' } : v2 ? { ...common, version: 'wedding-template-v2', gridAspect: composite.gridAspect as 'portrait' | 'square' } : { ...common, version: 'wedding-template-v1' } };
 }
 function sameRecipe(left: GalleryRecipe, right: GalleryRecipe): boolean {
   return samePhotos(left.photoIds, right.photoIds) &&
@@ -227,7 +228,7 @@ function sameRecipe(left: GalleryRecipe, right: GalleryRecipe): boolean {
     (left.composite === undefined && right.composite === undefined || !!left.composite && !!right.composite &&
       left.composite.photoId === right.composite.photoId && left.composite.layout === right.composite.layout &&
       left.composite.theme === right.composite.theme && left.composite.version === right.composite.version &&
-      (left.composite.version !== 'wedding-template-v2' || right.composite.version === 'wedding-template-v2' && left.composite.gridAspect === right.composite.gridAspect));
+      (left.composite.version === 'wedding-template-v1' || right.composite.version !== 'wedding-template-v1' && left.composite.gridAspect === right.composite.gridAspect));
 }
 const galleryPhotoIds = (gallery: GalleryRecipe): string[] => [...new Set([
   ...gallery.photoIds, ...(gallery.originalPhotoIds ?? []), ...(gallery.composite ? [gallery.composite.photoId] : []),

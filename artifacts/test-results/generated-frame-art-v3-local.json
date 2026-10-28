@@ -1,0 +1,32 @@
+{
+  "scope": "Local Linux source, unit/integration and synthetic browser validation. No native execution, install, deployment, guest photos or SMS.",
+  "repoTests": {
+    "passed": 508,
+    "failed": 0,
+    "skipped": 0,
+    "note": "Includes six pre-existing disabled/unpublished local scene-orientation experiment tests; those files are excluded from this change. Hosted clean-checkout count will differ."
+  },
+  "typechecks": "passed",
+  "hermesIosJsExport": "passed",
+  "workerBundleSyntax": "passed",
+  "syntheticVisual": "six full and six preview Canvas JPEGs; four actual JSX editor screenshots, separately labelled; not native proof",
+  "sourceHashes": {
+    "apps/ipad/modules/wedding-photo-effects/ios/PhotoTemplateEngine.swift": "c8f356f68d8ebe184356d96805d046bc5c7dc092a93a5ab04570049e15e88357",
+    "apps/ipad/modules/wedding-photo-effects/ios/WeddingPhotoEffects.podspec": "2b563d2c3a40f3e8c17289e50e140513221798e994ea212aff66e20830dcddab",
+    "apps/ipad/modules/wedding-photo-effects/tests/PhotoTemplateEngineTests.swift": "9dde81a897dbe78eaf3e80b1775b57f23e19c6b08947cf3f59f5e64942eb7101",
+    "apps/ipad/src/template-editor.ts": "70a07f18e092d80d3ab3056ac41edc91694d86fb9b33ce9d72743efbc3a1a2ae",
+    "services/api/src/index.ts": "b75a7424459f6933b60eb0d619f12e0f52955eb5214f85df7726d4ae2c12eeec"
+  },
+  "pending": [
+    "Apple compile and exact nineteen executed native tests",
+    "28 actual Apple JPEG verification and review",
+    "production Worker v3 deployment preserving existing settings/secrets",
+    "signed native rebuild and physical iPad acceptance"
+  ],
+  "nativeHarnessGuards": {
+    "passed": 142,
+    "failed": 0,
+    "skipped": 0,
+    "scope": "Linux contract checks, not native execution"
+  }
+}

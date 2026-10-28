@@ -54,7 +54,7 @@ export function TemplateStudio(p: Props) {
   </View>;
   const fullPhotos = recipe.photoIds.every(id => recipe.cropsByPhotoId[id]?.mode === 'fit');
   const filledPhotos = recipe.photoIds.every(id => recipe.cropsByPhotoId[id]?.mode === 'fill');
-  const layoutDescription = recipe.layout === 'strip' ? 'Classic strip · 1:3' : recipe.version === 'wedding-template-v2' ? recipe.gridAspect === 'portrait' ? 'Social grid · Portrait 4:5' : 'Social grid · Square' : 'Four-cut grid';
+  const layoutDescription = recipe.layout === 'strip' ? 'Classic strip · 1:3' : recipe.version !== 'wedding-template-v1' ? recipe.gridAspect === 'portrait' ? 'Social grid · Portrait 4:5' : 'Social grid · Square' : 'Four-cut grid';
   const imageError = () => { if (inspection) p.onPreviewError(inspection.uri); closeInspection(); };
   const inspectionWidth = Math.max(100, width - insets.left - insets.right - 32);
   return <View testID="template-studio" style={s.page}>
@@ -73,7 +73,7 @@ export function TemplateStudio(p: Props) {
           <View style={s.placement}>
             <Text style={s.sectionLabel}>Photo placement</Text>
             <View style={s.segment}>{(['fit', 'fill'] as const).map(mode => <Pressable key={mode} testID={`template-placement-${mode}`} accessibilityRole="button" accessibilityState={{ selected: mode === 'fit' ? fullPhotos : filledPhotos, disabled: blocked }} disabled={blocked} style={[s.segmentButton, (mode === 'fit' ? fullPhotos : filledPhotos) && s.segmentSelected]} onPress={() => { setSelected(null); p.onCrops(Object.fromEntries(recipe.photoIds.map(id => [id, { mode, x: 0, y: mode === 'fill' ? -1 : 0, zoom: 1 }]))); }}><Text style={[s.segmentText, (mode === 'fit' ? fullPhotos : filledPhotos) && s.segmentTextSelected]}>{mode === 'fit' ? 'Full photo' : 'Fill frames'}</Text></Pressable>)}</View>
-            <Text testID="template-placement-note" style={s.note}>{fullPhotos ? recipe.layout === 'strip' && recipe.version === 'wedding-template-v2' && recipe.gridAspect === 'portrait' ? 'Portrait photos have side space in a classic strip. Try Fill frames, then check every face. Originals stay unchanged.' : 'Every edge stays in view. Fill is optional.' : 'Fill starts at the top and crops edges. Check every face; originals stay unchanged.'}</Text>
+            <Text testID="template-placement-note" style={s.note}>{fullPhotos ? recipe.layout === 'strip' && recipe.version !== 'wedding-template-v1' && recipe.gridAspect === 'portrait' ? 'Portrait photos have side space in a classic strip. Try Fill frames, then check every face. Originals stay unchanged.' : 'Every edge stays in view. Fill is optional.' : 'Fill starts at the top and crops edges. Check every face; originals stay unchanged.'}</Text>
           </View>
           <Pressable accessibilityRole="button" testID="template-adjust" accessibilityState={{ expanded: adjust, disabled: blocked }} disabled={blocked} onPress={() => { setAdjust(!adjust); setSelected(null); }} style={s.link}><Text style={s.linkText}>{adjust ? 'Done adjusting' : 'Adjust photos'}</Text></Pressable>
           {adjust && <View style={s.adjust}>

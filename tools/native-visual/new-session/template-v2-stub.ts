@@ -1,4 +1,4 @@
-/** Canvas approximation of declared v2 geometry/art. Native CoreImage/CoreText UNVERIFIED. */
+/** Canvas approximation of declared v1/v2/v3 geometry/art. Native CoreImage/CoreText UNVERIFIED. */
 import { syntheticTemplates as v1 } from './template-stub';
 import { syntheticSource, syntheticRenderedBlobs, renderedImages } from './effects-stub';
 import { fixtureControls } from './fixture-controls';
@@ -6,6 +6,7 @@ const cancelled = new Set<string>();
 const canonical = (v: any): any => Array.isArray(v) ? v.map(canonical) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).sort(([a], [b]) => a.localeCompare(b)).map(([k, x]) => [k, canonical(x)])) : v;
 export function templateV2Geometry(recipe: any) {
   const strip = recipe.layout === 'strip', portrait = recipe.gridAspect === 'portrait';
+  if (recipe.version === 'wedding-template-v3') return { width: strip ? 1200 : 2400, height: strip ? 3600 : 2400, windows: Array.from({ length: 4 }, (_, i) => strip ? { x: 100, y: 220 + i * 770, width: 1000, height: 750 } : { x: 160 + i % 2 * 1056, y: 180 + Math.floor(i / 2) * 1036, width: 1024, height: 1024 }) };
   return { width: strip ? 1200 : 2400, height: strip ? 3600 : portrait ? 3000 : 2400,
     windows: Array.from({ length: 4 }, (_, i) => strip ? { x: 60, y: 60 + i * 834, width: 1080, height: 810 }
       : portrait ? { x: 72 + i % 2 * 1140, y: 72 + Math.floor(i / 2) * 1356, width: 1116, height: 1332 }
@@ -36,28 +37,56 @@ function decoration(ctx: OffscreenCanvasRenderingContext2D, width: number, heigh
   }
   ctx.restore();
 }
+const artNames: Record<string, string> = { classic: 'Classic-Ivory', botanical: 'Sage-Botanical', coastal: 'Coastal-Sea-Glass' };
+const artCache = new Map<string, Promise<ImageBitmap>>();
+async function generatedArt(theme: string) {
+  let image = artCache.get(theme);
+  if (!image) { image = (async () => {
+    const response = await fetch(`/frame-art-v1/${artNames[theme]}-Text-Free-Artwork.png`);
+    if (!response.ok) throw new Error('Generated frame artwork unavailable');
+    const bitmap = await createImageBitmap(await response.blob());
+    if (bitmap.width !== 1254 || bitmap.height !== 1254) throw new Error('Generated artwork dimensions changed');
+    return bitmap;
+  })(); artCache.set(theme, image); }
+  return image;
+}
+/** Nine-slice stretches only texture/edge fields, keeping each corner's aspect ratio. */
+async function decorationV3(ctx: OffscreenCanvasRenderingContext2D, width: number, height: number, recipe: any, windows: any[], accent: string) {
+  const image = await generatedArt(recipe.theme), corner = recipe.layout === 'strip' ? 250 : 350;
+  const src = [0, 250, 1004, 1254], dstX = [0, corner, width - corner, width], dstY = [0, corner, height - corner, height];
+  for (let row = 0; row < 3; row++) for (let col = 0; col < 3; col++) {
+    ctx.drawImage(image, src[col], src[row], src[col + 1] - src[col], src[row + 1] - src[row], dstX[col], dstY[row], dstX[col + 1] - dstX[col], dstY[row + 1] - dstY[row]);
+  }
+  ctx.strokeStyle = accent; ctx.lineWidth = recipe.theme === 'classic' ? 1.5 : 1;
+  const inset = recipe.layout === 'strip' ? 24 : 40;
+  ctx.strokeRect(inset, inset, width - inset * 2, height - inset * 2);
+  ctx.fillStyle = '#FAF7EE';
+  for (const w of windows) ctx.fillRect(w.x, w.y, w.width, w.height);
+}
 export const syntheticTemplatesV2 = {
-  templateVersion: 'wedding-template-v2',
+  templateVersion: 'wedding-template-v3',
   async inspectTemplateSources(sources: { photoId: string; uri: string }[]) {
     if (sources.length !== 4 || new Set(sources.map(s => s.photoId)).size !== 4) throw new Error('Invalid synthetic source inspection');
     const inspected = [];
     for (const source of sources) { const { bitmap, hash } = await syntheticSource(source.uri); inspected.push({ photoId: source.photoId, width: bitmap.width, height: bitmap.height, sha256: hash }); }
     const ratios = inspected.map(s => s.width / s.height).sort((a, b) => a - b), median = (ratios[1] + ratios[2]) / 2;
-    const result = { version: 'wedding-template-v2' as const, gridAspect: median < .95 ? 'portrait' as const : 'square' as const, sources: inspected };
+    const result = { version: 'wedding-template-v3' as const, gridAspect: median < .95 ? 'portrait' as const : 'square' as const, sources: inspected };
     fixtureControls.templateInspections.push({ ...result, median }); return result;
   },
   async renderTemplate(sources: { photoId: string; uri: string }[], recipeJSON: string, preview: boolean, requestID: string) {
     const recipe = JSON.parse(recipeJSON);
     if (recipe.version === 'wedding-template-v1') return v1.renderTemplate(sources, recipeJSON, preview, requestID);
     const ids = recipe.photoIds;
-    if (recipe.version !== this.templateVersion || !['portrait', 'square'].includes(recipe.gridAspect) || !['strip', 'grid'].includes(recipe.layout) || !['classic', 'botanical', 'coastal'].includes(recipe.theme) || ids.length !== 4 || new Set(ids).size !== 4 || sources.some((s, i) => s.photoId !== ids[i])) throw new Error('Invalid synthetic v2 recipe');
+    if (!['wedding-template-v2', 'wedding-template-v3'].includes(recipe.version) || recipe.version === 'wedding-template-v3' && recipe.gridAspect !== 'square' || !['portrait', 'square'].includes(recipe.gridAspect) || !['strip', 'grid'].includes(recipe.layout) || !['classic', 'botanical', 'coastal'].includes(recipe.theme) || ids.length !== 4 || new Set(ids).size !== 4 || sources.some((s, i) => s.photoId !== ids[i])) throw new Error('Invalid synthetic v2 recipe');
     const event = { requestID, recipeJSON, preview, status: 'started', uri: '', browserURI: '', jpegSHA256: '', sourceHashes: {} as Record<string, string> }; fixtureControls.templateRenders.push(event);
     if (fixtureControls.templateDelayMs) await new Promise(resolve => setTimeout(resolve, fixtureControls.templateDelayMs));
     if (cancelled.has(requestID) && !fixtureControls.templatesIgnoreCancellation) { event.status = 'cancelled'; throw new Error('Synthetic template cancelled'); }
     const { width, height, windows } = templateV2Geometry(recipe), strip = recipe.layout === 'strip';
     const canvas = new OffscreenCanvas(width, height), ctx = canvas.getContext('2d')!;
     const [paper, ink, accent] = ({ classic: ['#F6F0E4', '#372D27', '#B6A07C'], botanical: ['#DCE5D6', '#2D4537', '#6D8367'], coastal: ['#DBEBE7', '#244C49', '#6B9F99'] } as Record<string, string[]>)[recipe.theme];
-    ctx.fillStyle = paper; ctx.fillRect(0, 0, width, height); decoration(ctx, width, height, recipe, windows, accent, recipe.theme === 'classic' ? paper : '#FAF7EE');
+    ctx.fillStyle = paper; ctx.fillRect(0, 0, width, height);
+    if (recipe.version === 'wedding-template-v3') await decorationV3(ctx, width, height, recipe, windows, accent);
+    else decoration(ctx, width, height, recipe, windows, accent, recipe.theme === 'classic' ? paper : '#FAF7EE');
     const sourceHashes: Record<string, string> = {};
     for (let i = 0; i < 4; i++) {
       const { bitmap, hash } = await syntheticSource(sources[i].uri); sourceHashes[ids[i]] = hash;
@@ -68,13 +97,13 @@ export const syntheticTemplatesV2 = {
       ctx.save(); ctx.beginPath(); ctx.rect(w.x, w.y, w.width, w.height); ctx.clip(); ctx.drawImage(bitmap, dx, dy, dw, dh); ctx.restore();
     }
     const footerTop = Math.max(...windows.map(w => w.y + w.height)), compact = !strip && recipe.gridAspect === 'square';
-    ctx.fillStyle = ink; ctx.textAlign = 'center'; ctx.font = `${strip ? 86 : 84}px Georgia, serif`; ctx.fillText('Gizelle & Rami', width / 2, strip ? 3480 : footerTop + (compact ? 86 : 116));
-    ctx.font = `${strip ? 36 : 32}px sans-serif`; ctx.fillText('NOVEMBER 1, 2026', width / 2, strip ? 3535 : footerTop + (compact ? 133 : 174));
+    ctx.fillStyle = ink; ctx.textAlign = 'center'; ctx.font = `${strip ? 86 : 84}px Georgia, serif`; ctx.fillText('Gizelle & Rami', width / 2, recipe.version === 'wedding-template-v3' ? strip ? 3420 : 2310 : strip ? 3480 : footerTop + (compact ? 86 : 116));
+    ctx.font = `${strip ? 36 : 32}px sans-serif`; ctx.fillText('NOVEMBER 1, 2026', width / 2, recipe.version === 'wedding-template-v3' ? strip ? 3490 : 2360 : strip ? 3535 : footerTop + (compact ? 133 : 174));
     const factor = preview ? Math.min(1, 1440 / Math.max(width, height)) : 1, outWidth = Math.round(width * factor), outHeight = Math.round(height * factor), output = new OffscreenCanvas(outWidth, outHeight);
     output.getContext('2d')!.drawImage(canvas, 0, 0, outWidth, outHeight); const blob = await output.convertToBlob({ type: 'image/jpeg', quality: .95 });
     const uri = `file:///synthetic-templates/${crypto.randomUUID()}.jpg`; syntheticRenderedBlobs.set(uri, blob); renderedImages.set(uri, URL.createObjectURL(blob)); event.uri = uri; event.browserURI = renderedImages.get(uri)!;
     event.jpegSHA256 = [...new Uint8Array(await crypto.subtle.digest('SHA-256', await blob.arrayBuffer()))].map(v => v.toString(16).padStart(2, '0')).join(''); event.status = 'complete'; event.sourceHashes = sourceHashes;
-    return { uri, width: outWidth, height: outHeight, preview, version: this.templateVersion, recipeJSON: JSON.stringify(canonical(recipe)), sourceHashes };
+    return { uri, width: outWidth, height: outHeight, preview, version: recipe.version, recipeJSON: JSON.stringify(canonical(recipe)), sourceHashes };
   },
   cancelTemplate(id: string) { cancelled.add(id); fixtureControls.templateCancellations.push(id); v1.cancelTemplate(id); },
   async releaseTemplate(uri: string) { return v1.releaseTemplate(uri); },

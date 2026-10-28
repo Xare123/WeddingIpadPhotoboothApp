@@ -8,7 +8,7 @@ import { Miniflare } from 'miniflare';
 const origin = 'http://localhost';
 const linkKey = 'template-local-test-key';
 const auth = { Authorization: 'Bearer local-development-only' };
-type Composite = { photoId: string; layout: 'strip' | 'grid'; theme: 'classic' | 'botanical' | 'coastal' } & ({ version: 'wedding-template-v1' } | { version: 'wedding-template-v2'; gridAspect: 'portrait' | 'square' });
+type Composite = { photoId: string; layout: 'strip' | 'grid'; theme: 'classic' | 'botanical' | 'coastal' } & ({ version: 'wedding-template-v1' } | { version: 'wedding-template-v2'; gridAspect: 'portrait' | 'square' } | { version: 'wedding-template-v3'; gridAspect: 'square' });
 type Recipe = { photoIds: string[]; originalPhotoIds: string[]; composite: Composite };
 type Ready = Recipe & { status: 'ready'; url: string; expiresAt: number };
 let runtime: Miniflare;
@@ -243,4 +243,17 @@ test('racing v2 aspects preserves one immutable winner and revocation closes eve
   assert.equal((await runtime.dispatchFetch(`${origin}/v1/sessions/${value.sessionId}/gallery`, { method: 'DELETE', headers: auth })).status, 200);
   assert.equal((await runtime.dispatchFetch(result.url)).status, 410);
   for (const id of value.allIds) assert.equal((await runtime.dispatchFetch(`${result.url}/photos/${id}?download=1`)).status, 410);
+});
+
+test('v3 artwork strip/grid exact-square metadata persists and cannot be reinterpreted as legacy artwork', async () => {
+  for (const layout of ['strip', 'grid'] as const) {
+    const value = fixture(); value.recipe.composite = { ...value.recipe.composite, version: 'wedding-template-v3', layout, gridAspect: 'square' };
+    const result = await publish(value);
+    assert.deepEqual(result.composite, value.recipe.composite);
+    assert.deepEqual(await (await ready(value.sessionId, value.recipe)).json(), result);
+    assert.equal((await ready(value.sessionId, { ...value.recipe, composite: { ...value.recipe.composite, gridAspect: 'portrait' } })).status, 400);
+    assert.equal((await ready(value.sessionId, { ...value.recipe, composite: { ...value.recipe.composite, version: 'wedding-template-v2' } })).status, 409);
+    const saved = await (await (await runtime.getR2Bucket('PHOTOS')).get(manifestKey(result.url)))!.json<{ composite: Composite }>();
+    assert.deepEqual(saved.composite, value.recipe.composite);
+  }
 });

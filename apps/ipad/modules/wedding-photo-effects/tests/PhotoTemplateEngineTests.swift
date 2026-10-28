@@ -277,7 +277,12 @@ final class PhotoTemplateEngineTests: XCTestCase {
   func recipeV2(layout: String = "strip", theme: String = "classic", aspect: String = "portrait") throws -> String {
     let v1 = try recipe(layout: layout, theme: theme)
     var object = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(v1.utf8)) as? [String: Any])
-    object["version"] = PhotoTemplateEngine.currentVersion; object["gridAspect"] = aspect
+    object["version"] = PhotoTemplateEngine.previousVersion; object["gridAspect"] = aspect
+    return String(data: try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys]), encoding: .utf8)!
+  }
+  func recipeV3(layout: String = "strip", theme: String = "classic") throws -> String {
+    var object = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(recipeV2(layout: layout, theme: theme, aspect: "square").utf8)) as? [String: Any])
+    object["version"] = PhotoTemplateEngine.currentVersion
     return String(data: try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys]), encoding: .utf8)!
   }
   private static var attachmentBytes = 0
@@ -349,10 +354,16 @@ final class PhotoTemplateEngineTests: XCTestCase {
       XCTAssertEqual(last, aspect == "portrait" ? CGRect(x: 1212, y: 1428, width: 1116, height: 1332)
         : CGRect(x: 1224, y: 1164, width: 1080, height: 1080))
     }
+    let v3Grid = try PhotoTemplateEngine.Recipe.parse(recipeV3(layout: "grid"))
+    XCTAssertEqual(PhotoTemplateEngine.dimensions(recipe: v3Grid).height, 2400)
+    XCTAssertEqual(PhotoTemplateEngine.window(recipe: v3Grid, index: 3), CGRect(x: 1216, y: 1216, width: 1024, height: 1024))
+    let v3Strip = try PhotoTemplateEngine.Recipe.parse(recipeV3())
+    XCTAssertEqual(PhotoTemplateEngine.window(recipe: v3Strip, index: 3), CGRect(x: 100, y: 2530, width: 1000, height: 750))
+    XCTAssertThrowsError(try PhotoTemplateEngine.Recipe.parse(recipeV3().replacingOccurrences(of: "square", with: "portrait")))
     XCTAssertThrowsError(try PhotoTemplateEngine.Recipe.parse(recipeV2(aspect: "landscape")))
-    let extraOnV1 = try recipeV2().replacingOccurrences(of: PhotoTemplateEngine.currentVersion, with: PhotoTemplateEngine.version)
+    let extraOnV1 = try recipeV2().replacingOccurrences(of: PhotoTemplateEngine.previousVersion, with: PhotoTemplateEngine.version)
     XCTAssertThrowsError(try PhotoTemplateEngine.Recipe.parse(extraOnV1))
-    let missingOnV2 = try recipe().replacingOccurrences(of: PhotoTemplateEngine.version, with: PhotoTemplateEngine.currentVersion)
+    let missingOnV2 = try recipe().replacingOccurrences(of: PhotoTemplateEngine.version, with: PhotoTemplateEngine.previousVersion)
     XCTAssertThrowsError(try PhotoTemplateEngine.Recipe.parse(missingOnV2))
   }
   func testV2AllSixCleanNativeJpegFullAndPreviewAttachments() throws {
@@ -362,7 +373,7 @@ final class PhotoTemplateEngineTests: XCTestCase {
     for layout in ["strip", "grid"] { for theme in ["classic", "botanical", "coastal"] {
       let json = try recipeV2(layout: layout, theme: theme, aspect: inspection.gridAspect)
       let full = try render(sources, recipe: json), preview = try render(sources, recipe: json, preview: true)
-      XCTAssertEqual(full.version, PhotoTemplateEngine.currentVersion)
+      XCTAssertEqual(full.version, PhotoTemplateEngine.previousVersion)
       XCTAssertEqual(full.width, layout == "strip" ? 1200 : 2400)
       XCTAssertEqual(full.height, layout == "strip" ? 3600 : 3000)
       XCTAssertEqual(preview.width, layout == "strip" ? 480 : 1152)
@@ -370,6 +381,45 @@ final class PhotoTemplateEngineTests: XCTestCase {
       XCTAssertEqual(full.recipeJSON, preview.recipeJSON); XCTAssertEqual(full.sourceHashes, preview.sourceHashes)
       try attachJPEG(full, name: "native-v2-clean-portrait-\(layout)-\(theme)-FULL")
       try attachJPEG(preview, name: "native-v2-clean-portrait-\(layout)-\(theme)-PREVIEW")
+      try engine.release(URL(string: full.uri)!); try engine.release(URL(string: preview.uri)!)
+    } }
+    // The current generated-art recipe is additional coverage; retain every v2 export above.
+    for layout in ["strip", "grid"] { for theme in ["classic", "botanical", "coastal"] {
+      let json = try recipeV3(layout: layout, theme: theme), parsed = try PhotoTemplateEngine.Recipe.parse(json)
+      let full = try render(sources, recipe: json), preview = try render(sources, recipe: json, preview: true)
+      XCTAssertEqual(full.version, PhotoTemplateEngine.currentVersion)
+      XCTAssertEqual(full.width, layout == "strip" ? 1200 : 2400)
+      XCTAssertEqual(full.height, layout == "strip" ? 3600 : 2400)
+      XCTAssertEqual(preview.width, layout == "strip" ? 480 : 1440); XCTAssertEqual(preview.height, 1440)
+      XCTAssertEqual(full.recipeJSON, preview.recipeJSON); XCTAssertEqual(full.sourceHashes, preview.sourceHashes)
+      let pixels = try image(full.uri), previewPixels = try image(preview.uri)
+      // Independent decode of the exact supplied art proves native resource inclusion
+      // and top-left corner placement; JPEG rounding/interpolation has a bounded tolerance.
+      let artName = theme == "classic" ? "Classic-Ivory" : theme == "botanical" ? "Sage-Botanical" : "Coastal-Sea-Glass"
+      let artURL = try XCTUnwrap(Bundle(for: PhotoTemplateEngineTests.self).url(forResource: artName + "-Text-Free-Artwork", withExtension: "frameart"))
+      let artSource = try XCTUnwrap(CGImageSourceCreateWithURL(artURL as CFURL, nil))
+      let art = try XCTUnwrap(CGImageSourceCreateImageAtIndex(artSource, 0, nil))
+      let edge: CGFloat = layout == "strip" ? 250 : 350
+      for point in [CGPoint(x: 65, y: 85), CGPoint(x: 90, y: 60), CGPoint(x: 120, y: 110)] {
+        let targetX = Int(point.x * edge / 250), targetY = Int(point.y * edge / 250)
+        near(try sample(pixels, x: targetX, y: targetY), try sample(art, x: Int(point.x), y: Int(point.y)), tolerance: 32)
+      }
+      // Every unique original remains whole under FIT in both layouts, with the same
+      // photo-to-window placement in preview and the actual full-resolution JPEG.
+      for index in 0..<4 {
+        let sourceData = try XCTUnwrap(CGImageSourceCreateWithURL(sources[index].url as CFURL, nil))
+        let source = try XCTUnwrap(CGImageSourceCreateImageAtIndex(sourceData, 0, nil))
+        let window = PhotoTemplateEngine.window(recipe: parsed, index: index)
+        let scale = min(window.width / CGFloat(source.width), window.height / CGFloat(source.height))
+        let content = CGRect(x: window.midX - CGFloat(source.width) * scale / 2, y: window.midY - CGFloat(source.height) * scale / 2,
+          width: CGFloat(source.width) * scale, height: CGFloat(source.height) * scale)
+        try assertUprightContent(pixels, source: source, content: content)
+        let down = CGFloat(preview.width) / CGFloat(full.width)
+        try assertUprightContent(previewPixels, source: source, content: CGRect(x: content.minX * down, y: content.minY * down,
+          width: content.width * down, height: content.height * down))
+      }
+      try attachJPEG(full, name: "native-v3-art-\(layout)-\(theme)-FULL")
+      try attachJPEG(preview, name: "native-v3-art-\(layout)-\(theme)-PREVIEW")
       try engine.release(URL(string: full.uri)!); try engine.release(URL(string: preview.uri)!)
     } }
     for index in 0..<4 { XCTAssertEqual(try Data(contentsOf: sources[index].url), bytes[index]) }

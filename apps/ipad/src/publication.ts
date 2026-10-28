@@ -6,10 +6,11 @@ const localId = (id: unknown): id is string => typeof id === 'string' && /^[A-Za
 export function validCompositeRecipe(value: unknown): value is CompositeRecipe {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
   const recipe = value as CompositeRecipe;
-  if (recipe.version !== 'wedding-template-v1' && recipe.version !== 'wedding-template-v2') return false;
-  const keys = ['version', 'layout', 'theme', 'photoIds', 'cropsByPhotoId', ...(recipe.version === 'wedding-template-v2' ? ['gridAspect'] : [])];
+  if (recipe.version !== 'wedding-template-v1' && recipe.version !== 'wedding-template-v2' && recipe.version !== 'wedding-template-v3') return false;
+  const keys = ['version', 'layout', 'theme', 'photoIds', 'cropsByPhotoId', ...(recipe.version !== 'wedding-template-v1' ? ['gridAspect'] : [])];
   if (Object.keys(recipe).length !== keys.length || Object.keys(recipe).some(key => !keys.includes(key)) ||
     (recipe.version === 'wedding-template-v2' && !['portrait', 'square'].includes(recipe.gridAspect)) ||
+    (recipe.version === 'wedding-template-v3' && recipe.gridAspect !== 'square') ||
     !['strip', 'grid'].includes(recipe.layout) || !['classic', 'botanical', 'coastal'].includes(recipe.theme) ||
     !Array.isArray(recipe.photoIds) || recipe.photoIds.length !== 4 || !recipe.photoIds.every(localId) || new Set(recipe.photoIds).size !== 4 ||
     !recipe.cropsByPhotoId || typeof recipe.cropsByPhotoId !== 'object' || Array.isArray(recipe.cropsByPhotoId) || Object.keys(recipe.cropsByPhotoId).length !== 4) return false;
@@ -25,6 +26,7 @@ export function validCompositeRecipe(value: unknown): value is CompositeRecipe {
 
 export function publicationComposite(photoId: string, recipe: CompositeRecipe): PublicationComposite {
   const common = { photoId, layout: recipe.layout, theme: recipe.theme };
+  if (recipe.version === 'wedding-template-v3') return { ...common, version: recipe.version, gridAspect: recipe.gridAspect };
   return recipe.version === 'wedding-template-v2' ? { ...common, version: recipe.version, gridAspect: recipe.gridAspect } : { ...common, version: recipe.version };
 }
 
