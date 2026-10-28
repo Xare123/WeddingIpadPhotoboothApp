@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AppState, Keyboard, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import type { QueueJob } from '@wedding-booth/core';
+import { editPhone } from './phone-pad';
 import { loadConnection } from './config';
 import { queueSessionShare } from './recipients';
 import { smsCapability, smsOutcome } from './sms-state';
@@ -16,11 +17,17 @@ export function SmsShare({ session, jobs, onChanged, enabled = true }: {
   const [consent, setConsent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [phoneSelection, setPhoneSelection] = useState({ start: 0, end: 0 });
+  const selection = useRef({ start: 0, end: 0 });
   const sending = useRef(false);
   const mounted = useRef(true);
   const share = jobs.find(job => job.kind === 'share' && job.sessionId === session.id);
   const outcome = smsOutcome(share);
   const ready = [4, 5].includes(session.targetCount) && session.shots.length === session.targetCount && !!sessionGuestPage(session, jobs);
+
+  useEffect(() => {
+    if (!enabled) { setVisible(false); setPhone(''); setConsent(false); setError(''); selection.current = { start: 0, end: 0 }; setPhoneSelection(selection.current); }
+  }, [enabled]);
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', state => {
@@ -77,8 +84,8 @@ export function SmsShare({ session, jobs, onChanged, enabled = true }: {
           <Text style={styles.eyebrow}>A link to keep</Text>
           <Text style={styles.title}>Your photos, by text.</Text>
           <Text style={styles.copy}>One text with this private photo page. The QR code works without sharing a phone number.</Text>
-          <TextInput value={phone} onChangeText={setPhone} accessibilityLabel="U.S. phone number" placeholder="(202) 555-0123" keyboardType="phone-pad" showSoftInputOnFocus={false} autoComplete="tel-national" textContentType="telephoneNumber" autoCorrect={false} style={styles.input} editable={!busy}/>
-          <View testID="sms-number-pad" style={styles.numberPad}>{['1','2','3','4','5','6','7','8','9','+','0','⌫'].map(digit => <Pressable key={digit} accessibilityRole="button" accessibilityLabel={digit === '⌫' ? 'Delete last digit' : digit} disabled={busy} onPress={() => setPhone(value => digit === '⌫' ? value.slice(0, -1) : (value + digit).slice(0, 32))} style={styles.numberKey}><Text style={styles.numberText}>{digit}</Text></Pressable>)}</View>
+          <TextInput value={phone} onChangeText={value => { setPhone(value); selection.current = { start: value.length, end: value.length }; setPhoneSelection(selection.current); }} selection={phoneSelection} onSelectionChange={event => { selection.current = event.nativeEvent.selection; setPhoneSelection(selection.current); }} accessibilityLabel="U.S. phone number" placeholder="(202) 555-0123" keyboardType="phone-pad" showSoftInputOnFocus={false} autoComplete="tel-national" textContentType="telephoneNumber" autoCorrect={false} style={styles.input} editable={!busy}/>
+          <View testID="sms-number-pad" style={styles.numberPad}>{['1','2','3','4','5','6','7','8','9','+','0','⌫'].map(digit => <Pressable key={digit} accessibilityRole="button" accessibilityLabel={digit === '⌫' ? 'Delete last digit' : digit} disabled={busy} onPress={() => { const next = editPhone(phone, selection.current.start, selection.current.end, digit); selection.current = { start: next.caret, end: next.caret }; setPhoneSelection(selection.current); setPhone(next.value); }} accessibilityState={{ disabled: busy }} style={styles.numberKey}><Text style={styles.numberText}>{digit}</Text></Pressable>)}</View>
           <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: consent, disabled: busy }} disabled={busy} onPress={() => setConsent(value => !value)} style={styles.consent}>
             <View style={[styles.check, consent && styles.checked]}><Text style={styles.checkText}>{consent ? '✓' : ''}</Text></View>
             <Text style={styles.consentText}>I agree to receive one text with my photo link. Message and data rates may apply.</Text>

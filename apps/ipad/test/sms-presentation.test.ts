@@ -83,3 +83,18 @@ test('send locks synchronously before the first await and keeps Sending visible 
   assert.match(sms, /showSoftInputOnFocus=\{false\}/);
   assert.match(sms, /testID="sms-number-pad"/);
 });
+
+test('hiding dismisses ephemeral UI without releasing an in-flight send guard', () => {
+ const effect = sms.slice(sms.indexOf('if (!enabled) {'), sms.indexOf('}, [enabled])'));
+ assert.match(effect, /setVisible\(false\)/);
+ assert.match(effect, /setConsent\(false\)/);
+ assert.doesNotMatch(effect, /sending\.current|setBusy|queueSessionShare|clearConnection/);
+});
+
+test('timing sheet preserves the parent orientation instead of accepting portrait-only native defaults', () => {
+ const timer = readFileSync(new URL('../src/TimingSheet.tsx', import.meta.url), 'utf8');
+ const modal = elements(timer, 'TimingSheet.tsx').found.find(node => opening(node).tagName.getText() === 'Modal')!;
+ assert.equal(literal(modal, 'presentationStyle'), 'overFullScreen');
+ assert.match(attribute(modal, 'supportedOrientations')!.initializer!.getText(), /portrait.*landscape/);
+ assert.doesNotMatch(timer, /lockAsync|setCommittedPreference/);
+});

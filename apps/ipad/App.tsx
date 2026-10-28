@@ -1030,7 +1030,7 @@ function Photobooth() {
       {!!message && <View testID="booth-status-message" accessibilityLiveRegion="polite" style={[styles.message, screen === 'camera' && styles.cameraMessage, screen === 'camera' && { left: insets.left + 18, right: insets.right + 18, top: insets.top + 80 }]}><Text style={styles.messageText}>{message}</Text></View>}
       {nativeFixtureEnabled && <View style={styles.fixture}><Text testID="native-fixture-enabled" style={styles.fixtureText}>SYNTHETIC CAMERA · REAL LOCAL STORAGE · OFFLINE SHARING</Text><Text testID="native-fixture-storage" style={styles.fixtureText}>{fixtureStatus}</Text></View>}
     </View>
-    <Modal visible={retakeAllVisible && foreground && !hostVisible} transparent animationType={reduceMotion ? 'none' : 'fade'} onRequestClose={closeRetakeAll}>
+    <Modal presentationStyle="overFullScreen" supportedOrientations={['portrait', 'portrait-upside-down', 'landscape']} visible={retakeAllVisible && foreground && !hostVisible} transparent animationType={reduceMotion ? 'none' : 'fade'} onRequestClose={closeRetakeAll}>
       <View style={styles.retakeAllOverlay}><View style={styles.retakeAllCard} accessibilityViewIsModal>
         <Text style={styles.retakeAllEyebrow}>YOUR PREVIOUS SET STAYS SAVED</Text><Text style={styles.retakeAllTitle}>A fresh set?</Text>
         {session && <Thumbnails session={session} active={-1} dark={false} reduceMotion={reduceMotion} />}
@@ -1040,7 +1040,7 @@ function Photobooth() {
       </View></View>
     </Modal>
     <TimingSheet visible={timingVisible && foreground && !hostVisible && !busy} timing={guestTiming} defaults={normalizeCaptureTiming(preferencesRef.current)} onApply={applyGuestTiming} onClose={() => setTimingVisible(false)} reduceMotion={reduceMotion} disabled={busy} />
-    <Modal visible={hostVisible && foreground} animationType={reduceMotion || !foreground ? 'none' : 'slide'} presentationStyle="pageSheet" onRequestClose={closeHost}>
+    <Modal visible={hostVisible && foreground} animationType={reduceMotion || !foreground ? 'none' : 'slide'} presentationStyle="pageSheet" supportedOrientations={['portrait', 'portrait-upside-down', 'landscape']} onRequestClose={closeHost}>
       <SafeAreaView style={styles.hostPage}><ScrollView contentContainerStyle={styles.hostContent} keyboardShouldPersistTaps="handled">
         <View style={styles.hostHeader}><Text style={styles.hostTitle}>{hostPage === 'library' ? 'On this iPad' : hostPage === 'setup' ? 'Private setup' : 'Booth controls'}</Text><Pressable accessibilityRole="button" onPress={closeHost}><Text style={styles.closeHost}>Done</Text></Pressable></View>
         <View style={styles.hostTabs}>{(['controls', 'library', 'setup'] as HostPage[]).map(page => <Pressable key={page} accessibilityRole="button" accessibilityState={{ selected: hostPage === page }} style={[styles.hostTab, hostPage === page && styles.hostTabActive]} onPress={() => { setHostPage(page); setHostMessage(''); setScanningSetup(false); setPairingCode(''); }}><Text style={styles.hostTabText}>{page === 'controls' ? 'Controls' : page === 'library' ? 'Saved sessions' : 'Private setup'}</Text></Pressable>)}</View>
