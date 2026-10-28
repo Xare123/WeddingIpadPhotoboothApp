@@ -50,7 +50,8 @@ test('every real or unborn git directory/file in any ancestor refuses prepare be
 });
 test('only exact empty read-only managed protection markers are exempt, writable/nonempty markers never are', () => {
   const base = '/tmp/.git', fake = extra => ({ ...fs,
-    lstatSync(path) { if (path === base) return { isDirectory: () => true, isSymbolicLink: () => false, mode: extra.mode }; return fs.lstatSync(path); },
+    // This fixture models a managed Linux /tmp, not the host's /tmp symlink on macOS.
+    lstatSync(path) { if (path === '/tmp') return { isDirectory: () => true, isSymbolicLink: () => false }; if (path === base) return { isDirectory: () => true, isSymbolicLink: () => false, mode: extra.mode }; return fs.lstatSync(path); },
     readdirSync(path) { return path === base ? extra.entries : fs.readdirSync(path); },
     mkdirSync() { throw new OwnerSetupError('write-failed'); } });
   for (const extra of [{ mode: 0o755, entries: [] }, { mode: 0o555, entries: ['HEAD'] }]) {

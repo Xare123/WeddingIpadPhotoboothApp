@@ -1110,7 +1110,7 @@ function Photobooth() {
         </View>}
       </SafeAreaView>
     </Modal>
-    <Modal visible={!!lookState && foreground} animationType={reduceMotion || !foreground ? 'none' : 'fade'} onRequestClose={() => lookEditor.current?.close()}>
+    <Modal visible={!!lookState && foreground} animationType={reduceMotion || !foreground ? 'none' : 'fade'} presentationStyle="fullScreen" supportedOrientations={['portrait', 'portrait-upside-down', 'landscape']} onRequestClose={() => lookEditor.current?.close()}>
       {lookState && <SafeAreaView testID="look-editor" style={styles.lookPage}>
         <View style={styles.lookHeader}><View><Text style={styles.reviewEyebrow}>PHOTO {lookState.slot + 1} OF {total}</Text><Text style={styles.reviewTitle}>Make it yours.</Text></View><Pressable accessibilityRole="button" testID="look-cancel" onPress={() => lookEditor.current?.close()} style={styles.lookCancel}><Text style={styles.lookEntryText}>Cancel</Text></Pressable></View>
         <View style={[styles.lookBody, landscape && styles.lookBodyWide]}>
