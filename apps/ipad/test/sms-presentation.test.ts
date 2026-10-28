@@ -68,3 +68,18 @@ test('modal guard rejects missing orientation support or sheet presentation', ()
   assert.throws(() => checkModal(missing), /explicitly support/);
   assert.throws(() => checkModal(sms.replace('presentationStyle="overFullScreen"', 'presentationStyle="pageSheet"')), /existing window/);
 });
+
+test('SMS hiding is presentation-only and leaves connection storage and queued work untouched', () => {
+  assert.match(sms, /if \(!enabled\) return null/);
+  assert.match(app, /enabled=\{preferencesRef\.current\.smsUiEnabled !== false\}/);
+  assert.match(app, /accessibilityLabel="Show text-message option"/);
+  assert.doesNotMatch(sms, /clearConnection|deleteItemAsync|removeJob|clearActiveSession/);
+});
+test('send locks synchronously before the first await and keeps Sending visible through refresh', () => {
+  const submit = sms.slice(sms.indexOf('async function submit()'), sms.indexOf('if (!enabled) return null'));
+  assert.ok(submit.indexOf('sending.current = true') < submit.indexOf('await queueSessionShare'));
+  assert.ok(submit.indexOf('await onChanged()') < submit.indexOf('setVisible(false)'));
+  assert.match(sms, /busy \? 'Sending…'/);
+  assert.match(sms, /showSoftInputOnFocus=\{false\}/);
+  assert.match(sms, /testID="sms-number-pad"/);
+});

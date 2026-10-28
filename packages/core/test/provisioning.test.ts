@@ -63,8 +63,8 @@ test('host timer preferences use bounded choices and survive malformed legacy pr
     assert.equal(hostPreferences(value).firstSeconds, 5);
     assert.equal(hostPreferences(value).nextSeconds, 3);
   }
-  assert.deepEqual(hostPreferences({ firstSeconds: 2, nextSeconds: 10, countdownSeconds: 8 }), { firstSeconds: 2, nextSeconds: 10, photosExportEnabled: true, orientation: 'auto' });
-  assert.deepEqual(hostPreferences({ firstSeconds: 8, nextSeconds: '5' }), { firstSeconds: 8, nextSeconds: 3, photosExportEnabled: true, orientation: 'auto' });
+  assert.deepEqual(hostPreferences({ firstSeconds: 2, nextSeconds: 10, countdownSeconds: 8 }), { firstSeconds: 2, nextSeconds: 10, photosExportEnabled: true, smsUiEnabled: true, orientation: 'auto' });
+  assert.deepEqual(hostPreferences({ firstSeconds: 8, nextSeconds: '5' }), { firstSeconds: 8, nextSeconds: 3, photosExportEnabled: true, smsUiEnabled: true, orientation: 'auto' });
   assert.equal(hostPreferences({ photosExportEnabled: false }).photosExportEnabled, false);
   assert.equal(hostPreferences({ photosExportEnabled: 'false' }).photosExportEnabled, true);
 });
@@ -124,4 +124,11 @@ test('display preference defaults to Auto and preserves explicit valid choices i
     assert.equal(result.nextSeconds, 2);
     assert.equal(result.photosExportEnabled, false);
   }
+});
+
+test('SMS visibility persists without changing the other host defaults', () => {
+  const old = hostPreferences({ firstSeconds: 8, nextSeconds: 2, orientation: 'landscape', photosExportEnabled: false });
+  const hidden = hostPreferences({ ...old, smsUiEnabled: false });
+  assert.deepEqual(hidden, { ...old, smsUiEnabled: false });
+  assert.deepEqual(hostPreferences({ ...hidden, smsUiEnabled: true }), old);
 });

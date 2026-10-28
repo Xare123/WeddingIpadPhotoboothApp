@@ -5,8 +5,8 @@ export { type CountdownSeconds } from './capture-timing';
 
 export const DEFAULT_API_ORIGIN = 'https://photos.gizelleandrami.com';
 export const COUNTDOWN_OPTIONS = CAPTURE_TIMER_OPTIONS;
-export type HostPreferences = CaptureTiming & { photosExportEnabled: boolean; orientation: 'auto' | 'portrait' | 'landscape' };
-export const DEFAULT_HOST_PREFERENCES: Readonly<HostPreferences> = Object.freeze({ ...DEFAULT_CAPTURE_TIMING, photosExportEnabled: true, orientation: 'auto' });
+export type HostPreferences = CaptureTiming & { photosExportEnabled: boolean; smsUiEnabled?: boolean; orientation: 'auto' | 'portrait' | 'landscape' };
+export const DEFAULT_HOST_PREFERENCES: Readonly<HostPreferences> = Object.freeze({ ...DEFAULT_CAPTURE_TIMING, photosExportEnabled: true, smsUiEnabled: true, orientation: 'auto' });
 
 export function hostPreferences(value: unknown): HostPreferences {
   const input = value && typeof value === 'object' ? value as Record<string, unknown> : {};
@@ -17,6 +17,7 @@ export function hostPreferences(value: unknown): HostPreferences {
       firstSeconds: isCountdownSeconds(input.firstSeconds) ? input.firstSeconds : input.countdownSeconds,
       nextSeconds: input.nextSeconds,
     }),
+    smsUiEnabled: typeof input.smsUiEnabled === 'boolean' ? input.smsUiEnabled : true,
     photosExportEnabled: typeof input.photosExportEnabled === 'boolean'
       ? input.photosExportEnabled : DEFAULT_HOST_PREFERENCES.photosExportEnabled,
     orientation: input.orientation === 'portrait' || input.orientation === 'landscape' ? input.orientation : 'auto',

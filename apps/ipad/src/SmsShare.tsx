@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { AppState, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { AppState, Keyboard, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import type { QueueJob } from '@wedding-booth/core';
 import { loadConnection } from './config';
 import { queueSessionShare } from './recipients';
@@ -7,8 +7,8 @@ import { smsCapability, smsOutcome } from './sms-state';
 import { sessionGuestPage } from './sharing';
 import type { ActiveSession } from './storage';
 
-export function SmsShare({ session, jobs, onChanged }: {
-  session: ActiveSession; jobs: QueueJob[]; onChanged(): Promise<void>;
+export function SmsShare({ session, jobs, onChanged, enabled = true }: {
+  enabled?: boolean; session: ActiveSession; jobs: QueueJob[]; onChanged(): Promise<void>;
 }) {
   const [available, setAvailable] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -49,12 +49,13 @@ export function SmsShare({ session, jobs, onChanged }: {
 
   function dismiss() { setVisible(false); setPhone(''); setConsent(false); setError(''); }
   async function submit() {
-    if (sending.current || !consent || !ready || !available) return;
-    sending.current = true; setBusy(true); setError('');
+    if (!enabled || sending.current || !consent || !ready || !available) return;
+    sending.current = true; setBusy(true); setError(''); Keyboard.dismiss();
     try {
       await queueSessionShare(session, phone, consent);
-      setPhone(''); setConsent(false); setVisible(false);
+      setPhone(''); setConsent(false);
       await onChanged();
+      if (mounted.current) setVisible(false);
     } catch (failure) {
       if (mounted.current) setError(failure instanceof Error ? failure.message : 'Text sharing could not save. Please use the QR code.');
     } finally {
@@ -63,6 +64,7 @@ export function SmsShare({ session, jobs, onChanged }: {
     }
   }
 
+  if (!enabled) return null;
   if (outcome) return <Text accessibilityLiveRegion="polite" style={styles.outcome}>{outcome}</Text>;
   if (!available || !ready) return null;
   return <>
@@ -75,14 +77,15 @@ export function SmsShare({ session, jobs, onChanged }: {
           <Text style={styles.eyebrow}>A link to keep</Text>
           <Text style={styles.title}>Your photos, by text.</Text>
           <Text style={styles.copy}>One text with this private photo page. The QR code works without sharing a phone number.</Text>
-          <TextInput value={phone} onChangeText={setPhone} accessibilityLabel="U.S. phone number" placeholder="(202) 555-0123" keyboardType="phone-pad" autoComplete="tel-national" textContentType="telephoneNumber" autoCorrect={false} style={styles.input} editable={!busy}/>
+          <TextInput value={phone} onChangeText={setPhone} accessibilityLabel="U.S. phone number" placeholder="(202) 555-0123" keyboardType="phone-pad" showSoftInputOnFocus={false} autoComplete="tel-national" textContentType="telephoneNumber" autoCorrect={false} style={styles.input} editable={!busy}/>
+          <View testID="sms-number-pad" style={styles.numberPad}>{['1','2','3','4','5','6','7','8','9','+','0','⌫'].map(digit => <Pressable key={digit} accessibilityRole="button" accessibilityLabel={digit === '⌫' ? 'Delete last digit' : digit} disabled={busy} onPress={() => setPhone(value => digit === '⌫' ? value.slice(0, -1) : (value + digit).slice(0, 32))} style={styles.numberKey}><Text style={styles.numberText}>{digit}</Text></Pressable>)}</View>
           <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: consent, disabled: busy }} disabled={busy} onPress={() => setConsent(value => !value)} style={styles.consent}>
             <View style={[styles.check, consent && styles.checked]}><Text style={styles.checkText}>{consent ? '✓' : ''}</Text></View>
             <Text style={styles.consentText}>I agree to receive one text with my photo link. Message and data rates may apply.</Text>
           </Pressable>
           <Text style={styles.privacy}>Your number is used for this photo request and removed from the iPad after the request is resolved. Anyone with your link can view these photos.</Text>
           {!!error && <Text accessibilityLiveRegion="polite" style={styles.error}>{error}</Text>}
-          <Pressable accessibilityRole="button" accessibilityState={{ disabled: busy || !consent }} disabled={busy || !consent} onPress={() => void submit()} style={[styles.primary, (busy || !consent) && styles.disabled]}><Text style={styles.primaryText}>{busy ? 'Saving request…' : 'Send my photo link'}</Text></Pressable>
+          <Pressable accessibilityRole="button" accessibilityState={{ disabled: busy || !consent }} disabled={busy || !consent} onPress={() => void submit()} style={[styles.primary, (busy || !consent) && styles.disabled]}><Text style={styles.primaryText}>{busy ? 'Sending…' : 'Send my photo link'}</Text></Pressable>
           <Pressable accessibilityRole="button" disabled={busy} onPress={dismiss} style={styles.button}><Text style={styles.buttonText}>Use QR instead</Text></Pressable>
         </View>
       </ScrollView></View>
@@ -91,6 +94,9 @@ export function SmsShare({ session, jobs, onChanged }: {
 }
 
 const styles = StyleSheet.create({
+  numberPad: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 12 },
+  numberKey: { width: '30%', minHeight: 48, alignItems: 'center', justifyContent: 'center', borderRadius: 10, backgroundColor: '#eee5d8' },
+  numberText: { fontSize: 22, color: '#272723' },
   entry: { width: '100%', minHeight: 64, borderRadius: 18, paddingHorizontal: 20, paddingVertical: 18, justifyContent: 'center', alignItems: 'center', backgroundColor: '#272723' },
   entryText: { color: '#fffaf3', fontSize: 20, lineHeight: 26, fontWeight: '700', textAlign: 'center' },
   button: { minHeight: 48, paddingHorizontal: 20, paddingVertical: 14, justifyContent: 'center', alignItems: 'center' },

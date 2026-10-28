@@ -193,6 +193,7 @@ function Photobooth() {
   const guestTimingRef = useRef<CaptureTiming>({ ...DEFAULT_CAPTURE_TIMING });
   const guestTimingOverride = useRef(false);
   const [timingVisible, setTimingVisible] = useState(false);
+  const [smsUiEnabled, setSmsUiEnabled] = useState(true);
   const [exportEnabled, setExportEnabled] = useState(true);
   const preferencesRef = useRef<HostPreferences>({ ...DEFAULT_HOST_PREFERENCES });
   const [hostVisible, setHostVisible] = useState(false);
@@ -524,7 +525,7 @@ function Photobooth() {
         try {
           const prefs = await loadHostPreferences();
           if (!mounted.current) return;
-          preferencesRef.current = prefs; setHostTiming(normalizeCaptureTiming(prefs)); setExportEnabled(prefs.photosExportEnabled); setHostOrientation(prefs.orientation);
+          preferencesRef.current = prefs; setHostTiming(normalizeCaptureTiming(prefs)); setExportEnabled(prefs.photosExportEnabled); setSmsUiEnabled(prefs.smsUiEnabled !== false); setHostOrientation(prefs.orientation);
           guestTimingRef.current = normalizeCaptureTiming(active?.captureTiming ?? prefs); guestTimingOverride.current = !!active?.captureTiming; setGuestTiming(guestTimingRef.current);
         } catch (error) { diagnose(error); }
         if (!mounted.current) return;
@@ -797,7 +798,7 @@ function Photobooth() {
         throw new Error('Host settings stayed locked because the iPad left the booth or authentication did not return to the foreground. Return to the booth and tap Host to authenticate again.');
       }
       hostVisibility.current.record('foreground-ready', AppState.currentState); setMessage('');
-      setTimingVisible(false); setHostTiming(normalizeCaptureTiming(preferencesRef.current)); setExportEnabled(preferencesRef.current.photosExportEnabled); setHostOrientation(preferencesRef.current.orientation); updateCameraReady(false); setScanningSetup(false); setHostPage(initialPage); setHostMessage(''); hostVisibleRef.current = true; setHostVisible(true); setHostDecision(null); setPairingCode('');
+      setTimingVisible(false); setHostTiming(normalizeCaptureTiming(preferencesRef.current)); setExportEnabled(preferencesRef.current.photosExportEnabled); setSmsUiEnabled(preferencesRef.current.smsUiEnabled !== false); setHostOrientation(preferencesRef.current.orientation); updateCameraReady(false); setScanningSetup(false); setHostPage(initialPage); setHostMessage(''); hostVisibleRef.current = true; setHostVisible(true); setHostDecision(null); setPairingCode('');
       await refreshLibrary(); await refreshCapability();
       try { const connection = await loadConnection(); if (hostVisibleRef.current && hostVisibility.current.current(ticket)) setPaired(!!connection); } catch (error) { diagnose(error); }
     } catch (error) {
@@ -812,7 +813,7 @@ function Photobooth() {
   async function savePreferences() {
     if (hostMutationLock.current || hostBusy || !hostVisibleRef.current) return;
     hostMutationLock.current = true;
-    const update = { ...hostTiming, photosExportEnabled: exportEnabled, orientation: hostOrientation };
+    const update = { ...hostTiming, photosExportEnabled: exportEnabled, smsUiEnabled, orientation: hostOrientation };
     const authorization = hostActionAuthorization('controls');
     setHostBusy(true); setHostMessage('');
     try {
@@ -1021,7 +1022,7 @@ function Photobooth() {
               : <View style={styles.offlineCard}><Text style={styles.offlineGlyph}>✓</Text><Text testID="share-link-unavailable" style={styles.offlineTitle}>{shareReadiness.title}</Text><Text testID="share-readiness-message" style={styles.sharePrivacy}>{shareReadiness.message}</Text>{shareReadiness.action === 'private-setup' || shareReadiness.action === 'check-connection'
                 ? <Button title="Ask the host for sharing setup" testID="sharing-setup-host" secondary light onPress={() => void openHost('setup')} />
                 : shareReadiness.action === 'retry' ? <Button title="Retry sharing" testID="retry-sharing" secondary light disabled={sharingSync === 'running'} onPress={() => void retrySharing(true)} /> : null}</View>}
-            <SmsShare key={session.id} session={session} jobs={jobs} onChanged={async () => { await retrySharing(); }} />
+            <SmsShare enabled={preferencesRef.current.smsUiEnabled !== false} key={session.id} session={session} jobs={jobs} onChanged={async () => { await retrySharing(); }} />
             <Button title={busy ? 'Clearing this screen…' : 'Next guests'} testID="next-guest" disabled={busy} onPress={() => void nextGuests()} />
           </View>
         </ScrollView>}
@@ -1049,6 +1050,7 @@ function Photobooth() {
             <Text testID="host-orientation-status" accessibilityLiveRegion="polite" style={styles.hostSmall}>{orientationDescription}</Text><Text style={styles.hostSmall}>This changes the interface, not your original photos or keepsake shape. iPad multitasking and rotation settings may limit a lock.</Text>
             {(orientationState?.status === 'unconfirmed' || orientationState?.status === 'error') && <Pressable accessibilityRole="button" testID="retry-display-orientation" style={styles.textAction} disabled={hostBusy} onPress={() => orientationController.current?.retry()}><Text style={styles.lightTextAction}>Check display again</Text></Pressable>}
           </View>
+          <View style={styles.hostCard}><View style={styles.switchRow}><View style={styles.switchText}><Text style={styles.hostSectionTitle}>Text-message option</Text><Text style={styles.hostBody}>Show or hide text sharing for guests. Pairing, credentials, queued requests, photos and QR downloads stay preserved.</Text></View><Switch testID="host-sms-visible" accessibilityLabel="Show text-message option" value={smsUiEnabled} onValueChange={setSmsUiEnabled} disabled={hostBusy} /></View></View>
           <View style={styles.hostCard}><Text style={styles.hostSectionTitle}>Booth timing defaults</Text><Text style={styles.hostBody}>A little longer to get ready, then a quicker rhythm. Guests can adjust their own session before starting.</Text><TimingControls value={hostTiming} onChange={setHostTiming} disabled={hostBusy} testIDPrefix="host-timing" /><Text style={styles.hostSmall}>Next guests start with these saved defaults. Retakes and paused sessions use the first-photo preparation time again.</Text></View>
           <View style={styles.hostCard}><View style={styles.switchRow}><View style={styles.switchText}><Text style={styles.hostSectionTitle}>Copies in Photos</Text><Text style={styles.hostBody}>Try an additional Photos export after capture. Local originals always save first.</Text></View><Switch accessibilityLabel="Automatically export copies to Photos" value={exportEnabled} onValueChange={setExportEnabled} trackColor={{ true: '#596857' }} /></View><Text style={styles.hostSmall}>Photos permission: {libraryPermission}. Failed or denied exports keep their local originals.</Text><Pressable accessibilityRole="button" style={styles.textAction} onPress={() => void Linking.openSettings()}><Text style={styles.lightTextAction}>Open iPad permission settings</Text></Pressable></View>
           <Button title={hostBusy ? 'Saving settings…' : 'Save booth settings'} disabled={hostBusy} onPress={() => void savePreferences()} />
