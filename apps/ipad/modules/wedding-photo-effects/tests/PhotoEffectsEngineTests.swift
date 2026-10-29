@@ -74,12 +74,61 @@ final class PhotoEffectsEngineTests: XCTestCase {
     }
     XCTAssertNotEqual(effects[0], effects[1]); XCTAssertNotEqual(effects[1], effects[2])
   }
+  func pixel(_ image: CGImage, x: Int, y: Int) throws -> [UInt8] {
+    let point = try XCTUnwrap(image.cropping(to: CGRect(x: CGFloat(x), y: CGFloat(y), width: 1, height: 1)))
+    var bytes = [UInt8](repeating: 0, count: 4)
+    try bytes.withUnsafeMutableBytes { buffer in
+      let context = try XCTUnwrap(CGContext(data: buffer.baseAddress, width: 1, height: 1, bitsPerComponent: 8,
+        bytesPerRow: 4, space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+      context.draw(point, in: CGRect(x: 0, y: 0, width: 1, height: 1))
+    }
+    return Array(bytes.prefix(3))
+  }
+  func decoded(_ uri: String) throws -> CGImage {
+    let input = try XCTUnwrap(CGImageSourceCreateWithURL(try XCTUnwrap(URL(string: uri)) as CFURL, nil))
+    return try XCTUnwrap(CGImageSourceCreateImageAtIndex(input, 0, nil))
+  }
+  /// Independent EXIF output-to-stored coordinate table. No Core Image/ImageIO
+  /// orientation helper supplies the oracle; left/right and top/bottom differ.
+  func storedPoint(orientation: Int, u: Double, v: Double) -> (Double, Double) {
+    switch orientation {
+    case 2: return (1-u, v)
+    case 3: return (1-u, 1-v)
+    case 4: return (u, 1-v)
+    case 5: return (v, u)
+    case 6: return (v, 1-u)
+    case 7: return (1-v, 1-u)
+    case 8: return (1-v, u)
+    default: return (u, v)
+    }
+  }
   func testAllExifOrientationsNormalizeOnceWithoutCropAndScrubMetadata() throws {
+    let reference = try fixture(orientation: 1, width: 320, height: 240)
+    let warmReference = try render(reference), warmPixels = try decoded(warmReference.uri)
     for orientation in 1...8 {
       let source = try fixture(orientation: orientation, width: 320, height: 240)
+      let originalBytes = try Data(contentsOf: source)
       let result = try render(source)
       XCTAssertEqual(result.width, orientation >= 5 ? 240 : 320)
       XCTAssertEqual(result.height, orientation >= 5 ? 320 : 240)
+      let stored = try decoded(source.absoluteString)
+      let normalized = try render(source, "original", 1, preview: true)
+      let normalizedPixels = try decoded(normalized.uri), filteredPixels = try decoded(result.uri)
+      // Asymmetric RGB gradients/blue marker distinguish all eight transforms,
+      // especially mirrored EXIF2/4/5/7 that width/height assertions cannot catch.
+      for v in [0.15, 0.35, 0.65, 0.85] { for u in [0.15, 0.35, 0.65, 0.85] {
+        let (sx, sy) = storedPoint(orientation: orientation, u: u, v: v)
+        let sourceX = Int(sx * Double(stored.width)), sourceY = Int(sy * Double(stored.height))
+        let expected = try pixel(stored, x: sourceX, y: sourceY)
+        let actual = try pixel(normalizedPixels, x: Int(u * Double(normalizedPixels.width)), y: Int(v * Double(normalizedPixels.height)))
+        let warmExpected = try pixel(warmPixels, x: sourceX, y: sourceY)
+        let warmActual = try pixel(filteredPixels, x: Int(u * Double(filteredPixels.width)), y: Int(v * Double(filteredPixels.height)))
+        for channel in 0..<3 {
+          XCTAssertLessThanOrEqual(abs(Int(actual[channel]) - Int(expected[channel])), 14, "EXIF \(orientation) must orient/mirror exactly once")
+          XCTAssertLessThanOrEqual(abs(Int(warmActual[channel]) - Int(warmExpected[channel])), 16, "Filtered EXIF \(orientation) must preserve the same transform")
+        }
+      } }
+      XCTAssertEqual(try Data(contentsOf: source), originalBytes)
       let props = try properties(result.uri)
       XCTAssertEqual((props[kCGImagePropertyOrientation as String] as? NSNumber)?.intValue ?? 1, 1)
       XCTAssertNil(props[kCGImagePropertyGPSDictionary as String])

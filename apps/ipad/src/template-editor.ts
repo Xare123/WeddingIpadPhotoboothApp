@@ -1,6 +1,10 @@
 import type { ActiveSession, CompositeRecipe, PhotoCrop } from './local-types';
 import type { CompositeInput } from './local-persistence';
 type Theme = CompositeRecipe['theme'];
+export const TEMPLATE_LAYOUTS = [
+    { id: 'grid', label: 'Social grid' },
+    { id: 'strip', label: 'Photo strip' },
+] as const;
 export type TemplateSourceInspection = {
     version: 'wedding-template-v3';
     gridAspect: 'portrait' | 'square';
@@ -194,7 +198,7 @@ export function createTemplateEditor(p: TemplateEditorPorts) {
             if (!current(g))
                 return;
             inspectedHashes = Object.fromEntries(result.sources.map(x => [x.photoId, x.sha256]));
-            state = { ...state!, recipe: { version: 'wedding-template-v3', gridAspect: 'square', layout: initialDefaults?.layout ?? 'strip', theme: initialDefaults?.theme ?? 'classic', photoIds: ids, cropsByPhotoId: Object.fromEntries(ids.map(id => [id, { mode: 'fit', x: 0, y: 0, zoom: 1 }])) } };
+            state = { ...state!, recipe: { version: 'wedding-template-v3', gridAspect: 'square', layout: initialDefaults?.layout ?? 'grid', theme: initialDefaults?.theme ?? 'classic', photoIds: ids, cropsByPhotoId: Object.fromEntries(ids.map(id => [id, { mode: 'fill', x: 0, y: -1, zoom: 1 }])) } };
             cancelInspection = null;
             refresh();
         }

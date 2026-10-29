@@ -16,13 +16,15 @@ final class PhotoTemplateEngineTests: XCTestCase {
     engine = PhotoTemplateEngine(cacheDirectory: directory.appendingPathComponent("templates"))
   }
   override func tearDownWithError() throws { try FileManager.default.removeItem(at: directory) }
-  func fixtures(orientation: Int = 1, wide: Bool = false, split: Bool = false) throws -> [PhotoTemplateEngine.Source] {
+  func fixtures(orientation: Int = 1, wide: Bool = false, split: Bool = false, quadrants: Bool = false) throws -> [PhotoTemplateEngine.Source] {
     try (0..<4).map { index in
       let width = wide ? 800 : 400, height = 300
       var pixels = [UInt8](repeating: 255, count: width * height * 4)
       for y in 0..<height { for x in 0..<width {
         let rgb = y < 8 ? [UInt8(245),240,20] : y >= height - 8 ? [UInt8(20),235,235]
           : x < 8 ? [UInt8(250),250,250] : x >= width - 8 ? [UInt8(15),15,15]
+          : quadrants ? (y < height / 2 ? (x < width / 2 ? [UInt8(215),40,35] : [UInt8(35),175,55])
+            : (x < width / 2 ? [UInt8(40),65,215] : [UInt8(185),40,180]))
           : split ? (x < width / 2 ? [UInt8(215),40,35] : [UInt8(40),65,215]) : colors[index]
         let offset = (y * width + x) * 4
         for channel in 0..<3 { pixels[offset + channel] = rgb[channel] }
@@ -542,6 +544,44 @@ final class PhotoTemplateEngineTests: XCTestCase {
     let props = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(input, 0, nil) as? [String: Any])
     XCTAssertNil(props[kCGImagePropertyGPSDictionary as String])
     XCTAssertEqual((props[kCGImagePropertyOrientation as String] as? NSNumber)?.intValue ?? 1, 1)
+    // Mirror-tagged synthetic rasters are deliberately asymmetric quadrants.
+    // This downstream proof does not exercise a camera or assert device mirroring.
+    for orientation in [2, 4, 5, 7] {
+      let tagged = try fixtures(orientation: orientation, quadrants: true)
+      let before = try tagged.map { try Data(contentsOf: $0.url) }
+      let inspection = try engine.inspect(sources: tagged)
+      let rendered = try render(tagged, recipe: recipeV3(layout: "grid"))
+      let preview = try render(tagged, recipe: rendered.recipeJSON, preview: true)
+      let parsed = try PhotoTemplateEngine.Recipe.parse(rendered.recipeJSON)
+      for output in [rendered, preview] {
+        let pixels = try image(output.uri), down = CGFloat(output.width) / CGFloat(rendered.width)
+        for index in 0..<4 {
+          let input = try XCTUnwrap(CGImageSourceCreateWithURL(tagged[index].url as CFURL, nil))
+          let stored = try XCTUnwrap(CGImageSourceCreateImageAtIndex(input, 0, nil))
+          let window = PhotoTemplateEngine.window(recipe: parsed, index: index)
+          let width = CGFloat(inspection.sources[index].width), height = CGFloat(inspection.sources[index].height)
+          let scale = min(window.width / width, window.height / height)
+          let content = CGRect(x: window.midX - width * scale / 2, y: window.midY - height * scale / 2,
+            width: width * scale, height: height * scale)
+          for v in [0.2, 0.75] { for u in [0.2, 0.75] {
+            let position: (Double, Double)
+            switch orientation {
+            case 2: position = (1-u, v)
+            case 4: position = (u, 1-v)
+            case 5: position = (v, u)
+            default: position = (1-v, 1-u) // EXIF7 transverse
+            }
+            let expected = try sample(stored, x: Int(position.0 * Double(stored.width)), y: Int(position.1 * Double(stored.height)))
+            let observed = try sample(pixels, x: Int((content.minX + content.width * CGFloat(u)) * down),
+              y: Int((content.minY + content.height * CGFloat(v)) * down))
+            near(observed, expected, tolerance: 18)
+          } }
+          XCTAssertEqual(try Data(contentsOf: tagged[index].url), before[index])
+        }
+      }
+      XCTAssertEqual(rendered.sourceHashes, preview.sourceHashes)
+      try engine.release(URL(string: rendered.uri)!); try engine.release(URL(string: preview.uri)!)
+    }
   }
   func testV2DecorationNeverTouchesPhotoWindowsAndFitPreservesEdgeMarkers() throws {
     let sources = try fixtures()

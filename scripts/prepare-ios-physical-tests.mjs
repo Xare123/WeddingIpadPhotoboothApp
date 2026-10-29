@@ -6,10 +6,10 @@ import { fileURLToPath } from 'node:url';
 export const PHYSICAL_SCHEME = 'WeddingPhotoboothPhysical';
 export const PHYSICAL_TARGET = 'WeddingPhotoboothPhysicalSmokeTests';
 export const PREVIOUS_NATIVE_APPLICATION_COMMIT = '3cc16e6e6780e97fdb3fad7568ac99fab6f43e76';
-// Source review: Shared in-window overlay and orientation-deferral changes preserve all capture rehearsal selectors.
+// Source review: Front capture now requests native mirroring to match preview; all capture rehearsal selectors remain unchanged.
 // This pin authorizes source preparation, not a physical execution or installation.
 const reviewedUI = {
-  'apps/ipad/App.tsx': '9b8ce2f785d278d80e1cb4deba214d2bed4105325c1430e0fae0fd814f9332b7',
+  'apps/ipad/App.tsx': '18b663c6e69ca3ed946a046879832ab23fefefa3a3d6c548d48a980cfa8bc56c',
   'apps/ipad/src/TimingSheet.tsx': '1c49531fea26cbb206747856070f0cba2bf4cf39b78b7262c11e4400940b5f22',
 };
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');

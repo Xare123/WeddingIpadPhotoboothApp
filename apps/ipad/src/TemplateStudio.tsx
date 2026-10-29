@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { ActiveSession, CompositeRecipe, PhotoCrop } from './local-types';
-import type { TemplateEditorState } from './template-editor';
+import { TEMPLATE_LAYOUTS, type TemplateEditorState } from './template-editor';
 
 export const TEMPLATE_THEMES = [
   { id: 'classic', name: 'Classic Ivory', paper: '#F6F0E4' },
@@ -66,7 +66,7 @@ export function TemplateStudio(p: Props) {
       </View>
       <View style={[s.panel, p.landscape && s.panelWide]}>
         <ScrollView style={s.controlScroll} contentContainerStyle={s.controls} showsVerticalScrollIndicator>
-          <View style={s.segment}>{(['strip', 'grid'] as const).map(layout => <Pressable key={layout} testID={`template-layout-${layout}`} accessibilityRole="button" accessibilityState={{ selected: recipe.layout === layout, disabled: blocked }} disabled={blocked} onPress={() => p.onLayout(layout)} style={[s.segmentButton, recipe.layout === layout && s.segmentSelected]}><Text style={[s.segmentText, recipe.layout === layout && s.segmentTextSelected]}>{layout === 'strip' ? 'Photo strip' : 'Four-cut grid'}</Text></Pressable>)}</View>
+          <View style={s.segment}>{TEMPLATE_LAYOUTS.map(({ id: layout, label }) => <Pressable key={layout} testID={`template-layout-${layout}`} accessibilityRole="button" accessibilityState={{ selected: recipe.layout === layout, disabled: blocked }} disabled={blocked} onPress={() => p.onLayout(layout)} style={[s.segmentButton, recipe.layout === layout && s.segmentSelected]}><Text style={[s.segmentText, recipe.layout === layout && s.segmentTextSelected]}>{label}</Text></Pressable>)}</View>
           <View style={s.themes}>{TEMPLATE_THEMES.map(theme => <Pressable key={theme.id} testID={`template-theme-${theme.id}`} accessibilityRole="button" accessibilityLabel={theme.name} accessibilityState={{ selected: recipe.theme === theme.id, disabled: blocked }} disabled={blocked} onPress={() => p.onTheme(theme.id)} style={[s.themeCard, { backgroundColor: theme.paper }, recipe.theme === theme.id && s.themeSelected]}>
             <View style={s.themePicture}>{p.state.themePreviews[theme.id] ? <Image key={p.state.themePreviews[theme.id]} testID={`template-theme-preview-${theme.id}`} source={{ uri: p.state.themePreviews[theme.id]! }} resizeMode="contain" style={StyleSheet.absoluteFill} accessibilityLabel={`${theme.name}, with your four photos`} onError={() => { const uri = p.state.themePreviews[theme.id]; if (uri) p.onPreviewError(uri); }} /> : <Text style={s.loadingSmall}>Preparing…</Text>}</View><Text style={s.themeName}>{theme.name}</Text>
           </Pressable>)}</View>

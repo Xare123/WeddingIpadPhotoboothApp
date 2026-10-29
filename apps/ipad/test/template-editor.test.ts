@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createTemplateEditor, canonicalTemplateRecipe, type TemplateRenderResult, type TemplateEditorState, type TemplateSourceInspection, templateDimensions } from '../src/template-editor';
+import { readFileSync } from 'node:fs';
+import { TEMPLATE_LAYOUTS, createTemplateEditor, canonicalTemplateRecipe, type TemplateRenderResult, type TemplateEditorState, type TemplateSourceInspection, templateDimensions } from '../src/template-editor';
 import type { ActiveSession, CompositeRecipe } from '../src/local-types';
 const deferred = <T>() => { let resolve!: (v: T) => void, reject!: (e: Error) => void; const promise = new Promise<T>((a, b) => { resolve = a; reject = b; }); return { promise, resolve, reject }; };
 const tick = () => new Promise(r => setImmediate(r));
@@ -421,22 +422,22 @@ test('failed full inspection image cannot be reused for save', async () => {
     h.editor.close();
 });
 
-test('retake defaults preserve saved style/aspect with fresh IDs and fit crops after native inspection', async () => {
+for (const layout of ['strip', 'grid'] as const) test(`retake defaults preserve inherited ${layout}/theme with fresh IDs and new fill crops`, async () => {
     const h = harness(true);
     h.session = { ...h.session, retakeOfSessionId: 'previous-session', retakeState: 'open',
-        templateDefaults: { layout: 'grid', theme: 'coastal', gridAspect: 'square' } };
+        templateDefaults: { layout, theme: 'coastal', gridAspect: 'square' } };
     h.editor.open(h.session);
     await tick();
     assert.equal(h.jobs.length, 0);
     h.inspections[0]!.d.resolve(inspection('portrait'));
     await tick();
     assert.equal(h.state?.recipe?.version, 'wedding-template-v3');
-    assert.equal(h.state?.recipe?.layout, 'grid');
+    assert.equal(h.state?.recipe?.layout, layout);
     assert.equal(h.state?.recipe?.theme, 'coastal');
     assert.equal(h.state?.recipe && 'gridAspect' in h.state.recipe ? h.state.recipe.gridAspect : null, 'square');
     assert.deepEqual(h.state?.recipe?.photoIds, ['a', 'b', 'c', 'd']);
-    assert.deepEqual(h.state?.recipe?.cropsByPhotoId, Object.fromEntries(['a', 'b', 'c', 'd'].map(id => [id, { mode: 'fit', x: 0, y: 0, zoom: 1 }])));
-    assert.deepEqual(templateDimensions(h.state!.recipe!), [2400, 2400]);
+    assert.deepEqual(h.state?.recipe?.cropsByPhotoId, Object.fromEntries(['a', 'b', 'c', 'd'].map(id => [id, { mode: 'fill', x: 0, y: -1, zoom: 1 }])));
+    assert.deepEqual(templateDimensions(h.state!.recipe!), layout === 'grid' ? [2400, 2400] : [1200, 3600]);
     h.editor.close();
 });
 
@@ -458,6 +459,40 @@ for (const gridAspect of ['portrait', 'square'] as const) test(`persisted v2 ${g
   assert.deepEqual(h.state?.recipe, recipe);
   assert.equal(h.inspections.length, 0);
   assert.deepEqual(templateDimensions(h.state!.recipe!), gridAspect === 'portrait' ? [2400, 3000] : [2400, 2400]);
+  assert.equal(JSON.stringify(h.session), before);
+  h.editor.close();
+});
+
+for (const aspect of ['portrait', 'square'] as const) test(`fresh ${aspect} sources default to Social grid and top-aligned Full frame without changing originals`, async () => {
+  const h = harness(true), before = JSON.stringify(h.session);
+  h.editor.open(h.session);
+  await tick();
+  h.inspections[0]!.d.resolve(inspection(aspect));
+  await tick();
+  assert.equal(h.state?.recipe?.layout, 'grid');
+  assert.equal(h.state?.recipe?.theme, 'classic');
+  assert.deepEqual(h.state?.recipe?.cropsByPhotoId, Object.fromEntries(['a', 'b', 'c', 'd'].map(id => [id, { mode: 'fill', x: 0, y: -1, zoom: 1 }])));
+  assert.equal(JSON.stringify(h.session), before);
+  assert.ok(h.jobs.every(job => job.recipe.layout === 'grid'));
+  h.editor.close();
+});
+
+test('layout selector presents Social grid before Photo strip', () => {
+  assert.deepEqual(TEMPLATE_LAYOUTS, [{ id: 'grid', label: 'Social grid' }, { id: 'strip', label: 'Photo strip' }]);
+  const source = readFileSync(new URL('../src/TemplateStudio.tsx', import.meta.url), 'utf8');
+  assert.match(source, /TEMPLATE_LAYOUTS\.map\(\(\{ id: layout, label \}\)/);
+  assert.match(source, /<Text[^>]*>\{label\}<\/Text>/);
+});
+
+for (const layout of ['strip', 'grid'] as const) test(`persisted v3 ${layout} with Full photo and custom crop reopens unchanged`, () => {
+  const h = harness();
+  const recipe: CompositeRecipe = { ...h.session.composite!.recipe, version: 'wedding-template-v3', gridAspect: 'square', layout };
+  recipe.cropsByPhotoId.a = { mode: 'fill', x: 0.25, y: 0.5, zoom: 1.2 };
+  h.session = { ...h.session, composite: { ...h.session.composite!, recipe } };
+  const before = JSON.stringify(h.session);
+  h.editor.open(h.session);
+  assert.deepEqual(h.state?.recipe, recipe);
+  assert.equal(h.inspections.length, 0);
   assert.equal(JSON.stringify(h.session), before);
   h.editor.close();
 });
