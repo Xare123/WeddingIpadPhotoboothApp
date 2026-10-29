@@ -30,5 +30,6 @@
     "Later authorized Worker code update plus3 private artwork uploads preservinglivebindings/config/secrets",
     "Actual Safari/real-phone downloads",
     "Live readiness/source presence verification through permitted routes only; origin hold remains"
-  ]
+  ],
+  "wranglerLocalHttpSmoke": "passed: actual local CLI text-module loading, authenticated uploads/readiness/private downloads/replay/mock consent/revocation; no SMS"
 }
