@@ -1,10 +1,9 @@
 import { after, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHmac, randomUUID } from 'node:crypto';
-import { readFileSync } from 'node:fs';
-import { stripTypeScriptTypes } from 'node:module';
+import { workerSource, workerModule } from './worker-source';
 import { Miniflare } from 'miniflare';
-import { createTextbeltProvider } from '../src/index';
+const { createTextbeltProvider } = await workerModule();
 
 const input = { idempotencyKey: 'test-id', to: '+12025550123', galleryUrl: 'https://gallery.example/g/' + 'a'.repeat(64) };
 const testKey = 'synthetic-provider-key-not-a-credential';
@@ -71,7 +70,7 @@ const auth = { Authorization: 'Bearer local-development-only' };
 const jpeg = new Uint8Array([255, 216, 255, 224, 0, 2, 255, 217]);
 const origin = 'http://localhost';
 async function setup(bindings: Record<string, string>, outbound: (request: Request) => Promise<Response>) {
-  const runtime = new Miniflare({ modules: true, script: stripTypeScriptTypes(readFileSync(new URL('../src/index.ts', import.meta.url), 'utf8')),
+  const runtime = new Miniflare({ modules: true, script: workerSource(),
     compatibilityDate: '2026-07-30', r2Buckets: ['PHOTOS'], outboundService: outbound,
     bindings: { MODE: 'local', SMS_MODE: 'textbelt', LOCAL_DEVICE_TOKEN: 'local-development-only', LOCAL_LINK_KEY: 'test-local-key', TEXTBELT_API_KEY: testKey,
       TEXTBELT_LIVE_APPROVED: 'true', TEXTBELT_ELIGIBILITY_APPROVED: 'true', ...bindings } });

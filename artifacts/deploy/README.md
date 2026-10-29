@@ -13,7 +13,7 @@ The coordinator's isolated Worker is named **`wedding-photobooth`**. This artifa
 - Existing backend-only `TEXTBELT_API_KEY`, optional for QR-only operation. Preserve it without retrieving its value. Live/test approval flags remain disabled in the example; paid credits and a submitted domain form do not establish eligibility. This executor sends zero real or remote test messages; the coordinator owns the owner's approved test-send limit.
 - A separate Worker custom domain on `photos.gizelleandrami.com`, with `workers.dev`/preview URLs disabled. Apply the manifest's explicit disabled observability/log/trace/persistence settings, `logpush:false`, and empty tail consumers. Query-string redaction alone does not protect a gallery token in the URL path. Verify account-level logging and integrations separately. If a connector cannot apply necessary controls, stop and report that limitation instead of dropping them.
 
-`manifest.json` derives variables, R2 and rate-limit bindings, and privacy metadata directly from the production example so they cannot silently drift. `deploymentMetadata` is the ES-module upload metadata; secret values are intentionally absent and must be entered through the approved secure Cloudflare route. No static-assets binding is required: the gallery HTML/CSS is embedded, and original images are read privately from R2. Domain attachment is a separate operation and is not included as an active route here.
+`manifest.json` derives variables, R2 and rate-limit bindings, and privacy metadata directly from the production example so they cannot silently drift. `deploymentMetadata` is the ES-module upload metadata; secret values are intentionally absent and must be entered through the approved secure Cloudflare route. No static-assets binding is required: the gallery HTML/CSS and guest keepsake client source are embedded in the Worker bundle; original images and the three generated background artwork objects are read privately from R2. Domain attachment is a separate operation and is not included as an active route here.
 
 Website/DNS edits needed for this flow are authorized, but preserve the apex, `www`, the existing `gizelleandrami` Worker and all wedding-site content. The production EXAMPLE config has no active account/zone/routes or secrets, so it cannot accidentally change those records by running this build.
 
@@ -32,3 +32,17 @@ Local Miniflare/browser success does not establish live R2, rate-limit enforceme
 Private iPad setup uses only the two approved booth credentials. See [the precise two-key pairing contract](../../docs/PRIVATE_PROVISIONING.md): explicitly enable pairing, issue a short-lived code using existing booth authorization, privately scan its raw code through host controls, and consume atomically before Keychain acknowledgment. Do not mint the five-minute code while the owner is asleep or before installation is ready. Live pairing and storage checks remain coordinator/owner actions.
 
 Do not use the local HTTP smoke script unchanged against production: it intentionally targets loopback and contains known local-only development values. Enter the production device token only through a secure approved route and the iPad's OS-authenticated host settings.
+
+## Guest keepsake artwork update (not deployed)
+
+This website-only update requires **both the new Worker code and three private artwork object uploads**. Building a ZIP or deploying code alone does not establish readiness. `npm run build:api` creates `guest-artwork-v3/manifest.json` and three exact-byte PNGs alongside `worker.mjs`. The manifest records each source path, SHA-256, byte count, `image/png` content type, and fixed destination:
+
+- `guest-artwork-v3/classic.png` → `system/keepsake-art/v3/classic.png`
+- `guest-artwork-v3/botanical.png` → `system/keepsake-art/v3/botanical.png`
+- `guest-artwork-v3/coastal.png` → `system/keepsake-art/v3/coastal.png`
+
+Upload only these generated, text-free design assets to the **existing private** `gizelleandrami-photoboothphotos` bucket. No new bucket, public bucket access, credentials or provisioning is required. Preserve existing object data and verify all three uploaded byte hashes against the manifest. The Worker must authorize guest artwork access through the valid session/capability route; fixed R2 keys are not public URLs. This package contains no real guest images, phone numbers or secrets.
+
+The coordinator owns deployment and any permitted live verification. This executor has performed **no deployment, object upload, origin probe, SMS request or production setting change**. Preserve actual production variables, encrypted secret bindings, pairing configuration, SMS mode, link TTL and rate-limit settings. `manifest.json` derives example defaults for review, **not** instructions to overwrite current live settings.
+
+After the final tested source is frozen, rebuild with `npm run build:api`, then from `artifacts/deploy` create the release archive with `zip -r worker-release.zip worker.mjs manifest.json README.md guest-artwork-v3`. Remove an obsolete local ZIP before creating a replacement so old entries cannot remain. The coordinator must review final source/bundle/artwork hashes and tests before updating production. Do not treat this document or `deployed:false` as evidence of live inspection.

@@ -1,10 +1,22 @@
 {
   "artifact": "worker.mjs",
   "format": "esm",
-  "generatedAt": "2026-10-28T23:34:38.235Z",
-  "sha256": "810d57f5ca2ef91c188fa42a37da268438960eb2ac5d663a8e4ff474a3da77ad",
-  "sourceSha256": "b75a7424459f6933b60eb0d619f12e0f52955eb5214f85df7726d4ae2c12eeec",
-  "bytes": 42107,
+  "generatedAt": "2026-10-29T02:11:06.470Z",
+  "sha256": "9e1b03c9c830df303eedc1f4d2dec7031436081d433270a08525aff52f847121",
+  "sourceSha256": "dc7e8078495a8634914542a830ca5a747a0d39b5eafc06589ebcfd8e06372a3e",
+  "sourceFiles": [
+    {
+      "path": "services/api/src/guest-keepsake.client",
+      "bytes": 19674,
+      "sha256": "4f296e5c16892eefb96f35145ba1626357e335ae33fcbea1ccc8c6e0d9402df5"
+    },
+    {
+      "path": "services/api/src/index.ts",
+      "bytes": 55877,
+      "sha256": "dc7e8078495a8634914542a830ca5a747a0d39b5eafc06589ebcfd8e06372a3e"
+    }
+  ],
+  "bytes": 68773,
   "compatibilityDate": "2026-10-25",
   "proposedWorker": "wedding-photobooth",
   "existingPrivateBucket": "gizelleandrami-photoboothphotos",
@@ -167,6 +179,41 @@
   "rateLimitNamespaceIdsRequireReview": true,
   "rateLimitScope": "Approximate per Cloudflare POP; not a strict global request budget or financial cap",
   "staticAssetsBindingRequired": false,
+  "guestArtwork": {
+    "manifest": "guest-artwork-v3/manifest.json",
+    "objects": [
+      {
+        "theme": "classic",
+        "artifact": "guest-artwork-v3/classic.png",
+        "source": "design/frame-art-v1/Classic-Ivory-Text-Free-Artwork.png",
+        "key": "system/keepsake-art/v3/classic.png",
+        "contentType": "image/png",
+        "sha256": "3ccb9f0acf030b5bc31b2bbf6d81f3e694e2dd2e045dc77fd930c6d4df59164e",
+        "bytes": 1802037
+      },
+      {
+        "theme": "botanical",
+        "artifact": "guest-artwork-v3/botanical.png",
+        "source": "design/frame-art-v1/Sage-Botanical-Text-Free-Artwork.png",
+        "key": "system/keepsake-art/v3/botanical.png",
+        "contentType": "image/png",
+        "sha256": "4121598a7aa1d445fed5c223d4b475d706cb93567d90c51a42d1dad86cb36e21",
+        "bytes": 1803664
+      },
+      {
+        "theme": "coastal",
+        "artifact": "guest-artwork-v3/coastal.png",
+        "source": "design/frame-art-v1/Coastal-Sea-Glass-Text-Free-Artwork.png",
+        "key": "system/keepsake-art/v3/coastal.png",
+        "contentType": "image/png",
+        "sha256": "8f3bbfb131c9454f6ea633a79445e6cd9b32176e9aa80c09080925b0d83884a0",
+        "bytes": 2050468
+      }
+    ],
+    "uploadRequired": true,
+    "uploaded": false,
+    "preserveExistingPrivateBucket": true
+  },
   "deploymentMetadata": {
     "main_module": "worker.mjs",
     "compatibility_date": "2026-10-25",

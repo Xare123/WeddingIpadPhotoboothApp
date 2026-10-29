@@ -1,18 +1,19 @@
 import { after, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash, randomUUID, timingSafeEqual } from 'node:crypto';
-import { readFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { stripTypeScriptTypes } from 'node:module';
+import { workerSource, workerModule } from './worker-source';
 import { Miniflare } from 'miniflare';
-import worker, { type Env } from '../src/index';
+import type { Env } from '../src/index';
+const { default: worker } = await workerModule();
 
 const device = 'local-development-only';
 const origin = 'http://localhost';
 const runtimes: Miniflare[] = [], dirs: string[] = [];
 const base = { MODE: 'local', SMS_MODE: 'mock', LOCAL_DEVICE_TOKEN: device, LOCAL_LINK_KEY: 'pairing-local-test-key', PAIRING_ENABLED: 'approved' };
-const options = (bindings = {}, r2Persist?: string) => ({ modules: true, script: stripTypeScriptTypes(readFileSync(new URL('../src/index.ts', import.meta.url), 'utf8')),
+const options = (bindings = {}, r2Persist?: string) => ({ modules: true, script: workerSource(),
   compatibilityDate: '2026-07-30', r2Buckets: ['PHOTOS'], r2Persist, bindings: { ...base, ...bindings } });
 async function runtime(bindings = {}, path?: string) { const mf = new Miniflare(options(bindings, path)); runtimes.push(mf); await mf.ready; return mf; }
 after(async () => { await Promise.all(runtimes.map(mf => mf.dispose())); for (const path of dirs) rmSync(path, { recursive: true, force: true }); });

@@ -1,3 +1,5 @@
+import guestKeepsakeScript from './guest-keepsake.client';
+
 /** Private R2 storage: never enable the bucket's public URL or public listing. */
 export interface Env {
   PHOTOS: R2Bucket;
@@ -93,12 +95,12 @@ const rateBindings = [
 ] as const;
 type RateBand = 'GALLERY' | 'PHOTO' | 'API' | 'SHARE';
 function rateBand(url: URL): RateBand | undefined {
-  if (url.pathname.startsWith('/g/')) return /^\/g\/[^/]+\/photos\//.test(url.pathname) ? 'PHOTO' : 'GALLERY';
+  if (url.pathname.startsWith('/g/')) return /^\/g\/[^/]+\/(?:photos\/|art\/|keepsake\.js$)/.test(url.pathname) ? 'PHOTO' : 'GALLERY';
   if (url.pathname === '/v1/shares' || url.pathname.startsWith('/v1/pairing/')) return 'SHARE';
   if (url.pathname.startsWith('/v1/')) return 'API';
 }
 function limitResponse(url: URL, status: 429 | 503): Response {
-  const page = url.pathname.startsWith('/g/') && !/^\/g\/[^/]+\/photos\//.test(url.pathname);
+  const page = url.pathname.startsWith('/g/') && !/^\/g\/[^/]+\/(?:photos\/|art\/|keepsake\.js$)/.test(url.pathname);
   const response = page ? unavailableGallery(status) : json({
     error: status === 429 ? 'Request limit reached; please retry shortly' : 'Request protection unavailable', retryable: true,
   }, status);
@@ -233,6 +235,41 @@ function sameRecipe(left: GalleryRecipe, right: GalleryRecipe): boolean {
 const galleryPhotoIds = (gallery: GalleryRecipe): string[] => [...new Set([
   ...gallery.photoIds, ...(gallery.originalPhotoIds ?? []), ...(gallery.composite ? [gallery.composite.photoId] : []),
 ])];
+const guestArtwork = {
+  classic: { key: 'system/keepsake-art/v3/classic.png', sha256: '3ccb9f0acf030b5bc31b2bbf6d81f3e694e2dd2e045dc77fd930c6d4df59164e' },
+  botanical: { key: 'system/keepsake-art/v3/botanical.png', sha256: '4121598a7aa1d445fed5c223d4b475d706cb93567d90c51a42d1dad86cb36e21' },
+  coastal: { key: 'system/keepsake-art/v3/coastal.png', sha256: '8f3bbfb131c9454f6ea633a79445e6cd9b32176e9aa80c09080925b0d83884a0' },
+} as const;
+function editableGallery(gallery: GalleryRecipe): boolean {
+  const composite = gallery.composite;
+  return gallery.photoIds.length === 4 && new Set(gallery.photoIds).size === 4 && gallery.photoIds.every(id => uuid.test(id)) &&
+    gallery.originalPhotoIds?.length === 4 && new Set(gallery.originalPhotoIds).size === 4 && gallery.originalPhotoIds.every(id => uuid.test(id)) &&
+    !!composite && uuid.test(composite.photoId) && ['strip', 'grid'].includes(composite.layout) &&
+    ['classic', 'botanical', 'coastal'].includes(composite.theme) &&
+    (composite.version === 'wedding-template-v1' || composite.version === 'wedding-template-v2' && ['portrait', 'square'].includes(composite.gridAspect) ||
+      composite.version === 'wedding-template-v3' && composite.gridAspect === 'square');
+}
+function keepsakeEditorHtml(token: string, gallery: Gallery): string {
+  if (!editableGallery(gallery)) return '';
+  const composite = gallery.composite!;
+  const config = JSON.stringify({ version: composite.version, layout: composite.layout, theme: composite.theme,
+    ...(composite.version !== 'wedding-template-v1' ? { gridAspect: composite.gridAspect } : {}),
+    photoUrls: gallery.photoIds.map(id => `/g/${token}/photos/${id}`),
+    ...(composite.version === 'wedding-template-v3' ? { artUrl: `/g/${token}/art/${composite.theme}` } : {}),
+  }).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return `<section class="variant-section" id="keepsake-editor" data-config="${config}" aria-labelledby="variant-title">
+    <div class="collection-heading"><h2 id="variant-title">Make room for every memory</h2><p>Two ways to keep it</p></div>
+    <p class="variant-intro">Choose filled frames or keep every edge of each photo. Both versions are yours to download.</p>
+    <div class="variant-options" role="group" aria-label="Photo placement"><button type="button" data-variant="fill" aria-pressed="true">Fill Frames</button><button type="button" data-variant="fit" aria-pressed="false">Full Photo</button></div>
+    <p class="variant-note">Fill Frames crops from the top. Full Photo keeps every edge and may leave side space.</p>
+    <p id="variant-status" class="variant-status" role="status" aria-live="polite">Preparing both versions…</p>
+    <button id="variant-retry" class="variant-retry" type="button" hidden>Retry versions</button>
+    <figure class="variant-result${composite.layout === 'strip' ? ' variant-strip' : ''}"><img id="variant-preview" alt="Your new keepsake preview" hidden></figure>
+    <div class="variant-downloads"><a id="download-fill" class="download" hidden>Download Fill Frames</a><a id="download-fit" class="download" hidden>Download Full Photo</a></div>
+    <p class="quality">Full-resolution JPEGs · Made on your device</p><p class="variant-note">Made from your four selected photos, with the same layout and theme. Your saved booth keepsake and camera originals below stay unchanged.</p>
+    <noscript><p>Enable JavaScript to prepare both versions. Your existing booth and original-photo downloads below still work.</p></noscript>
+  </section><script src="/g/${token}/keepsake.js" defer></script>`;
+}
 const completeShareGallery = (gallery: GalleryRecipe): boolean => gallery.photoIds.length === 5 ||
   gallery.photoIds.length === 4 && gallery.originalPhotoIds?.length === 4 && !!gallery.composite;
 function readyGallery(gallery: Gallery, origin: string, token: string): Response {
@@ -406,14 +443,17 @@ const galleryStyles = `
   .footer{border-top:1px solid var(--line);text-align:center;padding:25px 0 30px;color:var(--muted);font:italic 18px Georgia,serif}.reveal{animation:reveal .65s ease-out both}.photo:nth-child(2){animation-delay:.09s}.photo:nth-child(n+3){animation-delay:.18s}
   .error-page{max-width:650px;min-height:65vh;margin:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:64px 0}.error-page h1{font-size:clamp(42px,7vw,66px)}.error-page .intro{max-width:390px}.error-mark{width:52px;height:52px;border:1px solid #a9beb5;border-radius:50%;display:grid;place-items:center;margin-bottom:30px;font:italic 28px Georgia,serif;color:#3e6760}
   @keyframes reveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .variant-section{margin:0 auto 48px}.variant-section .collection-heading{flex-wrap:wrap;align-items:flex-start;gap:8px;padding-right:4px}.variant-section .collection-heading h2{flex:1 1 220px;line-height:1.6}.variant-section .collection-heading p{line-height:1.6}.variant-intro{font-size:16px;color:var(--muted);max-width:620px;line-height:1.7}.variant-note{font-size:12px;line-height:1.7;color:var(--muted);max-width:740px}.variant-options{display:flex;gap:6px;max-width:510px;background:#e9e6dc;padding:5px;border-radius:30px;margin:20px auto 12px}.variant-options button{flex:1;min-height:48px;border:0;border-radius:26px;background:transparent;color:var(--ink);font:inherit;font-size:14px;font-weight:500;cursor:pointer;padding:12px}.variant-options button[aria-pressed="true"]{background:var(--forest);color:var(--white)}.variant-options button:focus-visible,.variant-retry:focus-visible,.variant-downloads a:focus-visible{outline:3px solid #b8964f;outline-offset:3px}.variant-status{text-align:center;color:var(--muted);font-size:13px;min-height:22px}.variant-result{margin:20px auto;max-width:820px}.variant-result img{display:block;width:100%;height:auto;border-radius:2px}.variant-result.variant-strip{max-width:360px}.variant-downloads{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}.variant-downloads a{flex:1;max-width:340px;min-width:210px}.variant-retry{display:block;margin:12px auto;padding:12px 25px;min-height:48px;border:1px solid #b4aa98;border-radius:26px;background:transparent;color:var(--ink);font:inherit;cursor:pointer}.variant-section [hidden]{display:none!important}
   @media(min-width:1100px){.photos:has(.photo:only-child){max-width:650px;margin:auto}}@media(max-width:700px){.shell{padding:0 23px}.masthead{padding:25px 0;gap:13px}.brand{font-size:10px;letter-spacing:.8px}.hero{padding:49px 0 36px}h1{letter-spacing:-1.4px}.intro{font-size:14px;max-width:330px}.photos{gap:24px}.collection-heading{padding:19px 0}.collection-heading p{font-size:10px}.privacy{margin:40px auto 34px}.photo{padding:10px 10px 0}.photo figcaption{padding:18px 6px 20px}.footer{font-size:16px}.download{min-height:50px}}
   @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.download:hover{transform:none}}
 `;
 function guestDocument(title: string, content: string): string {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="theme-color" content="#f6efe4"><title>${title}</title><style>${galleryStyles}</style></head><body><div class="shell"><header class="masthead"><span class="ornament" aria-hidden="true"></span><span class="brand">Gizelle &amp; Rami · November 1, 2026</span><span class="ornament" aria-hidden="true"></span></header>${content}<footer class="footer">Made of moments like these.</footer></div></body></html>`;
 }
-function guestPage(html: string, status = 200): Response {
-  return new Response(html, { status, headers: { ...privateHeaders, 'Content-Type': 'text/html; charset=utf-8' } });
+function guestPage(html: string, status = 200, editor = false): Response {
+  return new Response(html, { status, headers: { ...privateHeaders, 'Content-Type': 'text/html; charset=utf-8',
+    ...(editor ? { 'Content-Security-Policy': "default-src 'none'; img-src 'self' blob:; script-src 'self'; connect-src 'self'; style-src 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'; object-src 'none'" } : {}),
+  } });
 }
 function unavailableGallery(status: number, reason?: string): Response {
   const expired = reason === 'Link expired';
@@ -436,7 +476,7 @@ function galleryHtml(token: string, gallery: Gallery): string {
   }
   const originals = gallery.originalPhotoIds ? `<section class="original-section" aria-labelledby="originals-title"><div class="collection-heading"><h2 id="originals-title">Your camera originals</h2><p>${gallery.originalPhotoIds.length} original files</p></div><p class="original-intro">Save each camera original, in the same order as your keepsake.</p><ol class="originals">${gallery.originalPhotoIds.map((id, i) => `<li><span class="original-name">Original ${String(i + 1).padStart(2, '0')}</span><a class="download" href="/g/${token}/photos/${id}?download=1" download aria-label="Download camera original ${i + 1} in full resolution">Save original ${i + 1}</a></li>`).join('')}</ol></section>` : '';
   const expires = new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeStyle: 'medium', timeZone: 'UTC' }).format(new Date(gallery.expiresAt));
-  return guestDocument('Your wedding photos', `<main><section class="hero reveal" aria-labelledby="gallery-title"><p class="eyebrow">A keepsake from the celebration</p><h1 id="gallery-title">Your night,<span>beautifully captured.</span></h1><p class="intro">A little joy to take home.</p></section>${keepsake}<section aria-label="Your photos"><div class="collection-heading"><h2>${gallery.composite ? 'Your individual photos' : 'Your wedding photos'}</h2><p>${gallery.photoIds.length} ${gallery.photoIds.length === 1 ? 'memory' : 'memories'} · original quality</p></div><div class="photos">${items}</div></section>${originals}<aside class="privacy"><h2>A private keepsake.</h2><p>Anyone with this link can view and download these photos.<br>Save your favorites, and forward this link only with care.</p><p class="expiry">Available until <time datetime="${new Date(gallery.expiresAt).toISOString()}">${expires} UTC</time>.<br>Link expiry closes access; it does not delete the original photos.</p></aside></main>`);
+  return guestDocument('Your wedding photos', `<main><section class="hero reveal" aria-labelledby="gallery-title"><p class="eyebrow">A keepsake from the celebration</p><h1 id="gallery-title">Your night,<span>beautifully captured.</span></h1><p class="intro">A little joy to take home.</p></section>${keepsakeEditorHtml(token, gallery)}${keepsake}<section aria-label="Your photos"><div class="collection-heading"><h2>${gallery.composite ? 'Your individual photos' : 'Your wedding photos'}</h2><p>${gallery.photoIds.length} ${gallery.photoIds.length === 1 ? 'memory' : 'memories'} · original quality</p></div><div class="photos">${items}</div></section>${originals}<aside class="privacy"><h2>A private keepsake.</h2><p>Anyone with this link can view and download these photos.<br>Save your favorites, and forward this link only with care.</p><p class="expiry">Available until <time datetime="${new Date(gallery.expiresAt).toISOString()}">${expires} UTC</time>.<br>Link expiry closes access; it does not delete the original photos.</p></aside></main>`);
 }
 async function handle(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
@@ -447,12 +487,12 @@ async function handle(request: Request, env: Env): Promise<Response> {
   if (url.pathname === '/health' && request.method === 'GET')
     return json({ status: 'ok', storage: env.MODE === 'local' ? 'local-r2' : 'private-r2', sms: env.SMS_MODE, smsAvailable: liveSmsAvailable(env) });
 
-  const guest = /^\/g\/([a-f0-9]{64})(?:\/photos\/([0-9a-f-]+))?$/.exec(url.pathname);
+  const guest = /^\/g\/([a-f0-9]{64})(?:\/photos\/([0-9a-f-]+)|\/(keepsake\.js)|\/art\/(classic|botanical|coastal))?$/.exec(url.pathname);
   if (guest && request.method === 'GET') {
     const token = guest[1]!;
     const gallery = await loadGallery(env, await digest(encoder.encode(token)));
     if (gallery instanceof Response) {
-      if (guest[2]) return gallery;
+      if (guest[2] || guest[3] || guest[4]) return gallery;
       const detail = await gallery.json<{ error: string }>();
       return unavailableGallery(gallery.status, detail.error);
     }
@@ -460,8 +500,22 @@ async function handle(request: Request, env: Env): Promise<Response> {
     // rotation revoke every old link, including existing hashed R2 manifests.
     const currentToken = await tokenFor(gallery.sessionId, config.signingKey);
     if (!crypto.subtle.timingSafeEqual(encoder.encode(token), encoder.encode(currentToken)))
-      return guest[2] ? json({ error: 'Link revoked' }, 410) : unavailableGallery(410, 'Link revoked');
-    if (!guest[2]) return guestPage(galleryHtml(token, gallery));
+      return guest[2] || guest[3] || guest[4] ? json({ error: 'Link revoked' }, 410) : unavailableGallery(410, 'Link revoked');
+    if (guest[3]) {
+      if (!editableGallery(gallery)) return json({ error: 'Four source photos and a keepsake are required' }, 404);
+      return new Response(guestKeepsakeScript, { headers: { ...privateHeaders, 'Content-Type': 'application/javascript; charset=utf-8' } });
+    }
+    if (guest[4]) {
+      if (!editableGallery(gallery) || gallery.composite?.version !== 'wedding-template-v3' || gallery.composite.theme !== guest[4])
+        return json({ error: 'Artwork unavailable' }, 404);
+      const art = guestArtwork[guest[4] as keyof typeof guestArtwork];
+      const object = await env.PHOTOS.get(art.key);
+      if (!object || object.size > 4 * 1024 * 1024) return json({ error: 'Artwork unavailable' }, 503);
+      const bytes = new Uint8Array(await object.arrayBuffer());
+      if (await digest(bytes) !== art.sha256) return json({ error: 'Artwork unavailable' }, 503);
+      return new Response(bytes, { headers: { ...privateHeaders, 'Content-Type': 'image/png', 'Content-Length': String(bytes.length) } });
+    }
+    if (!guest[2]) return guestPage(galleryHtml(token, gallery), 200, editableGallery(gallery));
     const photoId = guest[2].toLowerCase();
     if (!uuid.test(photoId) || !galleryPhotoIds(gallery).includes(photoId)) return json({ error: 'Photo unavailable' }, 404);
     const photo = await env.PHOTOS.get(photoKey(gallery.sessionId, photoId));

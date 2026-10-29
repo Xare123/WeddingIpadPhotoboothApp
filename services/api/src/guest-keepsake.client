@@ -1,0 +1,259 @@
+/* Private guest-page enhancement. Browser renders are new keepsakes, not exact copies of booth crops or fonts. */
+(() => {
+  'use strict';
+  const panel = document.getElementById('keepsake-editor');
+  if (!panel) return;
+  const status = document.getElementById('variant-status');
+  const preview = document.getElementById('variant-preview');
+  const retry = document.getElementById('variant-retry');
+  const buttons = Array.from(panel.querySelectorAll('button[data-variant]'));
+  const links = { fill: document.getElementById('download-fill'), fit: document.getElementById('download-fit') };
+  if (!status || !preview || !retry || !links.fill || !links.fit || buttons.length !== 2) return;
+  const MAX_BYTES = 10 * 1024 * 1024;
+  let generation = 0, busy = false, disposed = false, controller;
+  let selected = 'fill', ready = null;
+  const liveUrls = new Set();
+  const message = value => { status.textContent = value; };
+  const revoke = url => { if (url && liveUrls.delete(url)) URL.revokeObjectURL(url); };
+  const objectUrl = blob => { const url = URL.createObjectURL(blob); liveUrls.add(url); return url; };
+  function configuration() {
+    const value = JSON.parse(panel.dataset.config || 'null');
+    const token = /^\/g\/([a-f0-9]{64})\/?$/.exec(location.pathname)?.[1];
+    if (!token || !value || !['wedding-template-v1', 'wedding-template-v2', 'wedding-template-v3'].includes(value.version) ||
+        !['strip', 'grid'].includes(value.layout) || !['classic', 'botanical', 'coastal'].includes(value.theme) ||
+        (value.version === 'wedding-template-v1' ? value.gridAspect !== undefined : !['portrait', 'square'].includes(value.gridAspect)) ||
+        (value.version === 'wedding-template-v3' && value.gridAspect !== 'square') ||
+        !Array.isArray(value.photoUrls) || value.photoUrls.length !== 4 || new Set(value.photoUrls).size !== 4) throw new Error('configuration');
+    function checkedUrl(raw, pattern) {
+      if (typeof raw !== 'string' || raw.length > 512) throw new Error('configuration');
+      const url = new URL(raw, location.origin);
+      if (url.origin !== location.origin || url.username || url.password || url.search || url.hash || !pattern.test(url.pathname)) throw new Error('configuration');
+      return url.href;
+    }
+    const photoPattern = new RegExp('^/g/' + token + '/photos/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$', 'i');
+    value.photoUrls = value.photoUrls.map(raw => checkedUrl(raw, photoPattern));
+    if (new Set(value.photoUrls).size !== 4) throw new Error('configuration');
+    if (value.version === 'wedding-template-v3') value.artUrl = checkedUrl(value.artUrl, new RegExp('^/g/' + token + '/art/' + value.theme + '$'));
+    else if (value.artUrl !== undefined) throw new Error('configuration');
+    return value;
+  }
+  function geometry(config) {
+    const strip = config.layout === 'strip', v1 = config.version === 'wedding-template-v1', v3 = config.version === 'wedding-template-v3';
+    return { width: strip ? 1200 : 2400, height: strip ? 3600 : v1 ? 2100 : config.gridAspect === 'portrait' ? 3000 : 2400,
+      windows: Array.from({ length: 4 }, (_, i) => v3 ? strip ? { x: 100, y: 220 + i * 770, width: 1000, height: 750 } : { x: 184 + i % 2 * 1032, y: 160 + Math.floor(i / 2) * 1032, width: 1000, height: 1000 }
+        : strip ? { x: 60, y: 60 + i * 834, width: 1080, height: 810 } : v1 ? { x: 96 + i % 2 * 1128, y: 96 + Math.floor(i / 2) * 858, width: 1080, height: 810 }
+        : config.gridAspect === 'portrait' ? { x: 72 + i % 2 * 1140, y: 72 + Math.floor(i / 2) * 1356, width: 1116, height: 1332 } : { x: 96 + i % 2 * 1128, y: 60 + Math.floor(i / 2) * 1104, width: 1080, height: 1080 }) };
+  }
+  function palette(config) {
+    return (config.version === 'wedding-template-v1' ? {
+      classic: ['#F6F1E7', '#352B25', '#BCA68B', '#BCA68B'], botanical: ['#EEF1E8', '#31483A', '#8B9B80', '#8B9B80'], coastal: ['#EDF4F2', '#274541', '#8FB7AE', '#D4C1A2']
+    } : { classic: ['#F6F0E4', '#372D27', '#B6A07C', '#FAF7EE'], botanical: ['#DCE5D6', '#2D4537', '#6D8367', '#FAF7EE'], coastal: ['#DBEBE7', '#244C49', '#6B9F99', '#FAF7EE'] })[config.theme];
+  }
+  function decorateV2(ctx, config, size, colors) {
+    const { width, height, windows } = size, [paper, , accent, sand] = colors;
+    ctx.fillStyle = config.theme === 'classic' ? paper : sand;
+    for (const w of windows) ctx.fillRect(w.x - 10, w.y - 10, w.width + 20, w.height + 20);
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, width, height); for (const w of windows) ctx.rect(w.x, w.y, w.width, w.height); ctx.clip('evenodd'); ctx.strokeStyle = accent;
+    if (config.theme === 'classic') {
+      ctx.lineWidth = 2; ctx.strokeRect(20, 20, width - 40, height - 40); ctx.lineWidth = 1; ctx.strokeRect(30, 30, width - 60, height - 60);
+      for (const w of windows) ctx.strokeRect(w.x - 7, w.y - 7, w.width + 14, w.height + 14);
+    } else if (config.theme === 'botanical') {
+      function branch(x, y, sign, length) {
+        ctx.save(); ctx.translate(x, y); ctx.scale(sign, 1); ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, 0); ctx.bezierCurveTo(length * .35, -4, length * .7, -40, length, -45); ctx.stroke(); ctx.fillStyle = accent;
+        for (let i = 1; i <= 6; i++) for (const side of [-1, 1]) { const px = i * length / 7, py = -i * 45 / 7; ctx.beginPath(); ctx.moveTo(px, py); ctx.quadraticCurveTo(px - 6, py + side * 24, px + 19, py + side * 30); ctx.quadraticCurveTo(px + 28, py + side * 13, px, py); ctx.fill(); }
+        ctx.restore();
+      }
+      const footerTop = Math.max(...windows.map(w => w.y + w.height)), strip = config.layout === 'strip', length = strip ? 160 : 270;
+      branch(strip ? 75 : 120, footerTop + (height - footerTop) * .67, 1, length); branch(width - (strip ? 75 : 120), footerTop + (height - footerTop) * .38, -1, length);
+      branch(20, 57, 1, 170); branch(width - 20, 40, -1, 170);
+    } else {
+      ctx.lineWidth = 3;
+      for (let row = 0; row < 5; row++) { const y = height - 22 - row * 15, wing = config.layout === 'strip' ? 210 : 650;
+        for (const mirror of [false, true]) { ctx.save(); if (mirror) { ctx.translate(width, 0); ctx.scale(-1, 1); } ctx.beginPath(); ctx.moveTo(36, y); ctx.bezierCurveTo(wing * .35, y - 24, wing * .7, y + 20, wing, y - 8); ctx.stroke(); ctx.restore(); }
+      }
+      for (let row = 0; row < 3; row++) { const x = 18 + row * 13; ctx.beginPath(); ctx.moveTo(x, 35); ctx.bezierCurveTo(x + 18, height * .3, x - 10, height * .65, x + 4, height - 40); ctx.stroke(); ctx.beginPath(); ctx.moveTo(width - x, 35); ctx.bezierCurveTo(width - x - 18, height * .3, width - x + 10, height * .65, width - x - 4, height - 40); ctx.stroke(); }
+    }
+    ctx.restore();
+  }
+  function background(ctx, config, size, art) {
+    const colors = palette(config), { width, height } = size;
+    ctx.fillStyle = colors[0]; ctx.fillRect(0, 0, width, height);
+    if (config.version === 'wedding-template-v2') decorateV2(ctx, config, size, colors);
+    if (config.version === 'wedding-template-v3') {
+      const edge = config.layout === 'strip' ? 250 : 350, input = [0, 250, 1004, 1254], xs = [0, edge, width - edge, width], ys = [0, edge, height - edge, height];
+      for (let row = 0; row < 3; row++) for (let col = 0; col < 3; col++) ctx.drawImage(art, input[col], input[row], input[col + 1] - input[col], input[row + 1] - input[row], xs[col], ys[row], xs[col + 1] - xs[col], ys[row + 1] - ys[row]);
+      if (config.theme !== 'classic') { const inset = config.layout === 'strip' ? 24 : 40; ctx.strokeStyle = colors[2]; ctx.lineWidth = 1; ctx.strokeRect(inset, inset, width - inset * 2, height - inset * 2); }
+    }
+  }
+  function footer(ctx, config, size) {
+    const strip = config.layout === 'strip', v1 = config.version === 'wedding-template-v1', v3 = config.version === 'wedding-template-v3';
+    const [ , ink, accent, sand] = palette(config), center = size.width / 2, bottom = Math.max(...size.windows.map(w => w.y + w.height));
+    ctx.fillStyle = ink; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+    ctx.font = `${v1 ? strip ? 52 : 64 : strip ? 86 : 84}px Georgia, serif`;
+    ctx.fillText('Gizelle & Rami', center, v1 ? strip ? 3457 : 1870 : v3 ? strip ? 3420 : 2280 : strip ? 3480 : bottom + (config.gridAspect === 'square' ? 86 : 116));
+    ctx.font = `${v1 ? strip ? 21 : 25 : strip ? 36 : 32}px HelveticaNeue, Arial, sans-serif`;
+    ctx.fillText('NOVEMBER 1, 2026', center, v1 ? strip ? 3510 : 1936 : v3 ? strip ? 3490 : 2330 : strip ? 3535 : bottom + (config.gridAspect === 'square' ? 133 : 174));
+    if (!v1) return;
+    const y = strip ? 3542 : 1982; ctx.strokeStyle = accent; ctx.lineWidth = 2.5;
+    if (config.theme === 'classic') { ctx.beginPath(); ctx.moveTo(center - 80, y); ctx.lineTo(center + 80, y); ctx.stroke(); }
+    else if (config.theme === 'botanical') {
+      for (const sign of [-1, 1]) { const x = center + sign * 180; ctx.beginPath(); ctx.moveTo(x - 45, y); ctx.lineTo(x + 45, y - 9); ctx.stroke();
+        for (let step = 0; step < 5; step++) { const sx = x - 30 + step * 15; ctx.beginPath(); ctx.moveTo(sx, y - 3); ctx.quadraticCurveTo(sx + 2, y - 15, sx + 9, y - 17); ctx.stroke(); }
+      }
+    } else for (let row = 0; row < 2; row++) { ctx.strokeStyle = row ? sand : accent; ctx.beginPath(); ctx.moveTo(center - 150, y + row * 9); for (let step = 0; step < 6; step++) { const x = center - 150 + step * 50; ctx.bezierCurveTo(x + 16, y - 10 + row * 9, x + 34, y + 10 + row * 9, x + 50, y + row * 9); } ctx.stroke(); }
+  }
+  const failure = code => Object.assign(new Error('Keepsake preparation failed'), { code });
+  // Read JPEG frame dimensions before allocating a decoded image. EXIF orientation
+  // remains the browser's responsibility; these limits apply identically if swapped.
+  function jpegDimensions(chunks, total) {
+    const bytes = new Uint8Array(total); let offset = 0;
+    for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+    if (bytes.length < 4 || bytes[0] !== 0xff || bytes[1] !== 0xd8) throw failure('image');
+    const frames = new Set([0xc0, 0xc1, 0xc2, 0xc3, 0xc5, 0xc6, 0xc7, 0xc9, 0xca, 0xcb, 0xcd, 0xce, 0xcf]);
+    offset = 2;
+    while (offset < bytes.length) {
+      if (bytes[offset++] !== 0xff) throw failure('image');
+      while (offset < bytes.length && bytes[offset] === 0xff) offset++;
+      if (offset >= bytes.length) throw failure('image');
+      const marker = bytes[offset++];
+      if (!marker || marker === 0xd8 || marker === 0xd9 || marker === 0xda) throw failure('image');
+      if (marker === 0x01 || marker >= 0xd0 && marker <= 0xd7) continue;
+      if (offset + 2 > bytes.length) throw failure('image');
+      const length = bytes[offset] * 256 + bytes[offset + 1];
+      if (length < 2 || offset + length > bytes.length) throw failure('image');
+      if (frames.has(marker)) {
+        if (length < 8 || !bytes[offset + 7] || length !== 8 + 3 * bytes[offset + 7]) throw failure('image');
+        const height = bytes[offset + 3] * 256 + bytes[offset + 4], width = bytes[offset + 5] * 256 + bytes[offset + 6];
+        if (!width || !height || width > 24000 || height > 24000 || width * height > 24000000) throw failure('dimensions');
+        return { width, height };
+      }
+      offset += length;
+    }
+    throw failure('image');
+  }
+  async function loadImage(url, type, runController) {
+    const signal = runController.signal;
+    const timeout = setTimeout(() => runController.abort(), 15000);
+    let image, temporary;
+    try {
+      const response = await fetch(url, { mode: 'same-origin', credentials: 'omit', cache: 'no-store', redirect: 'error', referrerPolicy: 'no-referrer', signal });
+      if (!response.ok) {
+        if (response.status === 410) throw failure('expired');
+        if (response.status === 429) throw failure('rate-limited');
+        if (response.status === 404) throw failure(type === 'image/jpeg' ? 'missing-photo' : 'not-ready');
+        if (response.status === 503) throw failure('not-ready');
+        throw failure('image');
+      }
+      if (!response.body || !response.headers.get('content-type')?.toLowerCase().startsWith(type)) throw failure('image');
+      const declared = response.headers.get('content-length');
+      if (declared && (!/^\d+$/.test(declared) || Number(declared) > MAX_BYTES)) throw new Error('size');
+      const reader = response.body.getReader(), chunks = []; let total = 0;
+      try { while (true) { const part = await reader.read(); if (part.done) break; total += part.value.byteLength; if (total > MAX_BYTES) throw new Error('size'); chunks.push(part.value); } }
+      finally { await reader.cancel().catch(() => {}); }
+      if (!total) throw failure('image');
+      if (type === 'image/jpeg') jpegDimensions(chunks, total);
+      temporary = objectUrl(new Blob(chunks, { type }));
+      image = new Image(); image.decoding = 'async'; image.src = temporary;
+      await new Promise((resolve, reject) => {
+        const aborted = () => reject(new Error('cancelled'));
+        signal.addEventListener('abort', aborted, { once: true });
+        if (signal.aborted) { signal.removeEventListener('abort', aborted); return reject(new Error('cancelled')); }
+        image.decode().then(resolve, reject).finally(() => signal.removeEventListener('abort', aborted));
+      });
+      const width = image.naturalWidth, height = image.naturalHeight;
+      if (!width || !height || width > 24000 || height > 24000 || width * height > 24000000 || (type === 'image/png' && (width !== 1254 || height !== 1254))) throw new Error('dimensions');
+      if (signal.aborted) throw new Error('cancelled');
+      return { image, release() { image.src = ''; revoke(temporary); } };
+    } catch (error) { if (image) image.src = ''; revoke(temporary); throw error; }
+    finally { clearTimeout(timeout); }
+  }
+  function encode(canvas) {
+    return new Promise((resolve, reject) => {
+      let settled = false;
+      const timeout = setTimeout(() => { settled = true; reject(failure('encoding-timeout')); }, 15000);
+      try {
+        canvas.toBlob(blob => {
+          if (settled) return;
+          settled = true; clearTimeout(timeout);
+          if (!blob || blob.type !== 'image/jpeg' || !blob.size) reject(failure('encoding')); else resolve(blob);
+        }, 'image/jpeg', .95);
+      } catch (error) { settled = true; clearTimeout(timeout); reject(error); }
+    });
+  }
+  function setVariant(mode) {
+    if (!ready || busy || !['fill', 'fit'].includes(mode)) return;
+    selected = mode; preview.src = ready[mode]; preview.hidden = false;
+    for (const button of buttons) button.setAttribute('aria-pressed', String(button.dataset.variant === mode));
+    message(mode === 'fill' ? 'Fill frames ready. Photos align at the top and edges may be cropped; camera originals stay unchanged.' : 'Full photo ready. Every edge stays visible; camera originals stay unchanged.');
+  }
+  async function prepare() {
+    if (busy || disposed) return;
+    const ticket = ++generation, runController = new AbortController(); busy = true; controller = runController;
+    ready = null; retry.hidden = true; preview.hidden = true; preview.removeAttribute('src');
+    for (const button of buttons) button.disabled = true;
+    for (const link of Object.values(links)) { link.hidden = true; link.removeAttribute('href'); }
+    message('Preparing both keepsake downloads on this device…');
+    const produced = [], canvases = [];
+    let art;
+    try {
+      const config = configuration(), size = geometry(config);
+      if (config.version === 'wedding-template-v3') art = await loadImage(config.artUrl, 'image/png', runController);
+      for (const mode of ['fill', 'fit']) {
+        const canvas = document.createElement('canvas'); canvas.width = size.width; canvas.height = size.height;
+        const ctx = canvas.getContext('2d', { alpha: false }); if (!ctx) throw new Error('canvas');
+        background(ctx, config, size, art?.image); canvases.push({ canvas, ctx, mode });
+      }
+      art?.release(); art = undefined;
+      for (let index = 0; index < 4; index++) {
+        if (ticket !== generation || disposed) throw new Error('cancelled');
+        message('Preparing photo ' + (index + 1) + ' of 4…');
+        const photo = await loadImage(config.photoUrls[index], 'image/jpeg', runController);
+        try {
+          const w = size.windows[index], image = photo.image;
+          for (const item of canvases) {
+            const factor = item.mode === 'fit' ? Math.min(w.width / image.naturalWidth, w.height / image.naturalHeight) : Math.max(w.width / image.naturalWidth, w.height / image.naturalHeight);
+            const width = image.naturalWidth * factor, height = image.naturalHeight * factor;
+            const x = w.x + (w.width - width) / 2, y = item.mode === 'fit' ? w.y + (w.height - height) / 2 : w.y;
+            item.ctx.save(); item.ctx.beginPath(); item.ctx.rect(w.x, w.y, w.width, w.height); item.ctx.clip(); item.ctx.drawImage(image, x, y, width, height); item.ctx.restore();
+          }
+        } finally { photo.release(); }
+      }
+      const outputs = {};
+      for (const item of canvases) {
+        footer(item.ctx, config, size); const blob = await encode(item.canvas);
+        if (ticket !== generation || disposed) throw new Error('cancelled');
+        outputs[item.mode] = objectUrl(blob); produced.push(outputs[item.mode]);
+      }
+      ready = outputs;
+      for (const mode of ['fill', 'fit']) { links[mode].href = outputs[mode]; links[mode].download = 'wedding-keepsake-' + config.layout + '-' + (mode === 'fill' ? 'fill-frames' : 'full-photo') + '.jpg'; links[mode].hidden = false; }
+      busy = false; for (const button of buttons) button.disabled = false; setVariant(selected);
+    } catch (error) {
+      for (const url of produced) revoke(url);
+      if (ticket === generation && !disposed) {
+        ready = null;
+        const messages = {
+          expired: 'This private link has expired or been revoked. Alternate keepsakes are unavailable.',
+          'rate-limited': 'Too many requests. Please wait a moment, then try again.',
+          'missing-photo': 'One of the selected photos is unavailable, so these alternate keepsakes cannot be recreated.',
+          'not-ready': 'The keepsake artwork or photos are not ready. Alternate downloads could not be prepared. The original booth download has not been changed.',
+          dimensions: 'A selected image exceeds the safe processing size. Alternate keepsakes could not be prepared. The original booth download has not been changed.',
+          'encoding-timeout': 'Preparing the JPEG downloads took too long. Please try again. The original booth download has not been changed.'
+        };
+        message(messages[error?.code] || 'These alternate keepsakes could not be prepared. The original booth download has not been changed. Try again when the connection is ready.');
+        retry.hidden = error?.code === 'expired';
+      }
+    } finally {
+      art?.release(); for (const item of canvases) { item.canvas.width = 1; item.canvas.height = 1; }
+      if (ticket === generation) busy = false;
+    }
+  }
+  for (const button of buttons) button.addEventListener('click', () => setVariant(button.dataset.variant));
+  retry.addEventListener('click', prepare);
+  preview.addEventListener('error', () => { if (ready && !busy && !disposed) message('The preview could not be displayed. Both generated JPEG downloads remain available below.'); });
+  window.addEventListener('pagehide', event => {
+    if (event.persisted) return;
+    disposed = true; generation++; controller?.abort(); ready = null;
+    for (const url of Array.from(liveUrls)) revoke(url);
+  });
+  prepare();
+})();

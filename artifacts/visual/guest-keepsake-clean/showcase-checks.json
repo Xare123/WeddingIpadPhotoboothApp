@@ -1,0 +1,98 @@
+{
+  "scope": "Actual private guest HTML/client and local Miniflare R2. Existing independently generated fictional adult photos, no guest photographs. Chromium only; not Safari/native/device or production proof.",
+  "status": "passed",
+  "recipe": {
+    "version": "wedding-template-v3",
+    "layout": "grid",
+    "theme": "coastal",
+    "gridAspect": "square"
+  },
+  "sources": [
+    {
+      "file": "apps/ipad/native-tests/fixtures/studio/studio-portrait-1.jpg",
+      "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+      "provenance": "Existing repository image_gen studio fixtures; full-frame proportional downsample/JPEG only. Each input was visually inspected before use; no drinks or diagnostic markers."
+    },
+    {
+      "file": "apps/ipad/native-tests/fixtures/studio/studio-portrait-2.jpg",
+      "sha256": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed",
+      "provenance": "Existing repository image_gen studio fixtures; full-frame proportional downsample/JPEG only. Each input was visually inspected before use; no drinks or diagnostic markers."
+    },
+    {
+      "file": "apps/ipad/native-tests/fixtures/studio/studio-portrait-4.jpg",
+      "sha256": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c",
+      "provenance": "Existing repository image_gen studio fixtures; full-frame proportional downsample/JPEG only. Each input was visually inspected before use; no drinks or diagnostic markers."
+    },
+    {
+      "file": "apps/ipad/native-tests/fixtures/studio/studio-landscape-1.jpg",
+      "sha256": "fa7aab6c4948c559a6c2acfbe426ff79293b75edfd15229dbeacf2f8cbd0d365",
+      "provenance": "Existing repository image_gen studio fixtures; full-frame proportional downsample/JPEG only. Each input was visually inspected before use; no drinks or diagnostic markers."
+    }
+  ],
+  "sourceHashes": {
+    "services/api/src/index.ts": "dc7e8078495a8634914542a830ca5a747a0d39b5eafc06589ebcfd8e06372a3e",
+    "services/api/src/guest-keepsake.client": "4f296e5c16892eefb96f35145ba1626357e335ae33fcbea1ccc8c6e0d9402df5",
+    "services/api/test/worker-source.ts": "cd6a52067ee59f7084c210722c92532612d0bfab50a49d0f798155a57dfb463f",
+    "tools/guest-keepsake/local-server.mjs": "e3e05673a10b4f324bfc6026e337a3bdf5abc3c2346c9b97559e2551b6efd7d8",
+    "tools/guest-keepsake/clean-showcase.mjs": "d490f55df0de8aadbb8635c9d2982248512c2f67a31fee4b19f7d1f32665757d"
+  },
+  "outputs": [
+    {
+      "file": "artifacts/visual/guest-keepsake-clean/coastal-square-fill.jpg",
+      "sha256": "2f6d82ff0722dd4b6a76e378bb048592427b2bac0552fb414d543a0bf06a45be",
+      "bytes": 1153960,
+      "dimensions": [
+        2400,
+        2400
+      ]
+    },
+    {
+      "file": "artifacts/visual/guest-keepsake-clean/coastal-square-fit.jpg",
+      "sha256": "497a5c9f25b2a030fc0834ee8ab30525c5bc2e0121662fdf45f372ecf0b7c797",
+      "bytes": 1198922,
+      "dimensions": [
+        2400,
+        2400
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "artifacts/visual/guest-keepsake-clean/coastal-square-fill-mobile.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "7768a11eb84e3580a871f2377111188e464e4b16bc0ca6376c618d8d491c272d"
+    },
+    {
+      "file": "artifacts/visual/guest-keepsake-clean/coastal-square-fill-desktop.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "7105e1442da699d7c36b47290c1de49b9dda4e4bfb404206efe788f3b38fbd6b"
+    },
+    {
+      "file": "artifacts/visual/guest-keepsake-clean/coastal-square-fit-mobile.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "4162d7ca608be260f0e2bb781de019b14291e4bb0ba1f22b0455c1049e32274b"
+    },
+    {
+      "file": "artifacts/visual/guest-keepsake-clean/coastal-square-fit-desktop.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "359daeb1dee3b20146a31be157fecb7d725df17beb6483105c8112b73dc462c3"
+    }
+  ],
+  "errors": [],
+  "external": [],
+  "unchangedSources": true,
+  "smsRequests": 0,
+  "outboundRequests": 0
+}
