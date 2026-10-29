@@ -2,7 +2,134 @@
   "scope": "Six synthetic Canvas approximations using exact original generated artwork and four distinct fictional adult photographs. NOT native CoreImage/CoreText, installation or physical-device proof.",
   "outputs": [
     {
-      "meanPreviewFullJpegDifference": 0.9574204282407407,
+      "meanPreviewFullJpegDifference": 1.150363136574074,
+      "backgroundChecks": [
+        {
+          "purpose": "No extra Classic outline",
+          "x": 24,
+          "y": 500,
+          "rgbDifference": [
+            1,
+            1,
+            3
+          ]
+        },
+        {
+          "purpose": "No extra Classic outline",
+          "x": 24,
+          "y": 900,
+          "rgbDifference": [
+            2,
+            0,
+            0
+          ]
+        },
+        {
+          "purpose": "No extra Classic outline",
+          "x": 24,
+          "y": 1300,
+          "rgbDifference": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "purpose": "No extra Classic outline",
+          "x": 24,
+          "y": 1700,
+          "rgbDifference": [
+            0,
+            1,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 270,
+          "rgbDifference": [
+            1,
+            0,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 920,
+          "rgbDifference": [
+            1,
+            0,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 1040,
+          "rgbDifference": [
+            0,
+            1,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 1690,
+          "rgbDifference": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 1810,
+          "rgbDifference": [
+            0,
+            1,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 2460,
+          "rgbDifference": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 2580,
+          "rgbDifference": [
+            1,
+            0,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 3230,
+          "rgbDifference": [
+            0,
+            0,
+            1
+          ]
+        }
+      ],
+      "footerInk": {
+        "minY": 3359,
+        "maxY": 3494,
+        "count": 12315
+      },
       "layout": "strip",
       "theme": "classic",
       "recipe": {
@@ -85,9 +212,9 @@
           "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
           "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
         },
-        "byteLength": 716689,
+        "byteLength": 809216,
         "file": "artifacts/visual/frame-art-v3/strip-classic-full.jpg",
-        "sha256": "375e931e6d73f0bdb837ddb7ca5358969b98b4174bcacb8472c37733aeea35ea"
+        "sha256": "2559128f5f489bc2094ccab07bc6a61fc614c9e496de007f9306b7cb9f005c4e"
       },
       "preview": {
         "width": 480,
@@ -101,13 +228,100 @@
           "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
           "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
         },
-        "byteLength": 152199,
+        "byteLength": 170249,
         "file": "artifacts/visual/frame-art-v3/strip-classic-preview.jpg",
-        "sha256": "556e95d814cdcfb523e9bb14c647a6be3acc886bf02dac9842de1eb923e523c6"
+        "sha256": "c43572f31f6353d01d1c1c5c461e3dd9bb7c95dc672aec416989785ec7d8fc6a"
       }
     },
     {
-      "meanPreviewFullJpegDifference": 0.9578443287037037,
+      "meanPreviewFullJpegDifference": 1.1407190393518518,
+      "backgroundChecks": [
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 270,
+          "rgbDifference": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 920,
+          "rgbDifference": [
+            1,
+            1,
+            0
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 1040,
+          "rgbDifference": [
+            0,
+            0,
+            2
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 1690,
+          "rgbDifference": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 1810,
+          "rgbDifference": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 2460,
+          "rgbDifference": [
+            1,
+            0,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 2580,
+          "rgbDifference": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 3230,
+          "rgbDifference": [
+            1,
+            0,
+            0
+          ]
+        }
+      ],
+      "footerInk": {
+        "minY": 3359,
+        "maxY": 3494,
+        "count": 12188
+      },
       "layout": "strip",
       "theme": "botanical",
       "recipe": {
@@ -190,9 +404,9 @@
           "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
           "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
         },
-        "byteLength": 731847,
+        "byteLength": 840154,
         "file": "artifacts/visual/frame-art-v3/strip-botanical-full.jpg",
-        "sha256": "63a266071662411ac4e42c9248c7c145330161e7b510886e00cc5a0e77c1d5bd"
+        "sha256": "687e0b4c96b63a2ae7c3a75f78823d918e61f0c9572f6fc70011e5fface562dd"
       },
       "preview": {
         "width": 480,
@@ -206,13 +420,100 @@
           "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
           "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
         },
-        "byteLength": 155513,
+        "byteLength": 178175,
         "file": "artifacts/visual/frame-art-v3/strip-botanical-preview.jpg",
-        "sha256": "7e365344ffd0a1344091b07a389a28dc954b69ee0477526f03aa2059dd0c8b8b"
+        "sha256": "b82a7a929e24b71f4963dbaeeb5a0a963378aa5a4f11e81e5587ceab564e91ad"
       }
     },
     {
-      "meanPreviewFullJpegDifference": 1.0717983217592593,
+      "meanPreviewFullJpegDifference": 1.3253669945987654,
+      "backgroundChecks": [
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 270,
+          "rgbDifference": [
+            1,
+            1,
+            0
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 920,
+          "rgbDifference": [
+            1,
+            0,
+            2
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 1040,
+          "rgbDifference": [
+            1,
+            0,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 1690,
+          "rgbDifference": [
+            1,
+            0,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 1810,
+          "rgbDifference": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 2460,
+          "rgbDifference": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 2580,
+          "rgbDifference": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 103,
+          "y": 3230,
+          "rgbDifference": [
+            0,
+            0,
+            1
+          ]
+        }
+      ],
+      "footerInk": {
+        "minY": 3359,
+        "maxY": 3494,
+        "count": 12117
+      },
       "layout": "strip",
       "theme": "coastal",
       "recipe": {
@@ -295,9 +596,9 @@
           "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
           "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
         },
-        "byteLength": 789692,
+        "byteLength": 933504,
         "file": "artifacts/visual/frame-art-v3/strip-coastal-full.jpg",
-        "sha256": "7b9cae843fa4e0621cec0a3fde12fa63be6ae7aff6df154ddf2999e3ce6a254d"
+        "sha256": "94c937f9be3f2fd8d1e7391b456b1724d5d74f83d6020124650cfe2b88cbb089"
       },
       "preview": {
         "width": 480,
@@ -311,13 +612,140 @@
           "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
           "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
         },
-        "byteLength": 167173,
+        "byteLength": 198378,
         "file": "artifacts/visual/frame-art-v3/strip-coastal-preview.jpg",
-        "sha256": "02166967e5b4632eed4fc182511e172a2fab58569d3f7dfea5e4ada934440c8a"
+        "sha256": "080e2b7a1c55366d92e1a47747e7b70d2144d475d996c74fdd1dba9f336bcc66"
       }
     },
     {
-      "meanPreviewFullJpegDifference": 0.8498037229938271,
+      "meanPreviewFullJpegDifference": 0.9102702224794239,
+      "backgroundChecks": [
+        {
+          "purpose": "No extra Classic outline",
+          "x": 40,
+          "y": 500,
+          "rgbDifference": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "purpose": "No extra Classic outline",
+          "x": 40,
+          "y": 900,
+          "rgbDifference": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "purpose": "No extra Classic outline",
+          "x": 40,
+          "y": 1300,
+          "rgbDifference": [
+            1,
+            1,
+            3
+          ]
+        },
+        {
+          "purpose": "No extra Classic outline",
+          "x": 40,
+          "y": 1700,
+          "rgbDifference": [
+            0,
+            0,
+            2
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 187,
+          "y": 210,
+          "rgbDifference": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 187,
+          "y": 1110,
+          "rgbDifference": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 1219,
+          "y": 210,
+          "rgbDifference": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 1219,
+          "y": 1110,
+          "rgbDifference": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 187,
+          "y": 1242,
+          "rgbDifference": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 187,
+          "y": 2142,
+          "rgbDifference": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 1219,
+          "y": 1242,
+          "rgbDifference": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 1219,
+          "y": 2142,
+          "rgbDifference": [
+            0,
+            0,
+            1
+          ]
+        }
+      ],
+      "footerInk": {
+        "minY": 2221,
+        "maxY": 2333,
+        "count": 11319
+      },
       "layout": "grid",
       "theme": "classic",
       "recipe": {
@@ -363,28 +791,28 @@
         "height": 2400,
         "windows": [
           {
-            "x": 160,
-            "y": 180,
-            "width": 1024,
-            "height": 1024
+            "x": 184,
+            "y": 160,
+            "width": 1000,
+            "height": 1000
           },
           {
             "x": 1216,
-            "y": 180,
-            "width": 1024,
-            "height": 1024
+            "y": 160,
+            "width": 1000,
+            "height": 1000
           },
           {
-            "x": 160,
-            "y": 1216,
-            "width": 1024,
-            "height": 1024
+            "x": 184,
+            "y": 1192,
+            "width": 1000,
+            "height": 1000
           },
           {
             "x": 1216,
-            "y": 1216,
-            "width": 1024,
-            "height": 1024
+            "y": 1192,
+            "width": 1000,
+            "height": 1000
           }
         ]
       },
@@ -400,9 +828,9 @@
           "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
           "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
         },
-        "byteLength": 1031248,
+        "byteLength": 1073073,
         "file": "artifacts/visual/frame-art-v3/grid-classic-full.jpg",
-        "sha256": "27b7c42eb3732bce5c9debd7b3a7858c37087777fcfbce8a3183b8fb4d2f14d2"
+        "sha256": "e705f02f2a6712e2413fc4a2086f1e17c0d8c2ca0675a3ee09afb69681cc99be"
       },
       "preview": {
         "width": 1440,
@@ -416,13 +844,100 @@
           "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
           "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
         },
-        "byteLength": 443831,
+        "byteLength": 457770,
         "file": "artifacts/visual/frame-art-v3/grid-classic-preview.jpg",
-        "sha256": "cc2265c95cc6d906cfbf444bb4baee2d21160d996d99bb9db81de74ade7bb552"
+        "sha256": "3666c6f7d34a39bc52f8b23949ee4412afa78a24932fdf365b5e65764256d3d6"
       }
     },
     {
-      "meanPreviewFullJpegDifference": 0.8335625643004115,
+      "meanPreviewFullJpegDifference": 0.8987676826131688,
+      "backgroundChecks": [
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 187,
+          "y": 210,
+          "rgbDifference": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 187,
+          "y": 1110,
+          "rgbDifference": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 1219,
+          "y": 210,
+          "rgbDifference": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 1219,
+          "y": 1110,
+          "rgbDifference": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 187,
+          "y": 1242,
+          "rgbDifference": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 187,
+          "y": 2142,
+          "rgbDifference": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 1219,
+          "y": 1242,
+          "rgbDifference": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 1219,
+          "y": 2142,
+          "rgbDifference": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "footerInk": {
+        "minY": 2221,
+        "maxY": 2333,
+        "count": 11216
+      },
       "layout": "grid",
       "theme": "botanical",
       "recipe": {
@@ -468,28 +983,28 @@
         "height": 2400,
         "windows": [
           {
-            "x": 160,
-            "y": 180,
-            "width": 1024,
-            "height": 1024
+            "x": 184,
+            "y": 160,
+            "width": 1000,
+            "height": 1000
           },
           {
             "x": 1216,
-            "y": 180,
-            "width": 1024,
-            "height": 1024
+            "y": 160,
+            "width": 1000,
+            "height": 1000
           },
           {
-            "x": 160,
-            "y": 1216,
-            "width": 1024,
-            "height": 1024
+            "x": 184,
+            "y": 1192,
+            "width": 1000,
+            "height": 1000
           },
           {
             "x": 1216,
-            "y": 1216,
-            "width": 1024,
-            "height": 1024
+            "y": 1192,
+            "width": 1000,
+            "height": 1000
           }
         ]
       },
@@ -505,9 +1020,9 @@
           "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
           "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
         },
-        "byteLength": 1032400,
+        "byteLength": 1098090,
         "file": "artifacts/visual/frame-art-v3/grid-botanical-full.jpg",
-        "sha256": "c25c259d2ccf0c59f82faa6a2ae63d9d181a1e4ef563ea040dd5c97026e8c75a"
+        "sha256": "22c9b8272869632683567e675ec52a76d91d6987127d8b820f23031aaf9efb83"
       },
       "preview": {
         "width": 1440,
@@ -521,13 +1036,100 @@
           "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
           "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
         },
-        "byteLength": 449506,
+        "byteLength": 474862,
         "file": "artifacts/visual/frame-art-v3/grid-botanical-preview.jpg",
-        "sha256": "7761c1d914a269ae5c0dff529a9f853ac96e1283ecf9c43b708f64f6a82a9658"
+        "sha256": "9859514981e1db9ba534d8eb40b2180461d7ed27ceefe5d5d5de21700950535f"
       }
     },
     {
-      "meanPreviewFullJpegDifference": 0.9116118505658436,
+      "meanPreviewFullJpegDifference": 1.0204660172325102,
+      "backgroundChecks": [
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 187,
+          "y": 210,
+          "rgbDifference": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 187,
+          "y": 1110,
+          "rgbDifference": [
+            1,
+            1,
+            0
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 1219,
+          "y": 210,
+          "rgbDifference": [
+            0,
+            1,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 1219,
+          "y": 1110,
+          "rgbDifference": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 187,
+          "y": 1242,
+          "rgbDifference": [
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 187,
+          "y": 2142,
+          "rgbDifference": [
+            2,
+            0,
+            0
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 1219,
+          "y": 1242,
+          "rgbDifference": [
+            0,
+            1,
+            1
+          ]
+        },
+        {
+          "purpose": "Generated artwork continues through portrait FIT sidebands",
+          "x": 1219,
+          "y": 2142,
+          "rgbDifference": [
+            0,
+            0,
+            1
+          ]
+        }
+      ],
+      "footerInk": {
+        "minY": 2221,
+        "maxY": 2333,
+        "count": 11117
+      },
       "layout": "grid",
       "theme": "coastal",
       "recipe": {
@@ -573,28 +1175,28 @@
         "height": 2400,
         "windows": [
           {
-            "x": 160,
-            "y": 180,
-            "width": 1024,
-            "height": 1024
+            "x": 184,
+            "y": 160,
+            "width": 1000,
+            "height": 1000
           },
           {
             "x": 1216,
-            "y": 180,
-            "width": 1024,
-            "height": 1024
+            "y": 160,
+            "width": 1000,
+            "height": 1000
           },
           {
-            "x": 160,
-            "y": 1216,
-            "width": 1024,
-            "height": 1024
+            "x": 184,
+            "y": 1192,
+            "width": 1000,
+            "height": 1000
           },
           {
             "x": 1216,
-            "y": 1216,
-            "width": 1024,
-            "height": 1024
+            "y": 1192,
+            "width": 1000,
+            "height": 1000
           }
         ]
       },
@@ -610,9 +1212,9 @@
           "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
           "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
         },
-        "byteLength": 1090821,
+        "byteLength": 1189720,
         "file": "artifacts/visual/frame-art-v3/grid-coastal-full.jpg",
-        "sha256": "2c0942a382f0aceadf59159cb4eb5af157a91f178efcf1b6efc6bd565e2bd0f3"
+        "sha256": "247517fa622a91e003e9cceb13f8173282812e9c7c12f0e39489c3d0ae1981d0"
       },
       "preview": {
         "width": 1440,
@@ -626,9 +1228,9 @@
           "fictional-3": "5befeac2c7ebc8f0072adb0ce9fac4055aa932af2618f0b6f4df474a0477b1d5",
           "fictional-4": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c"
         },
-        "byteLength": 472958,
+        "byteLength": 510767,
         "file": "artifacts/visual/frame-art-v3/grid-coastal-preview.jpg",
-        "sha256": "2c9886df806a09447017b9e774e4cd440ab0a69f57e4e80bf6991727ae18cc7f"
+        "sha256": "8538c575ae4e3f64accf7374c58b309e6733bcdcb1f7c914e17d2c9c0bb4a2f6"
       }
     }
   ],
@@ -665,10 +1267,406 @@
       }
     ]
   },
+  "markerChecks": [
+    {
+      "layout": "strip",
+      "edgeChecks": [
+        {
+          "photoIndex": 0,
+          "source": [
+            561,
+            12
+          ],
+          "rgbDifference": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "photoIndex": 0,
+          "source": [
+            561,
+            1390
+          ],
+          "rgbDifference": [
+            0,
+            0,
+            2
+          ]
+        },
+        {
+          "photoIndex": 0,
+          "source": [
+            12,
+            300
+          ],
+          "rgbDifference": [
+            2,
+            0,
+            1
+          ]
+        },
+        {
+          "photoIndex": 0,
+          "source": [
+            1110,
+            300
+          ],
+          "rgbDifference": [
+            1,
+            1,
+            0
+          ]
+        },
+        {
+          "photoIndex": 1,
+          "source": [
+            561,
+            12
+          ],
+          "rgbDifference": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "photoIndex": 1,
+          "source": [
+            561,
+            1390
+          ],
+          "rgbDifference": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "photoIndex": 1,
+          "source": [
+            12,
+            300
+          ],
+          "rgbDifference": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "photoIndex": 1,
+          "source": [
+            1110,
+            300
+          ],
+          "rgbDifference": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "photoIndex": 2,
+          "source": [
+            561,
+            12
+          ],
+          "rgbDifference": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "photoIndex": 2,
+          "source": [
+            561,
+            1390
+          ],
+          "rgbDifference": [
+            1,
+            1,
+            0
+          ]
+        },
+        {
+          "photoIndex": 2,
+          "source": [
+            12,
+            300
+          ],
+          "rgbDifference": [
+            0,
+            0,
+            2
+          ]
+        },
+        {
+          "photoIndex": 2,
+          "source": [
+            1110,
+            300
+          ],
+          "rgbDifference": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "photoIndex": 3,
+          "source": [
+            561,
+            12
+          ],
+          "rgbDifference": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "photoIndex": 3,
+          "source": [
+            561,
+            1390
+          ],
+          "rgbDifference": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "photoIndex": 3,
+          "source": [
+            12,
+            300
+          ],
+          "rgbDifference": [
+            2,
+            1,
+            0
+          ]
+        },
+        {
+          "photoIndex": 3,
+          "source": [
+            1110,
+            300
+          ],
+          "rgbDifference": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "layout": "grid",
+      "edgeChecks": [
+        {
+          "photoIndex": 0,
+          "source": [
+            561,
+            12
+          ],
+          "rgbDifference": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "photoIndex": 0,
+          "source": [
+            561,
+            1390
+          ],
+          "rgbDifference": [
+            0,
+            0,
+            2
+          ]
+        },
+        {
+          "photoIndex": 0,
+          "source": [
+            12,
+            300
+          ],
+          "rgbDifference": [
+            1,
+            1,
+            0
+          ]
+        },
+        {
+          "photoIndex": 0,
+          "source": [
+            1110,
+            300
+          ],
+          "rgbDifference": [
+            1,
+            1,
+            0
+          ]
+        },
+        {
+          "photoIndex": 1,
+          "source": [
+            561,
+            12
+          ],
+          "rgbDifference": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "photoIndex": 1,
+          "source": [
+            561,
+            1390
+          ],
+          "rgbDifference": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "photoIndex": 1,
+          "source": [
+            12,
+            300
+          ],
+          "rgbDifference": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "photoIndex": 1,
+          "source": [
+            1110,
+            300
+          ],
+          "rgbDifference": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "photoIndex": 2,
+          "source": [
+            561,
+            12
+          ],
+          "rgbDifference": [
+            2,
+            0,
+            2
+          ]
+        },
+        {
+          "photoIndex": 2,
+          "source": [
+            561,
+            1390
+          ],
+          "rgbDifference": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "photoIndex": 2,
+          "source": [
+            12,
+            300
+          ],
+          "rgbDifference": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "photoIndex": 2,
+          "source": [
+            1110,
+            300
+          ],
+          "rgbDifference": [
+            2,
+            0,
+            0
+          ]
+        },
+        {
+          "photoIndex": 3,
+          "source": [
+            561,
+            12
+          ],
+          "rgbDifference": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "photoIndex": 3,
+          "source": [
+            561,
+            1390
+          ],
+          "rgbDifference": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "photoIndex": 3,
+          "source": [
+            12,
+            300
+          ],
+          "rgbDifference": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "photoIndex": 3,
+          "source": [
+            1110,
+            300
+          ],
+          "rgbDifference": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    }
+  ],
   "sourceHashes": {
-    "tools/native-visual/new-session/template-v2-stub.ts": "9cf93d99c445c3d557a2f26145e15c79a8bb712190c1ccba56c09044d21fc1f0",
-    "tools/native-visual/new-session/frame-art-v3-checks.mjs": "6fcdbba11f983b8b559f98f1850888177c7788b3dbb16417e784dd59a526f538",
-    "apps/ipad/modules/wedding-photo-effects/ios/PhotoTemplateEngine.swift": "c8f356f68d8ebe184356d96805d046bc5c7dc092a93a5ab04570049e15e88357"
+    "tools/native-visual/new-session/template-v2-stub.ts": "3f0d5d1b4bedd104935545f32449486c15425519a1ae70114e850c1dde223fd2",
+    "tools/native-visual/new-session/frame-art-v3-checks.mjs": "a885461257d0c8a7d0011f3224b8d8811758549a4700e776de14f7e1f680d6d4",
+    "apps/ipad/modules/wedding-photo-effects/ios/PhotoTemplateEngine.swift": "4574c8d1760f48342bfd008ffe866d150ea6a7b879570338ff1dbfcfd91be38a"
   },
   "artwork": [
     {

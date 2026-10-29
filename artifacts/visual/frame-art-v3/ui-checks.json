@@ -682,7 +682,7 @@
     ]
   },
   "fixtureHashes": {
-    "tools/native-visual/new-session/template-v2-stub.ts": "9cf93d99c445c3d557a2f26145e15c79a8bb712190c1ccba56c09044d21fc1f0",
+    "tools/native-visual/new-session/template-v2-stub.ts": "3f0d5d1b4bedd104935545f32449486c15425519a1ae70114e850c1dde223fd2",
     "tools/native-visual/new-session/frame-art-v3-ui-checks.mjs": "9769bca489f0d6abecf31b18d999d68dbd98a5ee64381d9df1a70ff3cc3e810e"
   }
 }

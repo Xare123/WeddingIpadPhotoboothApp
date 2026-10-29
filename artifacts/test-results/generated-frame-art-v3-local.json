@@ -9,11 +9,11 @@
   "typechecks": "passed",
   "hermesIosJsExport": "passed",
   "workerBundleSyntax": "passed",
-  "syntheticVisual": "six full and six preview Canvas JPEGs; four actual JSX editor screenshots, separately labelled; not native proof",
+  "syntheticVisual": "Six full and six preview Canvas JPEGs; four actual JSX screens; footer ink2221\u20132333 within border2360; 32 FIT edge probes; exact artwork continuity probes. Not native proof.",
   "sourceHashes": {
-    "apps/ipad/modules/wedding-photo-effects/ios/PhotoTemplateEngine.swift": "c8f356f68d8ebe184356d96805d046bc5c7dc092a93a5ab04570049e15e88357",
+    "apps/ipad/modules/wedding-photo-effects/ios/PhotoTemplateEngine.swift": "4574c8d1760f48342bfd008ffe866d150ea6a7b879570338ff1dbfcfd91be38a",
     "apps/ipad/modules/wedding-photo-effects/ios/WeddingPhotoEffects.podspec": "2b563d2c3a40f3e8c17289e50e140513221798e994ea212aff66e20830dcddab",
-    "apps/ipad/modules/wedding-photo-effects/tests/PhotoTemplateEngineTests.swift": "9dde81a897dbe78eaf3e80b1775b57f23e19c6b08947cf3f59f5e64942eb7101",
+    "apps/ipad/modules/wedding-photo-effects/tests/PhotoTemplateEngineTests.swift": "48ee87128620ac450fe0cc290f633ac15663478e8118140a4766bf439af633b8",
     "apps/ipad/src/template-editor.ts": "70a07f18e092d80d3ab3056ac41edc91694d86fb9b33ce9d72743efbc3a1a2ae",
     "services/api/src/index.ts": "b75a7424459f6933b60eb0d619f12e0f52955eb5214f85df7726d4ae2c12eeec"
   },
@@ -28,5 +28,24 @@
     "failed": 0,
     "skipped": 0,
     "scope": "Linux contract checks, not native execution"
+  },
+  "revisionScope": "Native-Mac-confirmed footer correction: square1000px windows, photo bottom2192, baselines2280/2330; single Classic border; original paper/wash retained in FIT sidebands.",
+  "previousNativeEvidence": {
+    "commit": "52a3f5b537d80949c9392bd8556b9368ce656de2",
+    "run": "40788720674",
+    "executed": 19,
+    "failures": 0,
+    "skipped": 0,
+    "jpegs": 28,
+    "note": "Previous geometry only; not proof of this revision."
+  },
+  "previousReleaseEvidence": {
+    "commit": "52a3f5b537d80949c9392bd8556b9368ce656de2",
+    "run": "40788720739",
+    "job": "123168301987",
+    "result": "failed",
+    "diagnostic": "release-build timed out",
+    "duration": "36m24s",
+    "note": "No completed hosted app build or production bundle verification; Mac separately reported signed build17 with matching bundled artwork on this previous source. Revision requires new Mac build."
   }
 }

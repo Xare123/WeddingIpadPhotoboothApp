@@ -6,7 +6,7 @@ const cancelled = new Set<string>();
 const canonical = (v: any): any => Array.isArray(v) ? v.map(canonical) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).sort(([a], [b]) => a.localeCompare(b)).map(([k, x]) => [k, canonical(x)])) : v;
 export function templateV2Geometry(recipe: any) {
   const strip = recipe.layout === 'strip', portrait = recipe.gridAspect === 'portrait';
-  if (recipe.version === 'wedding-template-v3') return { width: strip ? 1200 : 2400, height: strip ? 3600 : 2400, windows: Array.from({ length: 4 }, (_, i) => strip ? { x: 100, y: 220 + i * 770, width: 1000, height: 750 } : { x: 160 + i % 2 * 1056, y: 180 + Math.floor(i / 2) * 1036, width: 1024, height: 1024 }) };
+  if (recipe.version === 'wedding-template-v3') return { width: strip ? 1200 : 2400, height: strip ? 3600 : 2400, windows: Array.from({ length: 4 }, (_, i) => strip ? { x: 100, y: 220 + i * 770, width: 1000, height: 750 } : { x: 184 + i % 2 * 1032, y: 160 + Math.floor(i / 2) * 1032, width: 1000, height: 1000 }) };
   return { width: strip ? 1200 : 2400, height: strip ? 3600 : portrait ? 3000 : 2400,
     windows: Array.from({ length: 4 }, (_, i) => strip ? { x: 60, y: 60 + i * 834, width: 1080, height: 810 }
       : portrait ? { x: 72 + i % 2 * 1140, y: 72 + Math.floor(i / 2) * 1356, width: 1116, height: 1332 }
@@ -59,9 +59,8 @@ async function decorationV3(ctx: OffscreenCanvasRenderingContext2D, width: numbe
   }
   ctx.strokeStyle = accent; ctx.lineWidth = recipe.theme === 'classic' ? 1.5 : 1;
   const inset = recipe.layout === 'strip' ? 24 : 40;
-  ctx.strokeRect(inset, inset, width - inset * 2, height - inset * 2);
-  ctx.fillStyle = '#FAF7EE';
-  for (const w of windows) ctx.fillRect(w.x, w.y, w.width, w.height);
+  if (recipe.theme !== 'classic') ctx.strokeRect(inset, inset, width - inset * 2, height - inset * 2);
+  // V3 FIT sidebands retain the generated paper/wash; photo pixels draw above it.
 }
 export const syntheticTemplatesV2 = {
   templateVersion: 'wedding-template-v3',
@@ -97,8 +96,8 @@ export const syntheticTemplatesV2 = {
       ctx.save(); ctx.beginPath(); ctx.rect(w.x, w.y, w.width, w.height); ctx.clip(); ctx.drawImage(bitmap, dx, dy, dw, dh); ctx.restore();
     }
     const footerTop = Math.max(...windows.map(w => w.y + w.height)), compact = !strip && recipe.gridAspect === 'square';
-    ctx.fillStyle = ink; ctx.textAlign = 'center'; ctx.font = `${strip ? 86 : 84}px Georgia, serif`; ctx.fillText('Gizelle & Rami', width / 2, recipe.version === 'wedding-template-v3' ? strip ? 3420 : 2310 : strip ? 3480 : footerTop + (compact ? 86 : 116));
-    ctx.font = `${strip ? 36 : 32}px sans-serif`; ctx.fillText('NOVEMBER 1, 2026', width / 2, recipe.version === 'wedding-template-v3' ? strip ? 3490 : 2360 : strip ? 3535 : footerTop + (compact ? 133 : 174));
+    ctx.fillStyle = ink; ctx.textAlign = 'center'; ctx.font = `${strip ? 86 : 84}px Georgia, serif`; ctx.fillText('Gizelle & Rami', width / 2, recipe.version === 'wedding-template-v3' ? strip ? 3420 : 2280 : strip ? 3480 : footerTop + (compact ? 86 : 116));
+    ctx.font = `${strip ? 36 : 32}px sans-serif`; ctx.fillText('NOVEMBER 1, 2026', width / 2, recipe.version === 'wedding-template-v3' ? strip ? 3490 : 2330 : strip ? 3535 : footerTop + (compact ? 133 : 174));
     const factor = preview ? Math.min(1, 1440 / Math.max(width, height)) : 1, outWidth = Math.round(width * factor), outHeight = Math.round(height * factor), output = new OffscreenCanvas(outWidth, outHeight);
     output.getContext('2d')!.drawImage(canvas, 0, 0, outWidth, outHeight); const blob = await output.convertToBlob({ type: 'image/jpeg', quality: .95 });
     const uri = `file:///synthetic-templates/${crypto.randomUUID()}.jpg`; syntheticRenderedBlobs.set(uri, blob); renderedImages.set(uri, URL.createObjectURL(blob)); event.uri = uri; event.browserURI = renderedImages.get(uri)!;

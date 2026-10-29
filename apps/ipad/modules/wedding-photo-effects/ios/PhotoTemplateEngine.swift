@@ -185,7 +185,7 @@ public final class PhotoTemplateEngine: @unchecked Sendable {
   public static func window(recipe: Recipe, index: Int) -> CGRect {
     if recipe.version == currentVersion {
       if recipe.layout == "strip" { return CGRect(x: 100, y: CGFloat(220 + index * 770), width: 1000, height: 750) }
-      return CGRect(x: CGFloat(160 + (index % 2) * 1056), y: CGFloat(180 + (index / 2) * 1036), width: 1024, height: 1024)
+      return CGRect(x: CGFloat(184 + (index % 2) * 1032), y: CGFloat(160 + (index / 2) * 1032), width: 1000, height: 1000)
     }
     if recipe.version == version || recipe.layout == "strip" { return window(layout: recipe.layout, index: index) }
     if recipe.gridAspect == "portrait" {
@@ -394,21 +394,20 @@ public final class PhotoTemplateEngine: @unchecked Sendable {
       context.draw(patch, in: destination)
     } }
     // A crisp editorial outline is separate from the generated paper artwork.
-    context.setStrokeColor(colors.accent); context.setLineWidth(recipe.theme == "classic" ? 1.5 : 1)
-    let inset: CGFloat = recipe.layout == "strip" ? 24 : 40
-    context.stroke(CGRect(x: inset, y: inset, width: CGFloat(width) - inset * 2, height: CGFloat(height) - inset * 2))
-    // Photo mats never cover originals; FIT retains every edge, FILL stays explicit.
-    context.setFillColor(colors.sand)
-    for index in 0..<4 {
-      let window = Self.window(recipe: recipe, index: index)
-      context.fill(CGRect(x: window.minX, y: CGFloat(height) - window.maxY, width: window.width, height: window.height))
+    if recipe.theme != "classic" {
+      context.setStrokeColor(colors.accent); context.setLineWidth(1)
+      let inset: CGFloat = recipe.layout == "strip" ? 24 : 40
+      context.stroke(CGRect(x: inset, y: inset, width: CGFloat(width) - inset * 2, height: CGFloat(height) - inset * 2))
     }
+    // Keep the original paper/watercolor visible in FIT sidebands. A flat mat
+    // across the entire window would cut a rectangular notch into the wash.
+    // Photographs still clip to their square/landscape window; no source crop changes.
   }
   private func footerV2(_ context: CGContext, width: Int, height: Int, recipe: Recipe, colors: Palette) {
     let footerTop = (0..<4).map { Self.window(recipe: recipe, index: $0).maxY }.max()!
     let strip = recipe.layout == "strip", compact = !strip && recipe.gridAspect == "square"
-    let nameBaseline = recipe.version == Self.currentVersion ? CGFloat(strip ? 3420 : 2310) : strip ? CGFloat(3480) : footerTop + (compact ? 86 : 116)
-    let dateBaseline = recipe.version == Self.currentVersion ? CGFloat(strip ? 3490 : 2360) : strip ? CGFloat(3535) : footerTop + (compact ? 133 : 174)
+    let nameBaseline = recipe.version == Self.currentVersion ? CGFloat(strip ? 3420 : 2280) : strip ? CGFloat(3480) : footerTop + (compact ? 86 : 116)
+    let dateBaseline = recipe.version == Self.currentVersion ? CGFloat(strip ? 3490 : 2330) : strip ? CGFloat(3535) : footerTop + (compact ? 133 : 174)
     func text(_ value: String, size: CGFloat, font: String, topBaseline: CGFloat) {
       let attributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key(kCTFontAttributeName as String): CTFontCreateWithName(font as CFString, size, nil),
         NSAttributedString.Key(kCTForegroundColorAttributeName as String): colors.ink]

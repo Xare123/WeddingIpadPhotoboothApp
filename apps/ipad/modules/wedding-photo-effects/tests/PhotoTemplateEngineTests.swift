@@ -62,6 +62,24 @@ final class PhotoTemplateEngineTests: XCTestCase {
       context.draw(pixel, in: CGRect(x: 0, y: 0, width: 1, height: 1))
     }; return Array(bytes.prefix(3))
   }
+  /// Read a bounded synthetic footer region once; no per-pixel ImageIO calls.
+  func darkInkExtent(_ image: CGImage, rect: CGRect) throws -> (top: Int, bottom: Int, count: Int) {
+    let region = try XCTUnwrap(image.cropping(to: rect)), width = region.width, height = region.height
+    var bytes = [UInt8](repeating: 255, count: width * height * 4)
+    try bytes.withUnsafeMutableBytes { buffer in
+      let context = try XCTUnwrap(CGContext(data: buffer.baseAddress, width: width, height: height, bitsPerComponent: 8,
+        bytesPerRow: width * 4, space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+      context.draw(region, in: CGRect(x: 0, y: 0, width: width, height: height))
+    }
+    var top = height, bottom = -1, count = 0
+    for y in 0..<height { for x in 0..<width {
+      let offset = (y * width + x) * 4
+      if bytes[offset] < 150 && bytes[offset + 1] < 150 && bytes[offset + 2] < 150 {
+        top = min(top, y); bottom = max(bottom, y); count += 1
+      }
+    } }
+    return (Int(rect.minY) + top, Int(rect.minY) + bottom, count)
+  }
   func near(_ actual: [UInt8], _ expected: [UInt8], tolerance: Int = 14, file: StaticString = #filePath, line: UInt = #line) {
     for i in 0..<3 { XCTAssertLessThanOrEqual(abs(Int(actual[i]) - Int(expected[i])), tolerance, file: file, line: line) }
   }
@@ -356,7 +374,7 @@ final class PhotoTemplateEngineTests: XCTestCase {
     }
     let v3Grid = try PhotoTemplateEngine.Recipe.parse(recipeV3(layout: "grid"))
     XCTAssertEqual(PhotoTemplateEngine.dimensions(recipe: v3Grid).height, 2400)
-    XCTAssertEqual(PhotoTemplateEngine.window(recipe: v3Grid, index: 3), CGRect(x: 1216, y: 1216, width: 1024, height: 1024))
+    XCTAssertEqual(PhotoTemplateEngine.window(recipe: v3Grid, index: 3), CGRect(x: 1216, y: 1192, width: 1000, height: 1000))
     let v3Strip = try PhotoTemplateEngine.Recipe.parse(recipeV3())
     XCTAssertEqual(PhotoTemplateEngine.window(recipe: v3Strip, index: 3), CGRect(x: 100, y: 2530, width: 1000, height: 750))
     XCTAssertThrowsError(try PhotoTemplateEngine.Recipe.parse(recipeV3().replacingOccurrences(of: "square", with: "portrait")))
@@ -403,6 +421,43 @@ final class PhotoTemplateEngineTests: XCTestCase {
       for point in [CGPoint(x: 65, y: 85), CGPoint(x: 90, y: 60), CGPoint(x: 120, y: 110)] {
         let targetX = Int(point.x * edge / 250), targetY = Int(point.y * edge / 250)
         near(try sample(pixels, x: targetX, y: targetY), try sample(art, x: Int(point.x), y: Int(point.y)), tolerance: 32)
+      }
+      if layout == "grid" {
+        let windows = (0..<4).map { PhotoTemplateEngine.window(recipe: parsed, index: $0) }
+        XCTAssertEqual(windows.map(\.maxY).max(), 2192)
+        // Independently inspect actual encoded text, not just expected baseline constants.
+        // The middle footer excludes the corner art and every photo window.
+        let ink = try darkInkExtent(pixels, rect: CGRect(x: 700, y: 2193, width: 1000, height: 180))
+        XCTAssertGreaterThan(ink.count, 500, "Names and date must be visibly encoded below the photos")
+        let nameInk = try darkInkExtent(pixels, rect: CGRect(x: 700, y: 2210, width: 1000, height: 80))
+        XCTAssertGreaterThan(nameInk.count, 500, "Couple names must be visibly encoded inside the footer")
+        let photoGap = try darkInkExtent(pixels, rect: CGRect(x: 700, y: 2193, width: 1000, height: 18))
+        XCTAssertEqual(photoGap.count, 0, "Footer needs visible air below the last photo")
+        let borderGap = try darkInkExtent(pixels, rect: CGRect(x: 900, y: 2341, width: 600, height: 18))
+        XCTAssertEqual(borderGap.count, 0, "Date must remain comfortably above the inset border at y2360")
+        let dateInk = try darkInkExtent(pixels, rect: CGRect(x: 900, y: 2300, width: 600, height: 40))
+        XCTAssertGreaterThan(dateInk.count, 100, "The date must be present inside, not on, the border")
+      }
+      // Probe letterboxing within the former cream mat. Its pixels must now be
+      // continuous with the independently decoded nine-slice artwork, including
+      // coastal wash, rather than a flat rectangle intruding into the frame.
+      func sourceCoordinate(_ value: CGFloat, length: CGFloat) -> Int {
+        if value < edge { return Int(value * 250 / edge) }
+        if value >= length - edge { return Int(1004 + (value - (length - edge)) * 250 / edge) }
+        return Int(250 + (value - edge) * 754 / (length - edge * 2))
+      }
+      if theme == "classic" {
+        let x = layout == "strip" ? 24 : 40, y = full.height / 2
+        near(try sample(pixels, x: x, y: y), try sample(art,
+          x: sourceCoordinate(CGFloat(x), length: CGFloat(full.width)),
+          y: sourceCoordinate(CGFloat(y), length: CGFloat(full.height))), tolerance: 18)
+      }
+      for index in [0, 2, 3] {
+        let window = PhotoTemplateEngine.window(recipe: parsed, index: index)
+        let x = Int(window.minX + 12), y = Int(window.maxY - 35)
+        near(try sample(pixels, x: x, y: y), try sample(art,
+          x: sourceCoordinate(CGFloat(x), length: CGFloat(full.width)),
+          y: sourceCoordinate(CGFloat(y), length: CGFloat(full.height))), tolerance: 18)
       }
       // Every unique original remains whole under FIT in both layouts, with the same
       // photo-to-window placement in preview and the actual full-resolution JPEG.
