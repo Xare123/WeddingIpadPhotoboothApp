@@ -71,6 +71,10 @@ test('guest editor page and JS use only capability-scoped selected photos and pr
   const response = await runtime.dispatchFetch(value.url), html = await response.text();
   assert.equal(response.status, 200); privateResponse(response);
   assert.match(html, /id="keepsake-editor"/);
+  assert.match(html, /data-layout="grid" aria-pressed="true">Social Grid/);
+  assert.match(html, /data-layout="strip" aria-pressed="false">Photo Strip/);
+  assert.ok(html.indexOf('data-layout="grid"') < html.indexOf('data-layout="strip"'));
+  assert.match(html, /data-variant="fill"/); assert.match(html, /data-variant="fit"/);
   assert.ok(html.includes(`/g/${new URL(value.url).pathname.split('/').at(-1)}/keepsake.js`));
   // Camera originals remain separately downloadable; the editor must receive the
   // selected/look-preserving photo IDs, not use those raw files as fallback.
@@ -189,6 +193,10 @@ test('legacy v1/v2 four-photo editor needs no generated art and keeps existing d
     const published = await publish(value);
     const response = await runtime.dispatchFetch(published.url), html = await response.text();
     assert.equal(response.status, 200); assert.match(html, /id="keepsake-editor"/);
+  assert.match(html, /data-layout="grid" aria-pressed="true">Social Grid/);
+  assert.match(html, /data-layout="strip" aria-pressed="false">Photo Strip/);
+  assert.ok(html.indexOf('data-layout="grid"') < html.indexOf('data-layout="strip"'));
+  assert.match(html, /data-variant="fill"/); assert.match(html, /data-variant="fit"/);
     assert.equal((await runtime.dispatchFetch(`${published.url}/keepsake.js`)).status, 200);
     for (const theme of themes) assert.equal((await runtime.dispatchFetch(`${published.url}/art/${theme}`)).status, 404);
     const download = await runtime.dispatchFetch(`${published.url}/photos/${published.recipe.composite.photoId}?download=1`);

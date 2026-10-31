@@ -258,15 +258,16 @@ function keepsakeEditorHtml(token: string, gallery: Gallery): string {
     ...(composite.version === 'wedding-template-v3' ? { artUrl: `/g/${token}/art/${composite.theme}` } : {}),
   }).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   return `<section class="variant-section" id="keepsake-editor" data-config="${config}" aria-labelledby="variant-title">
-    <div class="collection-heading"><h2 id="variant-title">Make room for every memory</h2><p>Two ways to keep it</p></div>
-    <p class="variant-intro">Choose filled frames or keep every edge of each photo. Both versions are yours to download.</p>
+    <div class="collection-heading"><h2 id="variant-title">Make room for every memory</h2><p>Your photos, your layout</p></div>
+    <p class="variant-intro">Start with Social Grid, or choose a classic Photo Strip. Download either with filled frames or every photo edge visible.</p>
+    <div class="variant-options" role="group" aria-label="Keepsake layout"><button type="button" data-layout="grid" aria-pressed="true">Social Grid</button><button type="button" data-layout="strip" aria-pressed="false">Photo Strip</button></div>
     <div class="variant-options" role="group" aria-label="Photo placement"><button type="button" data-variant="fill" aria-pressed="true">Fill Frames</button><button type="button" data-variant="fit" aria-pressed="false">Full Photo</button></div>
     <p class="variant-note">Fill Frames crops from the top. Full Photo keeps every edge and may leave side space.</p>
     <p id="variant-status" class="variant-status" role="status" aria-live="polite">Preparing both versions…</p>
     <button id="variant-retry" class="variant-retry" type="button" hidden>Retry versions</button>
-    <figure class="variant-result${composite.layout === 'strip' ? ' variant-strip' : ''}"><img id="variant-preview" alt="Your new keepsake preview" hidden></figure>
+    <figure class="variant-result"><img id="variant-preview" alt="Your new keepsake preview" hidden></figure>
     <div class="variant-downloads"><a id="download-fill" class="download" hidden>Download Fill Frames</a><a id="download-fit" class="download" hidden>Download Full Photo</a></div>
-    <p class="quality">Full-resolution JPEGs · Made on your device</p><p class="variant-note">Made from your four selected photos, with the same layout and theme. Your saved booth keepsake and camera originals below stay unchanged.</p>
+    <p class="quality">Full-resolution JPEGs · Made on your device</p><p class="variant-note">Made from your four selected photos, with your chosen layout and saved theme. Your saved booth keepsake and camera originals below stay unchanged.</p>
     <noscript><p>Enable JavaScript to prepare both versions. Your existing booth and original-photo downloads below still work.</p></noscript>
   </section><script src="/g/${token}/keepsake.js" defer></script>`;
 }

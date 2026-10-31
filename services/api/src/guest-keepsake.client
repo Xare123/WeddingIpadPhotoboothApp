@@ -7,11 +7,12 @@
   const preview = document.getElementById('variant-preview');
   const retry = document.getElementById('variant-retry');
   const buttons = Array.from(panel.querySelectorAll('button[data-variant]'));
+  const layoutButtons = Array.from(panel.querySelectorAll('button[data-layout]'));
   const links = { fill: document.getElementById('download-fill'), fit: document.getElementById('download-fit') };
-  if (!status || !preview || !retry || !links.fill || !links.fit || buttons.length !== 2) return;
+  if (!status || !preview || !retry || !links.fill || !links.fit || buttons.length !== 2 || layoutButtons.length !== 2) return;
   const MAX_BYTES = 10 * 1024 * 1024;
   let generation = 0, busy = false, disposed = false, controller;
-  let selected = 'fill', ready = null;
+  let selected = 'fill', layout = 'grid', ready = null;
   const liveUrls = new Set();
   const message = value => { status.textContent = value; };
   const revoke = url => { if (url && liveUrls.delete(url)) URL.revokeObjectURL(url); };
@@ -182,7 +183,11 @@
   }
   function setVariant(mode) {
     if (!ready || busy || !['fill', 'fit'].includes(mode)) return;
-    selected = mode; preview.src = ready[mode]; preview.hidden = false;
+    selected = mode; preview.src = ready[layout][mode];
+    preview.closest('figure').classList.toggle('variant-strip', layout === 'strip');
+    preview.alt = (layout === 'grid' ? 'Social Grid' : 'Photo Strip') + ' · ' + (mode === 'fill' ? 'Fill Frames' : 'Full Photo');
+    for (const button of layoutButtons) button.setAttribute('aria-pressed', String(button.dataset.layout === layout));
+    for (const choice of ['fill', 'fit']) { links[choice].href = ready[layout][choice]; links[choice].download = 'wedding-keepsake-' + layout + '-' + (choice === 'fill' ? 'fill-frames' : 'full-photo') + '.jpg'; links[choice].textContent = 'Download ' + (layout === 'grid' ? 'Social Grid' : 'Photo Strip') + ' · ' + (choice === 'fill' ? 'Fill Frames' : 'Full Photo'); } preview.hidden = false;
     for (const button of buttons) button.setAttribute('aria-pressed', String(button.dataset.variant === mode));
     message(mode === 'fill' ? 'Fill frames ready. Photos align at the top and edges may be cropped; camera originals stay unchanged.' : 'Full photo ready. Every edge stays visible; camera originals stay unchanged.');
   }
@@ -190,18 +195,19 @@
     if (busy || disposed) return;
     const ticket = ++generation, runController = new AbortController(); busy = true; controller = runController;
     ready = null; retry.hidden = true; preview.hidden = true; preview.removeAttribute('src');
-    for (const button of buttons) button.disabled = true;
+    for (const button of [...buttons, ...layoutButtons]) button.disabled = true;
     for (const link of Object.values(links)) { link.hidden = true; link.removeAttribute('href'); }
     message('Preparing both keepsake downloads on this device…');
     const produced = [], canvases = [];
     let art;
     try {
-      const config = configuration(), size = geometry(config);
+      const config = configuration();
       if (config.version === 'wedding-template-v3') art = await loadImage(config.artUrl, 'image/png', runController);
-      for (const mode of ['fill', 'fit']) {
+      for (const outputLayout of ['grid', 'strip']) for (const mode of ['fill', 'fit']) {
+        const outputConfig = { ...config, layout: outputLayout, ...(outputLayout === 'grid' ? { version: config.version === 'wedding-template-v1' ? 'wedding-template-v2' : config.version, gridAspect: 'square' } : {}) }, size = geometry(outputConfig);
         const canvas = document.createElement('canvas'); canvas.width = size.width; canvas.height = size.height;
         const ctx = canvas.getContext('2d', { alpha: false }); if (!ctx) throw new Error('canvas');
-        background(ctx, config, size, art?.image); canvases.push({ canvas, ctx, mode });
+        background(ctx, outputConfig, size, art?.image); canvases.push({ canvas, ctx, mode, layout: outputLayout, config: outputConfig, size });
       }
       art?.release(); art = undefined;
       for (let index = 0; index < 4; index++) {
@@ -209,8 +215,9 @@
         message('Preparing photo ' + (index + 1) + ' of 4…');
         const photo = await loadImage(config.photoUrls[index], 'image/jpeg', runController);
         try {
-          const w = size.windows[index], image = photo.image;
+          const image = photo.image;
           for (const item of canvases) {
+            const w = item.size.windows[index];
             const factor = item.mode === 'fit' ? Math.min(w.width / image.naturalWidth, w.height / image.naturalHeight) : Math.max(w.width / image.naturalWidth, w.height / image.naturalHeight);
             const width = image.naturalWidth * factor, height = image.naturalHeight * factor;
             const x = w.x + (w.width - width) / 2, y = item.mode === 'fit' ? w.y + (w.height - height) / 2 : w.y;
@@ -218,15 +225,16 @@
           }
         } finally { photo.release(); }
       }
-      const outputs = {};
+      const outputs = { grid: {}, strip: {} };
       for (const item of canvases) {
-        footer(item.ctx, config, size); const blob = await encode(item.canvas);
+        footer(item.ctx, item.config, item.size); const blob = await encode(item.canvas);
         if (ticket !== generation || disposed) throw new Error('cancelled');
-        outputs[item.mode] = objectUrl(blob); produced.push(outputs[item.mode]);
+        outputs[item.layout][item.mode] = objectUrl(blob); produced.push(outputs[item.layout][item.mode]);
+        item.canvas.width = 1; item.canvas.height = 1;
       }
       ready = outputs;
-      for (const mode of ['fill', 'fit']) { links[mode].href = outputs[mode]; links[mode].download = 'wedding-keepsake-' + config.layout + '-' + (mode === 'fill' ? 'fill-frames' : 'full-photo') + '.jpg'; links[mode].hidden = false; }
-      busy = false; for (const button of buttons) button.disabled = false; setVariant(selected);
+      for (const link of Object.values(links)) link.hidden = false;
+      busy = false; for (const button of [...buttons, ...layoutButtons]) button.disabled = false; setVariant(selected);
     } catch (error) {
       for (const url of produced) revoke(url);
       if (ticket === generation && !disposed) {
@@ -248,6 +256,7 @@
     }
   }
   for (const button of buttons) button.addEventListener('click', () => setVariant(button.dataset.variant));
+  for (const button of layoutButtons) button.addEventListener('click', () => { if (!ready || busy || !['grid', 'strip'].includes(button.dataset.layout)) return; layout = button.dataset.layout; setVariant(selected); });
   retry.addEventListener('click', prepare);
   preview.addEventListener('error', () => { if (ready && !busy && !disposed) message('The preview could not be displayed. Both generated JPEG downloads remain available below.'); });
   window.addEventListener('pagehide', event => {

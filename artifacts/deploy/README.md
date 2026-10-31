@@ -35,13 +35,13 @@ Do not use the local HTTP smoke script unchanged against production: it intentio
 
 ## Guest keepsake artwork update (not deployed)
 
-This website-only update requires **both the new Worker code and three private artwork object uploads**. Building a ZIP or deploying code alone does not establish readiness. `npm run build:api` creates `guest-artwork-v3/manifest.json` and three exact-byte PNGs alongside `worker.mjs`. The manifest records each source path, SHA-256, byte count, `image/png` content type, and fixed destination:
+This website-only Social Grid / Photo Strip update requires **new Worker code**. The three artwork objects were deployed with the prior release; verify their hashes and preserve them. No new R2 objects or binding changes are needed when those exact objects remain available. Building a ZIP or deploying code alone does not establish readiness. `npm run build:api` creates `guest-artwork-v3/manifest.json` and three exact-byte PNGs alongside `worker.mjs`. The manifest records each source path, SHA-256, byte count, `image/png` content type, and fixed destination:
 
 - `guest-artwork-v3/classic.png` → `system/keepsake-art/v3/classic.png`
 - `guest-artwork-v3/botanical.png` → `system/keepsake-art/v3/botanical.png`
 - `guest-artwork-v3/coastal.png` → `system/keepsake-art/v3/coastal.png`
 
-Upload only these generated, text-free design assets to the **existing private** `gizelleandrami-photoboothphotos` bucket. No new bucket, public bucket access, credentials or provisioning is required. Preserve existing object data and verify all three uploaded byte hashes against the manifest. The Worker must authorize guest artwork access through the valid session/capability route; fixed R2 keys are not public URLs. This package contains no real guest images, phone numbers or secrets.
+If an object is missing during an approved deployment, upload only these generated, text-free design assets to the **existing private** `gizelleandrami-photoboothphotos` bucket. No new bucket, public bucket access, credentials or provisioning is required. Preserve existing object data and verify all three uploaded byte hashes against the manifest. The Worker must authorize guest artwork access through the valid session/capability route; fixed R2 keys are not public URLs. This package contains no real guest images, phone numbers or secrets.
 
 The coordinator owns deployment and any permitted live verification. This executor has performed **no deployment, object upload, origin probe, SMS request or production setting change**. Preserve actual production variables, encrypted secret bindings, pairing configuration, SMS mode, link TTL and rate-limit settings. `manifest.json` derives example defaults for review, **not** instructions to overwrite current live settings.
 

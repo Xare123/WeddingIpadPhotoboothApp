@@ -1,4 +1,4 @@
-# Guest website: Fill Frames and Full Photo
+# Guest website: Social Grid / Photo Strip and photo fit
 
 This is a website/Worker update only. Installed iPad build19, its source, signing, configuration, queue and photos are unchanged. No Mac or iPad work is required.
 
@@ -12,15 +12,15 @@ No live source objects were inspected. Readiness required all referenced uploads
 
 ## Rendering and privacy
 
-The browser prepares both full-resolution JPEGs locally and keeps both download actions visible regardless of the selected preview. Repeated switching reuses the two generated blobs without network requests or stored-object writes. Decoding is sequential, byte/dimension bounded, and time limited; source JPEG dimensions are checked before decode. Every EXIF orientation is left to the browser image decoder once, without a second manual flip. Canvas dimensions are independent of screen size/DPR.
+The website defaults to Social Grid + Fill Frames independently of the saved booth layout. A prominent Social Grid / Photo Strip selector appears before the separate Fill Frames / Full Photo selector. The browser prepares four full-resolution JPEGs locally and keeps both fit download actions visible for the selected layout. Repeated layout and fit switching reuses the four generated blobs without network requests or stored-object writes. Decoding is sequential, byte/dimension bounded, and time limited; source JPEG dimensions are checked before decode. Every EXIF orientation is left to the browser image decoder once, without a second manual flip. Canvas dimensions are independent of screen size/DPR.
 
 | Recipe | Strip | Grid |
 |---|---|---|
-| V1 | 1200×3600 | 2400×2100 |
-| V2 | 1200×3600 | Portrait2400×3000 or Square2400×2400 |
+| V1 | 1200×3600 | 2400×2400 (V2 square composition) |
+| V2 | 1200×3600 | 2400×2400 |
 | V3 | 1200×3600 | 2400×2400 |
 
-Layout and theme stay those of the saved keepsake; this feature only changes photo fit. Full Photo keeps every edge, with side space when necessary. Fill Frames aligns at the top and crops edges. Original image files are never modified.
+The saved theme remains. Guests can independently choose either layout; legacy V1 Social Grid uses the V2 square composition, while the untouched saved booth JPEG retains its original geometry. Full Photo keeps every edge, with side space when necessary. Fill Frames aligns at the top and crops edges. Original image files are never modified.
 
 The static client script and approved V3 theme art use token-scoped, expiry/revocation-checked GET routes. They reuse existing PHOTO rate-limit bindings before storage access. Script URLs, art paths and four photo URLs are same-origin, same-capability and fixed/validated; there is no public listing, guest write endpoint, external photo processing, analytics, credential collection or SMS action. CSP permits only the same-origin script/network and local blob images; inline executable scripts remain disallowed. JSON/errors retain their existing stricter policy.
 
@@ -28,7 +28,7 @@ Generated JPEGs live in the current browser tab and are downloaded by the guest.
 
 ## Deployment preparation only
 
-A backend update **is required** for HTML, the private client route and private artwork routes. Three exact generated PNGs must also exist at the fixed keys in `artifacts/deploy/guest-artwork-v3/manifest.json`, in the existing private R2 bucket. They are generated backgrounds, not guest photos. No new bucket, public bucket URL, DNS, secret, binding or paid rendering service is needed.
+A backend update **is required** for HTML, the private client route and private artwork routes. The already-deployed three exact generated PNGs must still exist at the fixed keys in `artifacts/deploy/guest-artwork-v3/manifest.json`, in the existing private R2 bucket. They are generated backgrounds, not guest photos. No new bucket, public bucket URL, DNS, secret, binding or paid rendering service is needed.
 
 The release archive includes Worker code plus the three artwork objects and their hashes. Before any later approved deployment, verify current production code/configuration and retain rollback. Upload artwork first; skip an existing identical hash, and do not blindly overwrite a conflicting versioned object. Then update code while preserving every live variable, secret, binding, rate namespace and SMS/pairing setting. Example manifest values are not instructions to replace production settings. Verify through permitted management paths; the live-origin request hold remains.
 

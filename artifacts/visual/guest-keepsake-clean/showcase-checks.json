@@ -30,8 +30,8 @@
     }
   ],
   "sourceHashes": {
-    "services/api/src/index.ts": "dc7e8078495a8634914542a830ca5a747a0d39b5eafc06589ebcfd8e06372a3e",
-    "services/api/src/guest-keepsake.client": "4f296e5c16892eefb96f35145ba1626357e335ae33fcbea1ccc8c6e0d9402df5",
+    "services/api/src/index.ts": "65ff57bd6211c348de30a12e72d6785f13efe0ac1c46143675988203ba2b1976",
+    "services/api/src/guest-keepsake.client": "f37b28e9409b4b6b5969020c090d2b21cc886581e9e17752305c623b5fc95778",
     "services/api/test/worker-source.ts": "cd6a52067ee59f7084c210722c92532612d0bfab50a49d0f798155a57dfb463f",
     "tools/guest-keepsake/local-server.mjs": "e3e05673a10b4f324bfc6026e337a3bdf5abc3c2346c9b97559e2551b6efd7d8",
     "tools/guest-keepsake/clean-showcase.mjs": "d490f55df0de8aadbb8635c9d2982248512c2f67a31fee4b19f7d1f32665757d"
@@ -63,7 +63,7 @@
         "width": 390,
         "height": 844
       },
-      "sha256": "7768a11eb84e3580a871f2377111188e464e4b16bc0ca6376c618d8d491c272d"
+      "sha256": "9eb271daec1504309953c17ab0548635fd6d46100d70b3b64769d96bd6cb772d"
     },
     {
       "file": "artifacts/visual/guest-keepsake-clean/coastal-square-fill-desktop.png",
@@ -71,7 +71,7 @@
         "width": 1440,
         "height": 1000
       },
-      "sha256": "7105e1442da699d7c36b47290c1de49b9dda4e4bfb404206efe788f3b38fbd6b"
+      "sha256": "3bf8e284cd7e0039c11af91ca315f0c19d0108fbb32cb6f48e22a00964523b28"
     },
     {
       "file": "artifacts/visual/guest-keepsake-clean/coastal-square-fit-mobile.png",
@@ -79,7 +79,7 @@
         "width": 390,
         "height": 844
       },
-      "sha256": "4162d7ca608be260f0e2bb781de019b14291e4bb0ba1f22b0455c1049e32274b"
+      "sha256": "632d90b8fd7fe1dd37fae9a6dfd2ede1c0bf7d8ef0cdb67aaf2d383fb35180db"
     },
     {
       "file": "artifacts/visual/guest-keepsake-clean/coastal-square-fit-desktop.png",
@@ -87,7 +87,7 @@
         "width": 1440,
         "height": 1000
       },
-      "sha256": "359daeb1dee3b20146a31be157fecb7d725df17beb6483105c8112b73dc462c3"
+      "sha256": "7c3c4a27a7f91b625717585f71b9ab2661dad5b35d3ab649e609234edc169341"
     }
   ],
   "errors": [],

@@ -1,22 +1,22 @@
 {
   "artifact": "worker.mjs",
   "format": "esm",
-  "generatedAt": "2026-10-29T02:11:06.470Z",
-  "sha256": "9e1b03c9c830df303eedc1f4d2dec7031436081d433270a08525aff52f847121",
-  "sourceSha256": "dc7e8078495a8634914542a830ca5a747a0d39b5eafc06589ebcfd8e06372a3e",
+  "generatedAt": "2026-10-31T03:06:43.160Z",
+  "sha256": "64d7ecc1d4ca8886f1e3d41118c76c58a214b31e301f2817966baf149441472d",
+  "sourceSha256": "65ff57bd6211c348de30a12e72d6785f13efe0ac1c46143675988203ba2b1976",
   "sourceFiles": [
     {
       "path": "services/api/src/guest-keepsake.client",
-      "bytes": 19674,
-      "sha256": "4f296e5c16892eefb96f35145ba1626357e335ae33fcbea1ccc8c6e0d9402df5"
+      "bytes": 21079,
+      "sha256": "f37b28e9409b4b6b5969020c090d2b21cc886581e9e17752305c623b5fc95778"
     },
     {
       "path": "services/api/src/index.ts",
-      "bytes": 55877,
-      "sha256": "dc7e8078495a8634914542a830ca5a747a0d39b5eafc06589ebcfd8e06372a3e"
+      "bytes": 56111,
+      "sha256": "65ff57bd6211c348de30a12e72d6785f13efe0ac1c46143675988203ba2b1976"
     }
   ],
-  "bytes": 68773,
+  "bytes": 70425,
   "compatibilityDate": "2026-10-25",
   "proposedWorker": "wedding-photobooth",
   "existingPrivateBucket": "gizelleandrami-photoboothphotos",
