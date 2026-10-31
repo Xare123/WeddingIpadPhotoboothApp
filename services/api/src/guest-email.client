@@ -1,0 +1,40 @@
+/* Optional private-gallery email. No address/token logging or browser persistence. */
+(() => {
+  'use strict';
+  const form = document.getElementById('guest-email-form');
+  const input = document.getElementById('guest-email');
+  const consent = document.getElementById('guest-email-consent');
+  const button = document.getElementById('guest-email-send');
+  const status = document.getElementById('guest-email-status');
+  if (!form || !input || !consent || !button || !status) return;
+  const token = /^\/g\/([a-f0-9]{64})\/?$/.exec(location.pathname)?.[1];
+  if (!token || form.dataset.endpoint !== '/g/' + token + '/email') return;
+  let sending = false, terminal = false;
+  function controls() { button.disabled = sending || terminal || !consent.checked || !input.validity.valid; input.disabled = sending || terminal; consent.disabled = sending || terminal; }
+  input.addEventListener('input', controls); consent.addEventListener('change', controls);
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (sending || terminal || !consent.checked || !input.reportValidity()) return;
+    sending = true; button.textContent = 'Sending…'; status.textContent = 'Sending your private gallery link…'; controls();
+    const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), 20000);
+    try {
+      const response = await fetch(form.dataset.endpoint, { method: 'POST', mode: 'same-origin', credentials: 'omit', redirect: 'error', referrerPolicy: 'same-origin', referrer: location.origin + '/', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: input.value.trim(), consent: true }), signal: controller.signal });
+      const result = await response.json();
+      if (result.status === 'accepted') {
+        terminal = true; input.value = ''; status.textContent = 'Email accepted for sending. Delivery is not confirmed; check your inbox and spam folder. Direct downloads are still available.';
+      } else if (result.status === 'mocked') {
+        terminal = true; input.value = ''; status.textContent = 'Test mode: no email was sent. Use the direct downloads below.';
+      } else if (result.status === 'pending' || result.status === 'uncertain') {
+        terminal = true; input.value = ''; status.textContent = 'Sending could not be confirmed. To avoid duplicate emails, this request will not be resent. Check your inbox or use direct downloads.';
+      } else {
+        terminal = result.safeToRetry !== true;
+        status.textContent = response.status === 429 ? 'The email limit has been reached. Please use the direct downloads below.' : response.status === 410 ? 'This private link has expired or been revoked.' : 'Email is unavailable or the request was rejected. Use direct downloads below.';
+      }
+    } catch {
+      terminal = true; input.value = ''; status.textContent = 'Sending could not be confirmed. To avoid duplicate emails, this request will not be resent. Check your inbox or use direct downloads.';
+    } finally {
+      clearTimeout(timeout); sending = false; button.textContent = terminal ? 'Email request finished' : 'Email my photo link'; controls();
+    }
+  });
+  controls();
+})();

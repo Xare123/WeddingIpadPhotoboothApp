@@ -22,3 +22,11 @@ node --import tsx tools/guest-keepsake/clean-showcase.mjs
 ```
 
 This creates only `artifacts/visual/guest-keepsake-clean`, leaving all marker acceptance evidence unchanged. `showcase-checks.json` records exact input/output/source hashes. Four mobile/desktop Fill/Fit screenshots and two actual guest-client JPEG downloads are provided. The selected studio fixtures were visually inspected: fictional adult pairs, no drinks, watermark or diagnostic overlays. This is a presentation check, separate from the stronger asymmetric-marker correctness checks.
+
+Optional email acceptance runs separately:
+
+```sh
+node --import tsx tools/guest-keepsake/email-browser-checks.mjs
+```
+
+This uses the real Worker and browser client with synthetic addresses and a fake Resend outbound adapter intercepted inside Miniflare. It never contacts Resend or sends email. `startLocalGallery()` still denies all outbound calls by default; only the email harness can inject the narrow synthetic email bindings and intercept the exact provider endpoint. Tests cover the absent unconfigured form, explicit consent/submit, immediate Sending state, synchronous duplicate prevention, accepted-but-not-delivered wording, terminal uncertainty/rejection and unchanged direct downloads, in both viewports. Eight screenshots and `artifacts/visual/guest-email/checks.json` record the synthetic result. A separate actual Miniflare R2 concurrency check verifies a cap of two across four galleries, unchanged replay outcomes, and no raw recipient in durable fences. This does not prove sender verification, deliverability, production configuration, provider tracking settings or Safari behavior.

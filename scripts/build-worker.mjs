@@ -11,7 +11,7 @@ const configPath = resolve(root, 'services/api/wrangler.production.EXAMPLE.jsonc
 const parsed = ts.parseConfigFileTextToJson(configPath, await readFile(configPath, 'utf8'));
 if (parsed.error) throw new Error('Production example configuration is invalid');
 const config = parsed.config;
-const secretNames = ['DEVICE_TOKEN', 'LINK_SIGNING_KEY', 'TEXTBELT_API_KEY'];
+const secretNames = ['DEVICE_TOKEN', 'LINK_SIGNING_KEY', 'TEXTBELT_API_KEY', 'RESEND_API_KEY'];
 if (secretNames.some(name => Object.hasOwn(config.vars, name))) {
   throw new Error('Production secrets must not be included in configuration or artifacts');
 }
@@ -65,7 +65,7 @@ const manifest = {
   variables: config.vars,
   secretNames,
   requiredSecretNames: ['DEVICE_TOKEN', 'LINK_SIGNING_KEY'],
-  optionalSecretNames: { approvedSms: ['TEXTBELT_API_KEY'] },
+  optionalSecretNames: { approvedSms: ['TEXTBELT_API_KEY'], optionalGuestEmail: ['RESEND_API_KEY'] },
   pairingUsesExistingBoothAuthority: true,
   binding: bindings.find(value => value.type === 'r2_bucket'),
   bindings,

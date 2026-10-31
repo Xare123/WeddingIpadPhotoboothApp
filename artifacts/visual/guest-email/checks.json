@@ -1,0 +1,141 @@
+{
+  "scope": "Actual bundled private Worker HTML/email client with local R2 in Chromium. Resend outbound adapter is intercepted inside Miniflare and never uses network. Synthetic addresses only; no emails, SMS, production or Safari/device claims.",
+  "status": "passed",
+  "sourceHashes": {
+    "services/api/src/index.ts": "4ebeff20e8abd34c05a6ca52e3cd2a70140d6b84315d84e4321ccc1f4d7535be",
+    "services/api/src/guest-email.ts": "2a643575408dbaf119b6fe9d41390973be3a16d0c7d5edd5acf7930543533b80",
+    "services/api/src/guest-email.client": "524b0902e31be40284d7c68d8acb9bcf35b6938b4ff98d2ee249192ea3030807",
+    "services/api/test/worker-source.ts": "cd6a52067ee59f7084c210722c92532612d0bfab50a49d0f798155a57dfb463f",
+    "tools/guest-keepsake/local-server.mjs": "8c6e4a563e0e37f84c4513a37a6f9ada29c8a89a6f416ce7f13483848aa32061",
+    "tools/guest-keepsake/email-browser-checks.mjs": "fdf3749cd480bad4369c1809eec1adaaf8eb4c32c4533c3e260cd211dc1040d4"
+  },
+  "cases": [
+    {
+      "viewport": "mobile",
+      "outcome": "unconfigured",
+      "formHidden": true
+    },
+    {
+      "viewport": "mobile",
+      "outcome": "accepted",
+      "providerRequests": 1,
+      "pendingText": "Sending your private gallery link…",
+      "resultText": "Email accepted for sending. Delivery is not confirmed; check your inbox and spam folder. Direct downloads are still available.",
+      "duplicateBrowserRequestGuard": true,
+      "terminalNoRetry": true,
+      "directBoothUnchanged": true,
+      "noBrowserAddressStorage": true
+    },
+    {
+      "viewport": "mobile",
+      "outcome": "rejected",
+      "providerRequests": 1,
+      "pendingText": "Sending your private gallery link…",
+      "resultText": "Email is unavailable or the request was rejected. Use direct downloads below.",
+      "duplicateBrowserRequestGuard": true,
+      "terminalNoRetry": true,
+      "directBoothUnchanged": true,
+      "noBrowserAddressStorage": true
+    },
+    {
+      "viewport": "mobile",
+      "outcome": "uncertain",
+      "providerRequests": 1,
+      "pendingText": "Sending your private gallery link…",
+      "resultText": "Sending could not be confirmed. To avoid duplicate emails, this request will not be resent. Check your inbox or use direct downloads.",
+      "duplicateBrowserRequestGuard": true,
+      "terminalNoRetry": true,
+      "directBoothUnchanged": true,
+      "noBrowserAddressStorage": true
+    },
+    {
+      "viewport": "desktop",
+      "outcome": "unconfigured",
+      "formHidden": true
+    },
+    {
+      "viewport": "desktop",
+      "outcome": "accepted",
+      "providerRequests": 1,
+      "pendingText": "Sending your private gallery link…",
+      "resultText": "Email accepted for sending. Delivery is not confirmed; check your inbox and spam folder. Direct downloads are still available.",
+      "duplicateBrowserRequestGuard": true,
+      "terminalNoRetry": true,
+      "directBoothUnchanged": true,
+      "noBrowserAddressStorage": true
+    },
+    {
+      "viewport": "desktop",
+      "outcome": "rejected",
+      "providerRequests": 1,
+      "pendingText": "Sending your private gallery link…",
+      "resultText": "Email is unavailable or the request was rejected. Use direct downloads below.",
+      "duplicateBrowserRequestGuard": true,
+      "terminalNoRetry": true,
+      "directBoothUnchanged": true,
+      "noBrowserAddressStorage": true
+    },
+    {
+      "viewport": "desktop",
+      "outcome": "uncertain",
+      "providerRequests": 1,
+      "pendingText": "Sending your private gallery link…",
+      "resultText": "Sending could not be confirmed. To avoid duplicate emails, this request will not be resent. Check your inbox or use direct downloads.",
+      "duplicateBrowserRequestGuard": true,
+      "terminalNoRetry": true,
+      "directBoothUnchanged": true,
+      "noBrowserAddressStorage": true
+    }
+  ],
+  "errors": [],
+  "external": [],
+  "lastObserved": {
+    "viewport": "desktop",
+    "outcome": "uncertain",
+    "resultText": "Sending could not be confirmed. To avoid duplicate emails, this request will not be resent. Check your inbox or use direct downloads.",
+    "providerRequests": 1,
+    "outboundOrigins": [
+      "https://api.resend.com"
+    ],
+    "bridgeErrors": [],
+    "emailResponses": [
+      {
+        "httpStatus": 202,
+        "contentType": "application/json",
+        "localBridgeFailure": false,
+        "status": "uncertain"
+      }
+    ],
+    "emailHeaders": [
+      {
+        "originMatches": true,
+        "originNull": false,
+        "secFetchSite": "absent",
+        "referrerRoot": true
+      }
+    ],
+    "localFences": {
+      "email-deliveries/": [
+        {
+          "status": "uncertain"
+        }
+      ],
+      "email-quota/": [
+        {
+          "claimed": true
+        }
+      ]
+    }
+  },
+  "realR2Quota": {
+    "dailyLimit": 2,
+    "concurrentGalleries": 4,
+    "accepted": 2,
+    "blocked": 2,
+    "simulatedProviderCalls": 2,
+    "replaysResent": 0,
+    "durableSlots": 2,
+    "durableFences": 4,
+    "noRawRecipientInFences": true
+  }
+}

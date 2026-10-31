@@ -1,10 +1,17 @@
 import guestKeepsakeScript from './guest-keepsake.client';
+import guestEmailScript from './guest-email.client';
+import { emailConfigured, handleGuestEmail } from './guest-email';
 
 /** Private R2 storage: never enable the bucket's public URL or public listing. */
 export interface Env {
   PHOTOS: R2Bucket;
   MODE: string;
   SMS_MODE: string;
+  EMAIL_MODE?: string;
+  RESEND_API_KEY?: string;
+  EMAIL_FROM?: string;
+  EMAIL_DAILY_LIMIT?: string;
+  EMAIL_SENDER_VERIFIED?: string;
   LOCAL_DEVICE_TOKEN?: string;
   LOCAL_LINK_KEY?: string;
   DEVICE_TOKEN?: string;
@@ -95,12 +102,13 @@ const rateBindings = [
 ] as const;
 type RateBand = 'GALLERY' | 'PHOTO' | 'API' | 'SHARE';
 function rateBand(url: URL): RateBand | undefined {
-  if (url.pathname.startsWith('/g/')) return /^\/g\/[^/]+\/(?:photos\/|art\/|keepsake\.js$)/.test(url.pathname) ? 'PHOTO' : 'GALLERY';
+  if (/^\/g\/[^/]+\/email$/.test(url.pathname)) return 'SHARE';
+  if (url.pathname.startsWith('/g/')) return /^\/g\/[^/]+\/(?:photos\/|art\/|(?:keepsake|email)\.js$)/.test(url.pathname) ? 'PHOTO' : 'GALLERY';
   if (url.pathname === '/v1/shares' || url.pathname.startsWith('/v1/pairing/')) return 'SHARE';
   if (url.pathname.startsWith('/v1/')) return 'API';
 }
 function limitResponse(url: URL, status: 429 | 503): Response {
-  const page = url.pathname.startsWith('/g/') && !/^\/g\/[^/]+\/(?:photos\/|art\/|keepsake\.js$)/.test(url.pathname);
+  const page = !url.pathname.endsWith('/email') && url.pathname.startsWith('/g/') && !/^\/g\/[^/]+\/(?:photos\/|art\/|(?:keepsake|email)\.js$)/.test(url.pathname);
   const response = page ? unavailableGallery(status) : json({
     error: status === 429 ? 'Request limit reached; please retry shortly' : 'Request protection unavailable', retryable: true,
   }, status);
@@ -248,6 +256,12 @@ function editableGallery(gallery: GalleryRecipe): boolean {
     ['classic', 'botanical', 'coastal'].includes(composite.theme) &&
     (composite.version === 'wedding-template-v1' || composite.version === 'wedding-template-v2' && ['portrait', 'square'].includes(composite.gridAspect) ||
       composite.version === 'wedding-template-v3' && composite.gridAspect === 'square');
+}
+function emailFormHtml(token: string): string {
+  return `<section class="variant-section" aria-labelledby="email-title"><h2 id="email-title">Email me my photos</h2><p>Send this private gallery link to your inbox. No attachments, newsletter or account needed.</p>
+    <form id="guest-email-form" data-endpoint="/g/${token}/email"><label for="guest-email">Your email address</label><input id="guest-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" required style="display:block;box-sizing:border-box;width:100%;max-width:36rem;padding:16px;margin:12px 0;font:inherit;border:1px solid #8B8174;border-radius:12px;background:#fff;color:#352B25">
+    <label style="display:block;margin:16px 0"><input id="guest-email-consent" type="checkbox" required> Send this private photo link to the address above.</label><button class="download" id="guest-email-send" type="submit" disabled>Email my photo link</button></form>
+    <p id="guest-email-status" role="status" aria-live="polite">Optional · One email request per gallery. You can always download your photos directly.</p><p class="variant-note">Anyone with the link can access these photos until it expires. Email acceptance does not guarantee delivery. Your address is used only for this request and is not saved in our photo storage. Delivery is handled by Resend; provider tracking may apply.</p><noscript>Email requires JavaScript. Direct downloads below still work.</noscript></section><script src="/g/${token}/email.js" defer></script>`;
 }
 function keepsakeEditorHtml(token: string, gallery: Gallery): string {
   if (!editableGallery(gallery)) return '';
@@ -466,7 +480,7 @@ function unavailableGallery(status: number, reason?: string): Response {
     'We couldn’t find a gallery at this address. Check that you opened the complete link, or ask your hosts for help.';
   return guestPage(guestDocument('Your wedding photos', `<main class="error-page reveal"><div class="error-mark" aria-hidden="true">✧</div><p class="eyebrow">Your private gallery</p><h1>${title}</h1><p class="intro">${message}</p></main>`), status);
 }
-function galleryHtml(token: string, gallery: Gallery): string {
+function galleryHtml(token: string, gallery: Gallery, email = false): string {
   const items = gallery.photoIds.map((id, i) => `<figure class="photo reveal"><img src="/g/${token}/photos/${id}" alt="Wedding photo ${i + 1}" loading="${i === 0 && !gallery.composite ? 'eager' : 'lazy'}" decoding="async"><figcaption><div class="photo-label"><span>A moment to keep</span><span>${String(i + 1).padStart(2, '0')}</span></div><a class="download" href="/g/${token}/photos/${id}?download=1" download aria-label="Download photo ${i + 1} in full resolution"><span class="arrow" aria-hidden="true">↓</span>${gallery.composite ? 'Save individual photo' : 'Save original photo'}</a><p class="quality">Full resolution · JPEG</p></figcaption></figure>`).join('');
   let keepsake = '';
   if (gallery.composite) {
@@ -477,7 +491,7 @@ function galleryHtml(token: string, gallery: Gallery): string {
   }
   const originals = gallery.originalPhotoIds ? `<section class="original-section" aria-labelledby="originals-title"><div class="collection-heading"><h2 id="originals-title">Your camera originals</h2><p>${gallery.originalPhotoIds.length} original files</p></div><p class="original-intro">Save each camera original, in the same order as your keepsake.</p><ol class="originals">${gallery.originalPhotoIds.map((id, i) => `<li><span class="original-name">Original ${String(i + 1).padStart(2, '0')}</span><a class="download" href="/g/${token}/photos/${id}?download=1" download aria-label="Download camera original ${i + 1} in full resolution">Save original ${i + 1}</a></li>`).join('')}</ol></section>` : '';
   const expires = new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeStyle: 'medium', timeZone: 'UTC' }).format(new Date(gallery.expiresAt));
-  return guestDocument('Your wedding photos', `<main><section class="hero reveal" aria-labelledby="gallery-title"><p class="eyebrow">A keepsake from the celebration</p><h1 id="gallery-title">Your night,<span>beautifully captured.</span></h1><p class="intro">A little joy to take home.</p></section>${keepsakeEditorHtml(token, gallery)}${keepsake}<section aria-label="Your photos"><div class="collection-heading"><h2>${gallery.composite ? 'Your individual photos' : 'Your wedding photos'}</h2><p>${gallery.photoIds.length} ${gallery.photoIds.length === 1 ? 'memory' : 'memories'} · original quality</p></div><div class="photos">${items}</div></section>${originals}<aside class="privacy"><h2>A private keepsake.</h2><p>Anyone with this link can view and download these photos.<br>Save your favorites, and forward this link only with care.</p><p class="expiry">Available until <time datetime="${new Date(gallery.expiresAt).toISOString()}">${expires} UTC</time>.<br>Link expiry closes access; it does not delete the original photos.</p></aside></main>`);
+  return guestDocument('Your wedding photos', `<main><section class="hero reveal" aria-labelledby="gallery-title"><p class="eyebrow">A keepsake from the celebration</p><h1 id="gallery-title">Your night,<span>beautifully captured.</span></h1><p class="intro">A little joy to take home.</p></section>${keepsakeEditorHtml(token, gallery)}${email ? emailFormHtml(token) : ''}${keepsake}<section aria-label="Your photos"><div class="collection-heading"><h2>${gallery.composite ? 'Your individual photos' : 'Your wedding photos'}</h2><p>${gallery.photoIds.length} ${gallery.photoIds.length === 1 ? 'memory' : 'memories'} · original quality</p></div><div class="photos">${items}</div></section>${originals}<aside class="privacy"><h2>A private keepsake.</h2><p>Anyone with this link can view and download these photos.<br>Save your favorites, and forward this link only with care.</p><p class="expiry">Available until <time datetime="${new Date(gallery.expiresAt).toISOString()}">${expires} UTC</time>.<br>Link expiry closes access; it does not delete the original photos.</p></aside></main>`);
 }
 async function handle(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
@@ -488,7 +502,17 @@ async function handle(request: Request, env: Env): Promise<Response> {
   if (url.pathname === '/health' && request.method === 'GET')
     return json({ status: 'ok', storage: env.MODE === 'local' ? 'local-r2' : 'private-r2', sms: env.SMS_MODE, smsAvailable: liveSmsAvailable(env) });
 
-  const guest = /^\/g\/([a-f0-9]{64})(?:\/photos\/([0-9a-f-]+)|\/(keepsake\.js)|\/art\/(classic|botanical|coastal))?$/.exec(url.pathname);
+  const emailRequest = /^\/g\/([a-f0-9]{64})\/email$/.exec(url.pathname);
+  if (emailRequest && request.method === 'POST') {
+    if (request.headers.get('Origin') !== url.origin || url.origin !== config.origin || (request.headers.get('Sec-Fetch-Site') && request.headers.get('Sec-Fetch-Site') !== 'same-origin')) return json({ status: 'rejected', message: 'Open the private gallery to send email.' }, 403);
+    const token = emailRequest[1]!;
+    const gallery = await loadGallery(env, await digest(encoder.encode(token)));
+    if (gallery instanceof Response) return gallery;
+    if (!crypto.subtle.timingSafeEqual(encoder.encode(token), encoder.encode(await tokenFor(gallery.sessionId, config.signingKey)))) return json({ error: 'Link revoked' }, 410);
+    const result = await handleGuestEmail(request, env, gallery, `${config.origin}/g/${token}`);
+    return json(result.body, result.status);
+  }
+  const guest = /^\/g\/([a-f0-9]{64})(?:\/photos\/([0-9a-f-]+)|\/(keepsake\.js|email\.js)|\/art\/(classic|botanical|coastal))?$/.exec(url.pathname);
   if (guest && request.method === 'GET') {
     const token = guest[1]!;
     const gallery = await loadGallery(env, await digest(encoder.encode(token)));
@@ -502,6 +526,10 @@ async function handle(request: Request, env: Env): Promise<Response> {
     const currentToken = await tokenFor(gallery.sessionId, config.signingKey);
     if (!crypto.subtle.timingSafeEqual(encoder.encode(token), encoder.encode(currentToken)))
       return guest[2] || guest[3] || guest[4] ? json({ error: 'Link revoked' }, 410) : unavailableGallery(410, 'Link revoked');
+    if (guest[3] === 'email.js') {
+      if (!emailConfigured(env)) return json({ error: 'Email unavailable' }, 404);
+      return new Response(guestEmailScript, { headers: { ...privateHeaders, 'Content-Type': 'application/javascript; charset=utf-8' } });
+    }
     if (guest[3]) {
       if (!editableGallery(gallery)) return json({ error: 'Four source photos and a keepsake are required' }, 404);
       return new Response(guestKeepsakeScript, { headers: { ...privateHeaders, 'Content-Type': 'application/javascript; charset=utf-8' } });
@@ -516,7 +544,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
       if (await digest(bytes) !== art.sha256) return json({ error: 'Artwork unavailable' }, 503);
       return new Response(bytes, { headers: { ...privateHeaders, 'Content-Type': 'image/png', 'Content-Length': String(bytes.length) } });
     }
-    if (!guest[2]) return guestPage(galleryHtml(token, gallery), 200, editableGallery(gallery));
+    if (!guest[2]) return guestPage(galleryHtml(token, gallery, emailConfigured(env)), 200, editableGallery(gallery) || emailConfigured(env));
     const photoId = guest[2].toLowerCase();
     if (!uuid.test(photoId) || !galleryPhotoIds(gallery).includes(photoId)) return json({ error: 'Photo unavailable' }, 404);
     const photo = await env.PHOTOS.get(photoKey(gallery.sessionId, photoId));

@@ -1,10 +1,20 @@
 {
   "artifact": "worker.mjs",
   "format": "esm",
-  "generatedAt": "2026-10-31T03:06:43.160Z",
-  "sha256": "64d7ecc1d4ca8886f1e3d41118c76c58a214b31e301f2817966baf149441472d",
-  "sourceSha256": "65ff57bd6211c348de30a12e72d6785f13efe0ac1c46143675988203ba2b1976",
+  "generatedAt": "2026-10-31T03:24:16.751Z",
+  "sha256": "8482406106e8244ca32ee1e50ffec9d799870b9fac390806a2b35c2bdafb3086",
+  "sourceSha256": "4ebeff20e8abd34c05a6ca52e3cd2a70140d6b84315d84e4321ccc1f4d7535be",
   "sourceFiles": [
+    {
+      "path": "services/api/src/guest-email.client",
+      "bytes": 3204,
+      "sha256": "524b0902e31be40284d7c68d8acb9bcf35b6938b4ff98d2ee249192ea3030807"
+    },
+    {
+      "path": "services/api/src/guest-email.ts",
+      "bytes": 11583,
+      "sha256": "2a643575408dbaf119b6fe9d41390973be3a16d0c7d5edd5acf7930543533b80"
+    },
     {
       "path": "services/api/src/guest-keepsake.client",
       "bytes": 21079,
@@ -12,11 +22,11 @@
     },
     {
       "path": "services/api/src/index.ts",
-      "bytes": 56111,
-      "sha256": "65ff57bd6211c348de30a12e72d6785f13efe0ac1c46143675988203ba2b1976"
+      "bytes": 59289,
+      "sha256": "4ebeff20e8abd34c05a6ca52e3cd2a70140d6b84315d84e4321ccc1f4d7535be"
     }
   ],
-  "bytes": 70425,
+  "bytes": 86569,
   "compatibilityDate": "2026-10-25",
   "proposedWorker": "wedding-photobooth",
   "existingPrivateBucket": "gizelleandrami-photoboothphotos",
@@ -35,7 +45,8 @@
   "secretNames": [
     "DEVICE_TOKEN",
     "LINK_SIGNING_KEY",
-    "TEXTBELT_API_KEY"
+    "TEXTBELT_API_KEY",
+    "RESEND_API_KEY"
   ],
   "requiredSecretNames": [
     "DEVICE_TOKEN",
@@ -44,6 +55,9 @@
   "optionalSecretNames": {
     "approvedSms": [
       "TEXTBELT_API_KEY"
+    ],
+    "optionalGuestEmail": [
+      "RESEND_API_KEY"
     ]
   },
   "pairingUsesExistingBoothAuthority": true,
