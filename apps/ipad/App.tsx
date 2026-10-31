@@ -1,6 +1,7 @@
+import { Modal, WindowOverlayProvider, useWindowOverlayActivity } from './src/window-overlay';
 import { useEffect, useRef, useState } from 'react';
 import {
-  AccessibilityInfo, Animated, AppState, Easing, Image, ImageBackground, Linking, Modal,
+  AccessibilityInfo, Animated, AppState, Easing, Image, ImageBackground, Linking,
   Platform, Pressable, ScrollView, StatusBar, StyleSheet, Switch, Text, TextInput,
   useWindowDimensions, View,
 } from 'react-native';
@@ -111,9 +112,10 @@ function Thumbnails({ session, active, onSelect, dark = true, reduceMotion = tru
     onSelect={onSelect} dark={dark} reduceMotion={reduceMotion} compact={compact} />)}</View>;
 }
 
-export default function App() { return <SafeAreaProvider><Photobooth /></SafeAreaProvider>; }
+export default function App() { return <SafeAreaProvider><WindowOverlayProvider><Photobooth /></WindowOverlayProvider></SafeAreaProvider>; }
 
 function Photobooth() {
+  const { active: overlayActive, hasActive: hasActiveOverlay } = useWindowOverlayActivity();
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const landscape = width > height;
@@ -136,7 +138,6 @@ function Photobooth() {
   const templateActive = useRef(false);
   const templateSaving = useRef(false);
   const librarySessionRef = useRef<ActiveSession | null>(null);
-  const screenFade = useRef(new Animated.Value(1)).current;
   const countdownReveal = useRef(new Animated.Value(1)).current;
   const exposureFlash = useRef(new Animated.Value(0)).current;
   const reduceMotionRef = useRef(true);
@@ -194,6 +195,7 @@ function Photobooth() {
   const guestTimingRef = useRef<CaptureTiming>({ ...DEFAULT_CAPTURE_TIMING });
   const guestTimingOverride = useRef(false);
   const [timingVisible, setTimingVisible] = useState(false);
+  const [smsUiEnabled, setSmsUiEnabled] = useState(true);
   const [exportEnabled, setExportEnabled] = useState(true);
   const preferencesRef = useRef<HostPreferences>({ ...DEFAULT_HOST_PREFERENCES });
   const [hostVisible, setHostVisible] = useState(false);
@@ -525,7 +527,7 @@ function Photobooth() {
         try {
           const prefs = await loadHostPreferences();
           if (!mounted.current) return;
-          preferencesRef.current = prefs; setHostTiming(normalizeCaptureTiming(prefs)); setExportEnabled(prefs.photosExportEnabled); setHostOrientation(prefs.orientation);
+          preferencesRef.current = prefs; setHostTiming(normalizeCaptureTiming(prefs)); setExportEnabled(prefs.photosExportEnabled); setSmsUiEnabled(prefs.smsUiEnabled !== false); setHostOrientation(prefs.orientation);
           guestTimingRef.current = normalizeCaptureTiming(active?.captureTiming ?? prefs); guestTimingOverride.current = !!active?.captureTiming; setGuestTiming(guestTimingRef.current);
         } catch (error) { diagnose(error); }
         if (!mounted.current) return;
@@ -551,14 +553,14 @@ function Photobooth() {
         hostVisibleRef.current = false; setHostVisible(false); setHostDecision(null);
         librarySessionRef.current = null; setLibrarySession(null); setSavedSessions([]); setLibraryMode('selected'); setHostPage('controls'); setHostMessage('');
         retakeAllIntent.current = null; setRetakeAllVisible(false);
-        setTimingVisible(false); setScanningSetup(false); setPairingCode(''); runner.current?.interrupt(); screenFade.stopAnimation(); screenFade.setValue(1); countdownReveal.stopAnimation(); exposureFlash.stopAnimation(); exposureFlash.setValue(0);
+        setTimingVisible(false); setScanningSetup(false); setPairingCode(''); runner.current?.interrupt(); countdownReveal.stopAnimation(); exposureFlash.stopAnimation(); exposureFlash.setValue(0);
       }
       else { refreshInterruptedCamera(); void retrySharing(); void refreshCapability(); }
     });
     const timer = setInterval(() => {
       if (AppState.currentState === 'active') { setNow(Date.now()); void retrySharing(); }
     }, 15_000);
-    return () => { hostVisibility.current.close(); mounted.current = false; alive = false; lookEditor.current?.close(); templateEditor.current?.close(); runner.current?.interrupt(); screenFade.stopAnimation(); countdownReveal.stopAnimation(); exposureFlash.stopAnimation(); motion.remove(); lifecycle.remove(); clearInterval(timer); };
+    return () => { hostVisibility.current.close(); mounted.current = false; alive = false; lookEditor.current?.close(); templateEditor.current?.close(); runner.current?.interrupt(); countdownReveal.stopAnimation(); exposureFlash.stopAnimation(); motion.remove(); lifecycle.remove(); clearInterval(timer); };
   }, []);
 
   useEffect(() => {
@@ -566,10 +568,10 @@ function Photobooth() {
     let alive = true;
     void loadNativeOrientationPort().then(port => {
       if (!alive || !mounted.current) return;
-      const controller = createOrientationController({ ...port, async request(lock) {
+      const controller = createOrientationController({ ...port, isRequestSafe: () => !hasActiveOverlay(), async request(lock) {
         // Native work rechecks synchronous lifecycle/capture refs as well as
         // React's observed safe context. A delayed effect cannot rotate a save.
-        if (AppState.currentState !== 'active' || capturePersisting.current || runner.current?.isBusy() || actionLock.current || hostMutationLock.current || lookActive.current || templateActive.current || lookSaving.current || templateSaving.current) {
+        if (hasActiveOverlay() || AppState.currentState !== 'active' || capturePersisting.current || runner.current?.isBusy() || actionLock.current || hostMutationLock.current || lookActive.current || templateActive.current || lookSaving.current || templateSaving.current) {
           throw new Error('orientation-not-safe');
         }
         await port.request(lock);
@@ -577,6 +579,7 @@ function Photobooth() {
         onState: value => { if (alive && mounted.current) setOrientationState(value); } });
       orientationController.current = controller;
       controller.setContext({ active: AppState.currentState === 'active', blockers: [
+        ...(hasActiveOverlay() ? ['editor' as const] : []),
         ...(runner.current?.isBusy() || capturePersisting.current ? ['capture' as const] : []),
         ...(actionLock.current || exportLock.current || hostMutationLock.current ? ['save' as const] : []),
         ...(lookActive.current || lookSaving.current || templateActive.current || templateSaving.current ? ['editor' as const] : []),
@@ -586,11 +589,12 @@ function Photobooth() {
   }, [initialized]);
   useEffect(() => {
     orientationController.current?.setContext({ active: foreground, blockers: [
+      ...(overlayActive ? ['editor' as const] : []),
       ...(busy || preparing || countdown !== undefined ? ['countdown' as const] : []),
       ...(saving || capturePersisting.current || exporting || hostBusy ? ['save' as const] : []),
       ...(lookState || templateState || lookApplying || templateApplying ? ['editor' as const] : []),
     ] });
-  }, [foreground, busy, preparing, countdown, saving, exporting, hostBusy, lookState, templateState, lookApplying, templateApplying]);
+  }, [foreground, overlayActive, busy, preparing, countdown, saving, exporting, hostBusy, lookState, templateState, lookApplying, templateApplying]);
 
   useEffect(() => { reduceMotionRef.current = reduceMotion; if (reduceMotion) { exposureFlash.stopAnimation(); exposureFlash.setValue(0); } }, [reduceMotion, exposureFlash]);
 
@@ -614,13 +618,6 @@ function Photobooth() {
     const timer = setTimeout(() => setNow(Date.now()), Math.max(0, Math.min(guestPage.expiresAt - Date.now() + 1, 2_147_483_647)));
     return () => clearTimeout(timer);
   }, [guestPage?.expiresAt]);
-  useEffect(() => {
-    screenFade.stopAnimation();
-    if (reduceMotion) { screenFade.setValue(1); return; }
-    screenFade.setValue(0);
-    const transition = Animated.timing(screenFade, { toValue: 1, duration: 220, easing: Easing.out(Easing.quad), useNativeDriver: true });
-    transition.start(); return () => transition.stop();
-  }, [screen, reduceMotion, screenFade]);
   useEffect(() => {
     countdownReveal.stopAnimation();
     if (reduceMotion || countdown === undefined) { countdownReveal.setValue(1); return; }
@@ -805,7 +802,7 @@ function Photobooth() {
         throw new Error('Host settings stayed locked because the iPad left the booth or authentication did not return to the foreground. Return to the booth and tap Host to authenticate again.');
       }
       hostVisibility.current.record('foreground-ready', AppState.currentState); setMessage('');
-      setTimingVisible(false); setHostTiming(normalizeCaptureTiming(preferencesRef.current)); setExportEnabled(preferencesRef.current.photosExportEnabled); setHostOrientation(preferencesRef.current.orientation); updateCameraReady(false); setScanningSetup(false); setHostPage(initialPage); setHostMessage(''); hostVisibleRef.current = true; setHostVisible(true); setHostDecision(null); setPairingCode('');
+      setTimingVisible(false); setHostTiming(normalizeCaptureTiming(preferencesRef.current)); setExportEnabled(preferencesRef.current.photosExportEnabled); setSmsUiEnabled(preferencesRef.current.smsUiEnabled !== false); setHostOrientation(preferencesRef.current.orientation); updateCameraReady(false); setScanningSetup(false); setHostPage(initialPage); setHostMessage(''); hostVisibleRef.current = true; setHostVisible(true); setHostDecision(null); setPairingCode('');
       await refreshLibrary(); await refreshCapability();
       try { const connection = await loadConnection(); if (hostVisibleRef.current && hostVisibility.current.current(ticket)) setPaired(!!connection); } catch (error) { diagnose(error); }
     } catch (error) {
@@ -820,7 +817,7 @@ function Photobooth() {
   async function savePreferences() {
     if (hostMutationLock.current || hostBusy || !hostVisibleRef.current) return;
     hostMutationLock.current = true;
-    const update = { ...hostTiming, photosExportEnabled: exportEnabled, orientation: hostOrientation };
+    const update = { ...hostTiming, photosExportEnabled: exportEnabled, smsUiEnabled, orientation: hostOrientation };
     const authorization = hostActionAuthorization('controls');
     setHostBusy(true); setHostMessage('');
     try {
@@ -949,7 +946,8 @@ function Photobooth() {
     : 'Applying the saved display preference…';
   return <SafeAreaView edges={screen === 'camera' ? [] : ['top', 'right', 'bottom', 'left']} style={[styles.page, lightScreen && styles.lightPage]}>
     <StatusBar hidden={screen === 'camera'} barStyle={lightScreen ? 'dark-content' : 'light-content'} />
-    <Animated.View style={[styles.app, { opacity: screen === 'camera' ? 1 : screenFade }]}>
+    {/* Root visibility stays opaque; only explicit flash/countdown/thumbnail surfaces animate. */}
+    <View style={styles.app}>
       {screen === 'attract' ? <ImageBackground source={require('./assets/attract-scene.png')} resizeMode="cover" style={styles.attract} imageStyle={styles.attractImage}>
         <View style={styles.attractShade} />
         <View style={styles.attractTop}><Text testID="wedding-identity" style={[styles.brand, styles.weddingIdentity]}>{WEDDING_IDENTITY}</Text><Pressable accessibilityRole="button" accessibilityLabel="Open host controls" onPress={() => void openHost()} disabled={hostBusy}><Text style={styles.attractHost}>Host</Text></Pressable></View>
@@ -969,7 +967,7 @@ function Photobooth() {
           <View testID="camera-stage" style={styles.cameraStage}>
             {permission?.granted ? hostVisible ? <View style={StyleSheet.absoluteFill} /> : nativeFixtureEnabled
               ? <Image key={`fixture-${cameraEpoch}`} testID="camera-surface" source={nativeFixtureImage()} resizeMode="cover" style={StyleSheet.absoluteFill} onLoad={() => acknowledgeCameraReady(cameraEpoch)} accessibilityLabel="Synthetic native camera scene" />
-              : <CameraView key={`camera-${cameraEpoch}`} testID="camera-surface" ref={camera} facing="front" mirror={false} style={StyleSheet.absoluteFill} onCameraReady={() => acknowledgeCameraReady(cameraEpoch)} onMountError={() => { if (cameraEpoch !== cameraEpochRef.current) return; updateCameraReady(false); setMessage(CAMERA_UNAVAILABLE_MESSAGE); }} />
+              : <CameraView key={`camera-${cameraEpoch}`} testID="camera-surface" ref={camera} facing="front" mirror={true} style={StyleSheet.absoluteFill} onCameraReady={() => acknowledgeCameraReady(cameraEpoch)} onMountError={() => { if (cameraEpoch !== cameraEpochRef.current) return; updateCameraReady(false); setMessage(CAMERA_UNAVAILABLE_MESSAGE); }} />
               : <View style={styles.permission}><Text style={styles.permissionTitle}>You bring the smiles.</Text><Text style={styles.permissionBody}>We just need the camera.</Text><Button title={permission?.canAskAgain === false ? 'Open iPad Settings' : 'Enable camera'} testID="allow-camera" light onPress={() => void (permission?.canAskAgain === false ? Linking.openSettings() : requestPermission())} /></View>}
             <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: '#fff', opacity: exposureFlash }]} />
             <View style={[styles.cameraTop, { top: insets.top + 16, left: insets.left + 20, right: insets.right + 20 }]}>
@@ -1020,7 +1018,6 @@ function Photobooth() {
         {screen === 'template' && session && (templateState ? <TemplateStudio state={templateState} session={session} landscape={landscape} saving={templateApplying} foreground={foreground} reduceMotion={reduceMotion} onRetryInspection={() => templateEditor.current?.retryInspection()} onInspect={() => templateEditor.current?.renderInspection() ?? Promise.resolve(null)} onCrops={value => templateEditor.current?.setCrops(value)} previewPresented={templatePreviewPresented === templateState.previewUri} onPreviewLoaded={uri => { if (templatePreviewRef.current === uri) setTemplatePreviewPresented(uri); }} onPreviewError={uri => templateEditor.current?.previewFailed(uri)} onLayout={value => templateEditor.current?.chooseLayout(value)} onTheme={value => templateEditor.current?.chooseTheme(value)} onSwap={(a, b) => templateEditor.current?.swapPhotos(a, b)} onCrop={(id, crop) => templateEditor.current?.setCrop(id, crop)} onSave={() => void saveKeepsake()} onBack={() => { if (!templateSaving.current) { templateEditor.current?.close(); setScreen('review'); } }} /> : <View style={styles.permission}><Text style={[styles.permissionTitle, styles.brandDark]}>Finishing your keepsake…</Text></View>)}
         {screen === 'share' && session && <ScrollView contentContainerStyle={[styles.sharePage, (landscape || width >= 760) && styles.sharePageWide]}>
           <View style={styles.shareStory}><Text style={styles.shareEyebrow}>{total === 4 ? 'FOUR FRAMES. ALL YOURS.' : total === 5 ? 'FIVE FRAMES. ALL YOURS.' : 'YOUR MOMENT. ALL YOURS.'}</Text><Text style={styles.shareTitle}>Yours to keep.</Text><Text style={styles.shareBody}>{guestPage ? session.composite ? 'Your keepsake and all four originals, in one private page.' : `Scan once. Take all ${session.shots.length} home.` : `Your ${session.shots.length} originals are safe on this iPad.`}</Text>{session.composite && <Image testID="saved-keepsake-preview" source={{ uri: session.composite.fileUri }} style={styles.keepsakePreview} resizeMode="contain" accessibilityLabel="Saved full-resolution keepsake" />}<Thumbnails reduceMotion={reduceMotion || !foreground} session={session} active={-1} dark={false} />
-            <SmsShare key={session.id} session={session} jobs={jobs} onChanged={async () => { await retrySharing(); }} />
             <Text style={styles.shareLocal}>{session.shots.length} originals saved on this iPad</Text><Text style={styles.shareLibrary}>{photosStatus(session)}</Text>
             {session.composite && <Text testID="keepsake-photos-status" style={styles.shareLibrary}>{session.composite.exportStatus === 'saved' ? 'Your keepsake was exported to Photos' : session.composite.exportStatus === 'uncertain' ? 'Keepsake Photos result unconfirmed · ask the host to check' : 'Keepsake saved here · Photos copy is separate'}</Text>}
             {needsPhotosExport(session) && <Pressable accessibilityRole="button" disabled={exporting} style={styles.textAction} onPress={() => void exportPhotos(session, true)}><Text style={styles.lightTextAction}>{exporting ? 'Exporting to Photos…' : 'Save a copy to Photos'}</Text></Pressable>}
@@ -1029,14 +1026,15 @@ function Photobooth() {
               : <View style={styles.offlineCard}><Text style={styles.offlineGlyph}>✓</Text><Text testID="share-link-unavailable" style={styles.offlineTitle}>{shareReadiness.title}</Text><Text testID="share-readiness-message" style={styles.sharePrivacy}>{shareReadiness.message}</Text>{shareReadiness.action === 'private-setup' || shareReadiness.action === 'check-connection'
                 ? <Button title="Ask the host for sharing setup" testID="sharing-setup-host" secondary light onPress={() => void openHost('setup')} />
                 : shareReadiness.action === 'retry' ? <Button title="Retry sharing" testID="retry-sharing" secondary light disabled={sharingSync === 'running'} onPress={() => void retrySharing(true)} /> : null}</View>}
+            <SmsShare enabled={preferencesRef.current.smsUiEnabled !== false} key={session.id} session={session} jobs={jobs} onChanged={async () => { await retrySharing(); }} />
             <Button title={busy ? 'Clearing this screen…' : 'Next guests'} testID="next-guest" disabled={busy} onPress={() => void nextGuests()} />
           </View>
         </ScrollView>}
       </>}
       {!!message && <View testID="booth-status-message" accessibilityLiveRegion="polite" style={[styles.message, screen === 'camera' && styles.cameraMessage, screen === 'camera' && { left: insets.left + 18, right: insets.right + 18, top: insets.top + 80 }]}><Text style={styles.messageText}>{message}</Text></View>}
       {nativeFixtureEnabled && <View style={styles.fixture}><Text testID="native-fixture-enabled" style={styles.fixtureText}>SYNTHETIC CAMERA · REAL LOCAL STORAGE · OFFLINE SHARING</Text><Text testID="native-fixture-storage" style={styles.fixtureText}>{fixtureStatus}</Text></View>}
-    </Animated.View>
-    <Modal visible={retakeAllVisible && foreground && !hostVisible} transparent animationType={reduceMotion ? 'none' : 'fade'} onRequestClose={closeRetakeAll}>
+    </View>
+    <Modal presentationStyle="overFullScreen" supportedOrientations={['portrait', 'portrait-upside-down', 'landscape']} visible={retakeAllVisible && foreground && !hostVisible} transparent animationType={reduceMotion ? 'none' : 'fade'} onRequestClose={closeRetakeAll}>
       <View style={styles.retakeAllOverlay}><View style={styles.retakeAllCard} accessibilityViewIsModal>
         <Text style={styles.retakeAllEyebrow}>YOUR PREVIOUS SET STAYS SAVED</Text><Text style={styles.retakeAllTitle}>A fresh set?</Text>
         {session && <Thumbnails session={session} active={-1} dark={false} reduceMotion={reduceMotion} />}
@@ -1046,7 +1044,7 @@ function Photobooth() {
       </View></View>
     </Modal>
     <TimingSheet visible={timingVisible && foreground && !hostVisible && !busy} timing={guestTiming} defaults={normalizeCaptureTiming(preferencesRef.current)} onApply={applyGuestTiming} onClose={() => setTimingVisible(false)} reduceMotion={reduceMotion} disabled={busy} />
-    <Modal visible={hostVisible && foreground} animationType={reduceMotion || !foreground ? 'none' : 'slide'} presentationStyle="pageSheet" onRequestClose={closeHost}>
+    <Modal visible={hostVisible && foreground} animationType={reduceMotion || !foreground ? 'none' : 'slide'} presentationStyle="pageSheet" supportedOrientations={['portrait', 'portrait-upside-down', 'landscape']} onRequestClose={closeHost}>
       <SafeAreaView style={styles.hostPage}><ScrollView contentContainerStyle={styles.hostContent} keyboardShouldPersistTaps="handled">
         <View style={styles.hostHeader}><Text style={styles.hostTitle}>{hostPage === 'library' ? 'On this iPad' : hostPage === 'setup' ? 'Private setup' : 'Booth controls'}</Text><Pressable accessibilityRole="button" onPress={closeHost}><Text style={styles.closeHost}>Done</Text></Pressable></View>
         <View style={styles.hostTabs}>{(['controls', 'library', 'setup'] as HostPage[]).map(page => <Pressable key={page} accessibilityRole="button" accessibilityState={{ selected: hostPage === page }} style={[styles.hostTab, hostPage === page && styles.hostTabActive]} onPress={() => { setHostPage(page); setHostMessage(''); setScanningSetup(false); setPairingCode(''); }}><Text style={styles.hostTabText}>{page === 'controls' ? 'Controls' : page === 'library' ? 'Saved sessions' : 'Private setup'}</Text></Pressable>)}</View>
@@ -1056,6 +1054,7 @@ function Photobooth() {
             <Text testID="host-orientation-status" accessibilityLiveRegion="polite" style={styles.hostSmall}>{orientationDescription}</Text><Text style={styles.hostSmall}>This changes the interface, not your original photos or keepsake shape. iPad multitasking and rotation settings may limit a lock.</Text>
             {(orientationState?.status === 'unconfirmed' || orientationState?.status === 'error') && <Pressable accessibilityRole="button" testID="retry-display-orientation" style={styles.textAction} disabled={hostBusy} onPress={() => orientationController.current?.retry()}><Text style={styles.lightTextAction}>Check display again</Text></Pressable>}
           </View>
+          <View style={styles.hostCard}><View style={styles.switchRow}><View style={styles.switchText}><Text style={styles.hostSectionTitle}>Text-message option</Text><Text style={styles.hostBody}>Show or hide text sharing for guests. Pairing, credentials, queued requests, photos and QR downloads stay preserved.</Text></View><Switch testID="host-sms-visible" accessibilityLabel="Show text-message option" value={smsUiEnabled} onValueChange={setSmsUiEnabled} disabled={hostBusy} /></View></View>
           <View style={styles.hostCard}><Text style={styles.hostSectionTitle}>Booth timing defaults</Text><Text style={styles.hostBody}>A little longer to get ready, then a quicker rhythm. Guests can adjust their own session before starting.</Text><TimingControls value={hostTiming} onChange={setHostTiming} disabled={hostBusy} testIDPrefix="host-timing" /><Text style={styles.hostSmall}>Next guests start with these saved defaults. Retakes and paused sessions use the first-photo preparation time again.</Text></View>
           <View style={styles.hostCard}><View style={styles.switchRow}><View style={styles.switchText}><Text style={styles.hostSectionTitle}>Copies in Photos</Text><Text style={styles.hostBody}>Try an additional Photos export after capture. Local originals always save first.</Text></View><Switch accessibilityLabel="Automatically export copies to Photos" value={exportEnabled} onValueChange={setExportEnabled} trackColor={{ true: '#596857' }} /></View><Text style={styles.hostSmall}>Photos permission: {libraryPermission}. Failed or denied exports keep their local originals.</Text><Pressable accessibilityRole="button" style={styles.textAction} onPress={() => void Linking.openSettings()}><Text style={styles.lightTextAction}>Open iPad permission settings</Text></Pressable></View>
           <Button title={hostBusy ? 'Saving settings…' : 'Save booth settings'} disabled={hostBusy} onPress={() => void savePreferences()} />
@@ -1117,7 +1116,7 @@ function Photobooth() {
         </View>}
       </SafeAreaView>
     </Modal>
-    <Modal visible={!!lookState && foreground} animationType={reduceMotion || !foreground ? 'none' : 'fade'} onRequestClose={() => lookEditor.current?.close()}>
+    <Modal visible={!!lookState && foreground} animationType={reduceMotion || !foreground ? 'none' : 'fade'} presentationStyle="fullScreen" supportedOrientations={['portrait', 'portrait-upside-down', 'landscape']} onRequestClose={() => lookEditor.current?.close()}>
       {lookState && <SafeAreaView testID="look-editor" style={styles.lookPage}>
         <View style={styles.lookHeader}><View><Text style={styles.reviewEyebrow}>PHOTO {lookState.slot + 1} OF {total}</Text><Text style={styles.reviewTitle}>Make it yours.</Text></View><Pressable accessibilityRole="button" testID="look-cancel" onPress={() => lookEditor.current?.close()} style={styles.lookCancel}><Text style={styles.lookEntryText}>Cancel</Text></Pressable></View>
         <View style={[styles.lookBody, landscape && styles.lookBodyWide]}>

@@ -10,10 +10,10 @@ export type PhotoCrop = { mode: 'fit' | 'fill'; x: number; y: number; zoom: numb
 export type GridAspect = 'portrait' | 'square';
 type CompositeRecipeFields = { layout: 'strip' | 'grid'; theme: 'classic' | 'botanical' | 'coastal'; photoIds: string[]; cropsByPhotoId: Record<string, PhotoCrop> };
 export type CompositeRecipe = CompositeRecipeFields & (
-  { version: 'wedding-template-v1' } | { version: 'wedding-template-v2'; gridAspect: GridAspect }
+  { version: 'wedding-template-v1' } | { version: 'wedding-template-v2'; gridAspect: GridAspect } | { version: 'wedding-template-v3'; gridAspect: 'square' }
 );
 export type PublicationComposite = { photoId: string; layout: CompositeRecipe['layout']; theme: CompositeRecipe['theme'] } & (
-  { version: 'wedding-template-v1' } | { version: 'wedding-template-v2'; gridAspect: GridAspect }
+  { version: 'wedding-template-v1' } | { version: 'wedding-template-v2'; gridAspect: GridAspect } | { version: 'wedding-template-v3'; gridAspect: 'square' }
 );
 export type SessionComposite = { id: string; fileUri: string; exportStatus?: PhotoExportStatus; recipe: CompositeRecipe; originalPhotoIds: string[] };
 export type SessionPublicationAssets = { photoIds: string[]; originalPhotoIds?: string[]; composite?: PublicationComposite };

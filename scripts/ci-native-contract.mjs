@@ -171,7 +171,7 @@ export function nativeRuntimeSources(root) {
 const studioResourceNames = ['portrait-1', 'portrait-2', 'portrait-3', 'portrait-4', 'landscape-1', 'landscape-2'];
 export function nativeRuntimeResources(root) {
   let total = 0;
-  return studioResourceNames.map(name => {
+  const photos = studioResourceNames.map(name => {
     const source = 'apps/ipad/native-tests/fixtures/studio/studio-' + name + '.jpg';
     const bytes = readFileSync(resolve(root, source));
     if (bytes.length < 4 || bytes.length > 2 * 1024 * 1024 || bytes[0] !== 0xff || bytes[1] !== 0xd8 ||
@@ -181,6 +181,15 @@ export function nativeRuntimeResources(root) {
     return { source, generatedSource: 'NativeTests/StudioFixtures/' + basename(source),
       sha256: createHash('sha256').update(bytes).digest('hex'), bytes: bytes.length };
   });
+  const artwork = ['Classic-Ivory', 'Sage-Botanical', 'Coastal-Sea-Glass'].map(name => {
+    const source = 'apps/ipad/modules/wedding-photo-effects/ios/FrameArt/' + name + '-Text-Free-Artwork.frameart';
+    const bytes = readFileSync(resolve(root, source));
+    if (bytes.length < 24 || bytes.length > 4 * 1024 * 1024 || !bytes.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])) ||
+      bytes.readUInt32BE(16) !== 1254 || bytes.readUInt32BE(20) !== 1254) throw new Error('Invalid or unbounded generated frame PNG resource: ' + source);
+    return { source, generatedSource: 'NativeTests/FrameArt/' + basename(source),
+      sha256: createHash('sha256').update(bytes).digest('hex'), bytes: bytes.length };
+  });
+  return [...photos, ...artwork];
 }
 
 export function verifyNativeRuntimeSources(plan, root) {

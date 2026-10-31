@@ -675,3 +675,24 @@ test('recovery cannot queue another guest original through a corrupted v2 lineag
   assert.equal(f.sql.prepare('SELECT count(*) AS n FROM jobs').get()?.n, 5);
   assert.deepEqual(await readFile(fileURLToPath(f.uri('photobooth/other-original.jpg'))), await readFile(fileURLToPath(f.source)));
 });
+
+test('v3 artwork recipe and completed composite survive restart without rewriting originals or legacy recipes', async t => {
+  for (const layout of ['strip', 'grid'] as const) {
+    const f = await diskFixture(t), { repository, session } = await four(f, `v3-${layout}`);
+    const selected = session.shots.map(photo => photo.id);
+    const recipe = { ...templateRecipe(selected), version: 'wedding-template-v3' as const, layout, gridAspect: 'square' as const };
+    await assert.rejects(repository.saveComposite(session.id, { id: 'invalid-v3-composite', newRenderedURI: f.source, recipe: { ...recipe, gridAspect: 'portrait' } as unknown as typeof recipe, expectedSelectedPhotoIds: selected }), /composite/);
+    await repository.saveComposite(session.id, { id: 'v3-composite', newRenderedURI: f.source, recipe, expectedSelectedPhotoIds: selected });
+    await repository.confirmSession(session.id);
+    const done = { ...f.payload('v3-composite'), state: 'complete', attempts: 7, guestUrl: 'https://photos.example/g/v3', guestExpiresAt: 99999 };
+    f.sql.prepare('UPDATE jobs SET payload=? WHERE id=?').run(JSON.stringify(done), 'v3-composite');
+    const before = await readFile(fileURLToPath(f.uri('photobooth/v3-composite.jpg')));
+    const restored = f.make(); await restored.recover(); await restored.reconcileConfirmedPhotos();
+    assert.deepEqual((await restored.getSession(session.id))?.composite?.recipe, recipe);
+    assert.deepEqual((await restored.getSessionPublicationAssets(session.id))?.composite,
+      { photoId: 'v3-composite', layout, theme: 'botanical', version: 'wedding-template-v3', gridAspect: 'square' });
+    assert.deepEqual(f.payload('v3-composite'), done);
+    assert.deepEqual(await readFile(fileURLToPath(f.uri('photobooth/v3-composite.jpg'))), before);
+    for (const id of selected) assert.ok((await f.files.list()).includes(`${id}.jpg`));
+  }
+});

@@ -12,6 +12,7 @@ Pod::Spec.new do |s|
   s.static_framework = true
   s.dependency 'ExpoModulesCore'
   s.source_files = '**/*.swift'
+  s.resource_bundles = { 'WeddingFrameArt' => ['FrameArt/*.frameart'] }
   s.frameworks = 'CoreImage', 'CoreText', 'ImageIO', 'UniformTypeIdentifiers', 'CryptoKit'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
 end

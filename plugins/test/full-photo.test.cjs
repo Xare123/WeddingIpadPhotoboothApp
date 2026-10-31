@@ -102,3 +102,22 @@ test('tampering an already patched source fails closed', t => {
   fs.appendFileSync(path.join(root, plugin.specs[1].file), '\n// drift\n');
   assert.throws(() => plugin.applyPatch(root), /source drift/);
 });
+
+test('front capture matches mirrored preview without a second image flip; rear remains unmirrored', t => {
+  const root = tree(t); plugin.applyPatch(root);
+  const capture = fs.readFileSync(path.join(root, 'ios/Current/CameraPhotoCapture.swift'), 'utf8');
+  const module = fs.readFileSync(path.join(root, 'ios/CameraViewModule.swift'), 'utf8');
+  const app = fs.readFileSync(path.join(appRoot, 'App.tsx'), 'utf8');
+  // Exercise the reviewed installed native connection path, not a JS flip helper.
+  assert.match(app, /testID="camera-surface" ref=\{camera\} facing="front" mirror=\{true\}/);
+  assert.match(app, /CameraView facing="back" style=\{StyleSheet.absoluteFill\} barcodeScannerSettings/);
+  assert.match(module, /view\.mirror = mirror \?\? false/);
+  assert.match(capture, /connection\?\.isVideoMirrored = captureDelegate\?\.presetCamera == \.front &&\s*\(\(captureDelegate\?\.mirror \?\? false\) \|\| options\.mirror\)/);
+  assert.match(capture, /connection\?\.videoOrientation = ExpoCameraUtils\.captureOrientation\(/);
+  assert.match(capture, /physicalOrientation: captureDelegate\?\.physicalOrientation \?\? \.unknown/);
+  assert.match(capture, /interfaceOrientation: captureDelegate\?\.deviceOrientation \?\? \.unknown/);
+  const preserved = capture.slice(capture.indexOf('    if options.preserveFullPhoto {', capture.indexOf('private func processImageData')), capture.indexOf('    guard let imageData, var takenImage'));
+  assert.match(preserved, /write\(data: imageData, to: path\)/);
+  assert.doesNotMatch(preserved, /applyingFilter|jpegData|oriented\(|scaleX|flipped/);
+  assert.doesNotMatch(app, /scaleX:\s*-1|ImageManipulator/);
+});

@@ -1,8 +1,9 @@
+import { Modal } from './window-overlay';
 import { useEffect, useRef, useState } from 'react';
-import { Image, Modal, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { ActiveSession, CompositeRecipe, PhotoCrop } from './local-types';
-import type { TemplateEditorState } from './template-editor';
+import { TEMPLATE_LAYOUTS, type TemplateEditorState } from './template-editor';
 
 export const TEMPLATE_THEMES = [
   { id: 'classic', name: 'Classic Ivory', paper: '#F6F0E4' },
@@ -53,7 +54,7 @@ export function TemplateStudio(p: Props) {
   </View>;
   const fullPhotos = recipe.photoIds.every(id => recipe.cropsByPhotoId[id]?.mode === 'fit');
   const filledPhotos = recipe.photoIds.every(id => recipe.cropsByPhotoId[id]?.mode === 'fill');
-  const layoutDescription = recipe.layout === 'strip' ? 'Classic strip · 1:3' : recipe.version === 'wedding-template-v2' ? recipe.gridAspect === 'portrait' ? 'Social grid · Portrait 4:5' : 'Social grid · Square' : 'Four-cut grid';
+  const layoutDescription = recipe.layout === 'strip' ? 'Classic strip · 1:3' : recipe.version !== 'wedding-template-v1' ? recipe.gridAspect === 'portrait' ? 'Social grid · Portrait 4:5' : 'Social grid · Square' : 'Four-cut grid';
   const imageError = () => { if (inspection) p.onPreviewError(inspection.uri); closeInspection(); };
   const inspectionWidth = Math.max(100, width - insets.left - insets.right - 32);
   return <View testID="template-studio" style={s.page}>
@@ -65,14 +66,14 @@ export function TemplateStudio(p: Props) {
       </View>
       <View style={[s.panel, p.landscape && s.panelWide]}>
         <ScrollView style={s.controlScroll} contentContainerStyle={s.controls} showsVerticalScrollIndicator>
-          <View style={s.segment}>{(['strip', 'grid'] as const).map(layout => <Pressable key={layout} testID={`template-layout-${layout}`} accessibilityRole="button" accessibilityState={{ selected: recipe.layout === layout, disabled: blocked }} disabled={blocked} onPress={() => p.onLayout(layout)} style={[s.segmentButton, recipe.layout === layout && s.segmentSelected]}><Text style={[s.segmentText, recipe.layout === layout && s.segmentTextSelected]}>{layout === 'strip' ? 'Photo strip' : 'Four-cut grid'}</Text></Pressable>)}</View>
+          <View style={s.segment}>{TEMPLATE_LAYOUTS.map(({ id: layout, label }) => <Pressable key={layout} testID={`template-layout-${layout}`} accessibilityRole="button" accessibilityState={{ selected: recipe.layout === layout, disabled: blocked }} disabled={blocked} onPress={() => p.onLayout(layout)} style={[s.segmentButton, recipe.layout === layout && s.segmentSelected]}><Text style={[s.segmentText, recipe.layout === layout && s.segmentTextSelected]}>{label}</Text></Pressable>)}</View>
           <View style={s.themes}>{TEMPLATE_THEMES.map(theme => <Pressable key={theme.id} testID={`template-theme-${theme.id}`} accessibilityRole="button" accessibilityLabel={theme.name} accessibilityState={{ selected: recipe.theme === theme.id, disabled: blocked }} disabled={blocked} onPress={() => p.onTheme(theme.id)} style={[s.themeCard, { backgroundColor: theme.paper }, recipe.theme === theme.id && s.themeSelected]}>
             <View style={s.themePicture}>{p.state.themePreviews[theme.id] ? <Image key={p.state.themePreviews[theme.id]} testID={`template-theme-preview-${theme.id}`} source={{ uri: p.state.themePreviews[theme.id]! }} resizeMode="contain" style={StyleSheet.absoluteFill} accessibilityLabel={`${theme.name}, with your four photos`} onError={() => { const uri = p.state.themePreviews[theme.id]; if (uri) p.onPreviewError(uri); }} /> : <Text style={s.loadingSmall}>Preparing…</Text>}</View><Text style={s.themeName}>{theme.name}</Text>
           </Pressable>)}</View>
           <View style={s.placement}>
             <Text style={s.sectionLabel}>Photo placement</Text>
             <View style={s.segment}>{(['fit', 'fill'] as const).map(mode => <Pressable key={mode} testID={`template-placement-${mode}`} accessibilityRole="button" accessibilityState={{ selected: mode === 'fit' ? fullPhotos : filledPhotos, disabled: blocked }} disabled={blocked} style={[s.segmentButton, (mode === 'fit' ? fullPhotos : filledPhotos) && s.segmentSelected]} onPress={() => { setSelected(null); p.onCrops(Object.fromEntries(recipe.photoIds.map(id => [id, { mode, x: 0, y: mode === 'fill' ? -1 : 0, zoom: 1 }]))); }}><Text style={[s.segmentText, (mode === 'fit' ? fullPhotos : filledPhotos) && s.segmentTextSelected]}>{mode === 'fit' ? 'Full photo' : 'Fill frames'}</Text></Pressable>)}</View>
-            <Text testID="template-placement-note" style={s.note}>{fullPhotos ? recipe.layout === 'strip' && recipe.version === 'wedding-template-v2' && recipe.gridAspect === 'portrait' ? 'Portrait photos have side space in a classic strip. Try Fill frames, then check every face. Originals stay unchanged.' : 'Every edge stays in view. Fill is optional.' : 'Fill starts at the top and crops edges. Check every face; originals stay unchanged.'}</Text>
+            <Text testID="template-placement-note" style={s.note}>{fullPhotos ? recipe.layout === 'strip' && recipe.version !== 'wedding-template-v1' && recipe.gridAspect === 'portrait' ? 'Portrait photos have side space in a classic strip. Try Fill frames, then check every face. Originals stay unchanged.' : 'Every edge stays in view. Fill is optional.' : 'Fill starts at the top and crops edges. Check every face; originals stay unchanged.'}</Text>
           </View>
           <Pressable accessibilityRole="button" testID="template-adjust" accessibilityState={{ expanded: adjust, disabled: blocked }} disabled={blocked} onPress={() => { setAdjust(!adjust); setSelected(null); }} style={s.link}><Text style={s.linkText}>{adjust ? 'Done adjusting' : 'Adjust photos'}</Text></Pressable>
           {adjust && <View style={s.adjust}>

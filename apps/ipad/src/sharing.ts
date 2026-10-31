@@ -43,13 +43,13 @@ export function validateReadyPublication(value: unknown, expected: SessionPublic
   const sameIds = (actual: unknown, ids: string[] | undefined) => Array.isArray(actual) && !!ids &&
     actual.length === ids.length && actual.every((id, index) => id === ids[index]);
   const expectedComposite = expected.composite;
-  const keys = ['photoId', 'layout', 'theme', 'version', ...(expectedComposite.version === 'wedding-template-v2' ? ['gridAspect'] : [])];
+  const keys = ['photoId', 'layout', 'theme', 'version', ...(expectedComposite.version !== 'wedding-template-v1' ? ['gridAspect'] : [])];
   const composite = result.composite as Record<string, unknown> | null | undefined;
   if (!sameIds(result.photoIds, expected.photoIds) || !sameIds(result.originalPhotoIds, expected.originalPhotoIds) ||
     !composite || typeof composite !== 'object' || Array.isArray(composite) ||
     Object.keys(composite).length !== keys.length || Object.keys(composite).some(key => !keys.includes(key)) ||
     composite.photoId !== expectedComposite.photoId || composite.layout !== expectedComposite.layout || composite.theme !== expectedComposite.theme ||
-    composite.version !== expectedComposite.version || (expectedComposite.version === 'wedding-template-v2' &&
+    composite.version !== expectedComposite.version || (expectedComposite.version !== 'wedding-template-v1' &&
       (!['portrait', 'square'].includes(expectedComposite.gridAspect) || composite.gridAspect !== expectedComposite.gridAspect))) throw new Error('Publication was not acknowledged');
 }
 
@@ -74,11 +74,18 @@ export function qrForJob(job: {
 }
 
 export function normalizePhone(input: string): string {
-  const phone = input.trim().replace(/[\s().-]/g, '');
-  if (!/^\+[1-9]\d{7,14}$/.test(phone)) {
-    throw new Error('Use an international phone number, including + and country code.');
-  }
-  return phone;
+  const value = input.trim();
+  const invalid = () => new Error('Enter a 10-digit U.S. phone number. Spaces, parentheses and dashes are okay.');
+  // Remove only ordinary presentation characters. Never discard letters,
+  // extension markers or an unexpected country code and silently change a recipient.
+  if (!/^\+?[\d\s().-]+$/.test(value)) throw invalid();
+  let digits = value.replace(/[\s().-]/g, '');
+  if (digits.startsWith('+')) {
+    if (!digits.startsWith('+1')) throw invalid();
+    digits = digits.slice(2);
+  } else if (digits.length === 11 && digits.startsWith('1')) digits = digits.slice(1);
+  if (!/^[2-9]\d{2}[2-9]\d{6}$/.test(digits)) throw invalid();
+  return `+1${digits}`;
 }
 
 export function sessionGuestPage(

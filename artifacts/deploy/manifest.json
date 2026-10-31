@@ -1,10 +1,32 @@
 {
   "artifact": "worker.mjs",
   "format": "esm",
-  "generatedAt": "2026-10-26T18:21:19.593Z",
-  "sha256": "43dabd6c9dcda6aa44f23ca11ac544f2588f9efd5428f0837dc839f4f98c9ded",
-  "sourceSha256": "82a548e2f5e640ce6f57f360b7636959e8c6877c3ec3b6c58570a80fb103bd63",
-  "bytes": 39993,
+  "generatedAt": "2026-10-31T03:24:16.751Z",
+  "sha256": "8482406106e8244ca32ee1e50ffec9d799870b9fac390806a2b35c2bdafb3086",
+  "sourceSha256": "4ebeff20e8abd34c05a6ca52e3cd2a70140d6b84315d84e4321ccc1f4d7535be",
+  "sourceFiles": [
+    {
+      "path": "services/api/src/guest-email.client",
+      "bytes": 3204,
+      "sha256": "524b0902e31be40284d7c68d8acb9bcf35b6938b4ff98d2ee249192ea3030807"
+    },
+    {
+      "path": "services/api/src/guest-email.ts",
+      "bytes": 11583,
+      "sha256": "2a643575408dbaf119b6fe9d41390973be3a16d0c7d5edd5acf7930543533b80"
+    },
+    {
+      "path": "services/api/src/guest-keepsake.client",
+      "bytes": 21079,
+      "sha256": "f37b28e9409b4b6b5969020c090d2b21cc886581e9e17752305c623b5fc95778"
+    },
+    {
+      "path": "services/api/src/index.ts",
+      "bytes": 59289,
+      "sha256": "4ebeff20e8abd34c05a6ca52e3cd2a70140d6b84315d84e4321ccc1f4d7535be"
+    }
+  ],
+  "bytes": 86569,
   "compatibilityDate": "2026-10-25",
   "proposedWorker": "wedding-photobooth",
   "existingPrivateBucket": "gizelleandrami-photoboothphotos",
@@ -23,7 +45,8 @@
   "secretNames": [
     "DEVICE_TOKEN",
     "LINK_SIGNING_KEY",
-    "TEXTBELT_API_KEY"
+    "TEXTBELT_API_KEY",
+    "RESEND_API_KEY"
   ],
   "requiredSecretNames": [
     "DEVICE_TOKEN",
@@ -32,6 +55,9 @@
   "optionalSecretNames": {
     "approvedSms": [
       "TEXTBELT_API_KEY"
+    ],
+    "optionalGuestEmail": [
+      "RESEND_API_KEY"
     ]
   },
   "pairingUsesExistingBoothAuthority": true,
@@ -167,6 +193,41 @@
   "rateLimitNamespaceIdsRequireReview": true,
   "rateLimitScope": "Approximate per Cloudflare POP; not a strict global request budget or financial cap",
   "staticAssetsBindingRequired": false,
+  "guestArtwork": {
+    "manifest": "guest-artwork-v3/manifest.json",
+    "objects": [
+      {
+        "theme": "classic",
+        "artifact": "guest-artwork-v3/classic.png",
+        "source": "design/frame-art-v1/Classic-Ivory-Text-Free-Artwork.png",
+        "key": "system/keepsake-art/v3/classic.png",
+        "contentType": "image/png",
+        "sha256": "3ccb9f0acf030b5bc31b2bbf6d81f3e694e2dd2e045dc77fd930c6d4df59164e",
+        "bytes": 1802037
+      },
+      {
+        "theme": "botanical",
+        "artifact": "guest-artwork-v3/botanical.png",
+        "source": "design/frame-art-v1/Sage-Botanical-Text-Free-Artwork.png",
+        "key": "system/keepsake-art/v3/botanical.png",
+        "contentType": "image/png",
+        "sha256": "4121598a7aa1d445fed5c223d4b475d706cb93567d90c51a42d1dad86cb36e21",
+        "bytes": 1803664
+      },
+      {
+        "theme": "coastal",
+        "artifact": "guest-artwork-v3/coastal.png",
+        "source": "design/frame-art-v1/Coastal-Sea-Glass-Text-Free-Artwork.png",
+        "key": "system/keepsake-art/v3/coastal.png",
+        "contentType": "image/png",
+        "sha256": "8f3bbfb131c9454f6ea633a79445e6cd9b32176e9aa80c09080925b0d83884a0",
+        "bytes": 2050468
+      }
+    ],
+    "uploadRequired": true,
+    "uploaded": false,
+    "preserveExistingPrivateBucket": true
+  },
   "deploymentMetadata": {
     "main_module": "worker.mjs",
     "compatibility_date": "2026-10-25",

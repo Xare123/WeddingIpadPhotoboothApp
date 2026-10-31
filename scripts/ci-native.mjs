@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { bounded, redact } from './ci-summary.mjs';
-import { verifyNativeCameraMarker } from './native-camera-capability.mjs';
+import { verifyNativeCameraMarker, verifyNativeFrameArt } from './native-camera-capability.mjs';
 import { NATIVE_RUNTIME_LIMITS, simulatorBuildArchitecture, simulatorArchitectureSettings, stopOwnedProcessGroup, nativeModeSettings, requireNativeTestPlan, verifyNativeRuntimeSources, passingExpectedXCTestCounts, commandStreams, parseNamedJSON, passingXCTestCounts, selectIpadSimulator, waitForMetro, metroErrorCodes, resolveExpoEntry, ownedProcessTree, verifyReleaseApp, requireSwiftTools62 } from './ci-native-contract.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -226,6 +226,8 @@ async function main() {
     const info = await command('release-info', 'plutil', ['-convert', 'json', '-o', '-', join(app, 'Info.plist')], { structured: 'json' });
     status.releaseEvidence = validationStage('release-evidence', () => verifyReleaseApp(app, info.json, plan.appBundleId));
     status.nativeCameraEvidence = validationStage('native-camera-marker', () => verifyNativeCameraMarker(app, info.json));
+    status.frameArtEvidence = validationStage('native-frame-art', () => verifyNativeFrameArt(app));
+    writeFileSync(join(diagnostics, 'native-frame-art-evidence.json'), JSON.stringify(status.frameArtEvidence, null, 2) + '\n');
     writeFileSync(join(diagnostics, 'release-evidence.json'), JSON.stringify(status.releaseEvidence, null, 2) + '\n');
     writeFileSync(join(diagnostics, 'native-camera-evidence.json'), JSON.stringify(status.nativeCameraEvidence, null, 2) + '\n');
     status.nativeBuild = 'passed'; status.result = 'passed';
@@ -327,6 +329,8 @@ async function main() {
     const app = join(derived, 'Build/Products/Release-iphonesimulator', appScheme + '.app');
     const info = await command('runtime-app-info', 'plutil', ['-convert', 'json', '-o', '-', join(app, 'Info.plist')], { structured: 'json', timeout: 30000 });
     status.nativeCameraEvidence = validationStage('native-camera-marker', () => verifyNativeCameraMarker(app, info.json));
+    status.frameArtEvidence = validationStage('native-frame-art', () => verifyNativeFrameArt(app));
+    writeFileSync(join(diagnostics, 'native-frame-art-evidence.json'), JSON.stringify(status.frameArtEvidence, null, 2) + '\n');
     writeFileSync(join(diagnostics, 'native-camera-evidence.json'), JSON.stringify(status.nativeCameraEvidence, null, 2) + '\n');
   }
   if (mode === 'release-runtime') status.runtimeEvidence = { configuration: 'Release', sdk: 'iphonesimulator', fixture: 'disabled', metroServer: false, scope: 'coreimage-effects-and-template-pixel-tests-plus-attract-ui', expectedTestCount: status.expectedTestCount };

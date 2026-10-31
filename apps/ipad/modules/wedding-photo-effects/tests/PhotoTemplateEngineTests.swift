@@ -16,13 +16,15 @@ final class PhotoTemplateEngineTests: XCTestCase {
     engine = PhotoTemplateEngine(cacheDirectory: directory.appendingPathComponent("templates"))
   }
   override func tearDownWithError() throws { try FileManager.default.removeItem(at: directory) }
-  func fixtures(orientation: Int = 1, wide: Bool = false, split: Bool = false) throws -> [PhotoTemplateEngine.Source] {
+  func fixtures(orientation: Int = 1, wide: Bool = false, split: Bool = false, quadrants: Bool = false) throws -> [PhotoTemplateEngine.Source] {
     try (0..<4).map { index in
       let width = wide ? 800 : 400, height = 300
       var pixels = [UInt8](repeating: 255, count: width * height * 4)
       for y in 0..<height { for x in 0..<width {
         let rgb = y < 8 ? [UInt8(245),240,20] : y >= height - 8 ? [UInt8(20),235,235]
           : x < 8 ? [UInt8(250),250,250] : x >= width - 8 ? [UInt8(15),15,15]
+          : quadrants ? (y < height / 2 ? (x < width / 2 ? [UInt8(215),40,35] : [UInt8(35),175,55])
+            : (x < width / 2 ? [UInt8(40),65,215] : [UInt8(185),40,180]))
           : split ? (x < width / 2 ? [UInt8(215),40,35] : [UInt8(40),65,215]) : colors[index]
         let offset = (y * width + x) * 4
         for channel in 0..<3 { pixels[offset + channel] = rgb[channel] }
@@ -61,6 +63,24 @@ final class PhotoTemplateEngineTests: XCTestCase {
         space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
       context.draw(pixel, in: CGRect(x: 0, y: 0, width: 1, height: 1))
     }; return Array(bytes.prefix(3))
+  }
+  /// Read a bounded synthetic footer region once; no per-pixel ImageIO calls.
+  func darkInkExtent(_ image: CGImage, rect: CGRect) throws -> (top: Int, bottom: Int, count: Int) {
+    let region = try XCTUnwrap(image.cropping(to: rect)), width = region.width, height = region.height
+    var bytes = [UInt8](repeating: 255, count: width * height * 4)
+    try bytes.withUnsafeMutableBytes { buffer in
+      let context = try XCTUnwrap(CGContext(data: buffer.baseAddress, width: width, height: height, bitsPerComponent: 8,
+        bytesPerRow: width * 4, space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+      context.draw(region, in: CGRect(x: 0, y: 0, width: width, height: height))
+    }
+    var top = height, bottom = -1, count = 0
+    for y in 0..<height { for x in 0..<width {
+      let offset = (y * width + x) * 4
+      if bytes[offset] < 150 && bytes[offset + 1] < 150 && bytes[offset + 2] < 150 {
+        top = min(top, y); bottom = max(bottom, y); count += 1
+      }
+    } }
+    return (Int(rect.minY) + top, Int(rect.minY) + bottom, count)
   }
   func near(_ actual: [UInt8], _ expected: [UInt8], tolerance: Int = 14, file: StaticString = #filePath, line: UInt = #line) {
     for i in 0..<3 { XCTAssertLessThanOrEqual(abs(Int(actual[i]) - Int(expected[i])), tolerance, file: file, line: line) }
@@ -277,7 +297,12 @@ final class PhotoTemplateEngineTests: XCTestCase {
   func recipeV2(layout: String = "strip", theme: String = "classic", aspect: String = "portrait") throws -> String {
     let v1 = try recipe(layout: layout, theme: theme)
     var object = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(v1.utf8)) as? [String: Any])
-    object["version"] = PhotoTemplateEngine.currentVersion; object["gridAspect"] = aspect
+    object["version"] = PhotoTemplateEngine.previousVersion; object["gridAspect"] = aspect
+    return String(data: try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys]), encoding: .utf8)!
+  }
+  func recipeV3(layout: String = "strip", theme: String = "classic") throws -> String {
+    var object = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(recipeV2(layout: layout, theme: theme, aspect: "square").utf8)) as? [String: Any])
+    object["version"] = PhotoTemplateEngine.currentVersion
     return String(data: try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys]), encoding: .utf8)!
   }
   private static var attachmentBytes = 0
@@ -349,10 +374,16 @@ final class PhotoTemplateEngineTests: XCTestCase {
       XCTAssertEqual(last, aspect == "portrait" ? CGRect(x: 1212, y: 1428, width: 1116, height: 1332)
         : CGRect(x: 1224, y: 1164, width: 1080, height: 1080))
     }
+    let v3Grid = try PhotoTemplateEngine.Recipe.parse(recipeV3(layout: "grid"))
+    XCTAssertEqual(PhotoTemplateEngine.dimensions(recipe: v3Grid).height, 2400)
+    XCTAssertEqual(PhotoTemplateEngine.window(recipe: v3Grid, index: 3), CGRect(x: 1216, y: 1192, width: 1000, height: 1000))
+    let v3Strip = try PhotoTemplateEngine.Recipe.parse(recipeV3())
+    XCTAssertEqual(PhotoTemplateEngine.window(recipe: v3Strip, index: 3), CGRect(x: 100, y: 2530, width: 1000, height: 750))
+    XCTAssertThrowsError(try PhotoTemplateEngine.Recipe.parse(recipeV3().replacingOccurrences(of: "square", with: "portrait")))
     XCTAssertThrowsError(try PhotoTemplateEngine.Recipe.parse(recipeV2(aspect: "landscape")))
-    let extraOnV1 = try recipeV2().replacingOccurrences(of: PhotoTemplateEngine.currentVersion, with: PhotoTemplateEngine.version)
+    let extraOnV1 = try recipeV2().replacingOccurrences(of: PhotoTemplateEngine.previousVersion, with: PhotoTemplateEngine.version)
     XCTAssertThrowsError(try PhotoTemplateEngine.Recipe.parse(extraOnV1))
-    let missingOnV2 = try recipe().replacingOccurrences(of: PhotoTemplateEngine.version, with: PhotoTemplateEngine.currentVersion)
+    let missingOnV2 = try recipe().replacingOccurrences(of: PhotoTemplateEngine.version, with: PhotoTemplateEngine.previousVersion)
     XCTAssertThrowsError(try PhotoTemplateEngine.Recipe.parse(missingOnV2))
   }
   func testV2AllSixCleanNativeJpegFullAndPreviewAttachments() throws {
@@ -362,7 +393,7 @@ final class PhotoTemplateEngineTests: XCTestCase {
     for layout in ["strip", "grid"] { for theme in ["classic", "botanical", "coastal"] {
       let json = try recipeV2(layout: layout, theme: theme, aspect: inspection.gridAspect)
       let full = try render(sources, recipe: json), preview = try render(sources, recipe: json, preview: true)
-      XCTAssertEqual(full.version, PhotoTemplateEngine.currentVersion)
+      XCTAssertEqual(full.version, PhotoTemplateEngine.previousVersion)
       XCTAssertEqual(full.width, layout == "strip" ? 1200 : 2400)
       XCTAssertEqual(full.height, layout == "strip" ? 3600 : 3000)
       XCTAssertEqual(preview.width, layout == "strip" ? 480 : 1152)
@@ -370,6 +401,82 @@ final class PhotoTemplateEngineTests: XCTestCase {
       XCTAssertEqual(full.recipeJSON, preview.recipeJSON); XCTAssertEqual(full.sourceHashes, preview.sourceHashes)
       try attachJPEG(full, name: "native-v2-clean-portrait-\(layout)-\(theme)-FULL")
       try attachJPEG(preview, name: "native-v2-clean-portrait-\(layout)-\(theme)-PREVIEW")
+      try engine.release(URL(string: full.uri)!); try engine.release(URL(string: preview.uri)!)
+    } }
+    // The current generated-art recipe is additional coverage; retain every v2 export above.
+    for layout in ["strip", "grid"] { for theme in ["classic", "botanical", "coastal"] {
+      let json = try recipeV3(layout: layout, theme: theme), parsed = try PhotoTemplateEngine.Recipe.parse(json)
+      let full = try render(sources, recipe: json), preview = try render(sources, recipe: json, preview: true)
+      XCTAssertEqual(full.version, PhotoTemplateEngine.currentVersion)
+      XCTAssertEqual(full.width, layout == "strip" ? 1200 : 2400)
+      XCTAssertEqual(full.height, layout == "strip" ? 3600 : 2400)
+      XCTAssertEqual(preview.width, layout == "strip" ? 480 : 1440); XCTAssertEqual(preview.height, 1440)
+      XCTAssertEqual(full.recipeJSON, preview.recipeJSON); XCTAssertEqual(full.sourceHashes, preview.sourceHashes)
+      let pixels = try image(full.uri), previewPixels = try image(preview.uri)
+      // Independent decode of the exact supplied art proves native resource inclusion
+      // and top-left corner placement; JPEG rounding/interpolation has a bounded tolerance.
+      let artName = theme == "classic" ? "Classic-Ivory" : theme == "botanical" ? "Sage-Botanical" : "Coastal-Sea-Glass"
+      let artURL = try XCTUnwrap(Bundle(for: PhotoTemplateEngineTests.self).url(forResource: artName + "-Text-Free-Artwork", withExtension: "frameart"))
+      let artSource = try XCTUnwrap(CGImageSourceCreateWithURL(artURL as CFURL, nil))
+      let art = try XCTUnwrap(CGImageSourceCreateImageAtIndex(artSource, 0, nil))
+      let edge: CGFloat = layout == "strip" ? 250 : 350
+      for point in [CGPoint(x: 65, y: 85), CGPoint(x: 90, y: 60), CGPoint(x: 120, y: 110)] {
+        let targetX = Int(point.x * edge / 250), targetY = Int(point.y * edge / 250)
+        near(try sample(pixels, x: targetX, y: targetY), try sample(art, x: Int(point.x), y: Int(point.y)), tolerance: 32)
+      }
+      if layout == "grid" {
+        let windows = (0..<4).map { PhotoTemplateEngine.window(recipe: parsed, index: $0) }
+        XCTAssertEqual(windows.map(\.maxY).max(), 2192)
+        // Independently inspect actual encoded text, not just expected baseline constants.
+        // The middle footer excludes the corner art and every photo window.
+        let ink = try darkInkExtent(pixels, rect: CGRect(x: 700, y: 2193, width: 1000, height: 180))
+        XCTAssertGreaterThan(ink.count, 500, "Names and date must be visibly encoded below the photos")
+        let nameInk = try darkInkExtent(pixels, rect: CGRect(x: 700, y: 2210, width: 1000, height: 80))
+        XCTAssertGreaterThan(nameInk.count, 500, "Couple names must be visibly encoded inside the footer")
+        let photoGap = try darkInkExtent(pixels, rect: CGRect(x: 700, y: 2193, width: 1000, height: 18))
+        XCTAssertEqual(photoGap.count, 0, "Footer needs visible air below the last photo")
+        let borderGap = try darkInkExtent(pixels, rect: CGRect(x: 900, y: 2341, width: 600, height: 18))
+        XCTAssertEqual(borderGap.count, 0, "Date must remain comfortably above the inset border at y2360")
+        let dateInk = try darkInkExtent(pixels, rect: CGRect(x: 900, y: 2300, width: 600, height: 40))
+        XCTAssertGreaterThan(dateInk.count, 100, "The date must be present inside, not on, the border")
+      }
+      // Probe letterboxing within the former cream mat. Its pixels must now be
+      // continuous with the independently decoded nine-slice artwork, including
+      // coastal wash, rather than a flat rectangle intruding into the frame.
+      func sourceCoordinate(_ value: CGFloat, length: CGFloat) -> Int {
+        if value < edge { return Int(value * 250 / edge) }
+        if value >= length - edge { return Int(1004 + (value - (length - edge)) * 250 / edge) }
+        return Int(250 + (value - edge) * 754 / (length - edge * 2))
+      }
+      if theme == "classic" {
+        let x = layout == "strip" ? 24 : 40, y = full.height / 2
+        near(try sample(pixels, x: x, y: y), try sample(art,
+          x: sourceCoordinate(CGFloat(x), length: CGFloat(full.width)),
+          y: sourceCoordinate(CGFloat(y), length: CGFloat(full.height))), tolerance: 18)
+      }
+      for index in [0, 2, 3] {
+        let window = PhotoTemplateEngine.window(recipe: parsed, index: index)
+        let x = Int(window.minX + 12), y = Int(window.maxY - 35)
+        near(try sample(pixels, x: x, y: y), try sample(art,
+          x: sourceCoordinate(CGFloat(x), length: CGFloat(full.width)),
+          y: sourceCoordinate(CGFloat(y), length: CGFloat(full.height))), tolerance: 18)
+      }
+      // Every unique original remains whole under FIT in both layouts, with the same
+      // photo-to-window placement in preview and the actual full-resolution JPEG.
+      for index in 0..<4 {
+        let sourceData = try XCTUnwrap(CGImageSourceCreateWithURL(sources[index].url as CFURL, nil))
+        let source = try XCTUnwrap(CGImageSourceCreateImageAtIndex(sourceData, 0, nil))
+        let window = PhotoTemplateEngine.window(recipe: parsed, index: index)
+        let scale = min(window.width / CGFloat(source.width), window.height / CGFloat(source.height))
+        let content = CGRect(x: window.midX - CGFloat(source.width) * scale / 2, y: window.midY - CGFloat(source.height) * scale / 2,
+          width: CGFloat(source.width) * scale, height: CGFloat(source.height) * scale)
+        try assertUprightContent(pixels, source: source, content: content)
+        let down = CGFloat(preview.width) / CGFloat(full.width)
+        try assertUprightContent(previewPixels, source: source, content: CGRect(x: content.minX * down, y: content.minY * down,
+          width: content.width * down, height: content.height * down))
+      }
+      try attachJPEG(full, name: "native-v3-art-\(layout)-\(theme)-FULL")
+      try attachJPEG(preview, name: "native-v3-art-\(layout)-\(theme)-PREVIEW")
       try engine.release(URL(string: full.uri)!); try engine.release(URL(string: preview.uri)!)
     } }
     for index in 0..<4 { XCTAssertEqual(try Data(contentsOf: sources[index].url), bytes[index]) }
@@ -437,6 +544,44 @@ final class PhotoTemplateEngineTests: XCTestCase {
     let props = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(input, 0, nil) as? [String: Any])
     XCTAssertNil(props[kCGImagePropertyGPSDictionary as String])
     XCTAssertEqual((props[kCGImagePropertyOrientation as String] as? NSNumber)?.intValue ?? 1, 1)
+    // Mirror-tagged synthetic rasters are deliberately asymmetric quadrants.
+    // This downstream proof does not exercise a camera or assert device mirroring.
+    for orientation in [2, 4, 5, 7] {
+      let tagged = try fixtures(orientation: orientation, quadrants: true)
+      let before = try tagged.map { try Data(contentsOf: $0.url) }
+      let inspection = try engine.inspect(sources: tagged)
+      let rendered = try render(tagged, recipe: recipeV3(layout: "grid"))
+      let preview = try render(tagged, recipe: rendered.recipeJSON, preview: true)
+      let parsed = try PhotoTemplateEngine.Recipe.parse(rendered.recipeJSON)
+      for output in [rendered, preview] {
+        let pixels = try image(output.uri), down = CGFloat(output.width) / CGFloat(rendered.width)
+        for index in 0..<4 {
+          let input = try XCTUnwrap(CGImageSourceCreateWithURL(tagged[index].url as CFURL, nil))
+          let stored = try XCTUnwrap(CGImageSourceCreateImageAtIndex(input, 0, nil))
+          let window = PhotoTemplateEngine.window(recipe: parsed, index: index)
+          let width = CGFloat(inspection.sources[index].width), height = CGFloat(inspection.sources[index].height)
+          let scale = min(window.width / width, window.height / height)
+          let content = CGRect(x: window.midX - width * scale / 2, y: window.midY - height * scale / 2,
+            width: width * scale, height: height * scale)
+          for v in [0.2, 0.75] { for u in [0.2, 0.75] {
+            let position: (Double, Double)
+            switch orientation {
+            case 2: position = (1-u, v)
+            case 4: position = (u, 1-v)
+            case 5: position = (v, u)
+            default: position = (1-v, 1-u) // EXIF7 transverse
+            }
+            let expected = try sample(stored, x: Int(position.0 * Double(stored.width)), y: Int(position.1 * Double(stored.height)))
+            let observed = try sample(pixels, x: Int((content.minX + content.width * CGFloat(u)) * down),
+              y: Int((content.minY + content.height * CGFloat(v)) * down))
+            near(observed, expected, tolerance: 18)
+          } }
+          XCTAssertEqual(try Data(contentsOf: tagged[index].url), before[index])
+        }
+      }
+      XCTAssertEqual(rendered.sourceHashes, preview.sourceHashes)
+      try engine.release(URL(string: rendered.uri)!); try engine.release(URL(string: preview.uri)!)
+    }
   }
   func testV2DecorationNeverTouchesPhotoWindowsAndFitPreservesEdgeMarkers() throws {
     let sources = try fixtures()

@@ -1,10 +1,9 @@
 import { after, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHmac, randomUUID } from 'node:crypto';
-import { readFileSync } from 'node:fs';
-import { stripTypeScriptTypes } from 'node:module';
+import { workerSource, workerModule } from './worker-source';
 import { Miniflare } from 'miniflare';
-import { createTextbeltProvider } from '../src/index';
+const { createTextbeltProvider } = await workerModule();
 
 const input = { idempotencyKey: 'test-id', to: '+12025550123', galleryUrl: 'https://gallery.example/g/' + 'a'.repeat(64) };
 const testKey = 'synthetic-provider-key-not-a-credential';
@@ -22,7 +21,31 @@ test('injected Textbelt test adapter uses only the fixed endpoint and no-charge 
   });
   const result = await provider.send(input);
   assert.equal(calls, 1); assert.equal(result.status, 'test_accepted'); assert.equal(result.retryable, false);
-  assert.match(result.message, /no text message was sent/i); assert.ok(!JSON.stringify(result).includes('quota'));
+  assert.match(result.message, /no text message was sent/i);
+  assert.deepEqual(result.providerDiagnostic, { stage: 'response', quotaRemaining: 42 });
+  assert.ok(!JSON.stringify(result).includes('not-persisted'));
+});
+
+test('private provider diagnostics retain bounded IDs/quota and fixed rejection categories, never raw error content', async () => {
+  const accepted = await createTextbeltProvider(testKey, false, async () =>
+    Response.json({ success: true, textId: 12345, quotaRemaining: 7, phone: input.to, message: input.galleryUrl, key: testKey })).send(input);
+  assert.deepEqual(accepted.providerDiagnostic, { stage: 'response', messageId: '12345', quotaRemaining: 7 });
+  for (const [error, rejection] of [
+    ['Out of quota', 'out-of-quota'], ['Incomplete request', 'incomplete-request'],
+    ['Invalid API key: ' + testKey, 'invalid-key'], ['Invalid phone ' + input.to, 'invalid-number'],
+    ['Too many requests', 'rate-limited'], ['Recipient is blocked', 'blocked-recipient'],
+    ['URL rejected ' + input.galleryUrl, 'message-rejected'], ['Unrecognized ' + testKey, 'provider-rejected'],
+  ]) {
+    const result = await createTextbeltProvider(testKey, false, async () =>
+      Response.json({ success: false, error, textId: input.to, quotaRemaining: 0 })).send(input);
+    assert.equal(result.status, 'rejected');
+    assert.deepEqual(result.providerDiagnostic, { stage: 'response', quotaRemaining: 0, rejection });
+    for (const privateValue of [input.to, input.galleryUrl, testKey]) assert.ok(!JSON.stringify(result).includes(privateValue));
+  }
+  const malformed = await createTextbeltProvider(testKey, false, async () => new Response('{')).send(input);
+  assert.equal(malformed.providerDiagnostic?.stage, 'invalid-response');
+  const http = await createTextbeltProvider(testKey, false, async () => new Response(testKey, { status: 503 })).send(input);
+  assert.deepEqual(http.providerDiagnostic, { stage: 'http', httpStatus: 503 });
 });
 
 test('provider acceptance is never called delivery, explicit rejection requires an operator, ambiguous outcomes cannot retry', async () => {
@@ -47,7 +70,7 @@ const auth = { Authorization: 'Bearer local-development-only' };
 const jpeg = new Uint8Array([255, 216, 255, 224, 0, 2, 255, 217]);
 const origin = 'http://localhost';
 async function setup(bindings: Record<string, string>, outbound: (request: Request) => Promise<Response>) {
-  const runtime = new Miniflare({ modules: true, script: stripTypeScriptTypes(readFileSync(new URL('../src/index.ts', import.meta.url), 'utf8')),
+  const runtime = new Miniflare({ modules: true, script: workerSource(),
     compatibilityDate: '2026-07-30', r2Buckets: ['PHOTOS'], outboundService: outbound,
     bindings: { MODE: 'local', SMS_MODE: 'textbelt', LOCAL_DEVICE_TOKEN: 'local-development-only', LOCAL_LINK_KEY: 'test-local-key', TEXTBELT_API_KEY: testKey,
       TEXTBELT_LIVE_APPROVED: 'true', TEXTBELT_ELIGIBILITY_APPROVED: 'true', ...bindings } });
@@ -102,6 +125,23 @@ test('durable Textbelt claim fences concurrent callers and new IDs, persists no 
     const saved = await (await bucket.get(object.key))!.text();
     for (const sensitive of [input.to, testKey, new URL(result.url).pathname.split('/').at(-1)!]) assert.ok(!saved.includes(sensitive));
   }
+});
+
+test('provider diagnostics persist only in the private delivery fence and never enter the app response', async () => {
+  let calls = 0;
+  const { runtime, sessionId } = await setup({}, async () => {
+    calls++; return Response.json({ success: true, textId: '987654321', quotaRemaining: 6 });
+  });
+  const id = randomUUID();
+  const response = await share(runtime, sessionId, id);
+  const value = await response.json() as Record<string, unknown>;
+  assert.equal(value.status, 'accepted');
+  for (const field of ['providerDiagnostic', 'messageId', 'textId', 'quotaRemaining']) assert.equal(Object.hasOwn(value, field), false);
+  const bucket = await runtime.getR2Bucket('PHOTOS');
+  const saved = await (await bucket.get(`sms-deliveries/textbelt/${sessionId}.json`))!.json<{ providerDiagnostic: unknown }>();
+  assert.deepEqual(saved.providerDiagnostic, { stage: 'response', messageId: '987654321', quotaRemaining: 6 });
+  await share(runtime, sessionId, id); await share(runtime, sessionId, randomUUID());
+  assert.equal(calls, 1, 'Diagnostics must not change the duplicate-send fence');
 });
 
 test('unknown outcomes never resend even with new IDs or operator retry; only explicit rejection can be manually retried', async () => {

@@ -1,0 +1,22 @@
+{
+  "scope": "Website-only optional Resend email; Social Grid layout selector retained",
+  "status": "passed",
+  "localSuite": 540,
+  "focusedEmailTests": 17,
+  "guards": 142,
+  "typecheck": "passed",
+  "emailBrowserCases": 8,
+  "localR2ConcurrentQuota": {
+    "cap": 2,
+    "sessions": 4,
+    "accepted": 2,
+    "blocked": 2,
+    "replaySends": 0
+  },
+  "layoutDownloads": 36,
+  "noActualEmails": true,
+  "noOriginProbes": true,
+  "deployed": false,
+  "workerSha256": "8482406106e8244ca32ee1e50ffec9d799870b9fac390806a2b35c2bdafb3086",
+  "zipSha256": "c848828c4f1f141f2654d8e9b8ec520df11972f6debf37967ce55427e53f79bc"
+}

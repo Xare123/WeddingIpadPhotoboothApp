@@ -13,6 +13,8 @@ export type OrientationContext = Readonly<{ active: boolean; blockers: readonly 
 type Cancel = () => void;
 export type OrientationPort = {
   readonly available: boolean;
+  /** Synchronous presentation/capture admission, including before React passive effects. */
+  isRequestSafe?(): boolean;
   supports(lock: RequestedOrientationLock): Promise<boolean>;
   request(lock: RequestedOrientationLock): Promise<void>;
   readObservation(): Promise<OrientationObservation>;
@@ -215,7 +217,10 @@ export class OrientationController {
     this.disposedState = this.getState();
     this.emit();
   }
-  private safe(): boolean { return this.context.active && this.context.blockers.length === 0; }
+  private safe(): boolean {
+    try { return this.context.active && this.context.blockers.length === 0 && (this.port.isRequestSafe?.() ?? true); }
+    catch { return false; }
+  }
   private key(): string { return [this.revision, this.retryRevision, this.epoch].join(':'); }
   private emit(): void { this.onState(this.getState()); }
   private acceptObservation(value: OrientationObservation): void {

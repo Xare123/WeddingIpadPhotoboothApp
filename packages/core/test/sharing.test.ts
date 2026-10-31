@@ -43,11 +43,11 @@ test('QR helper never exposes an upload URL before completion, after expiry or f
 });
 
 
-test('phone opt-in normalizes formatting while requiring explicit international E.164 boundaries', () => {
+test('phone opt-in defaults ordinary U.S. formats to an explicit +1 E.164 boundary', () => {
   assert.equal(normalizePhone('  +1 (202) 555-0123  '), '+12025550123');
-  assert.equal(normalizePhone('+12.345.678'), '+12345678');
-  assert.equal(normalizePhone('+123456789012345'), '+123456789012345');
-  for (const phone of ['', '2025550123', '+02025550123', '+1234567', '+1234567890123456',
+  assert.equal(normalizePhone('202.555.0123'), '+12025550123');
+  assert.equal(normalizePhone('1 (202)555-0123'), '+12025550123');
+  for (const phone of ['', '+02025550123', '+1234567', '+1234567890123456',
     '+1 202 555 0123 ext 2', '++12025550123', '+١٢٠٢٥٥٥٠١٢٣', 'mailto:guest@example.com']) {
     assert.throws(() => normalizePhone(phone));
   }
@@ -126,5 +126,16 @@ test('v2 publication requires the exact aspect on every layout and cannot reinte
     const legacy = { ...expected, composite: { photoId: 'template', layout, theme: 'classic' as const, version: 'wedding-template-v1' as const } };
     assert.doesNotThrow(() => validateReadyPublication({ ...ready, ...legacy }, legacy));
     assert.throws(() => validateReadyPublication(good, legacy), 'v1 must not silently accept v2 aspect/geometry');
+  }
+});
+
+test('v3 artwork publication requires exact square and exact version acknowledgements', () => {
+  for (const layout of ['strip', 'grid'] as const) {
+    const expected = { photoIds: ['s1', 's2', 's3', 's4'], originalPhotoIds: ['r1', 'r2', 'r3', 'r4'],
+      composite: { photoId: 'template', layout, theme: 'coastal' as const, version: 'wedding-template-v3' as const, gridAspect: 'square' as const } };
+    const good = { ...ready, ...expected };
+    assert.doesNotThrow(() => validateReadyPublication(good, expected));
+    for (const change of [{ gridAspect: 'portrait' }, { gridAspect: undefined }, { version: 'wedding-template-v2' }, { version: 'wedding-template-v1' }, { extra: true }])
+      assert.throws(() => validateReadyPublication({ ...good, composite: { ...expected.composite, ...change } }, expected));
   }
 });

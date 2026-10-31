@@ -1,10 +1,11 @@
+import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { verifyNativeCameraMarker } from './native-camera-capability.mjs';
+import { dirname, join, resolve } from 'node:path';
+import { verifyNativeCameraMarker, verifyNativeFrameArt } from './native-camera-capability.mjs';
 
 const marker = Buffer.from('preserveFullPhotoAvailable');
 const header = Buffer.from('cffaedfe', 'hex');
@@ -56,4 +57,45 @@ test('missing, outside, empty and malformed native candidates fail without readi
   const outside = join(base, 'outside'); writeFileSync(outside, Buffer.concat([header, marker]));
   symlinkSync(outside, binary);
   assert.throws(() => verifyNativeCameraMarker(app, info), /bounded app-owned/);
+});
+
+const artRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../design/frame-art-v1');
+const artNames = ['Classic-Ivory', 'Sage-Botanical', 'Coastal-Sea-Glass'];
+function artFixture(t) {
+  const value = fixture(t), bundle = join(value.app, 'WeddingFrameArt.bundle'); mkdirSync(bundle);
+  for (const name of artNames) copyFileSync(join(artRoot, name + '-Text-Free-Artwork.png'), join(bundle, name + '-Text-Free-Artwork.frameart'));
+  return { ...value, bundle };
+}
+
+test('production app resource bundle contains all three unoptimized exact approved artwork bytes', t => {
+  const { app, bundle } = artFixture(t), result = verifyNativeFrameArt(app);
+  assert.equal(result.exactOriginalArtworkFound, true); assert.equal(result.entries.length, 3);
+  for (const entry of result.entries) {
+    const bytes = readFileSync(join(app, entry.file));
+    assert.equal(entry.sha256, createHash('sha256').update(bytes).digest('hex'));
+    assert.equal(entry.bytes, bytes.length);
+    assert.deepEqual(bytes, readFileSync(join(artRoot, entry.file.split('/').at(-1).replace(/\.frameart$/, '.png'))));
+  }
+  assert.match(result.scope, /not app rendering/);
+});
+
+test('production frame verification fails on missing bundle, missing art, changed bytes or unexpected art', t => {
+  const absent = fixture(t); assert.throws(() => verifyNativeFrameArt(absent.app));
+  for (const mutate of [
+    ({ bundle }) => rmSync(join(bundle, artNames[0] + '-Text-Free-Artwork.frameart')),
+    ({ bundle }) => writeFileSync(join(bundle, artNames[0] + '-Text-Free-Artwork.frameart'), 'bad'),
+    ({ bundle }) => { const path = join(bundle, artNames[0] + '-Text-Free-Artwork.frameart'); const bytes = readFileSync(path); bytes[100] ^= 1; writeFileSync(path, bytes); },
+    ({ bundle }) => writeFileSync(join(bundle, 'unexpected.frameart'), 'bad'),
+  ]) { const value = artFixture(t); mutate(value); assert.throws(() => verifyNativeFrameArt(value.app)); }
+});
+
+test('production frame verification rejects bundle or asset symlinks even if target bytes match', t => {
+  const one = artFixture(t), outside = join(one.base, 'external.bundle');
+  mkdirSync(outside); rmSync(one.bundle, { recursive: true }); symlinkSync(outside, one.bundle);
+  assert.throws(() => verifyNativeFrameArt(one.app), /without symlinks/);
+  const two = artFixture(t), file = join(two.bundle, artNames[0] + '-Text-Free-Artwork.frameart');
+  rmSync(file); symlinkSync(join(artRoot, artNames[0] + '-Text-Free-Artwork.png'), file);
+  assert.throws(() => verifyNativeFrameArt(two.app), /without symlinks/);
+  const three = artFixture(t), alias = join(three.base, 'AppAlias.app'); symlinkSync(three.app, alias);
+  assert.throws(() => verifyNativeFrameArt(alias), /owned app directory/);
 });

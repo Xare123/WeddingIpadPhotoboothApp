@@ -1,8 +1,17 @@
+import guestKeepsakeScript from './guest-keepsake.client';
+import guestEmailScript from './guest-email.client';
+import { emailConfigured, handleGuestEmail } from './guest-email';
+
 /** Private R2 storage: never enable the bucket's public URL or public listing. */
 export interface Env {
   PHOTOS: R2Bucket;
   MODE: string;
   SMS_MODE: string;
+  EMAIL_MODE?: string;
+  RESEND_API_KEY?: string;
+  EMAIL_FROM?: string;
+  EMAIL_DAILY_LIMIT?: string;
+  EMAIL_SENDER_VERIFIED?: string;
   LOCAL_DEVICE_TOKEN?: string;
   LOCAL_LINK_KEY?: string;
   DEVICE_TOKEN?: string;
@@ -27,20 +36,27 @@ export interface Env {
 
 type Config = { deviceToken: string; signingKey: string; origin: string; ttlMs: number };
 type GalleryComposite = { photoId: string; layout: 'strip' | 'grid'; theme: 'classic' | 'botanical' | 'coastal' } & (
-  { version: 'wedding-template-v1' } | { version: 'wedding-template-v2'; gridAspect: 'portrait' | 'square' }
+  { version: 'wedding-template-v1' } | { version: 'wedding-template-v2'; gridAspect: 'portrait' | 'square' } | { version: 'wedding-template-v3'; gridAspect: 'square' }
 );
 type GalleryRecipe = { photoIds: string[]; originalPhotoIds?: string[]; composite?: GalleryComposite };
 type Gallery = GalleryRecipe & { version: 1; sessionId: string; expiresAt: number };
 type SmsStatus = 'mocked' | 'mock_failed' | 'accepted' | 'test_accepted' | 'rejected' | 'uncertain';
 type SmsResult = { status: SmsStatus; message: string; retryable: boolean; safeToRetry?: boolean; deliveryStatus?: 'unconfirmed' };
+type ProviderDiagnostic = {
+  stage: 'response' | 'http' | 'transport' | 'invalid-response';
+  httpStatus?: number; messageId?: string; quotaRemaining?: number;
+  rejection?: 'out-of-quota' | 'incomplete-request' | 'invalid-key' | 'invalid-number' | 'rate-limited' | 'blocked-recipient' | 'message-rejected' | 'provider-rejected';
+};
 type ShareRecord = { sessionId: string; recipientFingerprint: string; status: 'pending' | 'sending' | SmsStatus };
-type DeliveryRecord = ShareRecord & { shareId: string; mode: string; attemptId?: string };
+type DeliveryRecord = ShareRecord & { shareId: string; mode: string; attemptId?: string; providerDiagnostic?: ProviderDiagnostic };
 type PairingRecord = { issuanceId: string; expiresAt: number; state: 'issued' | 'consumed'; deviceVersion: string; signingVersion: string };
 export interface SmsProvider {
   // Textbelt has no provider-side idempotency guarantee. The caller must claim
   // a durable delivery fence before calling send, and never retry uncertainty.
   send(input: { idempotencyKey: string; to: string; galleryUrl: string }): Promise<{
     status: SmsStatus; message: string; retryable: boolean; safeToRetry?: boolean; deliveryStatus?: 'unconfirmed';
+    // Private adapter result only: never returned in the guest/device response.
+    providerDiagnostic?: ProviderDiagnostic;
   }>;
 }
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -86,12 +102,13 @@ const rateBindings = [
 ] as const;
 type RateBand = 'GALLERY' | 'PHOTO' | 'API' | 'SHARE';
 function rateBand(url: URL): RateBand | undefined {
-  if (url.pathname.startsWith('/g/')) return /^\/g\/[^/]+\/photos\//.test(url.pathname) ? 'PHOTO' : 'GALLERY';
+  if (/^\/g\/[^/]+\/email$/.test(url.pathname)) return 'SHARE';
+  if (url.pathname.startsWith('/g/')) return /^\/g\/[^/]+\/(?:photos\/|art\/|(?:keepsake|email)\.js$)/.test(url.pathname) ? 'PHOTO' : 'GALLERY';
   if (url.pathname === '/v1/shares' || url.pathname.startsWith('/v1/pairing/')) return 'SHARE';
   if (url.pathname.startsWith('/v1/')) return 'API';
 }
 function limitResponse(url: URL, status: 429 | 503): Response {
-  const page = url.pathname.startsWith('/g/') && !/^\/g\/[^/]+\/photos\//.test(url.pathname);
+  const page = !url.pathname.endsWith('/email') && url.pathname.startsWith('/g/') && !/^\/g\/[^/]+\/(?:photos\/|art\/|(?:keepsake|email)\.js$)/.test(url.pathname);
   const response = page ? unavailableGallery(status) : json({
     error: status === 429 ? 'Request limit reached; please retry shortly' : 'Request protection unavailable', retryable: true,
   }, status);
@@ -201,17 +218,18 @@ function parseGalleryRecipe(body: Record<string, unknown>): GalleryRecipe | Resp
   const candidate = body.composite;
   if (!candidate || typeof candidate !== 'object' || Array.isArray(candidate)) return json({ error: 'Valid composite required' }, 400);
   const composite = candidate as Record<string, unknown>;
-  const v2 = composite.version === 'wedding-template-v2';
-  const keys = ['photoId', 'layout', 'theme', 'version', ...(v2 ? ['gridAspect'] : [])];
+  const v2 = composite.version === 'wedding-template-v2', v3 = composite.version === 'wedding-template-v3';
+  const keys = ['photoId', 'layout', 'theme', 'version', ...(v2 || v3 ? ['gridAspect'] : [])];
   if (Object.keys(composite).length !== keys.length || Object.keys(composite).some(key => !keys.includes(key)) ||
     typeof composite.photoId !== 'string' || !uuid.test(composite.photoId) ||
     !['strip', 'grid'].includes(composite.layout as string) || !['classic', 'botanical', 'coastal'].includes(composite.theme as string) ||
-    (!v2 && composite.version !== 'wedding-template-v1') ||
-    (v2 && !['portrait', 'square'].includes(composite.gridAspect as string))) return json({ error: 'Unknown or invalid composite recipe' }, 400);
+    (!v2 && !v3 && composite.version !== 'wedding-template-v1') ||
+    (v2 && !['portrait', 'square'].includes(composite.gridAspect as string)) ||
+    (v3 && composite.gridAspect !== 'square')) return json({ error: 'Unknown or invalid composite recipe' }, 400);
   const photoId = composite.photoId.toLowerCase();
   if (photoIds.includes(photoId) || originalPhotoIds.includes(photoId)) return json({ error: 'Composite must have a distinct photo ID' }, 400);
   const common = { photoId, layout: composite.layout as GalleryComposite['layout'], theme: composite.theme as GalleryComposite['theme'] };
-  return { photoIds, originalPhotoIds, composite: v2 ? { ...common, version: 'wedding-template-v2', gridAspect: composite.gridAspect as 'portrait' | 'square' } : { ...common, version: 'wedding-template-v1' } };
+  return { photoIds, originalPhotoIds, composite: v3 ? { ...common, version: 'wedding-template-v3', gridAspect: 'square' } : v2 ? { ...common, version: 'wedding-template-v2', gridAspect: composite.gridAspect as 'portrait' | 'square' } : { ...common, version: 'wedding-template-v1' } };
 }
 function sameRecipe(left: GalleryRecipe, right: GalleryRecipe): boolean {
   return samePhotos(left.photoIds, right.photoIds) &&
@@ -220,11 +238,53 @@ function sameRecipe(left: GalleryRecipe, right: GalleryRecipe): boolean {
     (left.composite === undefined && right.composite === undefined || !!left.composite && !!right.composite &&
       left.composite.photoId === right.composite.photoId && left.composite.layout === right.composite.layout &&
       left.composite.theme === right.composite.theme && left.composite.version === right.composite.version &&
-      (left.composite.version !== 'wedding-template-v2' || right.composite.version === 'wedding-template-v2' && left.composite.gridAspect === right.composite.gridAspect));
+      (left.composite.version === 'wedding-template-v1' || right.composite.version !== 'wedding-template-v1' && left.composite.gridAspect === right.composite.gridAspect));
 }
 const galleryPhotoIds = (gallery: GalleryRecipe): string[] => [...new Set([
   ...gallery.photoIds, ...(gallery.originalPhotoIds ?? []), ...(gallery.composite ? [gallery.composite.photoId] : []),
 ])];
+const guestArtwork = {
+  classic: { key: 'system/keepsake-art/v3/classic.png', sha256: '3ccb9f0acf030b5bc31b2bbf6d81f3e694e2dd2e045dc77fd930c6d4df59164e' },
+  botanical: { key: 'system/keepsake-art/v3/botanical.png', sha256: '4121598a7aa1d445fed5c223d4b475d706cb93567d90c51a42d1dad86cb36e21' },
+  coastal: { key: 'system/keepsake-art/v3/coastal.png', sha256: '8f3bbfb131c9454f6ea633a79445e6cd9b32176e9aa80c09080925b0d83884a0' },
+} as const;
+function editableGallery(gallery: GalleryRecipe): boolean {
+  const composite = gallery.composite;
+  return gallery.photoIds.length === 4 && new Set(gallery.photoIds).size === 4 && gallery.photoIds.every(id => uuid.test(id)) &&
+    gallery.originalPhotoIds?.length === 4 && new Set(gallery.originalPhotoIds).size === 4 && gallery.originalPhotoIds.every(id => uuid.test(id)) &&
+    !!composite && uuid.test(composite.photoId) && ['strip', 'grid'].includes(composite.layout) &&
+    ['classic', 'botanical', 'coastal'].includes(composite.theme) &&
+    (composite.version === 'wedding-template-v1' || composite.version === 'wedding-template-v2' && ['portrait', 'square'].includes(composite.gridAspect) ||
+      composite.version === 'wedding-template-v3' && composite.gridAspect === 'square');
+}
+function emailFormHtml(token: string): string {
+  return `<section class="variant-section" aria-labelledby="email-title"><h2 id="email-title">Email me my photos</h2><p>Send this private gallery link to your inbox. No attachments, newsletter or account needed.</p>
+    <form id="guest-email-form" data-endpoint="/g/${token}/email"><label for="guest-email">Your email address</label><input id="guest-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" required style="display:block;box-sizing:border-box;width:100%;max-width:36rem;padding:16px;margin:12px 0;font:inherit;border:1px solid #8B8174;border-radius:12px;background:#fff;color:#352B25">
+    <label style="display:block;margin:16px 0"><input id="guest-email-consent" type="checkbox" required> Send this private photo link to the address above.</label><button class="download" id="guest-email-send" type="submit" disabled>Email my photo link</button></form>
+    <p id="guest-email-status" role="status" aria-live="polite">Optional · One email request per gallery. You can always download your photos directly.</p><p class="variant-note">Anyone with the link can access these photos until it expires. Email acceptance does not guarantee delivery. Your address is used only for this request and is not saved in our photo storage. Delivery is handled by Resend; provider tracking may apply.</p><noscript>Email requires JavaScript. Direct downloads below still work.</noscript></section><script src="/g/${token}/email.js" defer></script>`;
+}
+function keepsakeEditorHtml(token: string, gallery: Gallery): string {
+  if (!editableGallery(gallery)) return '';
+  const composite = gallery.composite!;
+  const config = JSON.stringify({ version: composite.version, layout: composite.layout, theme: composite.theme,
+    ...(composite.version !== 'wedding-template-v1' ? { gridAspect: composite.gridAspect } : {}),
+    photoUrls: gallery.photoIds.map(id => `/g/${token}/photos/${id}`),
+    ...(composite.version === 'wedding-template-v3' ? { artUrl: `/g/${token}/art/${composite.theme}` } : {}),
+  }).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return `<section class="variant-section" id="keepsake-editor" data-config="${config}" aria-labelledby="variant-title">
+    <div class="collection-heading"><h2 id="variant-title">Make room for every memory</h2><p>Your photos, your layout</p></div>
+    <p class="variant-intro">Start with Social Grid, or choose a classic Photo Strip. Download either with filled frames or every photo edge visible.</p>
+    <div class="variant-options" role="group" aria-label="Keepsake layout"><button type="button" data-layout="grid" aria-pressed="true">Social Grid</button><button type="button" data-layout="strip" aria-pressed="false">Photo Strip</button></div>
+    <div class="variant-options" role="group" aria-label="Photo placement"><button type="button" data-variant="fill" aria-pressed="true">Fill Frames</button><button type="button" data-variant="fit" aria-pressed="false">Full Photo</button></div>
+    <p class="variant-note">Fill Frames crops from the top. Full Photo keeps every edge and may leave side space.</p>
+    <p id="variant-status" class="variant-status" role="status" aria-live="polite">Preparing both versions…</p>
+    <button id="variant-retry" class="variant-retry" type="button" hidden>Retry versions</button>
+    <figure class="variant-result"><img id="variant-preview" alt="Your new keepsake preview" hidden></figure>
+    <div class="variant-downloads"><a id="download-fill" class="download" hidden>Download Fill Frames</a><a id="download-fit" class="download" hidden>Download Full Photo</a></div>
+    <p class="quality">Full-resolution JPEGs · Made on your device</p><p class="variant-note">Made from your four selected photos, with your chosen layout and saved theme. Your saved booth keepsake and camera originals below stay unchanged.</p>
+    <noscript><p>Enable JavaScript to prepare both versions. Your existing booth and original-photo downloads below still work.</p></noscript>
+  </section><script src="/g/${token}/keepsake.js" defer></script>`;
+}
 const completeShareGallery = (gallery: GalleryRecipe): boolean => gallery.photoIds.length === 5 ||
   gallery.photoIds.length === 4 && gallery.originalPhotoIds?.length === 4 && !!gallery.composite;
 function readyGallery(gallery: Gallery, origin: string, token: string): Response {
@@ -251,6 +311,25 @@ function smsResult(status: SmsStatus): SmsResult {
 }
 /** Injectable boundary. Tests MUST pass a fake fetch; never call a real provider. */
 export function createTextbeltProvider(apiKey: string, testMode: boolean, fetcher: typeof fetch): SmsProvider {
+  function diagnostic(value: Record<string, unknown>, phone: string): ProviderDiagnostic {
+    const result: ProviderDiagnostic = { stage: 'response' };
+    const id = typeof value.textId === 'number' && Number.isSafeInteger(value.textId) ? String(value.textId) : value.textId;
+    if (value.success === true && typeof id === 'string' && /^\d{1,32}$/.test(id) && id !== apiKey && id !== phone.replace(/\D/g, '')) result.messageId = id;
+    if (typeof value.quotaRemaining === 'number' && Number.isSafeInteger(value.quotaRemaining) && value.quotaRemaining >= 0 && value.quotaRemaining <= 1_000_000_000) result.quotaRemaining = value.quotaRemaining;
+    if (value.success === false) {
+      // Classify into fixed strings. Never retain an untrusted error body,
+      // recipient, message/link or key, even if the provider echoes them.
+      const error = typeof value.error === 'string' ? value.error : '';
+      result.rejection = /out of quota|insufficient quota|quota.*(?:exhausted|exceeded|empty)/i.test(error) ? 'out-of-quota'
+        : /incomplete request|missing required/i.test(error) ? 'incomplete-request'
+          : /invalid.*key|key.*invalid/i.test(error) ? 'invalid-key'
+            : /invalid.*(?:phone|number)|(?:phone|number).*invalid/i.test(error) ? 'invalid-number'
+              : /too many|rate.?limit/i.test(error) ? 'rate-limited'
+                : /blocked|opt.?out|unsubscrib/i.test(error) ? 'blocked-recipient'
+                  : /url|domain|link|message.*reject/i.test(error) ? 'message-rejected' : 'provider-rejected';
+    }
+    return result;
+  }
   return { async send({ to, galleryUrl }) {
     try {
       const response = await fetcher('https://textbelt.com/text', {
@@ -260,17 +339,18 @@ export function createTextbeltProvider(apiKey: string, testMode: boolean, fetche
       });
       // A transport/HTTP/parser failure can happen after a provider accepted the
       // request. Textbelt offers no deduplication contract, so never resend it.
-      if (!response.ok) return smsResult('uncertain');
+      if (!response.ok) return { ...smsResult('uncertain'), providerDiagnostic: { stage: 'http', httpStatus: response.status } };
       const bytes = await readLimited(response, 4096);
-      if (!bytes) return smsResult('uncertain');
-      const result: unknown = JSON.parse(new TextDecoder().decode(bytes));
-      if (!result || typeof result !== 'object' || !('success' in result)) return smsResult('uncertain');
-      if (result.success === false) return smsResult('rejected');
-      if (result.success !== true) return smsResult('uncertain');
-      // Never persist or echo provider error bodies, quota metadata, phone, key,
-      // message text, or other untrusted provider response fields.
-      return smsResult(testMode ? 'test_accepted' : 'accepted');
-    } catch { return smsResult('uncertain'); }
+      if (!bytes) return { ...smsResult('uncertain'), providerDiagnostic: { stage: 'invalid-response' } };
+      let result: unknown;
+      try { result = JSON.parse(new TextDecoder().decode(bytes)); }
+      catch { return { ...smsResult('uncertain'), providerDiagnostic: { stage: 'invalid-response' } }; }
+      if (!result || typeof result !== 'object' || !('success' in result) || typeof result.success !== 'boolean')
+        return { ...smsResult('uncertain'), providerDiagnostic: { stage: 'invalid-response' } };
+      const providerDiagnostic = diagnostic(result as Record<string, unknown>, to);
+      if (result.success === false) return { ...smsResult('rejected'), providerDiagnostic };
+      return { ...smsResult(testMode ? 'test_accepted' : 'accepted'), providerDiagnostic };
+    } catch { return { ...smsResult('uncertain'), providerDiagnostic: { stage: 'transport' } }; }
   } };
 }
 function smsProvider(env: Env): SmsProvider | undefined {
@@ -303,14 +383,16 @@ async function textbeltShare(env: Env, provider: SmsProvider, shareId: string, f
   if (record.shareId !== shareId) return json({ error: 'Use the original share id for an explicit retry', retryable: false }, 409);
   // Each claim changes its content-derived R2 ETag, including explicit retries.
   // An old attempt can never satisfy the current attempt's conditional write.
-  const attempt = { ...record, status: 'sending', attemptId: crypto.randomUUID() };
+  const { providerDiagnostic: _previousDiagnostic, ...reserved } = record;
+  const attempt = { ...reserved, status: 'sending', attemptId: crypto.randomUUID() };
   const claimed = await env.PHOTOS.put(key, JSON.stringify(attempt), { onlyIf: { etagMatches: saved.etag } });
   if (!claimed) return respond('uncertain');
   // Persisted 'sending' is intentionally never reset by timeout or a new ID.
   // A process crash, lost response, or failed final write cannot cause a resend.
   const outcome = await provider.send({ idempotencyKey: shareId, to: phone, galleryUrl });
   try {
-    const updated = await env.PHOTOS.put(key, JSON.stringify({ ...attempt, status: outcome.status }), { onlyIf: { etagMatches: claimed.etag } });
+    const updated = await env.PHOTOS.put(key, JSON.stringify({ ...attempt, status: outcome.status,
+      ...(outcome.providerDiagnostic ? { providerDiagnostic: outcome.providerDiagnostic } : {}) }), { onlyIf: { etagMatches: claimed.etag } });
     if (!updated) return respond('uncertain');
   } catch { return respond('uncertain'); }
   return respond(outcome.status);
@@ -376,14 +458,17 @@ const galleryStyles = `
   .footer{border-top:1px solid var(--line);text-align:center;padding:25px 0 30px;color:var(--muted);font:italic 18px Georgia,serif}.reveal{animation:reveal .65s ease-out both}.photo:nth-child(2){animation-delay:.09s}.photo:nth-child(n+3){animation-delay:.18s}
   .error-page{max-width:650px;min-height:65vh;margin:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:64px 0}.error-page h1{font-size:clamp(42px,7vw,66px)}.error-page .intro{max-width:390px}.error-mark{width:52px;height:52px;border:1px solid #a9beb5;border-radius:50%;display:grid;place-items:center;margin-bottom:30px;font:italic 28px Georgia,serif;color:#3e6760}
   @keyframes reveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .variant-section{margin:0 auto 48px}.variant-section .collection-heading{flex-wrap:wrap;align-items:flex-start;gap:8px;padding-right:4px}.variant-section .collection-heading h2{flex:1 1 220px;line-height:1.6}.variant-section .collection-heading p{line-height:1.6}.variant-intro{font-size:16px;color:var(--muted);max-width:620px;line-height:1.7}.variant-note{font-size:12px;line-height:1.7;color:var(--muted);max-width:740px}.variant-options{display:flex;gap:6px;max-width:510px;background:#e9e6dc;padding:5px;border-radius:30px;margin:20px auto 12px}.variant-options button{flex:1;min-height:48px;border:0;border-radius:26px;background:transparent;color:var(--ink);font:inherit;font-size:14px;font-weight:500;cursor:pointer;padding:12px}.variant-options button[aria-pressed="true"]{background:var(--forest);color:var(--white)}.variant-options button:focus-visible,.variant-retry:focus-visible,.variant-downloads a:focus-visible{outline:3px solid #b8964f;outline-offset:3px}.variant-status{text-align:center;color:var(--muted);font-size:13px;min-height:22px}.variant-result{margin:20px auto;max-width:820px}.variant-result img{display:block;width:100%;height:auto;border-radius:2px}.variant-result.variant-strip{max-width:360px}.variant-downloads{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}.variant-downloads a{flex:1;max-width:340px;min-width:210px}.variant-retry{display:block;margin:12px auto;padding:12px 25px;min-height:48px;border:1px solid #b4aa98;border-radius:26px;background:transparent;color:var(--ink);font:inherit;cursor:pointer}.variant-section [hidden]{display:none!important}
   @media(min-width:1100px){.photos:has(.photo:only-child){max-width:650px;margin:auto}}@media(max-width:700px){.shell{padding:0 23px}.masthead{padding:25px 0;gap:13px}.brand{font-size:10px;letter-spacing:.8px}.hero{padding:49px 0 36px}h1{letter-spacing:-1.4px}.intro{font-size:14px;max-width:330px}.photos{gap:24px}.collection-heading{padding:19px 0}.collection-heading p{font-size:10px}.privacy{margin:40px auto 34px}.photo{padding:10px 10px 0}.photo figcaption{padding:18px 6px 20px}.footer{font-size:16px}.download{min-height:50px}}
   @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.download:hover{transform:none}}
 `;
 function guestDocument(title: string, content: string): string {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="theme-color" content="#f6efe4"><title>${title}</title><style>${galleryStyles}</style></head><body><div class="shell"><header class="masthead"><span class="ornament" aria-hidden="true"></span><span class="brand">Gizelle &amp; Rami · November 1, 2026</span><span class="ornament" aria-hidden="true"></span></header>${content}<footer class="footer">Made of moments like these.</footer></div></body></html>`;
 }
-function guestPage(html: string, status = 200): Response {
-  return new Response(html, { status, headers: { ...privateHeaders, 'Content-Type': 'text/html; charset=utf-8' } });
+function guestPage(html: string, status = 200, editor = false): Response {
+  return new Response(html, { status, headers: { ...privateHeaders, 'Content-Type': 'text/html; charset=utf-8',
+    ...(editor ? { 'Content-Security-Policy': "default-src 'none'; img-src 'self' blob:; script-src 'self'; connect-src 'self'; style-src 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'; object-src 'none'" } : {}),
+  } });
 }
 function unavailableGallery(status: number, reason?: string): Response {
   const expired = reason === 'Link expired';
@@ -395,7 +480,7 @@ function unavailableGallery(status: number, reason?: string): Response {
     'We couldn’t find a gallery at this address. Check that you opened the complete link, or ask your hosts for help.';
   return guestPage(guestDocument('Your wedding photos', `<main class="error-page reveal"><div class="error-mark" aria-hidden="true">✧</div><p class="eyebrow">Your private gallery</p><h1>${title}</h1><p class="intro">${message}</p></main>`), status);
 }
-function galleryHtml(token: string, gallery: Gallery): string {
+function galleryHtml(token: string, gallery: Gallery, email = false): string {
   const items = gallery.photoIds.map((id, i) => `<figure class="photo reveal"><img src="/g/${token}/photos/${id}" alt="Wedding photo ${i + 1}" loading="${i === 0 && !gallery.composite ? 'eager' : 'lazy'}" decoding="async"><figcaption><div class="photo-label"><span>A moment to keep</span><span>${String(i + 1).padStart(2, '0')}</span></div><a class="download" href="/g/${token}/photos/${id}?download=1" download aria-label="Download photo ${i + 1} in full resolution"><span class="arrow" aria-hidden="true">↓</span>${gallery.composite ? 'Save individual photo' : 'Save original photo'}</a><p class="quality">Full resolution · JPEG</p></figcaption></figure>`).join('');
   let keepsake = '';
   if (gallery.composite) {
@@ -406,7 +491,7 @@ function galleryHtml(token: string, gallery: Gallery): string {
   }
   const originals = gallery.originalPhotoIds ? `<section class="original-section" aria-labelledby="originals-title"><div class="collection-heading"><h2 id="originals-title">Your camera originals</h2><p>${gallery.originalPhotoIds.length} original files</p></div><p class="original-intro">Save each camera original, in the same order as your keepsake.</p><ol class="originals">${gallery.originalPhotoIds.map((id, i) => `<li><span class="original-name">Original ${String(i + 1).padStart(2, '0')}</span><a class="download" href="/g/${token}/photos/${id}?download=1" download aria-label="Download camera original ${i + 1} in full resolution">Save original ${i + 1}</a></li>`).join('')}</ol></section>` : '';
   const expires = new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeStyle: 'medium', timeZone: 'UTC' }).format(new Date(gallery.expiresAt));
-  return guestDocument('Your wedding photos', `<main><section class="hero reveal" aria-labelledby="gallery-title"><p class="eyebrow">A keepsake from the celebration</p><h1 id="gallery-title">Your night,<span>beautifully captured.</span></h1><p class="intro">A little joy to take home.</p></section>${keepsake}<section aria-label="Your photos"><div class="collection-heading"><h2>${gallery.composite ? 'Your individual photos' : 'Your wedding photos'}</h2><p>${gallery.photoIds.length} ${gallery.photoIds.length === 1 ? 'memory' : 'memories'} · original quality</p></div><div class="photos">${items}</div></section>${originals}<aside class="privacy"><h2>A private keepsake.</h2><p>Anyone with this link can view and download these photos.<br>Save your favorites, and forward this link only with care.</p><p class="expiry">Available until <time datetime="${new Date(gallery.expiresAt).toISOString()}">${expires} UTC</time>.<br>Link expiry closes access; it does not delete the original photos.</p></aside></main>`);
+  return guestDocument('Your wedding photos', `<main><section class="hero reveal" aria-labelledby="gallery-title"><p class="eyebrow">A keepsake from the celebration</p><h1 id="gallery-title">Your night,<span>beautifully captured.</span></h1><p class="intro">A little joy to take home.</p></section>${keepsakeEditorHtml(token, gallery)}${email ? emailFormHtml(token) : ''}${keepsake}<section aria-label="Your photos"><div class="collection-heading"><h2>${gallery.composite ? 'Your individual photos' : 'Your wedding photos'}</h2><p>${gallery.photoIds.length} ${gallery.photoIds.length === 1 ? 'memory' : 'memories'} · original quality</p></div><div class="photos">${items}</div></section>${originals}<aside class="privacy"><h2>A private keepsake.</h2><p>Anyone with this link can view and download these photos.<br>Save your favorites, and forward this link only with care.</p><p class="expiry">Available until <time datetime="${new Date(gallery.expiresAt).toISOString()}">${expires} UTC</time>.<br>Link expiry closes access; it does not delete the original photos.</p></aside></main>`);
 }
 async function handle(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
@@ -417,12 +502,22 @@ async function handle(request: Request, env: Env): Promise<Response> {
   if (url.pathname === '/health' && request.method === 'GET')
     return json({ status: 'ok', storage: env.MODE === 'local' ? 'local-r2' : 'private-r2', sms: env.SMS_MODE, smsAvailable: liveSmsAvailable(env) });
 
-  const guest = /^\/g\/([a-f0-9]{64})(?:\/photos\/([0-9a-f-]+))?$/.exec(url.pathname);
+  const emailRequest = /^\/g\/([a-f0-9]{64})\/email$/.exec(url.pathname);
+  if (emailRequest && request.method === 'POST') {
+    if (request.headers.get('Origin') !== url.origin || url.origin !== config.origin || (request.headers.get('Sec-Fetch-Site') && request.headers.get('Sec-Fetch-Site') !== 'same-origin')) return json({ status: 'rejected', message: 'Open the private gallery to send email.' }, 403);
+    const token = emailRequest[1]!;
+    const gallery = await loadGallery(env, await digest(encoder.encode(token)));
+    if (gallery instanceof Response) return gallery;
+    if (!crypto.subtle.timingSafeEqual(encoder.encode(token), encoder.encode(await tokenFor(gallery.sessionId, config.signingKey)))) return json({ error: 'Link revoked' }, 410);
+    const result = await handleGuestEmail(request, env, gallery, `${config.origin}/g/${token}`);
+    return json(result.body, result.status);
+  }
+  const guest = /^\/g\/([a-f0-9]{64})(?:\/photos\/([0-9a-f-]+)|\/(keepsake\.js|email\.js)|\/art\/(classic|botanical|coastal))?$/.exec(url.pathname);
   if (guest && request.method === 'GET') {
     const token = guest[1]!;
     const gallery = await loadGallery(env, await digest(encoder.encode(token)));
     if (gallery instanceof Response) {
-      if (guest[2]) return gallery;
+      if (guest[2] || guest[3] || guest[4]) return gallery;
       const detail = await gallery.json<{ error: string }>();
       return unavailableGallery(gallery.status, detail.error);
     }
@@ -430,8 +525,26 @@ async function handle(request: Request, env: Env): Promise<Response> {
     // rotation revoke every old link, including existing hashed R2 manifests.
     const currentToken = await tokenFor(gallery.sessionId, config.signingKey);
     if (!crypto.subtle.timingSafeEqual(encoder.encode(token), encoder.encode(currentToken)))
-      return guest[2] ? json({ error: 'Link revoked' }, 410) : unavailableGallery(410, 'Link revoked');
-    if (!guest[2]) return guestPage(galleryHtml(token, gallery));
+      return guest[2] || guest[3] || guest[4] ? json({ error: 'Link revoked' }, 410) : unavailableGallery(410, 'Link revoked');
+    if (guest[3] === 'email.js') {
+      if (!emailConfigured(env)) return json({ error: 'Email unavailable' }, 404);
+      return new Response(guestEmailScript, { headers: { ...privateHeaders, 'Content-Type': 'application/javascript; charset=utf-8' } });
+    }
+    if (guest[3]) {
+      if (!editableGallery(gallery)) return json({ error: 'Four source photos and a keepsake are required' }, 404);
+      return new Response(guestKeepsakeScript, { headers: { ...privateHeaders, 'Content-Type': 'application/javascript; charset=utf-8' } });
+    }
+    if (guest[4]) {
+      if (!editableGallery(gallery) || gallery.composite?.version !== 'wedding-template-v3' || gallery.composite.theme !== guest[4])
+        return json({ error: 'Artwork unavailable' }, 404);
+      const art = guestArtwork[guest[4] as keyof typeof guestArtwork];
+      const object = await env.PHOTOS.get(art.key);
+      if (!object || object.size > 4 * 1024 * 1024) return json({ error: 'Artwork unavailable' }, 503);
+      const bytes = new Uint8Array(await object.arrayBuffer());
+      if (await digest(bytes) !== art.sha256) return json({ error: 'Artwork unavailable' }, 503);
+      return new Response(bytes, { headers: { ...privateHeaders, 'Content-Type': 'image/png', 'Content-Length': String(bytes.length) } });
+    }
+    if (!guest[2]) return guestPage(galleryHtml(token, gallery, emailConfigured(env)), 200, editableGallery(gallery) || emailConfigured(env));
     const photoId = guest[2].toLowerCase();
     if (!uuid.test(photoId) || !galleryPhotoIds(gallery).includes(photoId)) return json({ error: 'Photo unavailable' }, 404);
     const photo = await env.PHOTOS.get(photoKey(gallery.sessionId, photoId));

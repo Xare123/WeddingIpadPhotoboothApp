@@ -139,7 +139,7 @@ if (runtime) {
     let entry = Object.entries(objects.PBXFileReference).find(([key, value]) => !key.endsWith('_comment') && value && unquote(value.path) === resource.generatedSource);
     if (!entry) {
       const uuid = project.generateUuid();
-      objects.PBXFileReference[uuid] = { isa: 'PBXFileReference', lastKnownFileType: 'image.jpeg', name: `"${filename}"`, path: `"${resource.generatedSource}"`, sourceTree: 'SOURCE_ROOT' };
+      objects.PBXFileReference[uuid] = { isa: 'PBXFileReference', lastKnownFileType: filename.endsWith('.frameart') ? 'file' : 'image.jpeg', name: `"${filename}"`, path: `"${resource.generatedSource}"`, sourceTree: 'SOURCE_ROOT' };
       objects.PBXFileReference[`${uuid}_comment`] = filename;
       entry = [uuid, objects.PBXFileReference[uuid]];
     }

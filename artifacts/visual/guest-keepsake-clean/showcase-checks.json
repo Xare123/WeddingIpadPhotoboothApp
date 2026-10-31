@@ -1,0 +1,98 @@
+{
+  "scope": "Actual private guest HTML/client and local Miniflare R2. Existing independently generated fictional adult photos, no guest photographs. Chromium only; not Safari/native/device or production proof.",
+  "status": "passed",
+  "recipe": {
+    "version": "wedding-template-v3",
+    "layout": "grid",
+    "theme": "coastal",
+    "gridAspect": "square"
+  },
+  "sources": [
+    {
+      "file": "apps/ipad/native-tests/fixtures/studio/studio-portrait-1.jpg",
+      "sha256": "98dae85857449307d5093fc8c3de9e9e2615030b2fe29a796a17329696007cf1",
+      "provenance": "Existing repository image_gen studio fixtures; full-frame proportional downsample/JPEG only. Each input was visually inspected before use; no drinks or diagnostic markers."
+    },
+    {
+      "file": "apps/ipad/native-tests/fixtures/studio/studio-portrait-2.jpg",
+      "sha256": "0429cea360656cd01259b97692a1850267a95e7b5dd8427da1862e3582237aed",
+      "provenance": "Existing repository image_gen studio fixtures; full-frame proportional downsample/JPEG only. Each input was visually inspected before use; no drinks or diagnostic markers."
+    },
+    {
+      "file": "apps/ipad/native-tests/fixtures/studio/studio-portrait-4.jpg",
+      "sha256": "f5755f9208945e63977fa9da9d866db1574a29a25e0be95c086f8df5e6108b6c",
+      "provenance": "Existing repository image_gen studio fixtures; full-frame proportional downsample/JPEG only. Each input was visually inspected before use; no drinks or diagnostic markers."
+    },
+    {
+      "file": "apps/ipad/native-tests/fixtures/studio/studio-landscape-1.jpg",
+      "sha256": "fa7aab6c4948c559a6c2acfbe426ff79293b75edfd15229dbeacf2f8cbd0d365",
+      "provenance": "Existing repository image_gen studio fixtures; full-frame proportional downsample/JPEG only. Each input was visually inspected before use; no drinks or diagnostic markers."
+    }
+  ],
+  "sourceHashes": {
+    "services/api/src/index.ts": "65ff57bd6211c348de30a12e72d6785f13efe0ac1c46143675988203ba2b1976",
+    "services/api/src/guest-keepsake.client": "f37b28e9409b4b6b5969020c090d2b21cc886581e9e17752305c623b5fc95778",
+    "services/api/test/worker-source.ts": "cd6a52067ee59f7084c210722c92532612d0bfab50a49d0f798155a57dfb463f",
+    "tools/guest-keepsake/local-server.mjs": "e3e05673a10b4f324bfc6026e337a3bdf5abc3c2346c9b97559e2551b6efd7d8",
+    "tools/guest-keepsake/clean-showcase.mjs": "d490f55df0de8aadbb8635c9d2982248512c2f67a31fee4b19f7d1f32665757d"
+  },
+  "outputs": [
+    {
+      "file": "artifacts/visual/guest-keepsake-clean/coastal-square-fill.jpg",
+      "sha256": "2f6d82ff0722dd4b6a76e378bb048592427b2bac0552fb414d543a0bf06a45be",
+      "bytes": 1153960,
+      "dimensions": [
+        2400,
+        2400
+      ]
+    },
+    {
+      "file": "artifacts/visual/guest-keepsake-clean/coastal-square-fit.jpg",
+      "sha256": "497a5c9f25b2a030fc0834ee8ab30525c5bc2e0121662fdf45f372ecf0b7c797",
+      "bytes": 1198922,
+      "dimensions": [
+        2400,
+        2400
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "artifacts/visual/guest-keepsake-clean/coastal-square-fill-mobile.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "9eb271daec1504309953c17ab0548635fd6d46100d70b3b64769d96bd6cb772d"
+    },
+    {
+      "file": "artifacts/visual/guest-keepsake-clean/coastal-square-fill-desktop.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "3bf8e284cd7e0039c11af91ca315f0c19d0108fbb32cb6f48e22a00964523b28"
+    },
+    {
+      "file": "artifacts/visual/guest-keepsake-clean/coastal-square-fit-mobile.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "632d90b8fd7fe1dd37fae9a6dfd2ede1c0bf7d8ef0cdb67aaf2d383fb35180db"
+    },
+    {
+      "file": "artifacts/visual/guest-keepsake-clean/coastal-square-fit-desktop.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "7c3c4a27a7f91b625717585f71b9ab2661dad5b35d3ab649e609234edc169341"
+    }
+  ],
+  "errors": [],
+  "external": [],
+  "unchangedSources": true,
+  "smsRequests": 0,
+  "outboundRequests": 0
+}

@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - codex/wedding-photobooth-mvp
+      - codex/retake-root-visibility-20261027
 
 permissions:
   contents: read

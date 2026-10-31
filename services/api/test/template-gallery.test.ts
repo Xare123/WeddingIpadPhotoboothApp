@@ -1,19 +1,18 @@
 import { after, before, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash, createHmac, randomUUID } from 'node:crypto';
-import { readFileSync } from 'node:fs';
-import { stripTypeScriptTypes } from 'node:module';
+import { workerSource } from './worker-source';
 import { Miniflare } from 'miniflare';
 
 const origin = 'http://localhost';
 const linkKey = 'template-local-test-key';
 const auth = { Authorization: 'Bearer local-development-only' };
-type Composite = { photoId: string; layout: 'strip' | 'grid'; theme: 'classic' | 'botanical' | 'coastal' } & ({ version: 'wedding-template-v1' } | { version: 'wedding-template-v2'; gridAspect: 'portrait' | 'square' });
+type Composite = { photoId: string; layout: 'strip' | 'grid'; theme: 'classic' | 'botanical' | 'coastal' } & ({ version: 'wedding-template-v1' } | { version: 'wedding-template-v2'; gridAspect: 'portrait' | 'square' } | { version: 'wedding-template-v3'; gridAspect: 'square' });
 type Recipe = { photoIds: string[]; originalPhotoIds: string[]; composite: Composite };
 type Ready = Recipe & { status: 'ready'; url: string; expiresAt: number };
 let runtime: Miniflare;
 before(async () => {
-  runtime = new Miniflare({ modules: true, script: stripTypeScriptTypes(readFileSync(new URL('../src/index.ts', import.meta.url), 'utf8')),
+  runtime = new Miniflare({ modules: true, script: workerSource(),
     compatibilityDate: '2026-07-30', r2Buckets: ['PHOTOS'],
     bindings: { MODE: 'local', SMS_MODE: 'mock', LOCAL_DEVICE_TOKEN: 'local-development-only', LOCAL_LINK_KEY: linkKey },
     outboundService: async () => { throw new Error('External requests are forbidden in template tests'); },
@@ -146,7 +145,11 @@ test('a private template page scopes composite, selected photos and camera origi
   assert.ok(html.indexOf('Your wedding keepsake') < html.indexOf('Your individual photos'));
   assert.equal((html.match(/aria-label="Download camera original \d in full resolution"/g) ?? []).length, 4);
   assert.ok(html.includes(`<time datetime="${new Date(result.expiresAt).toISOString()}">`));
-  assert.ok(!html.includes(orphan)); assert.ok(!html.includes(other.recipe.composite.photoId)); assert.ok(!html.includes('https://')); assert.ok(!html.includes('<script'));
+  assert.ok(!html.includes(orphan)); assert.ok(!html.includes(other.recipe.composite.photoId)); assert.ok(!html.includes('https://'));
+  // The editor adds exactly one same-capability external script, never inline or third-party code.
+  assert.deepEqual(html.match(/<script\b[^>]*>[\s\S]*?<\/script>/g), [`<script src="${new URL(result.url).pathname}/keepsake.js" defer></script>`]);
+  assert.match(page.headers.get('Content-Security-Policy')!, /script-src 'self';/);
+  assert.ok(!page.headers.get('Content-Security-Policy')!.includes("script-src 'unsafe-inline'"));
   for (const id of value.allIds) {
     assert.ok(html.includes(`/photos/${id}`));
     const response = await runtime.dispatchFetch(`${result.url}/photos/${id}?download=1`);
@@ -243,4 +246,17 @@ test('racing v2 aspects preserves one immutable winner and revocation closes eve
   assert.equal((await runtime.dispatchFetch(`${origin}/v1/sessions/${value.sessionId}/gallery`, { method: 'DELETE', headers: auth })).status, 200);
   assert.equal((await runtime.dispatchFetch(result.url)).status, 410);
   for (const id of value.allIds) assert.equal((await runtime.dispatchFetch(`${result.url}/photos/${id}?download=1`)).status, 410);
+});
+
+test('v3 artwork strip/grid exact-square metadata persists and cannot be reinterpreted as legacy artwork', async () => {
+  for (const layout of ['strip', 'grid'] as const) {
+    const value = fixture(); value.recipe.composite = { ...value.recipe.composite, version: 'wedding-template-v3', layout, gridAspect: 'square' };
+    const result = await publish(value);
+    assert.deepEqual(result.composite, value.recipe.composite);
+    assert.deepEqual(await (await ready(value.sessionId, value.recipe)).json(), result);
+    assert.equal((await ready(value.sessionId, { ...value.recipe, composite: { ...value.recipe.composite, gridAspect: 'portrait' } })).status, 400);
+    assert.equal((await ready(value.sessionId, { ...value.recipe, composite: { ...value.recipe.composite, version: 'wedding-template-v2' } })).status, 409);
+    const saved = await (await (await runtime.getR2Bucket('PHOTOS')).get(manifestKey(result.url)))!.json<{ composite: Composite }>();
+    assert.deepEqual(saved.composite, value.recipe.composite);
+  }
 });

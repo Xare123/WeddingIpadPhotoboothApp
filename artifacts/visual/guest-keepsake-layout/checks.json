@@ -1,0 +1,3914 @@
+{
+  "scope": "Actual Worker HTTP/HTML/client + local R2 in Chromium. Synthetic marker JPEGs only. No Safari, iOS, native renderer, production deployment, private guest content or SMS proof.",
+  "status": "passed",
+  "cases": [
+    {
+      "name": "v3-source-strip-classic-square",
+      "sourceMeta": {
+        "version": "wedding-template-v3",
+        "layout": "strip",
+        "theme": "classic",
+        "aspect": "square"
+      },
+      "defaultLayout": "grid",
+      "outputs": {
+        "grid": {
+          "fill": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-strip-classic-square-grid-fill.jpg",
+            "sha256": "4225e3c78838072dd92d76121a5cf269c4d3ee1b232c9311577f4a55c34fbe4d",
+            "bytes": 364021,
+            "width": 2400,
+            "height": 2400,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  184,
+                  60,
+                  97
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  48,
+                  134,
+                  95
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  54,
+                  91,
+                  197
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  182,
+                  138,
+                  41
+                ]
+              }
+            ]
+          },
+          "fit": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-strip-classic-square-grid-fit.jpg",
+            "sha256": "f6e8c99ee7e5a9e10adbe616e30cd106fb77cd6350258d94186c74abbff2c81e",
+            "bytes": 495236,
+            "width": 2400,
+            "height": 2400,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              }
+            ]
+          }
+        },
+        "strip": {
+          "fill": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-strip-classic-square-strip-fill.jpg",
+            "sha256": "9a2fd3572de63b210120b606c8369ff516f3d5bc42c01979e504399dedc72d4f",
+            "bytes": 322174,
+            "width": 1200,
+            "height": 3600,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  184,
+                  60,
+                  97
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  49,
+                  134,
+                  95
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  56,
+                  90,
+                  197
+                ]
+              },
+              {
+                "top": [
+                  221,
+                  201,
+                  40
+                ],
+                "bottom": [
+                  182,
+                  138,
+                  41
+                ]
+              }
+            ]
+          },
+          "fit": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-strip-classic-square-strip-fit.jpg",
+            "sha256": "d0fad8963d0664fd7666c26df61c14e6b03b2d2063d05a8b292c013bf9e0cf77",
+            "bytes": 429476,
+            "width": 1200,
+            "height": 3600,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  183,
+                  72
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  221,
+                  201,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "preparationFetches": [
+        "art",
+        "photo",
+        "photo",
+        "photo",
+        "photo"
+      ],
+      "originalSourceHashes": [
+        "c33c890d226f67633948fff734ef6b4577f02f6486a4f24e93c4c73b3206836a",
+        "549bca676b33a47a65cfe73b9c5361891acdf2350227d0b791b264a571fce6bc",
+        "998e13d0314278c9b507cd0f47b11191b717db3365ba8ac11f46adfbcc304930",
+        "93d7c165394d8c830f5a8c5d3d41b5e6d8b1060cf24051a952ffec824610a7cf"
+      ],
+      "originalBoothUnchanged": true
+    },
+    {
+      "name": "v3-source-strip-botanical-square",
+      "sourceMeta": {
+        "version": "wedding-template-v3",
+        "layout": "strip",
+        "theme": "botanical",
+        "aspect": "square"
+      },
+      "defaultLayout": "grid",
+      "outputs": {
+        "grid": {
+          "fill": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-strip-botanical-square-grid-fill.jpg",
+            "sha256": "10f15655b0f2f2b27d7cdd73f3e7bbd531848f23943f994b7dce18bf7636bbaa",
+            "bytes": 389421,
+            "width": 2400,
+            "height": 2400,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  185,
+                  59,
+                  97
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  48,
+                  134,
+                  95
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  54,
+                  91,
+                  197
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  182,
+                  138,
+                  41
+                ]
+              }
+            ]
+          },
+          "fit": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-strip-botanical-square-grid-fit.jpg",
+            "sha256": "63372c19ba42b8ef1861ae7fcf510acd0bdb31fff7b7713c7a661d9d4a59fa19",
+            "bytes": 528758,
+            "width": 2400,
+            "height": 2400,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              }
+            ]
+          }
+        },
+        "strip": {
+          "fill": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-strip-botanical-square-strip-fill.jpg",
+            "sha256": "25d28581dc2d16ddf9259766b19b371de8cc771d60a5774315f0499de0af669c",
+            "bytes": 350658,
+            "width": 1200,
+            "height": 3600,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  184,
+                  60,
+                  97
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  49,
+                  134,
+                  95
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  56,
+                  90,
+                  197
+                ]
+              },
+              {
+                "top": [
+                  221,
+                  201,
+                  40
+                ],
+                "bottom": [
+                  182,
+                  138,
+                  41
+                ]
+              }
+            ]
+          },
+          "fit": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-strip-botanical-square-strip-fit.jpg",
+            "sha256": "7a9bc5ed180fb11e7cc045a79c8805de191d1c7fa39160317dab0107c34f85e8",
+            "bytes": 465861,
+            "width": 1200,
+            "height": 3600,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  221,
+                  201,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "preparationFetches": [
+        "art",
+        "photo",
+        "photo",
+        "photo",
+        "photo"
+      ],
+      "originalSourceHashes": [
+        "c33c890d226f67633948fff734ef6b4577f02f6486a4f24e93c4c73b3206836a",
+        "549bca676b33a47a65cfe73b9c5361891acdf2350227d0b791b264a571fce6bc",
+        "998e13d0314278c9b507cd0f47b11191b717db3365ba8ac11f46adfbcc304930",
+        "93d7c165394d8c830f5a8c5d3d41b5e6d8b1060cf24051a952ffec824610a7cf"
+      ],
+      "originalBoothUnchanged": true
+    },
+    {
+      "name": "v3-source-strip-coastal-square",
+      "sourceMeta": {
+        "version": "wedding-template-v3",
+        "layout": "strip",
+        "theme": "coastal",
+        "aspect": "square"
+      },
+      "defaultLayout": "grid",
+      "outputs": {
+        "grid": {
+          "fill": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-strip-coastal-square-grid-fill.jpg",
+            "sha256": "e83e2c40ddd3d329b45741ca815c5d62fcec3aaf97917060f5aee6d4c357e605",
+            "bytes": 461495,
+            "width": 2400,
+            "height": 2400,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  184,
+                  60,
+                  97
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  48,
+                  134,
+                  95
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  54,
+                  91,
+                  197
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  182,
+                  138,
+                  41
+                ]
+              }
+            ]
+          },
+          "fit": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-strip-coastal-square-grid-fit.jpg",
+            "sha256": "72b441008e917654a8e49037a31abd46749b1efea35e9c0832e8cf1dc70d0efc",
+            "bytes": 643989,
+            "width": 2400,
+            "height": 2400,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              }
+            ]
+          }
+        },
+        "strip": {
+          "fill": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-strip-coastal-square-strip-fill.jpg",
+            "sha256": "3d40bf15454b802dc1a6077b7d821cc46a87ef92a8f251419b530376e7de9972",
+            "bytes": 412129,
+            "width": 1200,
+            "height": 3600,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  184,
+                  60,
+                  97
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  48,
+                  134,
+                  95
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  56,
+                  91,
+                  195
+                ]
+              },
+              {
+                "top": [
+                  221,
+                  201,
+                  40
+                ],
+                "bottom": [
+                  182,
+                  138,
+                  41
+                ]
+              }
+            ]
+          },
+          "fit": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-strip-coastal-square-strip-fit.jpg",
+            "sha256": "965cdb1a4a1846e53c17845413e5d0a6629a7b7d18184b48657c8fcdd14b2936",
+            "bytes": 574340,
+            "width": 1200,
+            "height": 3600,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  39,
+                  183,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  221,
+                  201,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "preparationFetches": [
+        "art",
+        "photo",
+        "photo",
+        "photo",
+        "photo"
+      ],
+      "originalSourceHashes": [
+        "c33c890d226f67633948fff734ef6b4577f02f6486a4f24e93c4c73b3206836a",
+        "549bca676b33a47a65cfe73b9c5361891acdf2350227d0b791b264a571fce6bc",
+        "998e13d0314278c9b507cd0f47b11191b717db3365ba8ac11f46adfbcc304930",
+        "93d7c165394d8c830f5a8c5d3d41b5e6d8b1060cf24051a952ffec824610a7cf"
+      ],
+      "originalBoothUnchanged": true
+    },
+    {
+      "name": "v3-source-grid-classic-square",
+      "sourceMeta": {
+        "version": "wedding-template-v3",
+        "layout": "grid",
+        "theme": "classic",
+        "aspect": "square"
+      },
+      "defaultLayout": "grid",
+      "outputs": {
+        "grid": {
+          "fill": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-grid-classic-square-grid-fill.jpg",
+            "sha256": "4225e3c78838072dd92d76121a5cf269c4d3ee1b232c9311577f4a55c34fbe4d",
+            "bytes": 364021,
+            "width": 2400,
+            "height": 2400,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  184,
+                  60,
+                  97
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  48,
+                  134,
+                  95
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  54,
+                  91,
+                  197
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  182,
+                  138,
+                  41
+                ]
+              }
+            ]
+          },
+          "fit": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-grid-classic-square-grid-fit.jpg",
+            "sha256": "f6e8c99ee7e5a9e10adbe616e30cd106fb77cd6350258d94186c74abbff2c81e",
+            "bytes": 495236,
+            "width": 2400,
+            "height": 2400,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              }
+            ]
+          }
+        },
+        "strip": {
+          "fill": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-grid-classic-square-strip-fill.jpg",
+            "sha256": "9a2fd3572de63b210120b606c8369ff516f3d5bc42c01979e504399dedc72d4f",
+            "bytes": 322174,
+            "width": 1200,
+            "height": 3600,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  184,
+                  60,
+                  97
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  49,
+                  134,
+                  95
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  56,
+                  90,
+                  197
+                ]
+              },
+              {
+                "top": [
+                  221,
+                  201,
+                  40
+                ],
+                "bottom": [
+                  182,
+                  138,
+                  41
+                ]
+              }
+            ]
+          },
+          "fit": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-grid-classic-square-strip-fit.jpg",
+            "sha256": "d0fad8963d0664fd7666c26df61c14e6b03b2d2063d05a8b292c013bf9e0cf77",
+            "bytes": 429476,
+            "width": 1200,
+            "height": 3600,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  183,
+                  72
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  221,
+                  201,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "preparationFetches": [
+        "art",
+        "photo",
+        "photo",
+        "photo",
+        "photo"
+      ],
+      "originalSourceHashes": [
+        "c33c890d226f67633948fff734ef6b4577f02f6486a4f24e93c4c73b3206836a",
+        "549bca676b33a47a65cfe73b9c5361891acdf2350227d0b791b264a571fce6bc",
+        "998e13d0314278c9b507cd0f47b11191b717db3365ba8ac11f46adfbcc304930",
+        "93d7c165394d8c830f5a8c5d3d41b5e6d8b1060cf24051a952ffec824610a7cf"
+      ],
+      "originalBoothUnchanged": true
+    },
+    {
+      "name": "v3-source-grid-botanical-square",
+      "sourceMeta": {
+        "version": "wedding-template-v3",
+        "layout": "grid",
+        "theme": "botanical",
+        "aspect": "square"
+      },
+      "defaultLayout": "grid",
+      "outputs": {
+        "grid": {
+          "fill": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-grid-botanical-square-grid-fill.jpg",
+            "sha256": "10f15655b0f2f2b27d7cdd73f3e7bbd531848f23943f994b7dce18bf7636bbaa",
+            "bytes": 389421,
+            "width": 2400,
+            "height": 2400,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  185,
+                  59,
+                  97
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  48,
+                  134,
+                  95
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  54,
+                  91,
+                  197
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  182,
+                  138,
+                  41
+                ]
+              }
+            ]
+          },
+          "fit": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-grid-botanical-square-grid-fit.jpg",
+            "sha256": "63372c19ba42b8ef1861ae7fcf510acd0bdb31fff7b7713c7a661d9d4a59fa19",
+            "bytes": 528758,
+            "width": 2400,
+            "height": 2400,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              }
+            ]
+          }
+        },
+        "strip": {
+          "fill": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-grid-botanical-square-strip-fill.jpg",
+            "sha256": "25d28581dc2d16ddf9259766b19b371de8cc771d60a5774315f0499de0af669c",
+            "bytes": 350658,
+            "width": 1200,
+            "height": 3600,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  184,
+                  60,
+                  97
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  49,
+                  134,
+                  95
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  56,
+                  90,
+                  197
+                ]
+              },
+              {
+                "top": [
+                  221,
+                  201,
+                  40
+                ],
+                "bottom": [
+                  182,
+                  138,
+                  41
+                ]
+              }
+            ]
+          },
+          "fit": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-grid-botanical-square-strip-fit.jpg",
+            "sha256": "7a9bc5ed180fb11e7cc045a79c8805de191d1c7fa39160317dab0107c34f85e8",
+            "bytes": 465861,
+            "width": 1200,
+            "height": 3600,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  221,
+                  201,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "preparationFetches": [
+        "art",
+        "photo",
+        "photo",
+        "photo",
+        "photo"
+      ],
+      "originalSourceHashes": [
+        "c33c890d226f67633948fff734ef6b4577f02f6486a4f24e93c4c73b3206836a",
+        "549bca676b33a47a65cfe73b9c5361891acdf2350227d0b791b264a571fce6bc",
+        "998e13d0314278c9b507cd0f47b11191b717db3365ba8ac11f46adfbcc304930",
+        "93d7c165394d8c830f5a8c5d3d41b5e6d8b1060cf24051a952ffec824610a7cf"
+      ],
+      "originalBoothUnchanged": true
+    },
+    {
+      "name": "v3-source-grid-coastal-square",
+      "sourceMeta": {
+        "version": "wedding-template-v3",
+        "layout": "grid",
+        "theme": "coastal",
+        "aspect": "square"
+      },
+      "defaultLayout": "grid",
+      "outputs": {
+        "grid": {
+          "fill": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-grid-coastal-square-grid-fill.jpg",
+            "sha256": "e83e2c40ddd3d329b45741ca815c5d62fcec3aaf97917060f5aee6d4c357e605",
+            "bytes": 461495,
+            "width": 2400,
+            "height": 2400,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  184,
+                  60,
+                  97
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  48,
+                  134,
+                  95
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  54,
+                  91,
+                  197
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  182,
+                  138,
+                  41
+                ]
+              }
+            ]
+          },
+          "fit": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-grid-coastal-square-grid-fit.jpg",
+            "sha256": "72b441008e917654a8e49037a31abd46749b1efea35e9c0832e8cf1dc70d0efc",
+            "bytes": 643989,
+            "width": 2400,
+            "height": 2400,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              }
+            ]
+          }
+        },
+        "strip": {
+          "fill": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-grid-coastal-square-strip-fill.jpg",
+            "sha256": "3d40bf15454b802dc1a6077b7d821cc46a87ef92a8f251419b530376e7de9972",
+            "bytes": 412129,
+            "width": 1200,
+            "height": 3600,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  184,
+                  60,
+                  97
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  48,
+                  134,
+                  95
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  56,
+                  91,
+                  195
+                ]
+              },
+              {
+                "top": [
+                  221,
+                  201,
+                  40
+                ],
+                "bottom": [
+                  182,
+                  138,
+                  41
+                ]
+              }
+            ]
+          },
+          "fit": {
+            "file": "artifacts/visual/guest-keepsake-layout/v3-source-grid-coastal-square-strip-fit.jpg",
+            "sha256": "965cdb1a4a1846e53c17845413e5d0a6629a7b7d18184b48657c8fcdd14b2936",
+            "bytes": 574340,
+            "width": 1200,
+            "height": 3600,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  39,
+                  183,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  221,
+                  201,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "preparationFetches": [
+        "art",
+        "photo",
+        "photo",
+        "photo",
+        "photo"
+      ],
+      "originalSourceHashes": [
+        "c33c890d226f67633948fff734ef6b4577f02f6486a4f24e93c4c73b3206836a",
+        "549bca676b33a47a65cfe73b9c5361891acdf2350227d0b791b264a571fce6bc",
+        "998e13d0314278c9b507cd0f47b11191b717db3365ba8ac11f46adfbcc304930",
+        "93d7c165394d8c830f5a8c5d3d41b5e6d8b1060cf24051a952ffec824610a7cf"
+      ],
+      "originalBoothUnchanged": true
+    },
+    {
+      "name": "v1-source-strip-classic-legacy",
+      "sourceMeta": {
+        "version": "wedding-template-v1",
+        "layout": "strip",
+        "theme": "classic"
+      },
+      "defaultLayout": "grid",
+      "outputs": {
+        "grid": {
+          "fill": {
+            "file": "artifacts/visual/guest-keepsake-layout/v1-source-strip-classic-legacy-grid-fill.jpg",
+            "sha256": "2b9dbb1136e75a7fbd283a2842273c22508295140a72ce474325ae608fe03c88",
+            "bytes": 222084,
+            "width": 2400,
+            "height": 2400,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  184,
+                  60,
+                  97
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  48,
+                  134,
+                  95
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  54,
+                  91,
+                  197
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  182,
+                  138,
+                  41
+                ]
+              }
+            ]
+          },
+          "fit": {
+            "file": "artifacts/visual/guest-keepsake-layout/v1-source-strip-classic-legacy-grid-fit.jpg",
+            "sha256": "06a0ecbf29049bb9916a322aa17dd2e32e983eb93d4d7a47a8fc5004621bdfa4",
+            "bytes": 211920,
+            "width": 2400,
+            "height": 2400,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              }
+            ]
+          }
+        },
+        "strip": {
+          "fill": {
+            "file": "artifacts/visual/guest-keepsake-layout/v1-source-strip-classic-legacy-strip-fill.jpg",
+            "sha256": "b47e2ce9a88b9d3ed2fc5da49724c188215c96c66f2859a31f44b3f9687e0abd",
+            "bytes": 159795,
+            "width": 1200,
+            "height": 3600,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  184,
+                  60,
+                  97
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  48,
+                  134,
+                  95
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  54,
+                  91,
+                  197
+                ]
+              },
+              {
+                "top": [
+                  221,
+                  202,
+                  38
+                ],
+                "bottom": [
+                  182,
+                  138,
+                  41
+                ]
+              }
+            ]
+          },
+          "fit": {
+            "file": "artifacts/visual/guest-keepsake-layout/v1-source-strip-classic-legacy-strip-fit.jpg",
+            "sha256": "44a11d765d863bf3921ce3b9173402051dea03c5d5089531cbc9f74130894bc2",
+            "bytes": 115528,
+            "width": 1200,
+            "height": 3600,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  218,
+                  203,
+                  42
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "preparationFetches": [
+        "photo",
+        "photo",
+        "photo",
+        "photo"
+      ],
+      "originalSourceHashes": [
+        "c33c890d226f67633948fff734ef6b4577f02f6486a4f24e93c4c73b3206836a",
+        "549bca676b33a47a65cfe73b9c5361891acdf2350227d0b791b264a571fce6bc",
+        "998e13d0314278c9b507cd0f47b11191b717db3365ba8ac11f46adfbcc304930",
+        "93d7c165394d8c830f5a8c5d3d41b5e6d8b1060cf24051a952ffec824610a7cf"
+      ],
+      "originalBoothUnchanged": true
+    },
+    {
+      "name": "v2-source-grid-botanical-portrait",
+      "sourceMeta": {
+        "version": "wedding-template-v2",
+        "layout": "grid",
+        "theme": "botanical",
+        "aspect": "portrait"
+      },
+      "defaultLayout": "grid",
+      "outputs": {
+        "grid": {
+          "fill": {
+            "file": "artifacts/visual/guest-keepsake-layout/v2-source-grid-botanical-portrait-grid-fill.jpg",
+            "sha256": "16f5f80776dd40005423ba26fa0aaa5ddb23a50e41a406afc09114610294eac5",
+            "bytes": 221119,
+            "width": 2400,
+            "height": 2400,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  184,
+                  60,
+                  97
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  48,
+                  134,
+                  95
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  54,
+                  91,
+                  197
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  182,
+                  138,
+                  41
+                ]
+              }
+            ]
+          },
+          "fit": {
+            "file": "artifacts/visual/guest-keepsake-layout/v2-source-grid-botanical-portrait-grid-fit.jpg",
+            "sha256": "817fc7046ec7c588f0a35d9bcabffc3af078322392e189e15ba3c47db956c1d5",
+            "bytes": 207779,
+            "width": 2400,
+            "height": 2400,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              }
+            ]
+          }
+        },
+        "strip": {
+          "fill": {
+            "file": "artifacts/visual/guest-keepsake-layout/v2-source-grid-botanical-portrait-strip-fill.jpg",
+            "sha256": "6c9bd14f4c1e31d186e4ed30acebd1895732b20beb96300c95a9c04742fbe670",
+            "bytes": 205126,
+            "width": 1200,
+            "height": 3600,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  184,
+                  60,
+                  97
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  48,
+                  134,
+                  95
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  53,
+                  92,
+                  197
+                ]
+              },
+              {
+                "top": [
+                  221,
+                  201,
+                  40
+                ],
+                "bottom": [
+                  182,
+                  138,
+                  41
+                ]
+              }
+            ]
+          },
+          "fit": {
+            "file": "artifacts/visual/guest-keepsake-layout/v2-source-grid-botanical-portrait-strip-fit.jpg",
+            "sha256": "345a89c7474479d1f2a75919cc8de4f2609575fb62b61f16e553bcc54f58494e",
+            "bytes": 165753,
+            "width": 1200,
+            "height": 3600,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  221,
+                  201,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "preparationFetches": [
+        "photo",
+        "photo",
+        "photo",
+        "photo"
+      ],
+      "originalSourceHashes": [
+        "c33c890d226f67633948fff734ef6b4577f02f6486a4f24e93c4c73b3206836a",
+        "549bca676b33a47a65cfe73b9c5361891acdf2350227d0b791b264a571fce6bc",
+        "998e13d0314278c9b507cd0f47b11191b717db3365ba8ac11f46adfbcc304930",
+        "93d7c165394d8c830f5a8c5d3d41b5e6d8b1060cf24051a952ffec824610a7cf"
+      ],
+      "originalBoothUnchanged": true
+    },
+    {
+      "name": "v2-source-strip-coastal-square",
+      "sourceMeta": {
+        "version": "wedding-template-v2",
+        "layout": "strip",
+        "theme": "coastal",
+        "aspect": "square"
+      },
+      "defaultLayout": "grid",
+      "outputs": {
+        "grid": {
+          "fill": {
+            "file": "artifacts/visual/guest-keepsake-layout/v2-source-strip-coastal-square-grid-fill.jpg",
+            "sha256": "6494b16cf5f28110fdd25d452312dee580d5b7fb8d823b18066778e9ba9b7465",
+            "bytes": 268964,
+            "width": 2400,
+            "height": 2400,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  184,
+                  60,
+                  97
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  48,
+                  134,
+                  95
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  54,
+                  91,
+                  197
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  182,
+                  138,
+                  41
+                ]
+              }
+            ]
+          },
+          "fit": {
+            "file": "artifacts/visual/guest-keepsake-layout/v2-source-strip-coastal-square-grid-fit.jpg",
+            "sha256": "354c4667ffd6fc8802c937a71d33f1a4fa5375cc65458bffd91981b38db4fbc8",
+            "bytes": 255984,
+            "width": 2400,
+            "height": 2400,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              }
+            ]
+          }
+        },
+        "strip": {
+          "fill": {
+            "file": "artifacts/visual/guest-keepsake-layout/v2-source-strip-coastal-square-strip-fill.jpg",
+            "sha256": "9f3881a21a7f398ddb09eda143d244c5b217fd976fbaf650120f6c887dbfbf17",
+            "bytes": 249814,
+            "width": 1200,
+            "height": 3600,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  184,
+                  60,
+                  97
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  48,
+                  134,
+                  95
+                ]
+              },
+              {
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  53,
+                  92,
+                  197
+                ]
+              },
+              {
+                "top": [
+                  221,
+                  201,
+                  40
+                ],
+                "bottom": [
+                  182,
+                  138,
+                  41
+                ]
+              }
+            ]
+          },
+          "fit": {
+            "file": "artifacts/visual/guest-keepsake-layout/v2-source-strip-coastal-square-strip-fit.jpg",
+            "sha256": "9f6ca25523c66a811b344eb2e6f0af3b56116465e602beb6fb50a3a7f62f5d0d",
+            "bytes": 214042,
+            "width": 1200,
+            "height": 3600,
+            "centers": [
+              [
+                184,
+                60,
+                97
+              ],
+              [
+                48,
+                134,
+                95
+              ],
+              [
+                54,
+                91,
+                197
+              ],
+              [
+                182,
+                138,
+                41
+              ]
+            ],
+            "edges": [
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  220,
+                  202,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              },
+              {
+                "left": [
+                  217,
+                  37,
+                  38
+                ],
+                "right": [
+                  32,
+                  72,
+                  219
+                ],
+                "top": [
+                  221,
+                  201,
+                  40
+                ],
+                "bottom": [
+                  37,
+                  184,
+                  70
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "preparationFetches": [
+        "photo",
+        "photo",
+        "photo",
+        "photo"
+      ],
+      "originalSourceHashes": [
+        "c33c890d226f67633948fff734ef6b4577f02f6486a4f24e93c4c73b3206836a",
+        "549bca676b33a47a65cfe73b9c5361891acdf2350227d0b791b264a571fce6bc",
+        "998e13d0314278c9b507cd0f47b11191b717db3365ba8ac11f46adfbcc304930",
+        "93d7c165394d8c830f5a8c5d3d41b5e6d8b1060cf24051a952ffec824610a7cf"
+      ],
+      "originalBoothUnchanged": true
+    }
+  ],
+  "errors": [],
+  "blockedExternal": [],
+  "faults": [
+    {
+      "viewport": "mobile",
+      "fault": "photo",
+      "statusBefore": "One of the selected photos is unavailable, so these alternate keepsakes cannot be recreated.",
+      "recoveredBothLayoutsAndModes": true
+    },
+    {
+      "viewport": "mobile",
+      "fault": "art",
+      "statusBefore": "The keepsake artwork or photos are not ready. Alternate downloads could not be prepared. The original booth download has not been changed.",
+      "recoveredBothLayoutsAndModes": true
+    },
+    {
+      "viewport": "desktop",
+      "fault": "photo",
+      "statusBefore": "One of the selected photos is unavailable, so these alternate keepsakes cannot be recreated.",
+      "recoveredBothLayoutsAndModes": true
+    },
+    {
+      "viewport": "desktop",
+      "fault": "art",
+      "statusBefore": "The keepsake artwork or photos are not ready. Alternate downloads could not be prepared. The original booth download has not been changed.",
+      "recoveredBothLayoutsAndModes": true
+    }
+  ],
+  "fixture": {
+    "count": 4,
+    "storedDimensions": [
+      [
+        320,
+        480
+      ],
+      [
+        320,
+        480
+      ],
+      [
+        480,
+        320
+      ],
+      [
+        320,
+        480
+      ]
+    ],
+    "thirdExifOrientation": 6,
+    "fourthExifOrientation": 2,
+    "allExpectedUpright": [
+      320,
+      480
+    ],
+    "fourthExpectedLeftRight": "Left red, right blue after EXIF2; same edge oracle as unmirrored source."
+  },
+  "toggleChecks": {
+    "sequentialLayoutChanges": 40,
+    "rapidLayoutChanges": 40,
+    "bothFitModesRetained": true,
+    "sameFourBlobURLs": true,
+    "noRefetch": true
+  },
+  "requestCounts": {
+    "photo": 229,
+    "art": 14,
+    "script": 13,
+    "page": 26,
+    "sms": 0
+  },
+  "sourceHashes": {
+    "services/api/src/index.ts": "4ebeff20e8abd34c05a6ca52e3cd2a70140d6b84315d84e4321ccc1f4d7535be",
+    "services/api/src/guest-keepsake.client": "f37b28e9409b4b6b5969020c090d2b21cc886581e9e17752305c623b5fc95778",
+    "services/api/test/worker-source.ts": "cd6a52067ee59f7084c210722c92532612d0bfab50a49d0f798155a57dfb463f",
+    "tools/guest-keepsake/local-server.mjs": "8c6e4a563e0e37f84c4513a37a6f9ada29c8a89a6f416ce7f13483848aa32061",
+    "tools/guest-keepsake/layout-browser-checks.mjs": "c3462924417995ceb2f0eebaf52f67d96e428537cd8242c4d7a3777d2af8c364",
+    "tools/guest-keepsake/browser-checks.mjs": "6accadfbf78e1cbc35f67f0b38e5f112c8b1571ded65a5b12e435a38b8a74a5f"
+  }
+}

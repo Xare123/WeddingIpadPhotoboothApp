@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "existingPrivateBucket": "gizelleandrami-photoboothphotos",
+  "publicBucketAccess": false,
+  "provisioningRequired": false,
+  "uploaded": false,
+  "objects": [
+    {
+      "theme": "classic",
+      "artifact": "guest-artwork-v3/classic.png",
+      "source": "design/frame-art-v1/Classic-Ivory-Text-Free-Artwork.png",
+      "key": "system/keepsake-art/v3/classic.png",
+      "contentType": "image/png",
+      "sha256": "3ccb9f0acf030b5bc31b2bbf6d81f3e694e2dd2e045dc77fd930c6d4df59164e",
+      "bytes": 1802037
+    },
+    {
+      "theme": "botanical",
+      "artifact": "guest-artwork-v3/botanical.png",
+      "source": "design/frame-art-v1/Sage-Botanical-Text-Free-Artwork.png",
+      "key": "system/keepsake-art/v3/botanical.png",
+      "contentType": "image/png",
+      "sha256": "4121598a7aa1d445fed5c223d4b475d706cb93567d90c51a42d1dad86cb36e21",
+      "bytes": 1803664
+    },
+    {
+      "theme": "coastal",
+      "artifact": "guest-artwork-v3/coastal.png",
+      "source": "design/frame-art-v1/Coastal-Sea-Glass-Text-Free-Artwork.png",
+      "key": "system/keepsake-art/v3/coastal.png",
+      "contentType": "image/png",
+      "sha256": "8f3bbfb131c9454f6ea633a79445e6cd9b32176e9aa80c09080925b0d83884a0",
+      "bytes": 2050468
+    }
+  ]
+}

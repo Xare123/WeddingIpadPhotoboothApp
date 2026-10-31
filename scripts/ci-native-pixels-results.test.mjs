@@ -122,26 +122,27 @@ function jpeg(width, height, byteLength = 17) {
   return value;
 }
 
-function attachmentFixture(t, count = 16) {
+function attachmentFixture(t, count = 28) {
   const directory = mkdtempSync(join(tmpdir(), 'wedding-pixel-results-'));
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   const exportDirectory = join(directory, 'export'), outputDirectory = join(directory, 'public'); mkdirSync(exportDirectory);
   const manifest = [
     { testIdentifier: 'PhotoTemplateEngineTests/testV2AllSixCleanNativeJpegFullAndPreviewAttachments()', attachments: [] },
     { testIdentifier: 'PhotoTemplateEngineTests/testV2CleanMixedAspectAndExifNativeJpegAttachments()', attachments: [] },
+    { testIdentifier: 'PhotoTemplateEngineTests/testV2AllSixCleanNativeJpegFullAndPreviewAttachments()', attachments: [] },
   ];
   EXPECTED_PIXEL_ATTACHMENTS.slice(0, count).forEach((entry, index) => {
     const exportedFileName = 'exported-' + index + '.jpg';
     writeFileSync(join(exportDirectory, exportedFileName), jpeg(entry.width, entry.height));
-    manifest[index < 12 ? 0 : 1].attachments.push({ exportedFileName, suggestedHumanReadableName: entry.name });
+    manifest[index < 12 ? 0 : index < 16 ? 1 : 2].attachments.push({ exportedFileName, suggestedHumanReadableName: entry.name });
   });
   return { directory, exportDirectory, outputDirectory, manifest };
 }
 
-test('all sixteen named native outputs preserve exact exported bytes and expected dimensions', t => {
+test('all twenty-eight named native outputs preserve exact exported bytes and expected dimensions', t => {
   const fixture = attachmentFixture(t);
   const result = exportNamedPixelJpegs(fixture);
-  assert.equal(result.complete, true); assert.equal(result.entries.length, 16); assert.deepEqual(result.missing, []);
+  assert.equal(result.complete, true); assert.equal(result.entries.length, 28); assert.deepEqual(result.missing, []);
   result.entries.forEach((entry, index) => {
     const original = readFileSync(join(fixture.exportDirectory, 'exported-' + index + '.jpg'));
     assert.deepEqual(readFileSync(join(fixture.outputDirectory, entry.file)), original);
@@ -156,7 +157,7 @@ test('legitimate partial failed-run evidence can be retained but cannot satisfy 
   assert.throws(() => exportNamedPixelJpegs(fixture), /lacks required/);
   assert.equal(existsSync(fixture.outputDirectory), false);
   const result = exportNamedPixelJpegs({ ...fixture, requireComplete: false });
-  assert.equal(result.complete, false); assert.equal(result.entries.length, 1); assert.equal(result.missing.length, 15);
+  assert.equal(result.complete, false); assert.equal(result.entries.length, 1); assert.equal(result.missing.length, 27);
 });
 
 const observedAttachmentUUID = '6D96F847-5D91-43F9-B2B1-4F707D4B7014';
@@ -169,13 +170,13 @@ test('observed Xcode zero-index UUID filenames normalize only approved names and
   assert.equal(fixture.manifest[0].attachments[0].suggestedHumanReadableName,
     'native-v2-clean-portrait-strip-classic-FULL_0_6D96F847-5D91-43F9-B2B1-4F707D4B7014.jpeg');
   const result = exportNamedPixelJpegs(fixture);
-  assert.equal(result.complete, true); assert.equal(result.entries.length, 16);
+  assert.equal(result.complete, true); assert.equal(result.entries.length, 28);
   result.entries.forEach((entry, index) => {
     assert.equal(entry.name, EXPECTED_PIXEL_ATTACHMENTS[index].name);
     const original = readFileSync(join(fixture.exportDirectory, 'exported-' + index + '.jpg'));
     assert.deepEqual(readFileSync(join(fixture.outputDirectory, entry.file)), original);
     assert.equal(entry.sha256, createHash('sha256').update(original).digest('hex'));
-    assert.equal(entry.producer, index < 12
+    assert.equal(entry.producer, (index < 12 || index >= 16)
       ? 'PhotoTemplateEngineTests.testV2AllSixCleanNativeJpegFullAndPreviewAttachments'
       : 'PhotoTemplateEngineTests.testV2CleanMixedAspectAndExifNativeJpegAttachments');
   });

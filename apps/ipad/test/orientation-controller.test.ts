@@ -633,3 +633,19 @@ test('dispose after native timeout freezes public state through late terminal co
   assert.equal(state.status, 'disposed');
   assert.equal(state.error, 'native-timeout');
 });
+
+test('synchronous overlay admission defers pending support without poisoning retry after close', async () => {
+ const support = deferred<boolean>(); let blocked = false, calls = 0;
+ const controller = createOrientationController({
+  available: true, isRequestSafe: () => !blocked, supports: () => support.promise,
+  request: async () => { calls++; }, readObservation: async () => forLock('landscape'),
+  subscribe: () => () => {}, schedule: () => () => {},
+ }, { initialPreference: 'landscape' });
+ controller.setContext({ active: true, blockers: [] });
+ blocked = true; support.resolve(true); await flush();
+ assert.equal(calls, 0); assert.equal(controller.getState().status, 'deferred');
+ controller.setContext({ active: true, blockers: ['editor'] });
+ blocked = false; controller.setContext({ active: true, blockers: [] }); await flush();
+ assert.equal(calls, 1); assert.equal(controller.getState().status, 'observed');
+ controller.dispose();
+});

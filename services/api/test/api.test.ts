@@ -1,10 +1,10 @@
 import { after, before, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash, randomUUID } from 'node:crypto';
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { stripTypeScriptTypes } from 'node:module';
+import { workerSource } from './worker-source';
 import { Miniflare, type MiniflareOptions } from 'miniflare';
 
 const jpeg = new Uint8Array([255, 216, 255, 224, 0, 2, 255, 217]);
@@ -20,9 +20,8 @@ type NativeLimits = Record<string, { namespace_id: string; simple: { limit: numb
 const nativeLimits = (): NativeLimits => Object.fromEntries(limiterNames.map((name, index) =>
   [name, { namespace_id: String(index + 1), simple: { limit: 1000, period: 60 as const } }]));
 function runtimeOptions(bindings: Record<string, string> = {}, r2Persist?: string, limits?: NativeLimits): MiniflareOptions {
-  const source = readFileSync(new URL('../src/index.ts', import.meta.url), 'utf8');
   return {
-    modules: true, script: stripTypeScriptTypes(source), compatibilityDate: '2026-07-30',
+    modules: true, script: workerSource(), compatibilityDate: '2026-07-30',
     r2Buckets: ['PHOTOS'], r2Persist, ratelimits: limits ?? (bindings.MODE === 'production' ? nativeLimits() : undefined), bindings: { MODE: 'local', SMS_MODE: 'mock',
       LOCAL_DEVICE_TOKEN: 'local-development-only', LOCAL_LINK_KEY: 'test-local-key', ...bindings },
   };

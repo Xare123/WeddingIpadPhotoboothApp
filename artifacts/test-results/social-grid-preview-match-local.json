@@ -1,0 +1,39 @@
+{
+  "scope": "Exactly owner-authorized fresh Social grid + cropped Fill default/order, and new front capture matching preview left/right. No backend/window/SMS changes.",
+  "localTests": {
+    "passed": 515,
+    "failed": 0,
+    "skipped": 0,
+    "note": "Includes six held local-only unpublished scene-plugin tests; clean-checkout hosted count differs."
+  },
+  "ciGuards": {
+    "passed": 142,
+    "failed": 0,
+    "skipped": 0
+  },
+  "typecheck": "passed",
+  "hermesIosExport": "passed",
+  "syntheticEditorScreens": {
+    "passed": 2,
+    "orientations": [
+      "portrait",
+      "landscape"
+    ],
+    "firstOpenWithoutLayoutOrCropClicks": true,
+    "evidence": "artifacts/visual/social-grid-default/checks.json",
+    "nativeCameraProof": false
+  },
+  "mirroring": "Existing Expo front-only capture mirror flag, no JS/EXIF second flip. Rear QR scanner unchanged.",
+  "pending": [
+    "Fresh native19-case EXIF pixel execution and28JPEG guard",
+    "Mac preserved-identity build/install",
+    "Owner-attended asymmetric-card preview/review/Photos/download check; no new photography performed"
+  ],
+  "sourceHashes": {
+    "apps/ipad/App.tsx": "18b663c6e69ca3ed946a046879832ab23fefefa3a3d6c548d48a980cfa8bc56c",
+    "apps/ipad/src/template-editor.ts": "94beee9bd64a7da21133cf6614a29d4c98ee55395c17b3e5a92d3cb0c619f632",
+    "apps/ipad/src/TemplateStudio.tsx": "813004641cd9e7509cf113c85bcb248ff25d9268ec6e4ffaaa81819c59bfb8e5",
+    "apps/ipad/modules/wedding-photo-effects/tests/PhotoEffectsEngineTests.swift": "90819b44a36d9bad687396e7cab27234e199d2e16b57d99326392c779a102b92",
+    "apps/ipad/modules/wedding-photo-effects/tests/PhotoTemplateEngineTests.swift": "80b6cebf23933e5c34a064bf04a680d0148a0e584264860a6073a3c779377cb5"
+  }
+}

@@ -1,8 +1,12 @@
 import type { ActiveSession, CompositeRecipe, PhotoCrop } from './local-types';
 import type { CompositeInput } from './local-persistence';
 type Theme = CompositeRecipe['theme'];
+export const TEMPLATE_LAYOUTS = [
+    { id: 'grid', label: 'Social grid' },
+    { id: 'strip', label: 'Photo strip' },
+] as const;
 export type TemplateSourceInspection = {
-    version: 'wedding-template-v2';
+    version: 'wedding-template-v3';
     gridAspect: 'portrait' | 'square';
     sources: {
         photoId: string;
@@ -62,7 +66,7 @@ function selection(s: ActiveSession) {
         throw new Error('invalid-template-selection');
     return photos;
 }
-function validRecipe(r: CompositeRecipe, ids: string[]) { return r && (r.version === version || (r.version === 'wedding-template-v2' && ['portrait', 'square'].includes(r.gridAspect))) && ['strip', 'grid'].includes(r.layout) && themes.includes(r.theme) && r.photoIds?.length === 4 && new Set(r.photoIds).size === 4 && r.photoIds.every(id => ids.includes(id)) && Object.keys(r.cropsByPhotoId ?? {}).length === 4 && r.photoIds.every(id => cropValid(r.cropsByPhotoId[id]!)); }
+function validRecipe(r: CompositeRecipe, ids: string[]) { return r && (r.version === version || (r.version === 'wedding-template-v2' && ['portrait', 'square'].includes(r.gridAspect)) || (r.version === 'wedding-template-v3' && r.gridAspect === 'square')) && ['strip', 'grid'].includes(r.layout) && themes.includes(r.theme) && r.photoIds?.length === 4 && new Set(r.photoIds).size === 4 && r.photoIds.every(id => ids.includes(id)) && Object.keys(r.cropsByPhotoId ?? {}).length === 4 && r.photoIds.every(id => cropValid(r.cropsByPhotoId[id]!)); }
 export function templateDimensions(recipe: CompositeRecipe): readonly [
     number,
     number
@@ -185,7 +189,7 @@ export function createTemplateEditor(p: TemplateEditorPorts) {
             const result = await Promise.race([p.inspectTemplateSources(input), interrupted]);
             if (!current(g))
                 return;
-            if (!result || result.version !== 'wedding-template-v2' || !['portrait', 'square'].includes(result.gridAspect) || !Array.isArray(result.sources) || result.sources.length !== 4 || result.sources.some((x, i) => x.photoId !== ids[i] || !Number.isInteger(x.width) || !Number.isInteger(x.height) || x.width <= 0 || x.height <= 0 || x.width > 24000 || x.height > 24000 || x.width * x.height > 24000000 || !/^[a-f0-9]{64}$/i.test(x.sha256)))
+            if (!result || result.version !== 'wedding-template-v3' || !['portrait', 'square'].includes(result.gridAspect) || !Array.isArray(result.sources) || result.sources.length !== 4 || result.sources.some((x, i) => x.photoId !== ids[i] || !Number.isInteger(x.width) || !Number.isInteger(x.height) || x.width <= 0 || x.height <= 0 || x.width > 24000 || x.height > 24000 || x.width * x.height > 24000000 || !/^[a-f0-9]{64}$/i.test(x.sha256)))
                 throw new Error('invalid-template-inspection');
             const ratios = result.sources.map(x => x.width / x.height).sort((a, b) => a - b);
             if (result.gridAspect !== ((ratios[1]! + ratios[2]!) / 2 < 0.95 ? 'portrait' : 'square'))
@@ -194,7 +198,7 @@ export function createTemplateEditor(p: TemplateEditorPorts) {
             if (!current(g))
                 return;
             inspectedHashes = Object.fromEntries(result.sources.map(x => [x.photoId, x.sha256]));
-            state = { ...state!, recipe: { version: 'wedding-template-v2', gridAspect: initialDefaults?.gridAspect ?? result.gridAspect, layout: initialDefaults?.layout ?? 'strip', theme: initialDefaults?.theme ?? 'classic', photoIds: ids, cropsByPhotoId: Object.fromEntries(ids.map(id => [id, { mode: 'fit', x: 0, y: 0, zoom: 1 }])) } };
+            state = { ...state!, recipe: { version: 'wedding-template-v3', gridAspect: 'square', layout: initialDefaults?.layout ?? 'grid', theme: initialDefaults?.theme ?? 'classic', photoIds: ids, cropsByPhotoId: Object.fromEntries(ids.map(id => [id, { mode: 'fill', x: 0, y: -1, zoom: 1 }])) } };
             cancelInspection = null;
             refresh();
         }

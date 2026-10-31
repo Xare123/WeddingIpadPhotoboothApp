@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "scope": "Website-only Social Grid default and layout selection; local synthetic tests only",
+  "tests": 523,
+  "guards": 142,
+  "typecheck": "passed",
+  "apiEditorTests": 8,
+  "browserEvidence": "artifacts/visual/guest-keepsake-layout/checks.json",
+  "deployment": "not performed; approval pending",
+  "worker": "64d7ecc1d4ca8886f1e3d41118c76c58a214b31e301f2817966baf149441472d",
+  "archiveSha256": "de0c25b5709f23a2f80a38ce64c8316a5b4adc048b930b252471cb64aaf59678",
+  "iosChanges": false,
+  "liveOriginRequests": 0,
+  "smsRequests": 0
+}

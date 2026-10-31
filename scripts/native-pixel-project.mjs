@@ -45,8 +45,8 @@ export function pixelInputs(root) {
   });
   const resources = nativeRuntimeResources(root).map(input => ({ ...input, generatedSource: 'Resources/' + basename(input.source) }));
   const cases = sources.flatMap(source => source.cases);
-  if (cases.length !== PIXEL_REQUIRED_CASES || new Set(cases).size !== PIXEL_REQUIRED_CASES || resources.length !== 6) {
-    throw new Error('The pixel target must retain all nineteen named methods and six resources');
+  if (cases.length !== PIXEL_REQUIRED_CASES || new Set(cases).size !== PIXEL_REQUIRED_CASES || resources.length !== 9) {
+    throw new Error('The pixel target must retain all nineteen named methods and nine resources');
   }
   return { sources, resources, cases };
 }
@@ -65,7 +65,7 @@ function projectText(inputs) {
   const add = (name, body) => objects.push(`${id(name)} = { ${body} };`);
   const file = input => {
     const name = basename(input.generatedSource), resource = input.generatedSource.startsWith('Resources/');
-    add('ref:' + name, `isa = PBXFileReference; lastKnownFileType = ${resource ? 'image.jpeg' : 'sourcecode.swift'}; path = ${JSON.stringify(input.generatedSource)}; sourceTree = SOURCE_ROOT;`);
+    add('ref:' + name, `isa = PBXFileReference; lastKnownFileType = ${resource ? (name.endsWith('.frameart') ? 'file' : 'image.jpeg') : 'sourcecode.swift'}; path = ${JSON.stringify(input.generatedSource)}; sourceTree = SOURCE_ROOT;`);
     add('build:' + name, `isa = PBXBuildFile; fileRef = ${id('ref:' + name)};`);
   };
   inputs.sources.forEach(file); inputs.resources.forEach(file);

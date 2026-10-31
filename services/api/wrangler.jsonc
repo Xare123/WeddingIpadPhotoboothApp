@@ -3,6 +3,7 @@
   "name": "wedding-photobooth-local",
   "main": "src/index.ts",
   "compatibility_date": "2026-10-25",
+  "rules": [{ "type": "Text", "globs": ["**/*.client"], "fallthrough": true }],
   "workers_dev": false,
   "preview_urls": false,
   "r2_buckets": [{ "binding": "PHOTOS", "bucket_name": "photobooth-local" }],

@@ -162,6 +162,11 @@ export const EXPECTED_PIXEL_ATTACHMENTS = Object.freeze([
   { name: 'native-v2-clean-mixed-square-grid-coastal-PREVIEW', width: 1440, height: 1440 },
   { name: 'native-v2-clean-mixed-EXIF-portrait-grid-sage-FULL', width: 2400, height: 3000 },
   { name: 'native-v2-clean-mixed-EXIF-portrait-grid-sage-PREVIEW', width: 1152, height: 1440 },
+  ...['strip', 'grid'].flatMap(layout => ['classic', 'botanical', 'coastal'].flatMap(theme => [
+    { name: `native-v3-art-${layout}-${theme}-FULL`, width: layout === 'strip' ? 1200 : 2400, height: layout === 'strip' ? 3600 : 2400 },
+    { name: `native-v3-art-${layout}-${theme}-PREVIEW`, width: layout === 'strip' ? 480 : 1440, height: 1440 },
+  ])),
+
 ].map(Object.freeze));
 
 export function jpegDimensions(bytes) {
@@ -242,13 +247,13 @@ export function exportNamedPixelJpegs({ exportDirectory, outputDirectory, manife
       const exportedLabel = label.match(/^(.+)_0_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(?:jpg|jpeg)$/i);
       if (!expected.has(name) && exportedLabel?.[0] === label && expected.has(exportedLabel[1])) name = exportedLabel[1];
       if (!expected.has(name)) {
-        if (name.startsWith('native-v2-')) throw failure('Unexpected named native JPEG evidence', record);
+        if (/^native-v[23]-/.test(name)) throw failure('Unexpected named native JPEG evidence', record);
         continue;
       }
       let producer;
       try { producer = canonicalIdentity(group.testIdentifier); } catch { throw failure('Unsupported native attachment producer schema', group); }
       if (!PRODUCERS.has(producer)) throw failure('Native JPEG evidence belongs to an unexpected test method', group);
-      const producingMethod = name.startsWith('native-v2-clean-portrait-')
+      const producingMethod = (name.startsWith('native-v2-clean-portrait-') || name.startsWith('native-v3-art-'))
         ? 'PhotoTemplateEngineTests.testV2AllSixCleanNativeJpegFullAndPreviewAttachments'
         : 'PhotoTemplateEngineTests.testV2CleanMixedAspectAndExifNativeJpegAttachments';
       if (producer !== producingMethod) throw failure('Named native JPEG belongs to the wrong producing test method', group);

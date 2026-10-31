@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - codex/wedding-photobooth-mvp
+      - codex/retake-root-visibility-20261027
 
 permissions:
   contents: read
@@ -64,7 +65,7 @@ jobs:
             'Result: **' + (status?.result ?? 'runner did not produce status') + '**',
             'Verified named pixel cases: **' + (status?.tests?.executed ?? 'unknown') + ' / 19**',
             'Failures: **' + (status?.tests?.failures ?? 'unknown') + '**; skipped: **' + (status?.tests?.skipped ?? 'unknown') + '**',
-            'Exported native JPEGs: **' + count + ' / 16**', '',
+            'Exported native JPEGs: **' + count + ' / 28**', '',
             'Independent unhosted iOS unit-test bundle; unchanged production engines and XCTest sources; no Expo, Pods, Metro or application target.',
             '**The separate actual full Expo app launch/relaunch/rotation test remains unverified. This does not establish 20 passing tests, app bridge integration, saving, camera, Photos, signing or physical-iPad behavior.**', '',
           ];

@@ -1,6 +1,7 @@
+import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
-import { closeSync, existsSync, openSync, readSync, realpathSync, statSync } from 'node:fs';
-import { basename, join, relative, sep } from 'node:path';
+import { closeSync, existsSync, lstatSync, openSync, readFileSync, readSync, readdirSync, realpathSync, statSync } from 'node:fs';
+import { basename, dirname, join, relative, resolve, sep } from 'node:path';
 
 const marker = Buffer.from('preserveFullPhotoAvailable');
 const macho = new Set(['feedface', 'cefaedfe', 'feedfacf', 'cffaedfe', 'cafebabe', 'bebafeca', 'cafebabf', 'bfbafeca']);
@@ -47,4 +48,47 @@ export function verifyNativeCameraMarker(directory, info) {
   }
   return { marker: marker.toString(), compiledMarkerFound: true, scanned,
     scope: 'Native linked marker presence only; not runtime camera behavior, framing, saving, Photos or physical-device proof.' };
+}
+
+const frameArt = Object.freeze([
+  ['Classic-Ivory', '3ccb9f0acf030b5bc31b2bbf6d81f3e694e2dd2e045dc77fd930c6d4df59164e'],
+  ['Sage-Botanical', '4121598a7aa1d445fed5c223d4b475d706cb93567d90c51a42d1dad86cb36e21'],
+  ['Coastal-Sea-Glass', '8f3bbfb131c9454f6ea633a79445e6cd9b32176e9aa80c09080925b0d83884a0'],
+]);
+const repository = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+function boundedFrameFile(root, filename) {
+  const path = join(root, filename), before = lstatSync(path);
+  if (before.isSymbolicLink() || !before.isFile() || before.size < 24 || before.size > 4 * 1024 * 1024 ||
+      realpathSync(path) !== path) throw new Error('Frame artwork must be a bounded owned regular file without symlinks');
+  const bytes = readFileSync(path), after = lstatSync(path);
+  if (bytes.length !== before.size || before.size !== after.size || before.ino !== after.ino || before.mtimeMs !== after.mtimeMs) {
+    throw new Error('Frame artwork changed during inspection');
+  }
+  return bytes;
+}
+
+// The pure XCTest target copies art directly and cannot prove CocoaPods copied
+// its production resource bundle. Verify the built app independently, byte for byte.
+export function verifyNativeFrameArt(directory) {
+  const root = realpathSync(directory);
+  if (lstatSync(directory).isSymbolicLink() || !lstatSync(root).isDirectory()) throw new Error('Frame artwork requires an owned app directory');
+  const bundle = join(root, 'WeddingFrameArt.bundle');
+  const stat = lstatSync(bundle);
+  if (stat.isSymbolicLink() || !stat.isDirectory() || realpathSync(bundle) !== bundle) {
+    throw new Error('Native frame artwork bundle must be an app-owned directory without symlinks');
+  }
+  const expectedNames = frameArt.map(([name]) => name + '-Text-Free-Artwork.frameart').sort();
+  const actualNames = readdirSync(bundle).filter(name => name.endsWith('.frameart')).sort();
+  if (JSON.stringify(actualNames) !== JSON.stringify(expectedNames)) throw new Error('Native frame artwork bundle inventory is incomplete or unexpected');
+  const sourceRoot = realpathSync(join(repository, 'design/frame-art-v1'));
+  const entries = frameArt.map(([name, approvedSHA256]) => {
+    const filename = name + '-Text-Free-Artwork.frameart';
+    const bytes = boundedFrameFile(bundle, filename);
+    const source = boundedFrameFile(sourceRoot, name + '-Text-Free-Artwork.png');
+    const sha256 = createHash('sha256').update(bytes).digest('hex');
+    if (sha256 !== approvedSHA256 || !bytes.equals(source)) throw new Error('Native bundled frame artwork differs from the approved original PNG bytes');
+    return { file: relative(root, join(bundle, filename)), bytes: bytes.length, sha256 };
+  });
+  return { bundle: 'WeddingFrameArt.bundle', exactOriginalArtworkFound: true, entries,
+    scope: 'Exact artwork presence in the built production resource bundle only; not app rendering, physical-iPad layout or image-export proof.' };
 }

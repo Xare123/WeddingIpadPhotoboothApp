@@ -1,0 +1,35 @@
+{
+  "scope": "Website-only Fill/Full Photo, local testing and deployment preparation; no iPad/Mac changes, live origin probes, production writes or SMS.",
+  "tests": {
+    "passed": 523,
+    "failed": 0,
+    "skipped": 0,
+    "note": "Includes six pre-existing held local-only scene-plugin tests, excluded from this publication. Hosted clean-checkout count differs."
+  },
+  "ciGuards": {
+    "passed": 142,
+    "failed": 0,
+    "skipped": 0
+  },
+  "typechecks": "passed",
+  "workerModuleSyntax": "passed",
+  "browser": "Actual bundled Worker/client Chromium: 9 geometry cases,18 JPEG downloads;20 sequential+20 rapid toggles;Fill/fit edges,EXIF2/6,unchanged source/booth bytes;2 missing-asset retries;mobile+desktop. Clean fictional-adult showcase2JPEGs+4screens.",
+  "sourceHashes": {
+    "services/api/src/guest-keepsake.client": "4f296e5c16892eefb96f35145ba1626357e335ae33fcbea1ccc8c6e0d9402df5",
+    "services/api/src/index.ts": "dc7e8078495a8634914542a830ca5a747a0d39b5eafc06589ebcfd8e06372a3e"
+  },
+  "bundle": {
+    "sha256": "9e1b03c9c830df303eedc1f4d2dec7031436081d433270a08525aff52f847121",
+    "bytes": 68773
+  },
+  "archive": {
+    "sha256": "08f97ef3bb832e05b310c0d3c697ad6fbd94081f40e9edf47f9c7e33a096ecc6",
+    "bytes": 5136909
+  },
+  "remaining": [
+    "Later authorized Worker code update plus3 private artwork uploads preservinglivebindings/config/secrets",
+    "Actual Safari/real-phone downloads",
+    "Live readiness/source presence verification through permitted routes only; origin hold remains"
+  ],
+  "wranglerLocalHttpSmoke": "passed: actual local CLI text-module loading, authenticated uploads/readiness/private downloads/replay/mock consent/revocation; no SMS"
+}

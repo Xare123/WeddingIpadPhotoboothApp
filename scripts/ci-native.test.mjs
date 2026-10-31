@@ -635,6 +635,12 @@ function runtimeSourceFixture(t) {
     mkdirSync(join(file, '..'), { recursive: true });
     writeFileSync(file, Buffer.from([0xff, 0xd8, 1, 2, 0xff, 0xd9]));
   }
+  for (const name of ['Classic-Ivory', 'Sage-Botanical', 'Coastal-Sea-Glass']) {
+    const file = join(root, 'apps/ipad/modules/wedding-photo-effects/ios/FrameArt/' + name + '-Text-Free-Artwork.frameart');
+    mkdirSync(join(file, '..'), { recursive: true });
+    const bytes = Buffer.alloc(24); Buffer.from([137,80,78,71,13,10,26,10]).copy(bytes); bytes.writeUInt32BE(1254, 16); bytes.writeUInt32BE(1254, 20);
+    writeFileSync(file, bytes);
+  }
   const runtimeResources = nativeRuntimeResources(root);
   for (const resource of runtimeResources) {
     const target = join(root, 'apps/ipad/ios', resource.generatedSource);
@@ -655,7 +661,7 @@ test('native source manifest hashes exact required production/test bytes and cou
   const result = verifyNativeRuntimeSources(plan, root);
   assert.equal(result.expectedTestCount, 20);
   assert.equal(result.runtimeSources.length, 5);
-  assert.equal(result.runtimeResources.length, 6);
+  assert.equal(result.runtimeResources.length, 9);
   assert.equal(result.runtimeSources[4].testMethods.length, 11);
   assert.equal(result.runtimeSources[2].testMethods.length, 8);
   for (const source of result.runtimeSources) assert.match(source.sha256, /^[a-f0-9]{64}$/);
@@ -694,12 +700,26 @@ test('native runtime refuses incomplete execution, missing totals, any skipped t
 test('clean native JPEG resources have bounded bytes and exact copied hash manifests', t => {
   const { root, plan } = runtimeSourceFixture(t);
   const resources = nativeRuntimeResources(root);
-  assert.equal(resources.length, 6);
+  assert.equal(resources.length, 9);
   assert.ok(resources.every(item => /^[a-f0-9]{64}$/.test(item.sha256) && item.bytes > 0));
   const first = join(root, resources[0].source);
   writeFileSync(first, Buffer.alloc(2 * 1024 * 1024 + 1));
   assert.throws(() => nativeRuntimeResources(root), /unbounded clean JPEG/);
   assert.throws(() => verifyNativeRuntimeSources(plan, root));
+});
+
+test('generated frame resources retain all three exact-size PNGs and fail on dimension or copied-byte drift', t => {
+  const fixture = runtimeSourceFixture(t);
+  const art = fixture.plan.runtimeResources.filter(resource => resource.source.endsWith('.frameart'));
+  assert.equal(art.length, 3);
+  assert.deepEqual(art.map(resource => resource.source.split('/').at(-1)), [
+    'Classic-Ivory-Text-Free-Artwork.frameart', 'Sage-Botanical-Text-Free-Artwork.frameart', 'Coastal-Sea-Glass-Text-Free-Artwork.frameart',
+  ]);
+  for (const resource of art) assert.match(resource.sha256, /^[a-f0-9]{64}$/);
+  const file = join(fixture.root, art[0].source), bytes = readFileSync(file);
+  bytes.writeUInt32BE(1253, 16); writeFileSync(file, bytes);
+  assert.throws(() => nativeRuntimeResources(fixture.root), /generated frame PNG/);
+  assert.throws(() => verifyNativeRuntimeSources(fixture.plan, fixture.root));
 });
 
 test('Release simulator builds exactly the verified host architecture without altering device or Debug settings', () => {

@@ -183,7 +183,7 @@ async function main() {
   validation('native-pixel-acceptance', () => {
     requirePassingPixelTests(status.tests, summary);
     if (execution.code !== 0) throw new Error('xcodebuild did not exit successfully');
-    if (!status.jpegs?.complete || status.jpegs.entries.length !== EXPECTED_PIXEL_ATTACHMENTS.length) throw new Error('Expected sixteen native JPEG attachments are incomplete');
+    if (!status.jpegs?.complete || status.jpegs.entries.length !== EXPECTED_PIXEL_ATTACHMENTS.length) throw new Error('Expected twenty-eight native JPEG attachments are incomplete');
   });
   status.result = 'passed';
 }
@@ -234,7 +234,7 @@ finally {
   const classes = status.tests?.cases?.reduce((value, item) => { const name = item.id.split('.')[0]; value[name] = (value[name] ?? 0) + 1; return value; }, {}) ?? {};
   const message = { commit: sha, result: status.result, stage, executed: status.tests?.executed ?? 'unknown',
     failures: status.tests?.failures ?? 'unknown', skipped: status.tests?.skipped ?? 'unknown', classes,
-    nativeJpegs: status.jpegs?.entries?.length ?? 0, expectedNativeJpegs: 16,
+    nativeJpegs: status.jpegs?.entries?.length ?? 0, expectedNativeJpegs: EXPECTED_PIXEL_ATTACHMENTS.length,
     fullExpoSmokeVerified: false, error: status.error, schema: status.schemaDiagnostic };
   jsonFile('public-evidence.json', message);
   const logs = Object.fromEntries(readdirSync(diagnostics).filter(name => name.endsWith('.log')).map(name => [name, readFileSync(join(diagnostics, name), 'utf8')]));

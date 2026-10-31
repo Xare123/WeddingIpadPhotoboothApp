@@ -1,7 +1,8 @@
+import { Modal } from './window-overlay';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ComponentRef } from 'react';
 import {
-  AccessibilityInfo, Modal, PanResponder, Platform, Pressable, ScrollView,
+  AccessibilityInfo, PanResponder, Platform, Pressable, ScrollView,
   StyleSheet, Text, View, useWindowDimensions,
 } from 'react-native';
 import type { ViewStyle } from 'react-native';
@@ -152,7 +153,7 @@ export function TimingSheet({ visible, timing, defaults, onApply, onClose, reduc
   }, [visible, timing.firstSeconds, timing.nextSeconds]);
   useEffect(() => { if (visible && disabled) onClose(); }, [visible, disabled, onClose]);
   const change = (value: CaptureTiming) => { if (!disabled) { current.current = value; setDraft(value); } };
-  return <Modal visible={visible && !disabled} transparent animationType={reduceMotion ? 'none' : 'slide'} onRequestClose={onClose} statusBarTranslucent>
+  return <Modal presentationStyle="overFullScreen" supportedOrientations={['portrait', 'portrait-upside-down', 'landscape']} visible={visible && !disabled} transparent animationType={reduceMotion ? 'none' : 'slide'} onRequestClose={onClose} statusBarTranslucent>
     <View style={s.overlay}>
       <Pressable testID="timing-backdrop" accessible={false} style={StyleSheet.absoluteFill} onPress={onClose} />
       <View testID="timing-sheet" accessibilityViewIsModal style={[s.sheet, { width: Math.max(0, width - Math.max(12, insets.left) - Math.max(12, insets.right)), maxHeight: Math.max(160, height - insets.top - 20), paddingBottom: Math.max(18, insets.bottom) }]}>
